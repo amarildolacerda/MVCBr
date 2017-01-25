@@ -49,7 +49,7 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent);
+  TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent,mtNavigator);
   TModelTypes = set of TModelType;
 
   IModel = interface;
@@ -167,7 +167,25 @@ type
 
   IPersistentModel = interface(IPersistentModelBase)
     ['{BF5767E0-FF6E-4A60-9409-9163AE4EDA4D}']
+    function Controller(const AController: IController): IPersistentModel;
   end;
+
+
+  INavigatorModel = interface;
+
+  INavigatorModelBase = interface(IModel)
+    ['{0E0C626B-AE54-4050-9EA0-C8079FCA75BC}']
+  end;
+
+  INavigatorModel = interface(INavigatorModelBase)
+    ['{BF5767E0-FF6E-4A60-9409-9163AE4EDA4D}']
+    function Controller(const AController: IController): INavigatorModel;
+  end;
+
+  IValidateModel = interface(IModel)
+    ['{01A80AFD-8674-4E05-BCC4-00514DE84D88}']
+  end;
+
 
 
 implementation

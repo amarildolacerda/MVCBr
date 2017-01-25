@@ -42,12 +42,14 @@ const
   cPROJECT = 4;
   cCLASS = 5;
   CVIEWMODEL = 6;
+  cPersistentMODEL = 7;
 {$I project.inc}
 {$I viewcode.inc}
 {$I modelcode.inc}
 {$I controllercode.inc}
 {$I classcode.inc}
 {$I viewmodel.inc}
+{$I persistentmodel.inc}
 
 type
   TFileCreator = class(TInterfacedObject, IOTAFile)
@@ -133,6 +135,10 @@ begin
         if FViewModel then
           Result := stringReplace(Result, '%ViewModelInit', '',
             [rfReplaceAll, rfIgnoreCase]);
+      end;
+    cPersistentMODEL:
+      begin
+        Result := ModelCodeBase;
       end;
     cCONTROLLER:
       begin
@@ -222,7 +228,8 @@ begin
   begin
     Result := stringReplace(Result, FTemplates.Names[i],
       FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
-    Debug('Template: '+FTemplates.Names[i] + '=' + FTemplates.ValueFromIndex[i]);
+    Debug('Template: ' + FTemplates.Names[i] + '=' +
+      FTemplates.ValueFromIndex[i]);
   end;
 
   str := TStringList.Create;

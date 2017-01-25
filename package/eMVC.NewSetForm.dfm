@@ -34,7 +34,6 @@ object FormNewSet: TFormNewSet
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 1
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -45,9 +44,9 @@ object FormNewSet: TFormNewSet
       object Label1: TLabel
         Left = 9
         Top = 15
-        Width = 276
+        Width = 305
         Height = 16
-        Caption = 'The wizard is ready to generate a MVC Set!'
+        Caption = 'Assistente para Criar View/ViewModel ou Model'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -58,9 +57,9 @@ object FormNewSet: TFormNewSet
       object Label2: TLabel
         Left = 17
         Top = 100
-        Width = 317
+        Width = 297
         Height = 16
-        Caption = 'If you want create a  directory for this set,please check'
+        Caption = 'Se desejar criar um diret'#243'rio para isto marcar o box'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -71,9 +70,9 @@ object FormNewSet: TFormNewSet
       object Label4: TLabel
         Left = 17
         Top = 41
-        Width = 212
+        Width = 171
         Height = 16
-        Caption = 'Enter the name to assign to this set:'
+        Caption = 'Nome do artefato a ser criado'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -94,7 +93,7 @@ object FormNewSet: TFormNewSet
         Top = 123
         Width = 233
         Height = 17
-        Caption = 'Create Sub Directory for this MVC Set'
+        Caption = 'criar sub-pasta para o artefato'
         Checked = True
         State = cbChecked
         TabOrder = 1
