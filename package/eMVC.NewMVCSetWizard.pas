@@ -155,7 +155,7 @@ begin
         if CreateViewModule then
         begin
           viewModel := TViewModelCreator.create(path, setname, false);
-          (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+          (BorlandIDEServices as IOTAModuleServices).CreateModule(viewModel);
 
         end;
 
