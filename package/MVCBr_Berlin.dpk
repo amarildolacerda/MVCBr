@@ -1,0 +1,67 @@
+package MVCBr_Berlin;
+
+{$R *.res}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 1}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA OFF}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION OFF}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES ON}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$DEFINE MENUDEBUG}
+{$DEFINE INFODEBUG}
+{$DEFINE MENUDEBUG}
+{$DEFINE INFODEBUG}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Easy MVC 1.0a'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl,
+  rtl,
+  vclie,
+  designide,
+  xmlrtl,
+  vclactnband,
+  vclx;
+
+contains
+  eMVC.NewMVCSetWizard in 'eMVC.NewMVCSetWizard.pas',
+  eMVC.ProjectCreator in 'eMVC.ProjectCreator.pas',
+  eMVC.DataModuleCreator in 'eMVC.DataModuleCreator.pas',
+  eMVC.BaseCreator in 'eMVC.BaseCreator.pas',
+  eMVC.FrameCreator in 'eMVC.FrameCreator.pas',
+  eMVC.FileCreator in 'eMVC.FileCreator.pas',
+  eMVC.Logger in 'eMVC.Logger.pas',
+  eMVC.toolBox in 'eMVC.toolBox.pas',
+  copyfileform in 'copyfileform.pas' {FormCopyFile},
+  eMVC.shadow in 'eMVC.shadow.pas',
+  eMVC.ViewCreator in 'eMVC.ViewCreator.pas',
+  eMVC.ControllerCreator in 'eMVC.ControllerCreator.pas',
+  eMVC.ViewModelCreator in 'eMVC.ViewModelCreator.pas',
+  eMVC.ProjectFileCreator in 'eMVC.ProjectFileCreator.pas',
+  AppWizardForm in 'AppWizardForm.pas' {FormAppWizard},
+  eMVC.NewProjectWizard in 'eMVC.NewProjectWizard.pas',
+  eMVC.NewSetForm in 'eMVC.NewSetForm.pas' {FormNewSet},
+  eMVC.Patterns in 'eMVC.Patterns.pas',
+  eMVC.OTAUtilities in 'eMVC.OTAUtilities.pas';
+
+end.
+

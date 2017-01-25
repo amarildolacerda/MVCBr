@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2006/08/21 12:58:49.671.bdsproj,D:\larry\EasyMVC\src\EasyMVC_D2006.bdsproj=D:\larry\EasyMVC\src\EasyMVC_D2005.bdsproj</Transaction>
+    <Transaction>2017/01/18 00:49:27.000.616,C:\Fontes\Free\eMVC\src\EasyMVC_Berlin.dproj=C:\Fontes\Free\eMVC\src\EasyMVC_D2006.dproj</Transaction>
+    <Transaction>2017/01/18 01:03:46.000.274,C:\Fontes\Free\eMVC\src\eMVC.BaseCreator.pas=C:\Fontes\Free\eMVC\src\BaseCreator.pas</Transaction>
+    <Transaction>2017/01/18 01:06:52.000.495,C:\Fontes\Free\eMVC\src\eMVC.FileCreator.pas=C:\Fontes\Free\eMVC\src\FileCreator.pas</Transaction>
+    <Transaction>2017/01/18 01:07:07.000.185,C:\Fontes\Free\eMVC\src\eMVC.ControllerCreator.pas=C:\Fontes\Free\eMVC\src\ControllerCreator.pas</Transaction>
+    <Transaction>2017/01/18 01:07:20.000.805,C:\Fontes\Free\eMVC\src\eMVC.Logger.pas=C:\Fontes\Free\eMVC\src\logger.pas</Transaction>
+    <Transaction>2017/01/18 01:07:56.000.108,C:\Fontes\Free\eMVC\src\eMVC.ModelCreator.pas=C:\Fontes\Free\eMVC\src\ModelCreator.pas</Transaction>
+    <Transaction>2017/01/18 01:09:28.000.508,C:\Fontes\free\emvc\src\eMVC.Patterns.pas=C:\Fontes\free\emvc\src\patterns.pas</Transaction>
+    <Transaction>2017/01/18 01:10:53.000.285,C:\Fontes\Free\eMVC\src\eMVC.shadow.pas=C:\Fontes\Free\eMVC\src\shadow.pas</Transaction>
+    <Transaction>2017/01/18 01:11:13.000.436,C:\Fontes\Free\eMVC\src\eMVC.ViewCreator.pas=C:\Fontes\Free\eMVC\src\ViewCreator.pas</Transaction>
+    <Transaction>2017/01/18 01:12:01.000.265,C:\Fontes\Free\eMVC\src\eMVC.OTAUtilities.pas=C:\Fontes\Free\eMVC\src\OTAUtilities.pas</Transaction>
+    <Transaction>2017/01/18 08:52:50.000.730,C:\Fontes\Free\eMVC\src\eMVC.ProjectCreator.pas=C:\Fontes\Free\eMVC\src\ProjectCreator.pas</Transaction>
+    <Transaction>2017/01/18 20:38:07.000.660,C:\Fontes\Free\eMVC\src\toolbox.pas=C:\Fontes\Free\eMVC\src\eMVC.toolBox.pas</Transaction>
+    <Transaction>2017/01/18 20:38:17.000.469,C:\Fontes\Free\eMVC\src\NewSetForm.pas=C:\Fontes\Free\eMVC\src\eMVC.NewSetForm.pas</Transaction>
+    <Transaction>2017/01/18 20:38:17.000.469,C:\Fontes\Free\eMVC\src\NewSetForm.dfm=C:\Fontes\Free\eMVC\src\eMVC.NewSetForm.dfm</Transaction>
+    <Transaction>2017/01/18 20:39:37.000.455,C:\Fontes\Free\eMVC\src\FrameCreator.pas=C:\Fontes\Free\eMVC\src\eMVC.FrameCreator.pas</Transaction>
+    <Transaction>2017/01/18 20:40:20.000.169,C:\Fontes\Free\eMVC\src\DataModuleCreator.pas=C:\Fontes\Free\eMVC\src\eMVC.DataModuleCreator.pas</Transaction>
+    <Transaction>2017/01/18 20:45:02.000.075,C:\Fontes\Free\eMVC\src\NewProjectWizard.pas=C:\Fontes\Free\eMVC\src\eMVC.NewProjectWizard.pas</Transaction>
+    <Transaction>2017/01/18 20:45:07.000.041,C:\Fontes\Free\eMVC\src\NewMVCSetWizard.pas=C:\Fontes\Free\eMVC\src\eMVC.NewMVCSetWizard.pas</Transaction>
+    <Transaction>2017/01/18 20:45:14.000.641,C:\Fontes\Free\eMVC\src\ProjectFileCreator.pas=C:\Fontes\Free\eMVC\src\eMVC.ProjectFileCreator.pas</Transaction>
+    <Transaction>2017/01/23 09:25:41.000.219,C:\Fontes\Free\eMVC\src\MVCBr_Berlin.dproj=C:\Fontes\Free\eMVC\src\EasyMVC_Berlin.dproj</Transaction>
+    <Transaction>2017/01/23 23:51:44.570,C:\Fontes\MVCBr\package\viewmodel.pas=C:\Fontes\MVCBr\package\Unit1.pas</Transaction>
+    <Transaction>2017/01/24 00:29:08.110,=C:\Fontes\MVCBr\package\New\view\NewView.pas</Transaction>
+  </Transactions>
+</BorlandProject>
