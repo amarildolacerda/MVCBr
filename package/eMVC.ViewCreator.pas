@@ -17,7 +17,8 @@ type
     function GetFormName: string; override;
     function GetCreatorType: string; override;
     function GetImplFileName: string; override;
-    function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile; override;
+    function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
+      : IOTAFile; override;
     procedure FormCreated(const FormEditor: IOTAFormEditor); override;
   end;
 
@@ -27,8 +28,9 @@ uses eMVC.toolbox;
 
 { TViewCreator }
 
-constructor TViewCreator.Create(const APath: string = ''; ABaseName: string = '';
-  AUnNamed: Boolean = true; AnAncestorName: string = 'Form');
+constructor TViewCreator.Create(const APath: string = '';
+  ABaseName: string = ''; AUnNamed: Boolean = true;
+  AnAncestorName: string = 'Form');
 begin
   inherited Create(APath, ABaseName, AUnNamed);
   SetAncestorName(AnAncestorName);
@@ -37,22 +39,26 @@ end;
 function TViewCreator.GetImplFileName: string;
 begin
   result := self.getpath + GetBaseName + 'View.pas';
-  debug('View: '+result);
+  debug('View: ' + result);
 end;
 
-function TViewCreator.getFormName: string;
+function TViewCreator.GetFormName: string;
 begin
-  result := GetBaseName+'View' ;
-  debug('Form View: '+result);
+  result := GetBaseName + 'View';
+  debug('Form View: ' + result);
 end;
 
-function TViewCreator.NewImplSource(const ModuleIdent,
-  FormIdent, AncestorIdent: string): IOTAFile;
+function TViewCreator.NewImplSource(const ModuleIdent, FormIdent,
+  AncestorIdent: string): IOTAFile;
+var
+  fc: TFileCreator;
 begin
   if GetCreatorType = sForm then
-    Result := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cView)
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cView)
   else
-    Result := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cClass);
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cClass);
+  fc.Templates.Assign(self.Templates);
+  result := fc;
 end;
 
 procedure TViewCreator.FormCreated(const FormEditor: IOTAFormEditor);
@@ -65,8 +71,9 @@ end;
 function TViewCreator.GetCreatorType: string;
 begin
 
-  if (sametext(GetAncestorName , 'FORM')) or ( sametext( GetAncestorName , 'FRAME' )) then
-    Result := sForm
+  if (sametext(GetAncestorName, 'FORM')) or (sametext(GetAncestorName, 'FRAME'))
+  then
+    result := sForm
   else
     result := sUnit;
 
@@ -74,4 +81,3 @@ begin
 end;
 
 end.
-

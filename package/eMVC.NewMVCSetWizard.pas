@@ -178,7 +178,7 @@ begin
   //
   // When Object Repository is in Detail mode used in the Comment column
   //
-  result := 'MVCBr Criar novo Set Veiw'
+  result := 'MVCBr Criar Nova View / ViewModel ou Model '
 end;
 
 function TNewMVCSetWizard.GetGlyph:

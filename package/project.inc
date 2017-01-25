@@ -9,7 +9,7 @@ ProjectCode = 'PROGRAM %ModuleIdent;                         ' + #10#13 +
   '{$R *.res}                                                ' + #10#13 +
   'begin                                                     ' + #10#13 +
   '  ApplicationController.Run(TMainView,TMainController.New,' + #10#13 +
-  '    TMainModel.New,                                       '+#10#13+
+  '    TMainViewModel.New,                                   '+#10#13+
   '    function :boolean                                     ' + #10#13 +
   '    begin                                                 ' + #10#13 +
   '      // retornar True se o applicatio pode ser carregado ' + #10#13 +

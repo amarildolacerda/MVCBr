@@ -23,17 +23,19 @@ type
   private
     FController: IController;
     FID: string;
-    FModelTypes:TModelTypes;
+    FModelTypes: TModelTypes;
     function GetModelTypes: TModelTypes;
     procedure SetModelTypes(const AModelTypes: TModelTypes);
   public
     constructor create; virtual;
+
     function Controller(const AController: IController): IModel; virtual;
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
     function Update: IModel;
-    property ModelTypes:TModelTypes read GetModelTypes write SetModelTypes  default [mtCommon];
+    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes
+      default [mtCommon];
 
   end;
 
@@ -44,6 +46,7 @@ implementation
 constructor TModelFactory.create;
 begin
   inherited create;
+  FID := self.classname;
 end;
 
 function TModelFactory.GetID: string;
@@ -53,9 +56,8 @@ end;
 
 function TModelFactory.GetModelTypes: TModelTypes;
 begin
-   result := FModelTypes;
+  result := FModelTypes;
 end;
-
 
 function TModelFactory.ID(const AID: String): IModel;
 begin
@@ -63,12 +65,10 @@ begin
   FID := AID;
 end;
 
-
 procedure TModelFactory.SetModelTypes(const AModelTypes: TModelTypes);
 begin
   FModelTypes := AModelTypes;
 end;
-
 
 function TModelFactory.Controller(const AController: IController): IModel;
 begin
@@ -92,7 +92,5 @@ class function TMVCInterfacedObject.New(AClass: TInterfacedClass): IInterface;
 begin
   result := AClass.create;
 end;
-
-
 
 end.

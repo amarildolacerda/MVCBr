@@ -79,9 +79,12 @@ end;
 
 function TControllerCreator.NewImplSource(const ModuleIdent,
   FormIdent, AncestorIdent: string): IOTAFile;
+var fc:TFileCreator;
 begin
-  Result := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cController,
+  fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cController,
     FCreateModule, FCreateView, FModelAlone, FViewAlone, FViewIsForm);
+  fc.Templates.Assign( Templates ) ;
+  result := fc;
 end;
 
 end.

@@ -10,13 +10,13 @@ ViewHead = 'unit %ModelIdent;                                ' + #10#13 +
   '  MVCBr.Controller;                                       ' + #10#13 +
   '                                                          ' + #10#13;
 ViewDef = 'type                                              ' + #10#13 +
-  '  I%FormIdentView = interface(IView)                      ' + #10#13 +
+  '  I%FormIdent = interface(IView)                      ' + #10#13 +
   '    [''%guid'']                                           ' + #10#13 +
   '    // incluir especializacoes aqui                       ' + #10#13 +
   '  end;                                                    ' + #10#13 +
   '                                                          ' + #10#13 +
   '  T%FormIdent = class(T%AncestorIdent,IView,IThisAs<T%FormIdent>,' + #10#13 +
-  '                      I%FormIdentView,IViewAs<I%FormIdentView>)' + #10#13 +
+  '                      I%FormIdent,IViewAs<I%FormIdent>)' + #10#13 +
   '                                                          ' + #10#13 +
   '  private                                                 ' + #10#13 +
   '    FViewModel : IViewModel;                              ' + #10#13 +
@@ -29,7 +29,7 @@ ViewDef = 'type                                              ' + #10#13 +
   '    function ViewModel(const AViewModel:IViewModel):IView;' + #10#13 +
   '    function This: TObject;                               ' + #10#13 +
   '    function ThisAs:T%FormIdent;                          ' + #10#13 +
-  '    function ViewAs:I%FormIdentView;                      ' + #10#13 +
+  '    function ViewAs:I%FormIdent;                      ' + #10#13 +
   '    function ShowView(const AProc: TProc<IView>): integer;' + #10#13 +
   '    function Update: IView;                               ' + #10#13 +
   '  end;                                                    ' + #10#13 +
@@ -42,7 +42,7 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '  {codigo para atualizar a View vai aqui...}              ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                          ' + #10#13 +
-  'function T%FormIdent.ViewAs:I%FormIdentView;              ' + #10#13 +
+  'function T%FormIdent.ViewAs:I%FormIdent;              ' + #10#13 +
   'begin                                                     ' + #10#13 +
   '  result := self;                                         ' + #10#13 +
   'end;                                                      ' + #10#13 +

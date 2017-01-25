@@ -43,6 +43,7 @@ uses
   eMVC.FrameCreator,
   eMVC.ControllerCreator,
   eMVC.ModelCreator,
+  eMVC.ViewModelCreator,
   AppWizardForm,
   ToolsApi;
 
@@ -90,7 +91,7 @@ var
   path, appname: string;
   project: TProjectCreator;
   view: TViewCreator;
-  Model: TModelCreator;
+  Model: TViewModelCreator;
   Ctrl: TControllerCreator;
 begin
   // First create the Project
@@ -118,9 +119,13 @@ begin
   ProjectModule := (BorlandIDEServices as IOTAModuleServices).CreateModule(project);
 
   ctrl := TControllerCreator.Create(path, 'Main', false);
+  debug('Main Controller Creator');
+  ctrl.Templates.AddPair('//ViewModelInit','result.add( TMainViewModel.new(self));');
+
   (BorlandIDEServices as IOTAModuleServices).CreateModule(ctrl);
 
-  model := TModelCreator.Create(path, 'Main', false);
+  model := TViewModelCreator.Create(path, 'Main', false);
+
   (BorlandIDEServices as IOTAModuleServices).CreateModule(model);
 
   // Now create a Form for the Project since the code added to the Project expects it.

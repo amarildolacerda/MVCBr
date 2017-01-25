@@ -1,33 +1,32 @@
 unit eMVC.NewSetForm;
-{**********************************************************************}
-{ Copyright 2005 Reserved by Eazisoft.com                              }
- { File Name: NewSetForm.pas                                           }
-{ Author: Larry Le                                                     }
-{ Description:  Form of new set wizard                                 }
-{                                                                      }
-{ History:                                                             }
-{ - 1.0, 19 May 2006                                                   }
-{   First version                                                      }
-{                                                                      }
-{ Email: linfengle@gmail.com                                           }
-{                                                                      }
-{ The contents of this file are subject to the Mozilla Public License  }
-{ Version 1.1 (the "License"); you may not use this file except in     }
+{ ********************************************************************** }
+{ Copyright 2005 Reserved by Eazisoft.com }
+{ File Name: NewSetForm.pas }
+{ Author: Larry Le }
+{ Description:  Form of new set wizard }
+{ }
+{ History: }
+{ - 1.0, 19 May 2006 }
+{ First version }
+{ }
+{ Email: linfengle@gmail.com }
+{ }
+{ The contents of this file are subject to the Mozilla Public License }
+{ Version 1.1 (the "License"); you may not use this file except in }
 { compliance with the License. You may obtain a copy of the License at }
-{ http://www.mozilla.org/MPL/                                          }
-{                                                                      }
-{ Software distributed under the License is distributed on an "AS IS"  }
-{ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See  }
-{ the License for the specific language governing rights and           }
-{ limitations under the License.                                       }
-{                                                                      }
-{ The Original Code is written in Delphi.                              }
-{                                                                      }
-{ The Initial Developer of the Original Code is Larry Le.              }
-{ Copyright (C) eazisoft.com. All Rights Reserved.                     }
-{                                                                      }
-{**********************************************************************}
-
+{ http://www.mozilla.org/MPL/ }
+{ }
+{ Software distributed under the License is distributed on an "AS IS" }
+{ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See }
+{ the License for the specific language governing rights and }
+{ limitations under the License. }
+{ }
+{ The Original Code is written in Delphi. }
+{ }
+{ The Initial Developer of the Original Code is Larry Le. }
+{ Copyright (C) eazisoft.com. All Rights Reserved. }
+{ }
+{ ********************************************************************** }
 
 interface
 
@@ -66,6 +65,7 @@ type
     procedure btnBackClick(Sender: TObject);
     procedure listClassNameClick(Sender: TObject);
     procedure nbPageChanged(Sender: TObject);
+    procedure cbCreateModelClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -73,8 +73,8 @@ type
     Setname: string;
     CreateSubDir: boolean;
     CreateModule: boolean;
-    CreateView: Boolean;
-    CreateViewModule: Boolean;
+    CreateView: boolean;
+    CreateViewModule: boolean;
     ModelAlone: boolean;
     viewAlone: boolean;
     ViewParentClass: string;
@@ -84,14 +84,18 @@ var
   FormNewSet: TFormNewSet;
 
 implementation
+
 uses eMVC.OTAUtilities;
 
 {$R *.dfm}
 
 procedure TFormNewSet.FormCreate(Sender: TObject);
 begin
+  cbCreateModel.enabled := true;
+  cbCreateView.enabled := false;
+  cbViewModel.Enabled := false;
   nb.PageIndex := 0;
-  //this two params for future use
+  // this two params for future use
   ModelAlone := true;
   viewAlone := true;
 end;
@@ -104,34 +108,40 @@ begin
       begin
         if trim(edtSetName.Text) = '' then
         begin
-          eMVC.ToolBox.showInfo('Forneça um nome para a View.');
+          eMVC.toolBox.showInfo('Forneça um nome para a View.');
           exit;
         end;
         if SetNameExists(edtSetName.Text) then
         begin
-          eMVC.ToolBox.showInfo('Desculpe,A view "' + edtSetName.Text + '" já existe!');
+          eMVC.toolBox.showInfo('Desculpe,A view "' + edtSetName.Text +
+            '" já existe!');
           exit;
         end;
 
-        self.Setname := trim(edtSetname.Text);
+        self.Setname := trim(edtSetName.Text);
         self.CreateSubDir := cbCreateDir.Checked;
       end;
-    1: begin
-        self.CreateModule := cbCreateModel.checked;
-        self.CreateView := cbCreateView.checked;
-        self.CreateViewModule := cbViewModel.checked;
+    1:
+      begin
+        self.CreateModule := cbCreateModel.Checked;
+        self.CreateView := cbCreateView.Checked;
+        self.CreateViewModule := cbViewModel.Checked;
       end;
-//    2: begin
-//        ModelAlone:= not cbModelInCtrl.Checked;
-//      end;
-    2: begin
-        ViewAlone := not cbViewInCtrl.Checked;
-        if trim(edtClassname.Text) <> '' then
-          ViewParentClass := trim(edtClassname.Text)
-        else if (listClassName.ItemIndex >= 0) and (listClassName.ItemIndex < listClassName.Items.Count) then
-          ViewParentClass := listClassName.items[listClassName.ItemIndex]
-        else begin
-          eMVC.ToolBox.showInfo('Please give select or input a parent class for the View.');
+    // 2: begin
+    // ModelAlone:= not cbModelInCtrl.Checked;
+    // end;
+    2:
+      begin
+        viewAlone := not cbViewInCtrl.Checked;
+        if trim(edtClassName.Text) <> '' then
+          ViewParentClass := trim(edtClassName.Text)
+        else if (listClassName.ItemIndex >= 0) and
+          (listClassName.ItemIndex < listClassName.Items.Count) then
+          ViewParentClass := listClassName.Items[listClassName.ItemIndex]
+        else
+        begin
+          eMVC.toolBox.showInfo
+            ('Please give select or input a parent class for the View.');
           exit;
         end;
       end;
@@ -141,8 +151,8 @@ begin
   begin
     nb.PageIndex := nb.PageIndex + 1;
 
- //   if (nb.PageIndex = 2) and not CreateModule then
-//      nb.PageIndex := 3;
+    // if (nb.PageIndex = 2) and not CreateModule then
+    // nb.PageIndex := 3;
 
     if (nb.PageIndex = 2) and not CreateView then
       nb.PageIndex := 3;
@@ -152,12 +162,19 @@ begin
       btnOKNext.ModalResult := mrOK;
       btnOKNext.Caption := '&Finalizar';
     end
-    else begin
+    else
+    begin
       btnOKNext.ModalResult := mrNone;
       btnOKNext.Caption := '&Próximo';
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
+end;
+
+procedure TFormNewSet.cbCreateModelClick(Sender: TObject);
+begin
+  cbCreateView.Checked := not cbCreateModel.Checked;
+  cbViewModel.Checked := not cbCreateModel.Checked;
 end;
 
 procedure TFormNewSet.btnBackClick(Sender: TObject);
@@ -167,7 +184,6 @@ begin
     nb.PageIndex := nb.PageIndex - 1;
     if (nb.PageIndex = 3) and not CreateView then
       nb.PageIndex := 2;
-
 
     if (nb.PageIndex = 2) and not CreateModule then
       nb.PageIndex := 1;
@@ -197,4 +213,3 @@ begin
 end;
 
 end.
-

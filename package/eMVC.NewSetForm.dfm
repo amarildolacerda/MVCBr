@@ -42,8 +42,6 @@ object FormNewSet: TFormNewSet
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -200,9 +198,8 @@ object FormNewSet: TFormNewSet
         Width = 289
         Height = 17
         Caption = 'Criar Model'
-        Checked = True
-        State = cbChecked
         TabOrder = 1
+        OnClick = cbCreateModelClick
       end
       object cbViewModel: TCheckBox
         Left = 24
@@ -219,14 +216,12 @@ object FormNewSet: TFormNewSet
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
-        Width = 77
+        Width = 81
         Height = 16
-        Caption = 'View Setup:'
+        Caption = 'View Config:'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -237,16 +232,16 @@ object FormNewSet: TFormNewSet
       object Label10: TLabel
         Left = 16
         Top = 40
-        Width = 190
+        Width = 141
         Height = 13
-        Caption = 'Please select a parent class of the view:'
+        Caption = 'Selecione um tipo view a criar'
       end
       object Label22: TLabel
         Left = 16
         Top = 144
-        Width = 138
+        Width = 134
         Height = 13
-        Caption = 'Or input the class name here:'
+        Caption = 'Nome da classe a ser criada'
       end
       object listClassName: TListBox
         Left = 16
@@ -266,7 +261,7 @@ object FormNewSet: TFormNewSet
         Top = 184
         Width = 241
         Height = 17
-        Caption = 'Put me together with the Controller '
+        Caption = 'Incluir na mesma pasta dos modelos'
         TabOrder = 1
         Visible = False
       end
@@ -282,14 +277,12 @@ object FormNewSet: TFormNewSet
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 96
         Top = 16
-        Width = 133
+        Width = 97
         Height = 20
-        Caption = 'Congratulations!'
+        Caption = 'Parabens....'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGreen
         Font.Height = -16
@@ -300,18 +293,15 @@ object FormNewSet: TFormNewSet
       object Label8: TLabel
         Left = 32
         Top = 48
-        Width = 296
+        Width = 91
         Height = 13
-        Caption = 
-          'All information input,please press Finish button to begain creat' +
-          'e'
+        Caption = 'Agora '#233' so terminar'
       end
       object Label9: TLabel
         Left = 32
         Top = 64
-        Width = 75
+        Width = 3
         Height = 13
-        Caption = 'a MVC Set files!'
       end
     end
   end

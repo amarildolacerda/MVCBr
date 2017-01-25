@@ -32,7 +32,7 @@ unit eMVC.BaseCreator;
 interface
 
 uses
-  Windows, SysUtils,
+  Windows, SysUtils, Classes,
   eMVC.OTAUtilities,
   eMVC.FileCreator,
   ToolsApi,
@@ -42,14 +42,18 @@ type
 
   TBaseCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
   private
+    FFileCreator:TFileCreator;
     FAncestorName: string;
     FPath: string;
     FBaseName: string;
     FUnnamed: boolean;
+    FTemplates: TStringList;
     procedure setBaseName(ABaseName: string);
+    procedure SetTemplates(const Value: TStringList);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
       AUnNamed: boolean = true); virtual;
+    destructor destroy; override;
     procedure setPath(APath: string);
     function getpath: string;
     // IOTACreator
@@ -84,6 +88,8 @@ type
     procedure SetAncestorName(AnAncestorName: string);
     function getBaseName: string;
     property BaseName: string read getBaseName write setBaseName;
+
+    property Templates: TStringList read FTemplates write SetTemplates;
   end;
 
 implementation
@@ -121,6 +127,7 @@ end;
 constructor TBaseCreator.Create(const APath: string = '';
   ABaseName: string = ''; AUnNamed: boolean = true);
 begin
+  FTemplates := TStringList.Create;
   self.FPath := APath;
   self.FBaseName := ABaseName;
   self.FUnnamed := AUnNamed;
@@ -136,6 +143,11 @@ begin
   self.FPath := APath;
 end;
 
+procedure TBaseCreator.SetTemplates(const Value: TStringList);
+begin
+  FTemplates := Value;
+end;
+
 function TBaseCreator.getpath: string;
 begin
   Result := FPath;
@@ -144,7 +156,7 @@ begin
 
   if sametext(FAncestorName, 'model') then
     Result := Result + 'model\';
-  if sametext(FAncestorName,'viewmodel') then
+  if sametext(FAncestorName, 'viewmodel') then
     Result := Result + 'viewmodel\';
 
   if sametext(FAncestorName, 'controller') then
@@ -152,7 +164,13 @@ begin
 
   if not DirectoryExists(Result) then
     ForceDirectories(Result);
-  Debug('Path: '+result);
+  Debug('Path: ' + Result);
+end;
+
+destructor TBaseCreator.destroy;
+begin
+  FTemplates.Free;
+  inherited;
 end;
 
 procedure TBaseCreator.FormCreated(const FormEditor: IOTAFormEditor);
@@ -224,7 +242,10 @@ function TBaseCreator.NewImplSource(const ModuleIdent, FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
   // default create the normal class
-  Result := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent);
+  debug('FileCreator: '+ModuleIdent);
+  FFileCreator := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent);
+  FFileCreator.Templates.Assign(self.FTemplates);
+  result := FFileCreator;
 end;
 
 function TBaseCreator.NewIntfSource(const ModuleIdent, FormIdent,

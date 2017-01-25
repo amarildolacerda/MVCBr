@@ -66,8 +66,11 @@ end;
 
 function TModelCreator.NewImplSource(const ModuleIdent,
   FormIdent, AncestorIdent: string): IOTAFile;
+var fc:TFileCreator;
 begin
-  Result := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cMODEL);
+  fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cMODEL);
+  fc.Templates.assign(Templates);
+  result :=fc;
 end;
 
 

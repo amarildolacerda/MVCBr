@@ -60,13 +60,19 @@ type
     FCreateModel, FCreateView: boolean;
     FModelAlone, FViewAlone: boolean;
     FViewIsForm: boolean;
+    FViewModel: boolean;
+    FTemplates: TStringList;
+    procedure SetTemplates(const Value: TStringList);
   public
     constructor Create(const ModelIdent, FormIdent, AncestorIdent: string;
       ACreateType: smallint = cNORMAL; ACreateModel: boolean = false;
       ACreateView: boolean = false; AModelAlone: boolean = true;
-      AViewAlone: boolean = true; ViewIsForm: boolean = true);
+      AViewAlone: boolean = true; ViewIsForm: boolean = true;
+      AViewModel: boolean = true);
+    destructor destroy; override;
     function GetSource: string;
     function GetAge: TDateTime;
+    property Templates: TStringList read FTemplates write SetTemplates;
   end;
 
 implementation
@@ -78,9 +84,10 @@ constructor TFileCreator.Create(const ModelIdent, FormIdent,
   AncestorIdent: string; ACreateType: smallint = cNORMAL;
   ACreateModel: boolean = false; ACreateView: boolean = false;
   AModelAlone: boolean = true; AViewAlone: boolean = true;
-  ViewIsForm: boolean = true);
+  ViewIsForm: boolean = true; AViewModel: boolean = true);
 begin
   self.FCreateType := ACreateType;
+  FTemplates := TStringList.Create;
   FAge := -1; // Flag age as New File
   FModelIdent := ModelIdent;
   FFormIdent := FormIdent;
@@ -90,7 +97,14 @@ begin
   FModelAlone := AModelAlone;
   FViewAlone := AViewAlone;
   FViewIsForm := ViewIsForm;
+  FViewModel := AViewModel;
   Debug('Modulo: ' + ModelIdent);
+end;
+
+destructor TFileCreator.destroy;
+begin
+  FTemplates.Free;
+  inherited;
 end;
 
 function TFileCreator.GetAge: TDateTime;
@@ -114,7 +128,12 @@ begin
     cMODEL:
       Result := ModelCode;
     CVIEWMODEL:
-      Result := viewmodecode;
+      begin
+        Result := viewmodecode;
+        if FViewModel then
+          Result := stringReplace(Result, '%ViewModelInit', '',
+            [rfReplaceAll, rfIgnoreCase]);
+      end;
     cCONTROLLER:
       begin
         if (not self.FCreateModel) and (not self.FCreateView) then
@@ -141,69 +160,77 @@ begin
 
   if self.FCreateModel and not self.FModelAlone then
   begin
-    Result := StringReplace(Result, '%ModelDef', ModelDef,
+    Result := stringReplace(Result, '%ModelDef', ModelDef,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := StringReplace(Result, '%ModelImpl', ModelImpl,
+    Result := stringReplace(Result, '%ModelImpl', ModelImpl,
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
   begin
-    Result := StringReplace(Result, '%ModelDef', '',
+    Result := stringReplace(Result, '%ModelDef', '',
       [rfReplaceAll, rfIgnoreCase]);
-    Result := StringReplace(Result, '%ModelImpl', '',
+    Result := stringReplace(Result, '%ModelImpl', '',
       [rfReplaceAll, rfIgnoreCase]);
   end;
 
   if self.FCreateView and not self.FViewAlone then
   begin
-    Result := StringReplace(Result, '%ViewDef', ViewDef,
+    Result := stringReplace(Result, '%ViewDef', ViewDef,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := StringReplace(Result, '%ViewImpl', ViewImpl,
+    Result := stringReplace(Result, '%ViewImpl', ViewImpl,
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
   begin
-    Result := StringReplace(Result, '%ViewDef', '',
+    Result := stringReplace(Result, '%ViewDef', '',
       [rfReplaceAll, rfIgnoreCase]);
-    Result := StringReplace(Result, '%ViewImpl', '',
+    Result := stringReplace(Result, '%ViewImpl', '',
       [rfReplaceAll, rfIgnoreCase]);
   end;
 
   // Parameterize the code with the current Identifiers
   if FViewIsForm then
   begin
-    Result := StringReplace(Result, '%ViewCreation', FormViewCreate,
+    Result := stringReplace(Result, '%ViewCreation', FormViewCreate,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := StringReplace(Result, '%FreeView', '',
+    Result := stringReplace(Result, '%FreeView', '',
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
   begin
-    Result := StringReplace(Result, '%ViewCreation', NormalViewCreate,
+    Result := stringReplace(Result, '%ViewCreation', NormalViewCreate,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := StringReplace(Result, '%FreeView', NormalViewDestory,
+    Result := stringReplace(Result, '%FreeView', NormalViewDestory,
       [rfReplaceAll, rfIgnoreCase]);
   end;
 
   if FModelIdent <> '' then
-    Result := StringReplace(Result, '%ModelIdent', FModelIdent,
+    Result := stringReplace(Result, '%ModelIdent', FModelIdent,
       [rfReplaceAll, rfIgnoreCase]);
   if FFormIdent <> '' then
-    Result := StringReplace(Result, '%FormIdent', FFormIdent,
+    Result := stringReplace(Result, '%FormIdent', FFormIdent,
       [rfReplaceAll, rfIgnoreCase]);
   if FAncestorIdent <> '' then
-    Result := StringReplace(Result, '%AncestorIdent', FAncestorIdent,
+    Result := stringReplace(Result, '%AncestorIdent', FAncestorIdent,
       [rfReplaceAll, rfIgnoreCase]);
 
-  Result := StringReplace(Result, '%guid', GuidToString(TGuid.NewGuid),
+  Result := stringReplace(Result, '%guid', GuidToString(TGuid.NewGuid),
     [rfReplaceAll, rfIgnoreCase]);
+
+  // usa os templates;
+  for i := 0 to FTemplates.Count - 1 do
+  begin
+    Result := stringReplace(Result, FTemplates.Names[i],
+      FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
+    Debug('Template: '+FTemplates.Names[i] + '=' + FTemplates.ValueFromIndex[i]);
+  end;
 
   str := TStringList.Create;
   with str do
     try
       text := Result;
       c := 0;
-      for i := str.count - 1 downto 0 do
+      for i := str.Count - 1 downto 0 do
       begin
         str[i] := str[i].TrimRight;
         if str[i] = '' then
@@ -217,9 +244,14 @@ begin
       end;
       Result := text;
     finally
-      free;
+      Free;
     end;
 
+end;
+
+procedure TFileCreator.SetTemplates(const Value: TStringList);
+begin
+  FTemplates := Value;
 end;
 
 end.

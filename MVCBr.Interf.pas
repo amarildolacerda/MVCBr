@@ -139,6 +139,9 @@ type
     function ViewModelAs: T;
   end;
 
+
+
+
   IViewModel = interface;
 
   IViewModelBase = interface(IModel)
@@ -154,6 +157,18 @@ type
     ['{9F943F5D-4367-4537-857F-1399DBF7133F}']
     function Controller(const AController: IController): IViewModel;
   end;
+
+
+  IPersistentModel = interface;
+
+  IPersistentModelBase = interface(IModel)
+    ['{0E0C626B-AE54-4050-9EA0-C8079FCA75BC}']
+  end;
+
+  IPersistentModel = interface(IPersistentModelBase)
+    ['{BF5767E0-FF6E-4A60-9409-9163AE4EDA4D}']
+  end;
+
 
 implementation
 
