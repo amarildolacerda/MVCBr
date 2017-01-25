@@ -14,15 +14,14 @@
     <Transaction>2017/01/18 01:12:01.000.265,C:\Fontes\Free\eMVC\src\eMVC.OTAUtilities.pas=C:\Fontes\Free\eMVC\src\OTAUtilities.pas</Transaction>
     <Transaction>2017/01/18 08:52:50.000.730,C:\Fontes\Free\eMVC\src\eMVC.ProjectCreator.pas=C:\Fontes\Free\eMVC\src\ProjectCreator.pas</Transaction>
     <Transaction>2017/01/18 20:38:07.000.660,C:\Fontes\Free\eMVC\src\toolbox.pas=C:\Fontes\Free\eMVC\src\eMVC.toolBox.pas</Transaction>
-    <Transaction>2017/01/18 20:38:17.000.469,C:\Fontes\Free\eMVC\src\NewSetForm.pas=C:\Fontes\Free\eMVC\src\eMVC.NewSetForm.pas</Transaction>
     <Transaction>2017/01/18 20:38:17.000.469,C:\Fontes\Free\eMVC\src\NewSetForm.dfm=C:\Fontes\Free\eMVC\src\eMVC.NewSetForm.dfm</Transaction>
+    <Transaction>2017/01/18 20:38:17.000.469,C:\Fontes\Free\eMVC\src\NewSetForm.pas=C:\Fontes\Free\eMVC\src\eMVC.NewSetForm.pas</Transaction>
     <Transaction>2017/01/18 20:39:37.000.455,C:\Fontes\Free\eMVC\src\FrameCreator.pas=C:\Fontes\Free\eMVC\src\eMVC.FrameCreator.pas</Transaction>
     <Transaction>2017/01/18 20:40:20.000.169,C:\Fontes\Free\eMVC\src\DataModuleCreator.pas=C:\Fontes\Free\eMVC\src\eMVC.DataModuleCreator.pas</Transaction>
     <Transaction>2017/01/18 20:45:02.000.075,C:\Fontes\Free\eMVC\src\NewProjectWizard.pas=C:\Fontes\Free\eMVC\src\eMVC.NewProjectWizard.pas</Transaction>
     <Transaction>2017/01/18 20:45:07.000.041,C:\Fontes\Free\eMVC\src\NewMVCSetWizard.pas=C:\Fontes\Free\eMVC\src\eMVC.NewMVCSetWizard.pas</Transaction>
     <Transaction>2017/01/18 20:45:14.000.641,C:\Fontes\Free\eMVC\src\ProjectFileCreator.pas=C:\Fontes\Free\eMVC\src\eMVC.ProjectFileCreator.pas</Transaction>
     <Transaction>2017/01/23 09:25:41.000.219,C:\Fontes\Free\eMVC\src\MVCBr_Berlin.dproj=C:\Fontes\Free\eMVC\src\EasyMVC_Berlin.dproj</Transaction>
-    <Transaction>2017/01/23 23:51:44.570,C:\Fontes\MVCBr\package\viewmodel.pas=C:\Fontes\MVCBr\package\Unit1.pas</Transaction>
-    <Transaction>2017/01/24 00:29:08.110,=C:\Fontes\MVCBr\package\New\view\NewView.pas</Transaction>
+    <Transaction>2017/01/23 23:51:44.000.570,C:\Fontes\MVCBr\package\viewmodel.pas=C:\Fontes\MVCBr\package\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

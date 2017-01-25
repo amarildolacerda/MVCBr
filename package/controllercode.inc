@@ -12,16 +12,17 @@ ControllerCode =
   'SysUtils, forms, buttons, classes, controls,MVCBr.Interf,        ' + #10#13 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #10#13 +
   'System.RTTI,                                                     ' + #10#13 +
-  '%FormIdent.Model,%FormIdentView;                                    ' +
-  #10#13 + '                                                                 ' +
-  #10#13 + 'type                                                             ' +
-  #10#13 + '                                                                 ' +
-  #10#13 + '  IController%FormIdent = interface(IController)' + #10#13 +
+  '%FormIdent.Model,%FormIdentView;                                 ' + #10#13 +
+  '                                                                 ' + #10#13 +
+  'type                                                             ' + #10#13 +
+  '                                                                 ' + #10#13 +
+  '  I%FormIdentController = interface(IController)' + #10#13 +
   '         [''%guid'']                                             ' + #10#13 +
+  '         // incluir especializações aqui                         ' + #10#13 +
   '  end;                                                           ' + #10#13 +
   '                                                                 ' + #10#13 +
   '  T%FormIdentController = class(TControllerFactory,              ' + #10#13 +
-  '    IController%FormIdent,                                       ' + #10#13 +
+  '    I%FormIdentController,                                       ' + #10#13 +
   '    IThisAs<T%FormIdentController>, IModelAs<I%FormIdentModel>)  ' + #10#13 +
   '  protected                                                      ' + #10#13 +
   '    Procedure DoCommand(ACommand: string;                      ' + #10#13 +
@@ -86,9 +87,10 @@ ControllerCode =
   'end;                                                             ' + #10#13 +
   '                                                                 ' + #10#13 +
   'initialization                                                   ' + #10#13 +
-  '//ApplicationController.Add(T%FormIdentView.New,T%FormIdentModel.New);' + #10#13 +
-  '                                                                 ' + #10#13 +
-  'end.                                                             ' + #10#13;
+  '//T%FormIdentController.New(T%FormIdentView.New,T%FormIdentModel.New));' +
+  #10#13 + '                                                                 ' +
+  #10#13 + 'end.                                                             ' +
+  #10#13;
 
 ControllerCode2 = ControllerCode;
 

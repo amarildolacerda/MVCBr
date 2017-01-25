@@ -7,6 +7,8 @@ viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
   'Type                                                           ' + #10#13 +
   '                                                               ' + #10#13 +
   '   I%FormIdentViewModel = interface(IViewModel)                ' + #10#13 +
+  '         [''%guid'']                                           ' + #10#13 +
+  '         // incluir especializações aqui                         ' + #10#13 +
   '   end;                                                        ' + #10#13 +
   '                                                               ' + #10#13 +
   '    T%FormIdentViewModel=class(TViewModelFactory,              ' + #10#13 +

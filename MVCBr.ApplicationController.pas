@@ -11,10 +11,11 @@ type
   TApplicationController = class(TMVCInterfacedObject, IApplicationController)
   private
     FMainView: IView;
-    FControllers: TList<IController>;
+    FControllers: TMVCInterfacedList<IController>;
     function Count: integer;
-    function Add(AController: IController): integer;
+    function Add(const AController: IController): integer;
     procedure Delete(const idx: integer);
+    procedure Remove(const AController:IController);
 
   public
     constructor create;
@@ -47,7 +48,7 @@ end;
 
 { TApplicationController }
 
-function TApplicationController.Add(AController: IController): integer;
+function TApplicationController.Add(const AController: IController): integer;
 begin
   result := -1;
   if assigned(AController) then
@@ -65,7 +66,7 @@ end;
 constructor TApplicationController.create;
 begin
   inherited create;
-  FControllers := TList<IController>.create;
+  FControllers := TMVCInterfacedList<IController>.create;
 end;
 
 procedure TApplicationController.Delete(const idx: integer);
@@ -82,6 +83,11 @@ end;
 class function TApplicationController.New: IApplicationController;
 begin
   result := TApplicationController.create;
+end;
+
+procedure TApplicationController.Remove(const AController: IController);
+begin
+   FControllers.Remove(AController);
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;

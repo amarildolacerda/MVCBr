@@ -49,7 +49,7 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtNone, mtViewModel, mtValidate, mtPersistent);
+  TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent);
   TModelTypes = set of TModelType;
 
   IModel = interface;
@@ -101,8 +101,9 @@ type
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil);
     function Count: Integer;
-    function Add(AController: IController): Integer;
+    function Add(const AController: IController): Integer;
     procedure Delete(const idx: Integer);
+    procedure Remove(const AController:IController);
   end;
 
   // Controller for an Unit

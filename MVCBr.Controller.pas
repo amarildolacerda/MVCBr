@@ -3,6 +3,7 @@ unit MVCBr.Controller;
 interface
 
 uses MVCBr.Interf, MVCBr.Model, MVCBr.View, System.Generics.Collections,
+  MVCBr.ApplicationController,
   System.RTTI;
 
 type
@@ -56,6 +57,7 @@ end;
 constructor TControllerFactory.Create;
 begin
   inherited Create;
+  ApplicationController.Add(self);
   FModels := TMVCInterfacedList<IModel>.Create;
 end;
 
@@ -67,6 +69,7 @@ end;
 destructor TControllerFactory.destroy;
 begin
   FModels.Free;
+  ApplicationController.remove(self);
   inherited;
 end;
 
