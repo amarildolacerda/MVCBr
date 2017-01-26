@@ -64,17 +64,20 @@ type
     FViewIsForm: boolean;
     FViewModel: boolean;
     FTemplates: TStringList;
+    FIsFMX: boolean;
     procedure SetTemplates(const Value: TStringList);
+    procedure SetisFMX(const Value: boolean);
   public
     constructor Create(const ModelIdent, FormIdent, AncestorIdent: string;
       ACreateType: smallint = cNORMAL; ACreateModel: boolean = false;
       ACreateView: boolean = false; AModelAlone: boolean = true;
       AViewAlone: boolean = true; ViewIsForm: boolean = true;
-      AViewModel: boolean = true);
+      AViewModel: boolean = true; AIsFMX: boolean = false);
     destructor destroy; override;
     function GetSource: string;
     function GetAge: TDateTime;
     property Templates: TStringList read FTemplates write SetTemplates;
+    property isFMX: boolean read FIsFMX write SetisFMX;
   end;
 
 implementation
@@ -86,7 +89,8 @@ constructor TFileCreator.Create(const ModelIdent, FormIdent,
   AncestorIdent: string; ACreateType: smallint = cNORMAL;
   ACreateModel: boolean = false; ACreateView: boolean = false;
   AModelAlone: boolean = true; AViewAlone: boolean = true;
-  ViewIsForm: boolean = true; AViewModel: boolean = true);
+  ViewIsForm: boolean = true; AViewModel: boolean = true;
+  AIsFMX: boolean = false);
 begin
   self.FCreateType := ACreateType;
   FTemplates := TStringList.Create;
@@ -100,6 +104,7 @@ begin
   FViewAlone := AViewAlone;
   FViewIsForm := ViewIsForm;
   FViewModel := AViewModel;
+  FIsFMX := AIsFMX;
   Debug('Modulo: ' + ModelIdent);
 end;
 
@@ -124,10 +129,15 @@ begin
     cNORMAL:
       Result := classCode;
     cVIEW:
-      Result := ViewCode;
+      if FIsFMX then
+        Result := ViewCodeFMX
+      else
+        Result := ViewCode;
     cCLASS:
       Result := ViewCode2;
     cMODEL:
+      if isFMX then
+         result := ModelCodeFMX else
       Result := ModelCode;
     CVIEWMODEL:
       begin
@@ -161,7 +171,10 @@ begin
         end;
       end;
     cPROJECT:
-      Result := ProjectCode;
+      if isFMX then
+        Result := ProjectCodeFMX
+      else
+        Result := ProjectCode;
   end;
 
   if self.FCreateModel and not self.FModelAlone then
@@ -254,6 +267,11 @@ begin
       Free;
     end;
 
+end;
+
+procedure TFileCreator.SetisFMX(const Value: boolean);
+begin
+  FIsFMX := Value;
 end;
 
 procedure TFileCreator.SetTemplates(const Value: TStringList);

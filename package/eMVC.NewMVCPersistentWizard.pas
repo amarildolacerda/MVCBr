@@ -1,4 +1,4 @@
-unit eMVC.NewMVCSetWizard;
+unit eMVC.NewMVCPersistentWizard;
 
 { ********************************************************************** }
 { Copyright 2005 Reserved by Eazisoft.com }
@@ -35,6 +35,7 @@ interface
 
 uses
   SysUtils, Windows, Controls, {$IFDEF DELPHI_5 }FileCtrl, {$ENDIF}
+  System.Classes,
   eMVC.OTAUtilities,
   eMVC.projectcreator,
   eMVC.toolBox,
@@ -42,13 +43,14 @@ uses
   eMVC.BaseCreator,
   eMVC.ControllerCreator,
   eMVC.ModelCreator,
-  eMVC.ViewModelCreator,
-  eMVC.NewSetForm,
+  eMVC.PersistentModelCreator,
+  eMVC.NewSetPersistentModelForm,
   ToolsApi;
 
 type
-  TNewMVCSetWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
-    IOTAProjectWizard{$IFDEF MENUDEBUG}, IOTAMenuWizard{$ENDIF})
+  TNewMVCSetPersistentModelWizard = class(TNotifierObject, IOTAWizard,
+    IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
+    IOTAMenuWizard{$ENDIF})
     // IOTAWizard
     function GetIDString: string;
     function GetName: string;
@@ -72,20 +74,17 @@ implementation
 
 {$IFDEF MENUDEBUG}
 
-function TNewMVCSetWizard.GetMenuText: string;
+function TNewMVCSetPersistentModelWizard.GetMenuText: string;
 begin
-  result := '&Novo unit MVCBr';
+  result := '&Novo PersistentModel MVCBr';
 end;
 {$ENDIF}
 
-procedure TNewMVCSetWizard.Execute;
+procedure TNewMVCSetPersistentModelWizard.Execute;
 var
   path: string;
   project: string;
-  view: TViewCreator;
-  viewModel: TViewModelCreator;
-  Model: TModelCreator;
-  Ctrl: TControllerCreator;
+  Model: TPersistentModelCreator;
 
   function getProjectName: string;
   var
@@ -103,7 +102,26 @@ var
       end;
     end;
   end;
-
+ function GetAncestorX(idx:integer):string;
+ begin
+     with TStringList.create do
+     try
+        text := ModelCodeExt;
+        result :=  Strings[ idx ];
+     finally
+       free;
+     end;
+ end;
+ function GetModelType(idx:integer):string;
+ begin
+     with TStringList.create do
+     try
+        text := ModelCodeType;
+        result :=  Strings[idx];
+     finally
+       free;
+     end;
+ end;
 begin
   project := getProjectName;
   // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
@@ -114,7 +132,7 @@ begin
     exit;
   end;
   path := extractFilePath(project);
-  with TFormNewSet.create(nil) do
+  with TFormNewSetPersistentModel.create(nil) do
   begin
     if showModal = mrOK then
     begin
@@ -134,34 +152,19 @@ begin
             ForceDirectories(path);
         end;
 
-        Ctrl := TControllerCreator.create(path, setname, false, CreateModule,
-          CreateView, ModelAlone, ViewAlone, trim(lowercase(edtClassName.Text))
-          = 'tform');
-        ctrl.IsFMX := chFMX.Checked;
-        (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+        Model := TPersistentModelCreator.create(path, setname, false);
+        Model.IsFMX := cbFMX.Checked;
+        Model.SetAncestorName( GetAncestorX(ComboBox1.ItemIndex)  );
+        Model.Templates.AddPair('%intf',
+          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
+        Model.Templates.AddPair('%modelType',GetModelType(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%modelName',GetAncestorX(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+          [ComboBox1.ItemIndex]);
+        if GetModelType(ComboBox1.ItemIndex)<>'mtCommon' then
+          Model.Templates.AddPair('//%uses','MVCBr.Model,');
 
-        if ViewAlone and CreateView then
-        begin
-          view := TViewCreator.create(path, setname, false);
-          view.IsFMX := chFMX.Checked;
-          view.SetAncestorName(trim(edtClassName.Text));
-          (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
-        end;
-
-        if ModelAlone and CreateModule then
-        begin
-          Model := TModelCreator.create(path, setname, false);
-          Model.IsFMX := chFMX.Checked;
-          (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
-        end;
-
-        if CreateViewModule then
-        begin
-          viewModel := TViewModelCreator.create(path, setname, false);
-          viewModel.IsFMX := chFMX.Checked;
-          (BorlandIDEServices as IOTAModuleServices).CreateModule(viewModel);
-
-        end;
+        (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
       end; // else
     end; // if
@@ -169,7 +172,7 @@ begin
   end;
 end;
 
-function TNewMVCSetWizard.GetAuthor: string;
+function TNewMVCSetPersistentModelWizard.GetAuthor: string;
 begin
   //
   // When Object Repository is in Detail mode used in the Author column
@@ -177,43 +180,43 @@ begin
   result := 'MVCBr'
 end;
 
-function TNewMVCSetWizard.GetComment: string;
+function TNewMVCSetPersistentModelWizard.GetComment: string;
 begin
   //
   // When Object Repository is in Detail mode used in the Comment column
   //
-  result := 'MVCBr Criar Nova View / ViewModel ou Model '
+  result := 'MVCBr Criar PersistentModel '
 end;
 
-function TNewMVCSetWizard.GetGlyph:
+function TNewMVCSetPersistentModelWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
   result := LoadIcon(hInstance, 'SAMPLEWIZARD');
 end;
 
-function TNewMVCSetWizard.GetIDString: string;
+function TNewMVCSetPersistentModelWizard.GetIDString: string;
 begin
   //
   // Unique name for the Wizard used internally by Delphi
   //
-  result := 'MVCBr.MVCSetWizard';
+  result := 'MVCBr.MVCSetPersistentModelWizard';
 end;
 
-function TNewMVCSetWizard.GetName: string;
+function TNewMVCSetPersistentModelWizard.GetName: string;
 begin
   //
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := 'Novo MVCBr Set Veiw';
+  result := 'Novo MVCBr Set PersistentModel';
 end;
 
-function TNewMVCSetWizard.GetPage: string;
+function TNewMVCSetPersistentModelWizard.GetPage: string;
 begin
   result := 'MVCBr'
 end;
 
-function TNewMVCSetWizard.GetState: TWizardState;
+function TNewMVCSetPersistentModelWizard.GetState: TWizardState;
 begin
   //
   // For Menu Item Wizards only
@@ -223,7 +226,7 @@ end;
 
 procedure Register;
 begin
-  RegisterPackageWizard(TNewMVCSetWizard.create);
+  RegisterPackageWizard(TNewMVCSetPersistentModelWizard.create);
 end;
 
 end.

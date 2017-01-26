@@ -83,6 +83,7 @@ var fc:TFileCreator;
 begin
   fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cController,
     FCreateModule, FCreateView, FModelAlone, FViewAlone, FViewIsForm);
+  fc.isFMX := self.IsFMX;
   fc.Templates.Assign( Templates ) ;
   result := fc;
 end;

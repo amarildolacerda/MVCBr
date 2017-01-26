@@ -44,7 +44,9 @@ type
     FAge: TDateTime;
     FProjectName: string;
     FTemplates: TStringList;
+    FisFMX: Boolean;
     procedure SetTemplates(const Value: TStringList);
+    procedure SetisFMX(const Value: Boolean);
   public
     constructor Create(const ProjectName: string);
     destructor destroy; override;
@@ -52,6 +54,7 @@ type
     function GetSource: string;
     function GetAge: TDateTime;
     property Templates: TStringList read FTemplates write SetTemplates;
+    property isFMX: Boolean read FisFMX write SetisFMX;
   end;
 
 implementation
@@ -82,6 +85,8 @@ var
   i: integer;
 begin
   Result := ProjectCode;
+  if isFMX then
+    Result := ProjectCodeFMX;
 
   // usa os templates;
   for i := 0 to FTemplates.Count - 1 do
@@ -100,6 +105,11 @@ begin
   FTemplates.AddPair('%ModuleIdent', FProjectName);
   FTemplates.AddPair('%Module', 'Main');
 
+end;
+
+procedure TProjectFileCreator.SetisFMX(const Value: Boolean);
+begin
+  FisFMX := Value;
 end;
 
 procedure TProjectFileCreator.SetTemplates(const Value: TStringList);

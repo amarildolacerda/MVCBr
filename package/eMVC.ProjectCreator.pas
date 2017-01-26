@@ -45,6 +45,8 @@ type
 {$IFDEF COMPILER_8_UP}, IOTAProjectCreator80{$ENDIF COMPILER_8_UP})
   private
     FProjectName: string;
+    FisFMX: Boolean;
+    procedure SetisFMX(const Value: Boolean);
   public
     // IOTACreator
     function GetCreatorType: string;
@@ -68,6 +70,7 @@ type
     property ProjectPersonality: string read GetProjectPersonality;
 {$ENDIF COMPILER_8_UP}
     procedure setFileName(AFilename: string);
+    property isFMX:Boolean read FisFMX write SetisFMX;
   end;
 
 implementation
@@ -78,6 +81,11 @@ implementation
 procedure TProjectCreator.setFileName(AFilename: string);
 begin
   self.FProjectName := AFilename;
+end;
+
+procedure TProjectCreator.SetisFMX(const Value: Boolean);
+begin
+  FisFMX := Value;
 end;
 
 function TProjectCreator.GetCreatorType: string;
@@ -158,8 +166,11 @@ begin
 end;
 
 function TProjectCreator.NewProjectSource(const ProjectName: string): IOTAFile;
+var fc:TProjectFileCreator;
 begin
-  Result := TProjectFileCreator.Create(ProjectName);
+  fc := TProjectFileCreator.Create(ProjectName);
+  fc.isFMX := self.isFMX;
+  result := fc;
 end;
 
 end.

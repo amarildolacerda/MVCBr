@@ -1,4 +1,4 @@
-unit AppWizardForm;
+unit eMVC.AppWizardForm;
 
 {**********************************************************************}
 { Copyright 2005 Reserved by Eazisoft.com                              }
@@ -49,6 +49,7 @@ type
     BitBtn3: TBitBtn;
     Label3: TLabel;
     BitBtn4: TBitBtn;
+    cbFMX: TCheckBox;
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);

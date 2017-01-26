@@ -48,8 +48,10 @@ type
     FBaseName: string;
     FUnnamed: boolean;
     FTemplates: TStringList;
+    FIsFMX: Boolean;
     procedure setBaseName(ABaseName: string);
     procedure SetTemplates(const Value: TStringList);
+    procedure SetIsFMX(const Value: Boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
       AUnNamed: boolean = true); virtual;
@@ -90,6 +92,7 @@ type
     property BaseName: string read getBaseName write setBaseName;
 
     property Templates: TStringList read FTemplates write SetTemplates;
+    property IsFMX:Boolean read FIsFMX write SetIsFMX;
   end;
 
 implementation
@@ -136,6 +139,11 @@ end;
 procedure TBaseCreator.setBaseName(ABaseName: string);
 begin
   FBaseName := ABaseName;
+end;
+
+procedure TBaseCreator.SetIsFMX(const Value: Boolean);
+begin
+  FIsFMX := Value;
 end;
 
 procedure TBaseCreator.setPath(APath: string);
@@ -244,6 +252,7 @@ begin
   // default create the normal class
   debug('FileCreator: '+ModuleIdent);
   FFileCreator := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent);
+  FFileCreator.isFMX := self.IsFMX;
   FFileCreator.Templates.Assign(self.FTemplates);
   result := FFileCreator;
 end;

@@ -2,7 +2,7 @@ unit MVCBr.ApplicationController;
 
 interface
 
-uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes,
+uses Forms, System.Classes,
   System.Generics.Collections,
   System.SysUtils, MVCBr.Model, MVCBr.Interf;
 
@@ -15,7 +15,7 @@ type
     function Count: integer;
     function Add(const AController: IController): integer;
     procedure Delete(const idx: integer);
-    procedure Remove(const AController:IController);
+    procedure Remove(const AController: IController);
 
   public
     constructor create;
@@ -36,7 +36,7 @@ var
 function ApplicationController(): IApplicationController;
 begin
   if not assigned(FApplication) then
-     FApplication := TApplicationController.New;
+    FApplication := TApplicationController.New;
   result := FApplication;
 end;
 
@@ -87,7 +87,7 @@ end;
 
 procedure TApplicationController.Remove(const AController: IController);
 begin
-   FControllers.Remove(AController);
+  FControllers.Remove(AController);
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;
@@ -121,6 +121,5 @@ begin
 end;
 
 initialization
-
 
 end.

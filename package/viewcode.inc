@@ -101,6 +101,16 @@ ViewCode = ViewHead + ViewDef +
   ViewImpl +
   'end.                                                      ' + #10#13;
 
+ViewCodeFMX = ViewHead + ViewDef +
+  '                                                          ' + #10#13 +
+  'implementation                                            ' + #10#13 +
+  '                                                          ' + #10#13 +
+  '{$R *.fmx}                                                ' + #10#13 +
+  '                                                          ' + #10#13 +
+  ViewImpl +
+  'end.                                                      ' + #10#13;
+
+
 ViewCode2 = ViewHead + ViewDef +
   '                                                          ' + #10#13 +
   'implementation                                            ' + #10#13 +

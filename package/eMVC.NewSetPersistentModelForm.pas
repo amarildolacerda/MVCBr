@@ -1,4 +1,4 @@
-unit eMVC.NewSetForm;
+unit eMVC.NewSetPersistentModelForm;
 { ********************************************************************** }
 { Copyright 2005 Reserved by Eazisoft.com }
 { File Name: NewSetForm.pas }
@@ -34,8 +34,10 @@ uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
   Graphics, Controls, Forms, Dialogs, ExtCtrls, eMVC.toolBox, StdCtrls, Buttons;
 
+const
+{$I persistentmodel.inc}
 type
-  TFormNewSet = class(TForm)
+  TFormNewSetPersistentModel = class(TForm)
     btnBack: TBitBtn;
     btnCancel: TBitBtn;
     ScrollBox1: TScrollBox;
@@ -57,16 +59,15 @@ type
     Bevel1: TBevel;
     edtClassName: TEdit;
     Label22: TLabel;
-    cbCreateView: TCheckBox;
     cbCreateModel: TCheckBox;
-    cbViewModel: TCheckBox;
-    chFMX: TCheckBox;
+    Label5: TLabel;
+    ComboBox1: TComboBox;
+    cbFMX: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure listClassNameClick(Sender: TObject);
     procedure nbPageChanged(Sender: TObject);
-    procedure cbCreateModelClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -82,7 +83,7 @@ type
   end;
 
 var
-  FormNewSet: TFormNewSet;
+  FormNewSetPersistentModel: TFormNewSetPersistentModel;
 
 implementation
 
@@ -90,43 +91,53 @@ uses eMVC.OTAUtilities;
 
 {$R *.dfm}
 
-procedure TFormNewSet.FormCreate(Sender: TObject);
+procedure TFormNewSetPersistentModel.FormCreate(Sender: TObject);
+var
+  str: TStringList;
 begin
+
+  str := TStringList.Create;
+  with str do
+    try
+      text := ModelCodeCombo;
+      ComboBox1.Items.Assign(str);
+    finally
+      free;
+    end;
+
+  ComboBox1.ItemIndex := 0;
   cbCreateModel.enabled := true;
-  cbCreateView.enabled := false;
-  cbViewModel.Enabled := false;
   nb.PageIndex := 0;
   // this two params for future use
   ModelAlone := true;
   viewAlone := true;
 end;
 
-procedure TFormNewSet.btnOKNextClick(Sender: TObject);
+procedure TFormNewSetPersistentModel.btnOKNextClick(Sender: TObject);
 begin
 
   case nb.PageIndex of
     0:
       begin
-        if trim(edtSetName.Text) = '' then
+        if trim(edtSetName.text) = '' then
         begin
           eMVC.toolBox.showInfo('Forneça um nome para a View.');
           exit;
         end;
-        if SetNameExists(edtSetName.Text) then
+        if SetNameExists(edtSetName.text) then
         begin
-          eMVC.toolBox.showInfo('Desculpe,A view "' + edtSetName.Text +
+          eMVC.toolBox.showInfo('Desculpe,A view "' + edtSetName.text +
             '" já existe!');
           exit;
         end;
 
-        self.Setname := trim(edtSetName.Text);
+        self.Setname := trim(edtSetName.text);
         self.CreateSubDir := cbCreateDir.Checked;
       end;
     1:
       begin
         self.CreateModule := cbCreateModel.Checked;
-        self.CreateView := cbCreateView.Checked;
-        self.CreateViewModule := cbViewModel.Checked;
+        nb.PageIndex := 2;
       end;
     // 2: begin
     // ModelAlone:= not cbModelInCtrl.Checked;
@@ -134,8 +145,8 @@ begin
     2:
       begin
         viewAlone := not cbViewInCtrl.Checked;
-        if trim(edtClassName.Text) <> '' then
-          ViewParentClass := trim(edtClassName.Text)
+        if trim(edtClassName.text) <> '' then
+          ViewParentClass := trim(edtClassName.text)
         else if (listClassName.ItemIndex >= 0) and
           (listClassName.ItemIndex < listClassName.Items.Count) then
           ViewParentClass := listClassName.Items[listClassName.ItemIndex]
@@ -172,19 +183,13 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
-procedure TFormNewSet.cbCreateModelClick(Sender: TObject);
-begin
-  cbCreateView.Checked := not cbCreateModel.Checked;
-  cbViewModel.Checked := not cbCreateModel.Checked;
-end;
-
-procedure TFormNewSet.btnBackClick(Sender: TObject);
+procedure TFormNewSetPersistentModel.btnBackClick(Sender: TObject);
 begin
   if nb.PageIndex > 0 then
   begin
     nb.PageIndex := nb.PageIndex - 1;
     if (nb.PageIndex = 3) and not CreateView then
-      nb.PageIndex := 2;
+      nb.PageIndex := 1; // 2;
 
     if (nb.PageIndex = 2) and not CreateModule then
       nb.PageIndex := 1;
@@ -198,15 +203,15 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
-procedure TFormNewSet.listClassNameClick(Sender: TObject);
+procedure TFormNewSetPersistentModel.listClassNameClick(Sender: TObject);
 begin
   if listClassName.ItemIndex >= 0 then
-    edtClassName.Text := listClassName.Items[listClassName.ItemIndex];
+    edtClassName.text := listClassName.Items[listClassName.ItemIndex];
 end;
 
-procedure TFormNewSet.nbPageChanged(Sender: TObject);
+procedure TFormNewSetPersistentModel.nbPageChanged(Sender: TObject);
 begin
-  if (nb.PageIndex = 2) and (trim(edtClassName.Text) = '') then
+  if (nb.PageIndex = 2) and (trim(edtClassName.text) = '') then
   begin
     listClassName.ItemIndex := 0;
     listClassName.OnClick(listClassName);

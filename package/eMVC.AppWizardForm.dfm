@@ -2953,34 +2953,35 @@ object FormAppWizard: TFormAppWizard
         TabOrder = 2
         OnClick = BitBtn4Click
       end
+      object cbFMX: TCheckBox
+        Left = 24
+        Top = 144
+        Width = 169
+        Height = 17
+        Caption = 'FMX - Firemonkey'
+        TabOrder = 3
+        Visible = False
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 4'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 5'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
   object btnBack: TBitBtn

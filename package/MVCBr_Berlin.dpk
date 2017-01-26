@@ -1,13 +1,14 @@
 package MVCBr_Berlin;
 
 {$R *.res}
+{$R *.otares}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
-{$ALIGN 1}
+{$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
-{$IMPORTEDDATA OFF}
+{$IMPORTEDDATA ON}
 {$IOCHECKS ON}
 {$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
@@ -20,14 +21,10 @@ package MVCBr_Berlin;
 {$STACKFRAMES ON}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST ON}
+{$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
-{$DEFINE MENUDEBUG}
-{$DEFINE INFODEBUG}
-{$DEFINE MENUDEBUG}
-{$DEFINE INFODEBUG}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Easy MVC 1.0a'}
 {$DESIGNONLY}
@@ -43,7 +40,7 @@ requires
   vclx;
 
 contains
-  eMVC.NewMVCSetWizard in 'eMVC.NewMVCSetWizard.pas',
+  eMVC.NewMVCPersistentWizard in 'eMVC.NewMVCPersistentWizard.pas',
   eMVC.ProjectCreator in 'eMVC.ProjectCreator.pas',
   eMVC.DataModuleCreator in 'eMVC.DataModuleCreator.pas',
   eMVC.BaseCreator in 'eMVC.BaseCreator.pas',
@@ -51,17 +48,19 @@ contains
   eMVC.FileCreator in 'eMVC.FileCreator.pas',
   eMVC.Logger in 'eMVC.Logger.pas',
   eMVC.toolBox in 'eMVC.toolBox.pas',
-  copyfileform in 'copyfileform.pas' {FormCopyFile},
+  eMVC.copyfileform in 'eMVC.copyfileform.pas' {FormCopyFile},
   eMVC.shadow in 'eMVC.shadow.pas',
   eMVC.ViewCreator in 'eMVC.ViewCreator.pas',
   eMVC.ControllerCreator in 'eMVC.ControllerCreator.pas',
   eMVC.ViewModelCreator in 'eMVC.ViewModelCreator.pas',
   eMVC.ProjectFileCreator in 'eMVC.ProjectFileCreator.pas',
-  AppWizardForm in 'AppWizardForm.pas' {FormAppWizard},
+  eMVC.AppWizardForm in 'eMVC.AppWizardForm.pas' {FormAppWizard},
   eMVC.NewProjectWizard in 'eMVC.NewProjectWizard.pas',
-  eMVC.NewSetForm in 'eMVC.NewSetForm.pas' {FormNewSet},
+  eMVC.NewSetPersistentModelForm in 'eMVC.NewSetPersistentModelForm.pas' {FormNewSetPersistentModel},
   eMVC.Patterns in 'eMVC.Patterns.pas',
-  eMVC.OTAUtilities in 'eMVC.OTAUtilities.pas';
+  eMVC.OTAUtilities in 'eMVC.OTAUtilities.pas',
+  eMVC.NewMVCSetWizard in 'eMVC.NewMVCSetWizard.pas',
+  eMVC.PersistentModelCreator in 'eMVC.PersistentModelCreator.pas';
 
 end.
 

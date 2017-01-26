@@ -57,6 +57,7 @@ begin
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cView)
   else
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cClass);
+  fc.isFMX := self.IsFMX;
   fc.Templates.Assign(self.Templates);
   result := fc;
 end;

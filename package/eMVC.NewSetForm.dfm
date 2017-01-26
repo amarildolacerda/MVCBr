@@ -98,6 +98,14 @@ object FormNewSet: TFormNewSet
         State = cbChecked
         TabOrder = 1
       end
+      object chFMX: TCheckBox
+        Left = 19
+        Top = 146
+        Width = 97
+        Height = 17
+        Caption = 'Firemonkey Framework'
+        TabOrder = 2
+      end
     end
     object TPage
       Left = 0

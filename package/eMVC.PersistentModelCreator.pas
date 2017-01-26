@@ -1,10 +1,10 @@
-unit eMVC.ViewModelCreator;
+unit eMVC.PersistentModelCreator;
 
 { ********************************************************************** }
 { Copyright 2005 Reserved by Eazisoft.com }
 { File Name: ModelCreator.pas }
 { Author: Larry Le }
-{ Description:  Model Creator }
+{ Description:  PersistentModel Creator }
 { }
 { History: }
 { - 1.0, 19 May 2006 }
@@ -40,7 +40,7 @@ uses
 
 type
 
-  TViewModelCreator = class(TBaseCreator)
+  TPersistentModelCreator = class(TBaseCreator)
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
       AUnNamed: Boolean = true); override;
@@ -51,28 +51,33 @@ type
 
 implementation
 
-{ TModelCreator }
+{ TPersistentModelCreator }
 
-constructor TViewModelCreator.Create(const APath: string = '';
+constructor TPersistentModelCreator.Create(const APath: string = '';
   ABaseName: string = ''; AUnNamed: Boolean = true);
 begin
   inherited Create(APath, ABaseName, AUnNamed);
-  self.SetAncestorName('viewmodel');
+  self.SetAncestorName('PersistentModel');
 end;
 
-function TViewModelCreator.GetImplFileName: string;
+function TPersistentModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + '.ViewModel.pas';
+  result := self.getpath + getBaseName + '.' + Templates.Values['%modelName'] + '.pas';
 end;
 
-function TViewModelCreator.NewImplSource(const ModuleIdent, FormIdent,
+function TPersistentModelCreator.NewImplSource(const ModuleIdent, FormIdent,
   AncestorIdent: string): IOTAFile;
 var
   fc: TFileCreator;
 begin
-  fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cVIEWMODEL);
+  fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
+    cPersistentMODEL);
   fc.isFMX := self.IsFMX;
-  fc.Templates.Assign(self.Templates);
+
+  fc.Templates.assign(Templates);
+
+  fc.Templates.AddPair('%mdl', Templates.Values['%modelName']);
+
   result := fc;
 end;
 

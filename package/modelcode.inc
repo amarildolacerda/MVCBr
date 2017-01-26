@@ -66,3 +66,6 @@ ModelCode = ModelHead + ModelDef +
   ModelImpl + '                                                              ' +
   #10#13 + 'end.                                                          ' +
   #10#13;
+
+
+ModelCodeFMX = ModelCode;

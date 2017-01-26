@@ -34,7 +34,7 @@ interface
 uses Winsock,
   SysUtils, Contnrs, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   wininet, shellAPI, windows, jpeg, extctrls, Forms, Dialogs, StdCtrls,
-  inifiles, ShDocVw, registry, CopyfileForm, MMSystem, shlobj;
+  inifiles, ShDocVw, registry, eMVC.CopyfileForm, MMSystem, shlobj;
 
 const
   MaxPath = 255;

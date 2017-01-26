@@ -1,10 +1,11 @@
-object FormAppWizard: TFormAppWizard
-  Left = 228
-  Top = 215
+object FormNewSetPersistentModel: TFormNewSetPersistentModel
+  Left = 280
+  Top = 165
+  ActiveControl = btnOKNext
   BorderStyle = bsDialog
-  Caption = 'MVC Application Wizard'
-  ClientHeight = 345
-  ClientWidth = 506
+  Caption = 'Assistente para adicionar Model'
+  ClientHeight = 318
+  ClientWidth = 503
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,20 +13,321 @@ object FormAppWizard: TFormAppWizard
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Bevel1: TBevel
+    Left = 139
+    Top = 244
+    Width = 351
+    Height = 26
+    Shape = bsBottomLine
+  end
+  object nb: TNotebook
+    Left = 139
+    Top = 9
+    Width = 351
+    Height = 248
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 3
+    OnPageChanged = nbPageChanged
+    object TPage
+      Left = 0
+      Top = 0
+      Caption = 'Step 1'
+      object Label1: TLabel
+        Left = 9
+        Top = 15
+        Width = 287
+        Height = 16
+        Caption = 'Assistente para Criar PersistentModel Factory'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label2: TLabel
+        Left = 17
+        Top = 100
+        Width = 297
+        Height = 16
+        Caption = 'Se desejar criar um diret'#243'rio para isto marcar o box'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label4: TLabel
+        Left = 17
+        Top = 41
+        Width = 171
+        Height = 16
+        Caption = 'Nome do artefato a ser criado'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = []
+        ParentFont = False
+      end
+      object edtSetName: TEdit
+        Left = 20
+        Top = 68
+        Width = 147
+        Height = 21
+        TabOrder = 0
+        Text = 'New'
+      end
+      object cbCreateDir: TCheckBox
+        Left = 19
+        Top = 123
+        Width = 233
+        Height = 17
+        Caption = 'criar sub-pasta para o artefato'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+      end
+      object cbFMX: TCheckBox
+        Left = 19
+        Top = 146
+        Width = 97
+        Height = 17
+        Caption = 'Firemonkey Framework'
+        TabOrder = 2
+      end
+    end
+    object TPage
+      Left = 0
+      Top = 0
+      Caption = 'Step 2'
+      object Label3: TLabel
+        Left = 9
+        Top = 15
+        Width = 110
+        Height = 16
+        Caption = 'Controller config:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label14: TLabel
+        Left = 24
+        Top = 112
+        Width = 110
+        Height = 13
+        Caption = 'Em geral, um MVC tem:'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGreen
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label15: TLabel
+        Left = 32
+        Top = 128
+        Width = 115
+        Height = 13
+        Caption = '- ao menos um controller'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGreen
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label16: TLabel
+        Left = 32
+        Top = 144
+        Width = 52
+        Height = 13
+        Caption = '- um Model'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGreen
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label17: TLabel
+        Left = 32
+        Top = 160
+        Width = 52
+        Height = 13
+        Caption = '- uma View'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGreen
+        Font.Height = -11
+        Font.Name = 'MS Sans Serif'
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label5: TLabel
+        Left = 32
+        Top = 179
+        Width = 228
+        Height = 13
+        Caption = 'Um Model deve ser adicionado ao seu controller'
+      end
+      object cbCreateModel: TCheckBox
+        Left = 24
+        Top = 56
+        Width = 289
+        Height = 17
+        Caption = 'Criar Model Factory'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
+      object ComboBox1: TComboBox
+        Left = 25
+        Top = 73
+        Width = 297
+        Height = 21
+        TabOrder = 1
+        Text = 'ComboBox1'
+      end
+    end
+    object TPage
+      Left = 0
+      Top = 0
+      Caption = 'Step 3'
+      object Label6: TLabel
+        Left = 16
+        Top = 16
+        Width = 81
+        Height = 16
+        Caption = 'View Config:'
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Arial'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label10: TLabel
+        Left = 16
+        Top = 40
+        Width = 141
+        Height = 13
+        Caption = 'Selecione um tipo view a criar'
+      end
+      object Label22: TLabel
+        Left = 16
+        Top = 144
+        Width = 134
+        Height = 13
+        Caption = 'Nome da classe a ser criada'
+      end
+      object listClassName: TListBox
+        Left = 16
+        Top = 56
+        Width = 161
+        Height = 81
+        ItemHeight = 13
+        Items.Strings = (
+          'TForm'
+          'TFrame'
+          'TTreeView')
+        TabOrder = 0
+        OnClick = listClassNameClick
+      end
+      object cbViewInCtrl: TCheckBox
+        Left = 17
+        Top = 184
+        Width = 241
+        Height = 17
+        Caption = 'Incluir na mesma pasta dos modelos'
+        TabOrder = 1
+        Visible = False
+      end
+      object edtClassName: TEdit
+        Left = 16
+        Top = 160
+        Width = 161
+        Height = 21
+        TabOrder = 2
+      end
+    end
+    object TPage
+      Left = 0
+      Top = 0
+      Caption = 'Finish'
+      object Label7: TLabel
+        Left = 32
+        Top = 83
+        Width = 97
+        Height = 20
+        Caption = 'Parab'#233'ns....'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clGreen
+        Font.Height = -16
+        Font.Name = 'MS Sans Serif'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label8: TLabel
+        Left = 32
+        Top = 112
+        Width = 91
+        Height = 13
+        Caption = 'Agora '#233' so terminar'
+      end
+      object Label9: TLabel
+        Left = 32
+        Top = 64
+        Width = 3
+        Height = 13
+      end
+    end
+  end
+  object btnBack: TBitBtn
+    Left = 258
+    Top = 280
+    Width = 75
+    Height = 25
+    Caption = '&Voltar'
+    NumGlyphs = 2
+    TabOrder = 0
+    Visible = False
+    OnClick = btnBackClick
+  end
+  object btnCancel: TBitBtn
+    Left = 410
+    Top = 280
+    Width = 75
+    Height = 25
+    Cancel = True
+    Caption = 'Cancelar'
+    ModalResult = 2
+    NumGlyphs = 2
+    TabOrder = 1
+  end
   object ScrollBox1: TScrollBox
     Left = 8
-    Top = 16
-    Width = 122
-    Height = 264
-    TabOrder = 0
+    Top = 9
+    Width = 121
+    Height = 263
+    TabOrder = 2
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 118
-      Height = 260
+      Width = 117
+      Height = 259
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -2883,152 +3185,15 @@ object FormAppWizard: TFormAppWizard
         7F00}
     end
   end
-  object Notebook1: TNotebook
-    Left = 138
-    Top = 18
-    Width = 351
-    Height = 263
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 1
-    object TPage
-      Left = 0
-      Top = 0
-      Caption = 'Step 1'
-      object Label1: TLabel
-        Left = 24
-        Top = 40
-        Width = 202
-        Height = 13
-        Caption = 'Enter the name to assign to this application'
-      end
-      object Label2: TLabel
-        Left = 24
-        Top = 80
-        Width = 223
-        Height = 13
-        Caption = 'Enter the path in which to store this application:'
-      end
-      object Label3: TLabel
-        Left = 0
-        Top = 16
-        Width = 345
-        Height = 16
-        Caption = 'The application wizard is ready to generate your application!'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Edit1: TEdit
-        Left = 24
-        Top = 56
-        Width = 225
-        Height = 21
-        TabOrder = 0
-        Text = 'NewMVCApp'
-      end
-      object Edit2: TEdit
-        Left = 24
-        Top = 96
-        Width = 225
-        Height = 21
-        TabOrder = 1
-      end
-      object BitBtn4: TBitBtn
-        Left = 255
-        Top = 94
-        Width = 75
-        Height = 25
-        Caption = '&Browse...'
-        TabOrder = 2
-        OnClick = BitBtn4Click
-      end
-    end
-    object TPage
-      Left = 0
-      Top = 0
-      Caption = 'Step 2'
-    end
-    object TPage
-      Left = 0
-      Top = 0
-      Caption = 'Step 3'
-      object PrjBrowseButton: TButton
-        Left = 254
-        Top = 68
-        Width = 52
-        Height = 21
-        Caption = '...'
-        Font.Charset = GB2312_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = #23435#20307
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-      end
-    end
-    object TPage
-      Left = 0
-      Top = 0
-      Caption = 'Step 4'
-      object AddFileButton: TButton
-        Left = 152
-        Top = 208
-        Width = 75
-        Height = 23
-        Caption = #28155#21152'(&A)'
-        TabOrder = 0
-      end
-      object RemoveFileButton: TButton
-        Left = 234
-        Top = 208
-        Width = 75
-        Height = 23
-        Caption = #21024#38500'(&D)'
-        TabOrder = 1
-      end
-    end
-    object TPage
-      Left = 0
-      Top = 0
-      Caption = 'Step 5'
-    end
-  end
-  object BitBtn1: TBitBtn
-    Left = 256
-    Top = 296
+  object btnOKNext: TBitBtn
+    Left = 334
+    Top = 280
     Width = 75
     Height = 25
-    Caption = '&Back'
-    TabOrder = 2
-  end
-  object BitBtn2: TBitBtn
-    Left = 332
-    Top = 296
-    Width = 75
-    Height = 25
-    Caption = '&Next'
-    TabOrder = 3
-  end
-  object BitBtn3: TBitBtn
-    Left = 410
-    Top = 296
-    Width = 75
-    Height = 25
-    Caption = '&Cancel'
+    Caption = '&Avan'#231'ar'
+    Default = True
+    NumGlyphs = 2
     TabOrder = 4
-  end
-  object OpenPathDialog: TOpenDialog
-    Options = [ofReadOnly, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
-    Left = 232
-    Top = 168
+    OnClick = btnOKNextClick
   end
 end
