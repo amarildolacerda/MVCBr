@@ -44,6 +44,7 @@
 # Delphi local files (user-specific info)
 *.skincfg
 *.dproj
+*.stat
 *.local
 *.identcache
 *.projdata
