@@ -42,6 +42,8 @@
 *Resource.rc
 
 # Delphi local files (user-specific info)
+*.skincfg
+*.dproj
 *.local
 *.identcache
 *.projdata
@@ -54,5 +56,3 @@ __history/
 *.ppu
 *.o
 *.compiled
-
-
