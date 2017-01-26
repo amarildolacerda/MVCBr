@@ -31,7 +31,7 @@ unit eMVC.NewMVCPersistentWizard;
 
 interface
 
-{$I Compilers.inc} // Compiler Defines
+{$I .\inc\Compilers.inc} // Compiler Defines
 
 uses
   SysUtils, Windows, Controls, {$IFDEF DELPHI_5 }FileCtrl, {$ENDIF}

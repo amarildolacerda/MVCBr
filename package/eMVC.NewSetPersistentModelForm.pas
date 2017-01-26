@@ -35,7 +35,7 @@ uses
   Graphics, Controls, Forms, Dialogs, ExtCtrls, eMVC.toolBox, StdCtrls, Buttons;
 
 const
-{$I persistentmodel.inc}
+{$I .\inc\persistentmodel.inc}
 type
   TFormNewSetPersistentModel = class(TForm)
     btnBack: TBitBtn;

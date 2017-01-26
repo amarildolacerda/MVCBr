@@ -37,7 +37,7 @@ uses
   ToolsApi;
 
 const
-{$I project.inc}
+{$I .\inc\project.inc}
 type
   TProjectFileCreator = class(TInterfacedObject, IOTAFile)
   private

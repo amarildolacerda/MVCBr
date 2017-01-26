@@ -30,8 +30,8 @@ unit eMVC.NewProjectWizard;
 
 interface
 
-{$I Compilers.inc} // Compiler Defines
-{$R ProjectWizards.res} // Wizard Icons
+{$I .\inc\Compilers.inc} // Compiler Defines
+{$R .\inc\ProjectWizards.res} // Wizard Icons
 
 uses
   SysUtils, Windows, Controls,

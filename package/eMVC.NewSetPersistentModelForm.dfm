@@ -252,7 +252,7 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         Width = 241
         Height = 17
         Caption = 'Incluir na mesma pasta dos modelos'
-        TabOrder = 1
+        TabOrder = 2
         Visible = False
       end
       object edtClassName: TEdit
@@ -260,7 +260,7 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         Top = 160
         Width = 161
         Height = 21
-        TabOrder = 2
+        TabOrder = 1
       end
     end
     object TPage

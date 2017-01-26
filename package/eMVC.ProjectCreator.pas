@@ -32,7 +32,7 @@ unit eMVC.ProjectCreator;
 
 interface
 
-{$I Compilers.inc}
+{$I .\inc\Compilers.inc}
 
 uses
   Windows, SysUtils,

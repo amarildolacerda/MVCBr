@@ -43,13 +43,14 @@ const
   cCLASS = 5;
   CVIEWMODEL = 6;
   cPersistentMODEL = 7;
-{$I project.inc}
-{$I viewcode.inc}
-{$I modelcode.inc}
-{$I controllercode.inc}
-{$I classcode.inc}
-{$I viewmodel.inc}
-{$I persistentmodel.inc}
+
+{$I .\inc\project.inc}
+{$I .\inc\viewcode.inc}
+{$I .\inc\modelcode.inc}
+{$I .\inc\controllercode.inc}
+{$I .\inc\classcode.inc}
+{$I .\inc\viewmodel.inc}
+{$I .\inc\persistentmodel.inc}
 
 type
   TFileCreator = class(TInterfacedObject, IOTAFile)
