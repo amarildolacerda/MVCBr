@@ -50,6 +50,8 @@
 *.projdata
 *.tvsconfig
 *.dsk
+*.dproj.local
+*.otares
 
 # Delphi history and backups
 __history/
