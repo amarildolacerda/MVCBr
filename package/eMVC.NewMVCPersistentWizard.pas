@@ -102,26 +102,27 @@ var
       end;
     end;
   end;
- function GetAncestorX(idx:integer):string;
- begin
-     with TStringList.create do
-     try
+  function GetAncestorX(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
         text := ModelCodeExt;
-        result :=  Strings[ idx ];
-     finally
-       free;
-     end;
- end;
- function GetModelType(idx:integer):string;
- begin
-     with TStringList.create do
-     try
+        result := Strings[idx];
+      finally
+        free;
+      end;
+  end;
+  function GetModelType(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
         text := ModelCodeType;
-        result :=  Strings[idx];
-     finally
-       free;
-     end;
- end;
+        result := Strings[idx];
+      finally
+        free;
+      end;
+  end;
+
 begin
   project := getProjectName;
   // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
@@ -136,7 +137,7 @@ begin
   begin
     if showModal = mrOK then
     begin
-      setname := trim(edtSetname.Text);
+      setname := trim(edtSetname.text);
 
       if SetNameExists(setname) then
       begin
@@ -154,16 +155,39 @@ begin
 
         Model := TPersistentModelCreator.create(path, setname, false);
         Model.IsFMX := cbFMX.Checked;
-        Model.SetAncestorName( GetAncestorX(ComboBox1.ItemIndex)  );
+        Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%intf',
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('%modelType',GetModelType(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%modelName',GetAncestorX(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%modelType',
+          GetModelType(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%modelName',
+          GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        if GetModelType(ComboBox1.ItemIndex)<>'mtCommon' then
-          Model.Templates.AddPair('//%uses','MVCBr.Model,');
+        if GetModelType(ComboBox1.ItemIndex) <> 'mtCommon' then
+          Model.Templates.AddPair('//%uses', 'MVCBr.Model,');
 
+        (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+
+
+
+
+
+
+        Model := TPersistentModelCreator.create(path, setname, false);
+        Model.IsFMX := cbFMX.Checked;
+        Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%intf',
+          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
+        Model.Templates.AddPair('%modelType',
+          GetModelType(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%modelName',
+          GetAncestorX(ComboBox1.ItemIndex));
+        Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+          [ComboBox1.ItemIndex]);
+        if GetModelType(ComboBox1.ItemIndex) <> 'mtCommon' then
+          Model.Templates.AddPair('//%uses', 'MVCBr.Model,');
+        Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
       end; // else

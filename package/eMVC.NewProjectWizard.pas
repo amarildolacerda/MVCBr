@@ -90,8 +90,10 @@ var
   project: TProjectCreator;
   view: TViewCreator;
   Model: TViewModelCreator;
+  ModelInterf: TViewModelCreator;
   Ctrl: TControllerCreator;
   AFMX: Boolean;
+  pg : IOTAProjectGroup;
 begin
   // First create the Project
   // ProjectModule :=
@@ -116,6 +118,14 @@ begin
     end;
   end;
 
+  pg := ProjectGroup;
+  pg.AddNewProject;
+
+  if (BorlandIDEServices as IOTAModuleServices).MainProjectGroup = nil then
+  begin
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(TBDSProjectGroupCreator.Create);
+  end;
+
   project := TProjectCreator.Create;
   project.isFMX := AFMX;
   project.setFileName(path + appname);
@@ -131,8 +141,15 @@ begin
   Ctrl.isFMX := AFMX;
   (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
+  ModelInterf := TViewModelCreator.Create(path, 'Main', false);
+  ModelInterf.isInterf := true;
+  ModelInterf.isFMX := AFMX;
+  (BorlandIDEServices as IOTAModuleServices).CreateModule(ModelInterf);
+
   Model := TViewModelCreator.Create(path, 'Main', false);
   Model.isFMX := AFMX;
+  Model.Templates.AddPair('%MdlInterf', 'Main.ViewModel.Interf');
+
   (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
   // Now create a Form for the Project since the code added to the Project expects it.

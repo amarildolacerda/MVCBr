@@ -59,6 +59,8 @@ begin
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cClass);
   fc.isFMX := self.IsFMX;
   fc.Templates.Assign(self.Templates);
+  fc.Templates.Values['%MdlInterf'] :=getBaseName+'.ViewModel.Interf';
+
   result := fc;
 end;
 

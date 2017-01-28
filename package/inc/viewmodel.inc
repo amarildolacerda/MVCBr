@@ -1,4 +1,4 @@
-viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
+viewmodecodeInterf = 'Unit %ModelIdent;                    ' + #10#13 +
   '                                                               ' + #10#13 +
   'interface                                                      ' + #10#13 +
   '                                                               ' + #10#13 +
@@ -10,6 +10,19 @@ viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
   '         [''%guid'']                                           ' + #10#13 +
   '         // incluir especializações aqui                         ' + #10#13 +
   '   end;                                                        ' + #10#13 +
+  '                                                               ' + #10#13 +
+  'Implementation                                                 ' + #10#13 +
+  '                                                               ' + #10#13 +
+  'end.                                                           ' + #10#13 ;
+
+viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
+  '                                                               ' + #10#13 +
+  'interface                                                      ' + #10#13 +
+  '                                                               ' + #10#13 +
+  'uses MVCBr.Interf, MVCBr.ViewModel, %ModelIdent.Interf;        ' + #10#13 +
+  '                                                               ' + #10#13 +
+  'Type                                                           ' + #10#13 +
+  '                                                               ' + #10#13 +
   '                                                               ' + #10#13 +
   '    T%FormIdentViewModel=class(TViewModelFactory,              ' + #10#13 +
   '      I%FormIdentViewModel, IViewModelAs<I%FormIdentViewModel>)' + #10#13 +

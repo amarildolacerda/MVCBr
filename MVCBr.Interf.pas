@@ -30,9 +30,15 @@ unit MVCBr.Interf;
 
 interface
 
-uses System.Classes, System.SysUtils, System.RTTI;
+uses System.Classes, System.SysUtils, System.Generics.Collections,
+  System.TypInfo, System.RTTI;
 
 type
+
+
+  TMVCInterfacedList<T> = class(TInterfaceList)
+  public
+  end;
 
   IController = interface;
 
@@ -49,14 +55,14 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent,mtNavigator);
+  TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent, mtNavigator);
   TModelTypes = set of TModelType;
 
   IModel = interface;
 
   IModelBase = interface
     ['{E1622D13-701C-4AD8-8AD4-A1B64B8D251F}']
-    function This: TObject;
+    function This: TInterfacedObject;
     function GetID: string;
     function ID(const AID: String): IModel;
     function Update: IModel;
@@ -103,8 +109,10 @@ type
     function Count: Integer;
     function Add(const AController: IController): Integer;
     procedure Delete(const idx: Integer);
-    procedure Remove(const AController:IController);
+    procedure Remove(const AController: IController);
   end;
+
+  TControllerAbstract = class;
 
   // Controller for an Unit
   IControllerBase = interface
@@ -119,7 +127,20 @@ type
     function Count: Integer;
     function GetModel(const idx: Integer): IModel;
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
-    function This: TObject;
+    function This: TControllerAbstract;
+  end;
+
+  IControllerAs<T> = interface
+    ['{F190C15D-91EA-4CD4-AA5D-59ADB6D5AECB}']
+    function ControllerAs: T;
+  end;
+
+  TControllerAbstract = class(TInterfacedObject)
+  protected
+    FModels: TMVCInterfacedList<IModel>;
+  public
+    function GetModel(const IID: TGUID; out intf): IModel; overload; virtual;
+    function GetModel<T>(): T; overload;
   end;
 
   IController = interface(IControllerBase)
@@ -129,18 +150,10 @@ type
     function UpdateByView(AView: IView): IController;
   end;
 
-  IControllerAs<T> = interface
-    ['{F190C15D-91EA-4CD4-AA5D-59ADB6D5AECB}']
-    function ControllerAs: T;
-  end;
-
   IViewModelAs<T> = interface
     ['{79D16DA9-EB18-4F17-A748-6A7E29A59992}']
     function ViewModelAs: T;
   end;
-
-
-
 
   IViewModel = interface;
 
@@ -158,7 +171,6 @@ type
     function Controller(const AController: IController): IViewModel;
   end;
 
-
   IPersistentModel = interface;
 
   IPersistentModelBase = interface(IModel)
@@ -169,7 +181,6 @@ type
     ['{BF5767E0-FF6E-4A60-9409-9163AE4EDA4D}']
     function Controller(const AController: IController): IPersistentModel;
   end;
-
 
   INavigatorModel = interface;
 
@@ -186,8 +197,36 @@ type
     ['{01A80AFD-8674-4E05-BCC4-00514DE84D88}']
   end;
 
-
-
 implementation
+
+{ TControllerAbstract }
+
+function TControllerAbstract.GetModel(const IID: TGUID; out intf): IModel;
+var
+  I: integer;
+begin
+  for I := 0 to FModels.Count - 1 do
+    if supports( (FModels.Items[I] as IModel).This, IID, intf) then
+    begin
+      result := FModels.Items[I] as IModel;
+      supports(result.This, IID, intf);
+      exit;
+    end;
+end;
+
+function TControllerAbstract.GetModel<T>(): T;
+var
+  I: integer;
+  pInfo : PTypeInfo;
+  IID:TGuid;
+begin
+  pInfo := TypeInfo(T);
+  IID := GetTypeData(pInfo).Guid;
+  for I := 0 to FModels.Count - 1 do
+    if supports( (FModels.Items[I] as IModel).This, IID , result) then
+    begin
+      exit;
+    end;
+end;
 
 end.

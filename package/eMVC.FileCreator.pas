@@ -43,6 +43,7 @@ const
   cCLASS = 5;
   CVIEWMODEL = 6;
   cPersistentMODEL = 7;
+  cModelInterf = 8;
 
 {$I .\inc\project.inc}
 {$I .\inc\viewcode.inc}
@@ -138,8 +139,17 @@ begin
       Result := ViewCode2;
     cMODEL:
       if isFMX then
-         result := ModelCodeFMX else
-      Result := ModelCode;
+        Result := ModelCodeFMX
+      else
+        Result := ModelCode;
+    cModelInterf:
+      begin
+        Result := ModelInterf;
+        if sametext(FAncestorIdent, 'viewmodel') then
+          Result := viewmodecodeInterf;
+        if sametext(FAncestorIdent, 'PersistentModel') then
+          Result := ModelCodeBaseInterf;
+      end;
     CVIEWMODEL:
       begin
         Result := viewmodecode;

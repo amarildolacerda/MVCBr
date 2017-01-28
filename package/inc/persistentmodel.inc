@@ -6,6 +6,29 @@ ModelCodeExt = 'PersistentModel' + #10#13 + 'NavigatorModel' + #10#13 +
 ModelCodeType = 'mtPersistent' + #10#13 + 'mtNavigator' + #10#13 + 'mtValidate'
   + #10#13 + 'mtCommon';
 
+ModelCodeBaseInterf = 'Unit  %ModelIdent;                         ' + #10#13 +
+  '                                                               ' + #10#13 +
+  '                                                              ' + #10#13 +
+  '{ MVCBr                                                       ' + #10#13 +
+  '  www.tireideletra.com.br                                     ' + #10#13 +
+  '  amarildo lacerda                                            ' + #10#13 +
+  '}                                                             ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'interface                                                     ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'uses Classes, forms, SysUtils, MVCBr.Interf, //%uses     ' + #10#13 +
+  '     MVCBr.Controller;                 ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'Type                                                           ' + #10#13 +
+  '                                                              ' + #10#13 +
+  '  I%FormIdent%mdl = interface(%intf)    ' + #10#13 +
+  '         [''%guid'']                                          ' + #10#13 +
+  '         // incluir aqui as especializações                   ' + #10#13 +
+  '  end;                                                        ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'Implementation                                                ' + #10#13 +
+  'end.                                                          ' + #10#13;
+
 ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   '                                                               ' + #10#13 +
   '                                                              ' + #10#13 +
@@ -17,14 +40,9 @@ ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
   'uses Classes, forms, SysUtils, MVCBr.Interf, //%uses     ' + #10#13 +
-  '     MVCBr.Controller, MVCBr.%mdl;                 ' + #10#13 +
+  '   %ModelIdent.Interf,  MVCBr.Controller, MVCBr.%mdl;                 ' + #10#13 +
   '                                                              ' + #10#13 +
   'Type                                                           ' + #10#13 +
-  '                                                              ' + #10#13 +
-  '  I%FormIdent%mdl = interface(%intf)    ' + #10#13 +
-  '         [''%guid'']                                          ' + #10#13 +
-  '         // incluir aqui as especializações                   ' + #10#13 +
-  '  end;                                                        ' + #10#13 +
   '                                                              ' + #10#13 +
   '  T%FormIdent%mdl = class(%class,I%FormIdent%mdl,' +
   '    IThisAs<T%FormIdent%mdl>)    ' + #10#13 +

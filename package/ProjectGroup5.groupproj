@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{0ED718C4-92F2-45BD-98D0-06BB07A095CD}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MVCBr.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="c:\lixo\NewMVCApp.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MVCBr">
+        <MSBuild Projects="MVCBr.dproj"/>
+    </Target>
+    <Target Name="MVCBr:Clean">
+        <MSBuild Projects="MVCBr.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBr:Make">
+        <MSBuild Projects="MVCBr.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp">
+        <MSBuild Projects="c:\lixo\NewMVCApp.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MVCBr;NewMVCApp"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MVCBr:Clean;NewMVCApp:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MVCBr:Make;NewMVCApp:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

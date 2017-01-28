@@ -7,7 +7,7 @@ ViewHead = 'unit %ModelIdent;                                ' + #10#13 +
   'uses                                                      ' + #10#13 +
   '  Windows, Messages, SysUtils,  Classes,Graphics,         ' + #10#13 +
   '  Controls,StdCtrls,ComCtrls,ExtCtrls,Forms,MVCBr.Interf, ' + #10#13 +
-  '  MVCBr.Controller;                                       ' + #10#13 +
+  '  %MdlInterf ,MVCBr.Controller;          ' + #10#13 +
   '                                                          ' + #10#13;
 ViewDef = 'type                                              ' + #10#13 +
   '  I%FormIdent = interface(IView)                      ' + #10#13 +
@@ -19,14 +19,14 @@ ViewDef = 'type                                              ' + #10#13 +
   '                      I%FormIdent,IViewAs<I%FormIdent>)' + #10#13 +
   '                                                          ' + #10#13 +
   '  private                                                 ' + #10#13 +
-  '    FViewModel : IViewModel;                              ' + #10#13 +
+  '    FViewModel : I%FormIdentModel;                    ' + #10#13 +
   '    FController : IController;                            ' + #10#13 +
   '  protected                                               ' + #10#13 +
   '    function Controller(const aController: IController): IView;' + #10#13 +
   '  public                                                    ' + #10#13 +
   '   { Public declarations }                                ' + #10#13 +
   '    class function New(AController:IController):IView;    ' + #10#13 +
-  '    function ViewModel(const AViewModel:IViewModel):IView;' + #10#13 +
+  '    function ViewModel(const AViewModel:I%FormIdentModel):IView;' + #10#13 +
   '    function This: TObject;                               ' + #10#13 +
   '    function ThisAs:T%FormIdent;                          ' + #10#13 +
   '    function ViewAs:I%FormIdent;                      ' + #10#13 +
@@ -59,7 +59,7 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '  FController := AController;                             ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                          ' + #10#13 +
-  'function T%FormIdent.ViewModel(const AViewModel:IViewModel):IView;' + #10#13
+  'function T%FormIdent.ViewModel(const AViewModel:I%FormIdentModel):IView;' + #10#13
   + 'begin                                                     ' + #10#13 +
   '   result := self;                                        ' + #10#13 +
   '  if assigned(AViewModel) then                          ' + #10#13 +
@@ -84,7 +84,7 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '  begin                                             ' + #10#13 +
   '    vm := FController.GetModelByType(mtViewModel);  ' + #10#13 +
   '    if assigned(vm) then                            ' + #10#13 +
-  '      supports(vm.This,IViewModel,FViewModel);      ' + #10#13 +
+  '      supports(vm.This,I%FormIdentModel,FViewModel);      ' + #10#13 +
   '  end;                                              ' + #10#13 +
   '  ShowModal;                                              ' + #10#13 +
   '  result := ord(ModalResult);                             ' + #10#13 +

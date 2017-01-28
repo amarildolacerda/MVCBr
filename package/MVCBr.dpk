@@ -1,6 +1,7 @@
 package MVCBr;
 
 {$R *.res}
+{$R 'inc\ProjectWizards.res'}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
@@ -59,7 +60,8 @@ contains
   eMVC.Patterns in 'eMVC.Patterns.pas',
   eMVC.OTAUtilities in 'eMVC.OTAUtilities.pas',
   eMVC.NewMVCSetWizard in 'eMVC.NewMVCSetWizard.pas',
-  eMVC.PersistentModelCreator in 'eMVC.PersistentModelCreator.pas';
+  eMVC.PersistentModelCreator in 'eMVC.PersistentModelCreator.pas',
+  eMVC.ModelCreator in 'eMVC.ModelCreator.pas';
 
 end.
 

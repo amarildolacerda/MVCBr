@@ -115,7 +115,8 @@ begin
     if assigned(AModel) then
       AController.Add(AModel);
 
-    application.Run;
+   // application.Run;
+   FMainView.ShowView(nil);
   end;
 
 end;

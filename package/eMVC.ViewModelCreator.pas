@@ -36,17 +36,22 @@ uses
   eMVC.ViewCreator,
   eMVC.FileCreator,
   ToolsApi,
+  eMVC.OTAUtilities,
   eMVC.BaseCreator;
 
 type
 
   TViewModelCreator = class(TBaseCreator)
+  private
+    FisInterf: boolean;
+    procedure SetisInterf(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
-      AUnNamed: Boolean = true); override;
+      AUnNamed: boolean = true); override;
     function GetImplFileName: string; override;
     function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
       : IOTAFile; override;
+    property isInterf: boolean read FisInterf write SetisInterf;
   end;
 
 implementation
@@ -54,7 +59,7 @@ implementation
 { TModelCreator }
 
 constructor TViewModelCreator.Create(const APath: string = '';
-  ABaseName: string = ''; AUnNamed: Boolean = true);
+  ABaseName: string = ''; AUnNamed: boolean = true);
 begin
   inherited Create(APath, ABaseName, AUnNamed);
   self.SetAncestorName('viewmodel');
@@ -63,6 +68,10 @@ end;
 function TViewModelCreator.GetImplFileName: string;
 begin
   result := self.getpath + getBaseName + '.ViewModel.pas';
+  if isInterf then
+    result := self.getpath + getBaseName + '.ViewModel.Interf.pas';
+  debug('TViewModelCreator.GetImplFileName: ' + result);
+
 end;
 
 function TViewModelCreator.NewImplSource(const ModuleIdent, FormIdent,
@@ -70,10 +79,23 @@ function TViewModelCreator.NewImplSource(const ModuleIdent, FormIdent,
 var
   fc: TFileCreator;
 begin
-  fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cVIEWMODEL);
-  fc.isFMX := self.IsFMX;
+
+  if isInterf then
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
+      cModelInterf)
+  else
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
+      cVIEWMODEL);
+  fc.isFMX := self.isFMX;
   fc.Templates.Assign(self.Templates);
+  fc.Templates.Values['%MdlInterf'] := getBaseName + '.ViewModel.Interf';
+  Debug('TViewModelCreator.NewImplSource: '+fc.Templates.Values['%MdlInterf']);
   result := fc;
+end;
+
+procedure TViewModelCreator.SetisInterf(const Value: boolean);
+begin
+  FisInterf := Value;
 end;
 
 end.

@@ -36,17 +36,22 @@ uses
   eMVC.ViewCreator,
   eMVC.FileCreator,
   ToolsApi,
+  eMVC.OTAUtilities,
   eMVC.BaseCreator;
 
 type
 
   TPersistentModelCreator = class(TBaseCreator)
+  private
+    FisInterf: boolean;
+    procedure SetisInterf(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
-      AUnNamed: Boolean = true); override;
+      AUnNamed: boolean = true); override;
     function GetImplFileName: string; override;
     function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
       : IOTAFile; override;
+    property isInterf: boolean read FisInterf write SetisInterf;
   end;
 
 implementation
@@ -54,7 +59,7 @@ implementation
 { TPersistentModelCreator }
 
 constructor TPersistentModelCreator.Create(const APath: string = '';
-  ABaseName: string = ''; AUnNamed: Boolean = true);
+  ABaseName: string = ''; AUnNamed: boolean = true);
 begin
   inherited Create(APath, ABaseName, AUnNamed);
   self.SetAncestorName('PersistentModel');
@@ -62,7 +67,13 @@ end;
 
 function TPersistentModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + '.' + Templates.Values['%modelName'] + '.pas';
+  result := self.getpath + getBaseName + '.' + Templates.Values
+    ['%modelName'] + '.pas';
+  if isInterf then
+  result := self.getpath + getBaseName + '.' + Templates.Values
+    ['%modelName'] + '.Interf.pas';
+  debug('TPersistentModelCreator.GetImplFileName:'+ result);
+
 end;
 
 function TPersistentModelCreator.NewImplSource(const ModuleIdent, FormIdent,
@@ -70,15 +81,26 @@ function TPersistentModelCreator.NewImplSource(const ModuleIdent, FormIdent,
 var
   fc: TFileCreator;
 begin
-  fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
-    cPersistentMODEL);
-  fc.isFMX := self.IsFMX;
+
+  if isInterf then
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
+      cModelInterf)
+  else
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
+      cPersistentMODEL);
+  fc.isFMX := self.isFMX;
 
   fc.Templates.assign(Templates);
 
   fc.Templates.AddPair('%mdl', Templates.Values['%modelName']);
+  fc.Templates.AddPair('%MdlInterf',Templates.Values['%modelName']+'.ViewModel.Interf');
 
   result := fc;
+end;
+
+procedure TPersistentModelCreator.SetisInterf(const Value: boolean);
+begin
+  FisInterf := Value;
 end;
 
 end.

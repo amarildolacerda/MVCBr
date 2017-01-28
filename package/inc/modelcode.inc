@@ -1,3 +1,19 @@
+ModelInterf = 'Unit %ModelIdent;              '+#10#13+
+  '                                                              ' + #10#13 +
+  'interface                                                     ' + #10#13 +
+  '                                                              ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'Uses MVCBr.Interf,MVCBr.Model;                               ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'Type                                                          ' + #10#13 +
+  '                                                              ' + #10#13 +
+  '  I%FormIdentModel = interface(IModel)                        ' + #10#13 +
+  '         [''%guid'']                                             ' + #10#13 +
+  '  end;                                                        ' + #10#13 +
+  '                                                              ' + #10#13 +
+  'Implementation                                                ' + #10#13 +
+  'end.                                                          ' + #10#13 ;
+
 ModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
   '                                                              ' + #10#13 +
   '{ MVCBr                                                       ' + #10#13 +
@@ -8,14 +24,11 @@ ModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
   'uses Classes, forms, SysUtils, MVCBr.Interf, MVCBr.Model,     ' + #10#13 +
-  '     MVCBr.Controller;                                        ' + #10#13 +
+  '     %ModelIdent.interf, MVCBr.Controller;                    ' + #10#13 +
   '                                                              ' + #10#13;
 
 ModelDef = 'type                                                 ' + #10#13 +
   '                                                              ' + #10#13 +
-  '  I%FormIdentModel = interface(IModel)                        ' + #10#13 +
-  '         [''%guid'']                                             ' + #10#13 +
-  '  end;                                                        ' + #10#13 +
   '                                                              ' + #10#13 +
   '  T%FormIdentModel = class(TModelFactory,I%FormIdentModel,' +
   '    IThisAs<T%FormIdentModel>)    ' + #10#13 +

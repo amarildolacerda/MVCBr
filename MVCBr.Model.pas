@@ -6,9 +6,6 @@ Uses System.Classes, System.SysUtils, System.Generics.collections, MVCBr.Interf;
 
 type
 
-  TMVCInterfacedList<T> = class(TInterfaceList)
-  public
-  end;
 
   TMVCInterfacedObject = Class(TInterfacedObject)
   public
@@ -30,7 +27,7 @@ type
     constructor create; virtual;
 
     function Controller(const AController: IController): IModel; virtual;
-    function This: TObject; virtual;
+    function This: TInterfacedObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
     function Update: IModel;
@@ -51,7 +48,7 @@ end;
 
 function TModelFactory.GetID: string;
 begin
-
+  result := FID;
 end;
 
 function TModelFactory.GetModelTypes: TModelTypes;
@@ -76,7 +73,7 @@ begin
   FController := AController;
 end;
 
-function TModelFactory.This: TObject;
+function TModelFactory.This: TInterfacedObject;
 begin
   result := self;
 end;
