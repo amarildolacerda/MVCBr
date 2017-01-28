@@ -118,14 +118,12 @@ begin
     end;
   end;
 
-  pg := ProjectGroup;
-  pg.AddNewProject;
-
+{  // teste para criar um projectgroup
   if (BorlandIDEServices as IOTAModuleServices).MainProjectGroup = nil then
   begin
     (BorlandIDEServices as IOTAModuleServices).CreateModule(TBDSProjectGroupCreator.Create);
   end;
-
+}
   project := TProjectCreator.Create;
   project.isFMX := AFMX;
   project.setFileName(path + appname);
