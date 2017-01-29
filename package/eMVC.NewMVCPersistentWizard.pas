@@ -70,13 +70,15 @@ procedure Register;
 
 implementation
 
+uses eMVC.PersistentModelConst;
+
 { TNewMVCSetWizard }
 
 {$IFDEF MENUDEBUG}
 
 function TNewMVCSetPersistentModelWizard.GetMenuText: string;
 begin
-  result := '&Novo PersistentModel MVCBr';
+  result := '&Model MVCBr';
 end;
 {$ENDIF}
 
@@ -106,7 +108,7 @@ var
   begin
     with TStringList.create do
       try
-        text := ModelCodeExt;
+        text := ModelCodeAncestor;
         result := Strings[idx];
       finally
         free;
@@ -117,6 +119,29 @@ var
     with TStringList.create do
       try
         text := ModelCodeType;
+        result := Strings[idx];
+      finally
+        free;
+      end;
+  end;
+// %Interf
+  function GetModelUses(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
+        text := ModelUses;
+        result := Strings[idx];
+      finally
+        free;
+      end;
+  end;
+
+// %modelInher
+  function GetModelInher(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
+        text := ModelInherited;
         result := Strings[idx];
       finally
         free;
@@ -152,10 +177,10 @@ begin
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
-
+        debug('Pronto para criar o Modulo');
         Model := TPersistentModelCreator.create(path, setname, false);
         Model.IsFMX := cbFMX.Checked;
-        Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+        //Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%intf',
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
         Model.Templates.AddPair('%modelType',
@@ -164,31 +189,37 @@ begin
           GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        if GetModelType(ComboBox1.ItemIndex) <> 'mtCommon' then
-          Model.Templates.AddPair('//%uses', 'MVCBr.Model,');
+        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
+
+        Model.Templates.AddPair('%interfInherited',
+          GetModelInher(ComboBox1.ItemIndex));
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
-
-
-
-
+        debug('Criou o Model');
 
         Model := TPersistentModelCreator.create(path, setname, false);
         Model.IsFMX := cbFMX.Checked;
-        Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+       // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+
         Model.Templates.AddPair('%intf',
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
+
+        Model.Templates.AddPair('%interfInherited',
+          GetModelInher(ComboBox1.ItemIndex));
+
         Model.Templates.AddPair('%modelType',
           GetModelType(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%modelName',
           GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        if GetModelType(ComboBox1.ItemIndex) <> 'mtCommon' then
-          Model.Templates.AddPair('//%uses', 'MVCBr.Model,');
+        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
+
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+
+        debug('Criou o Model Interf');
 
       end; // else
     end; // if
@@ -209,7 +240,7 @@ begin
   //
   // When Object Repository is in Detail mode used in the Comment column
   //
-  result := 'MVCBr Criar PersistentModel '
+  result := 'MVCBr Criar Model '
 end;
 
 function TNewMVCSetPersistentModelWizard.GetGlyph:
@@ -232,7 +263,7 @@ begin
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := 'Novo MVCBr Set PersistentModel';
+  result := '3. Model MVCBr';
 end;
 
 function TNewMVCSetPersistentModelWizard.GetPage: string;

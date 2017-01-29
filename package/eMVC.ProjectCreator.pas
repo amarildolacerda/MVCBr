@@ -72,66 +72,7 @@ type
     property isFMX: Boolean read FisFMX write SetisFMX;
   end;
 
-  TBDSProjectGroupCreator = class(TInterfacedObject, IOTACreator,
-    IOTAProjectGroupCreator)
-  protected
-    { Return a string representing the default creator type in which to augment.
-      See the definitions of sApplication, sConsole, sLibrary and
-      sPackage, etc.. above.  Return an empty string indicating that this
-      creator will provide *all* information }
-    function GetCreatorType: string;
-    { Return False if this is a new module }
-    function GetExisting: Boolean;
-    { Return the File system IDString that this module uses for reading/writing }
-    function GetFileSystem: string;
-    { Return the Owning module, if one exists (for a project module, this would
-      be a project; for a project this is a project group) }
-    function GetOwner: IOTAModule;
-    { Return true, if this item is to be marked as un-named.  This will force the
-      save as dialog to appear the first time the user saves. }
-    function GetUnnamed: Boolean;
-
-    property CreatorType: string read GetCreatorType;
-    property Existing: Boolean read GetExisting;
-    property FileSystem: string read GetFileSystem;
-    property Owner: IOTAModule read GetOwner;
-    property Unnamed: Boolean read GetUnnamed;
-
-  public
-    function GetFileName: string;
-    { Return True to show the source }
-    function GetShowSource: Boolean;
-    { Deprecated/never called.  Create and return the project group source }
-    function NewProjectGroupSource(const ProjectGroupName: string): IOTAFile;
-      deprecated;
-
-    property FileName: string read GetFileName;
-    property ShowSource: Boolean read GetShowSource;
-  end;
-
-Function ProjectGroup: IOTAProjectGroup;
-
 implementation
-
-Function ProjectGroup: IOTAProjectGroup;
-
-Var
-  AModuleServices: IOTAModuleServices;
-  AModule: IOTAModule;
-  i: integer;
-  AProjectGroup: IOTAProjectGroup;
-
-Begin
-  Result := Nil;
-  AModuleServices := (BorlandIDEServices as IOTAModuleServices);
-  For i := 0 To AModuleServices.ModuleCount - 1 Do
-  Begin
-    AModule := AModuleServices.Modules[i];
-    If (AModule.QueryInterface(IOTAProjectGroup, AProjectGroup) = S_OK) Then
-      Break;
-  End;
-  Result := AProjectGroup;
-end;
 
 { TProjectCreator }
 
@@ -171,8 +112,12 @@ begin
 end;
 
 function TProjectCreator.GetOwner: IOTAModule;
+var
+  ProjectGroup: IOTAProjectGroup;
 begin
-  Result := GetCurrentProjectGroup; // < Owned by current project group
+  Result := nil;
+  if GetCurrentProjectGroup(ProjectGroup) then
+    result := ProjectGroup;
 end;
 
 {$IFDEF COMPILER_8_UP}
@@ -225,52 +170,10 @@ function TProjectCreator.NewProjectSource(const ProjectName: string): IOTAFile;
 var
   fc: TProjectFileCreator;
 begin
-  fc := TProjectFileCreator.Create(ProjectName);
+  debug('Iniciando Project: ' + ProjectName);
+  fc := TProjectFileCreator.Create(FProjectName);
   fc.isFMX := self.isFMX;
   Result := fc;
-end;
-
-{ TBDSProjectGroupCreator }
-
-function TBDSProjectGroupCreator.GetCreatorType: string;
-begin
-  Result := sPackage;
-end;
-
-function TBDSProjectGroupCreator.GetExisting: Boolean;
-begin
-  Result := False;
-end;
-
-function TBDSProjectGroupCreator.GetFileName: string;
-begin
-  Result := 'MVCBr Project';
-end;
-
-function TBDSProjectGroupCreator.GetFileSystem: string;
-begin
-
-end;
-
-function TBDSProjectGroupCreator.GetOwner: IOTAModule;
-begin
-  Result := nil;
-end;
-
-function TBDSProjectGroupCreator.GetShowSource: Boolean;
-begin
-  Result := False;
-end;
-
-function TBDSProjectGroupCreator.GetUnnamed: Boolean;
-begin
-  Result := True;
-end;
-
-function TBDSProjectGroupCreator.NewProjectGroupSource(const ProjectGroupName
-  : string): IOTAFile;
-begin
-
 end;
 
 end.

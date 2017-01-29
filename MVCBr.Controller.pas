@@ -11,6 +11,7 @@ uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
 
 type
 
+  // TControllerFactory Classe Factory para  IController
   TControllerFactory = class(TControllerAbstract, IController,
     IControllerAs<TControllerFactory>)
   private

@@ -44,6 +44,7 @@ const
   CVIEWMODEL = 6;
   cPersistentMODEL = 7;
   cModelInterf = 8;
+  cProjectGroup = 9;
 
 {$I .\inc\project.inc}
 {$I .\inc\viewcode.inc}
@@ -55,7 +56,7 @@ const
 
 type
   TFileCreator = class(TInterfacedObject, IOTAFile)
-  private
+  protected
     FAge: TDateTime;
     FCreateType: smallint;
     FModelIdent: string;
@@ -67,6 +68,7 @@ type
     FViewModel: boolean;
     FTemplates: TStringList;
     FIsFMX: boolean;
+    FFuncSource: TFunc<string>;
     procedure SetTemplates(const Value: TStringList);
     procedure SetisFMX(const Value: boolean);
   public
@@ -74,7 +76,10 @@ type
       ACreateType: smallint = cNORMAL; ACreateModel: boolean = false;
       ACreateView: boolean = false; AModelAlone: boolean = true;
       AViewAlone: boolean = true; ViewIsForm: boolean = true;
-      AViewModel: boolean = true; AIsFMX: boolean = false);
+      AViewModel: boolean = true; AIsFMX: boolean = false); overload;
+    class function New(const ModelIdent, FormIdent, AncestorIdent: string;
+      AFuncSource: TFunc<string>): TFileCreator; overload;
+
     destructor destroy; override;
     function GetSource: string;
     function GetAge: TDateTime;
@@ -110,6 +115,13 @@ begin
   Debug('Modulo: ' + ModelIdent);
 end;
 
+class function TFileCreator.New(const ModelIdent, FormIdent,
+  AncestorIdent: string; AFuncSource: TFunc<string>): TFileCreator;
+begin
+  result := TFileCreator.Create(ModelIdent, FormIdent, AncestorIdent);
+  result.FFuncSource := AFuncSource;
+end;
+
 destructor TFileCreator.destroy;
 begin
   FTemplates.Free;
@@ -118,7 +130,7 @@ end;
 
 function TFileCreator.GetAge: TDateTime;
 begin
-  Result := FAge;
+  result := FAge;
 end;
 
 function TFileCreator.GetSource: string;
@@ -127,139 +139,149 @@ var
   c: integer;
   str: TStringList;
 begin
-  case self.FCreateType of
-    cNORMAL:
-      Result := classCode;
-    cVIEW:
-      if FIsFMX then
-        Result := ViewCodeFMX
-      else
-        Result := ViewCode;
-    cCLASS:
-      Result := ViewCode2;
-    cMODEL:
-      if isFMX then
-        Result := ModelCodeFMX
-      else
-        Result := ModelCode;
-    cModelInterf:
-      begin
-        Result := ModelInterf;
-        if sametext(FAncestorIdent, 'viewmodel') then
-          Result := viewmodecodeInterf;
-        if sametext(FAncestorIdent, 'PersistentModel') then
-          Result := ModelCodeBaseInterf;
-      end;
-    CVIEWMODEL:
-      begin
-        Result := viewmodecode;
-        if FViewModel then
-          Result := stringReplace(Result, '%ViewModelInit', '',
-            [rfReplaceAll, rfIgnoreCase]);
-      end;
-    cPersistentMODEL:
-      begin
-        Result := ModelCodeBase;
-      end;
-    cCONTROLLER:
-      begin
-        if (not self.FCreateModel) and (not self.FCreateView) then
-          Result := ControllerCodeOnly
-        else if (self.FCreateModel) and (not self.FCreateView) then
-          Result := ControllerCodeWithoutView
-        else if (not self.FCreateModel) and (self.FCreateView) then
-          Result := ControllerCodeWithoutModel
+  if Assigned(FFuncSource) then
+    result := FFuncSource
+  else
+    case self.FCreateType of
+      cNORMAL:
+        result := classCode;
+      cVIEW:
+        if FIsFMX then
+          result := ViewCodeFMX
         else
+          result := ViewCode;
+      cCLASS:
+        result := ViewCode2;
+      cMODEL:
+        if isFMX then
+          result := ModelCodeFMX
+        else
+          result := ModelCode;
+      cModelInterf:
         begin
-          if (not FModelAlone and not FViewAlone) then
-            Result := ControllerCode2
-          else if (not self.FModelAlone and self.FViewAlone) then
-            Result := ControllerCodeWithoutModel
-          else if (self.FModelAlone and not self.FViewAlone) then
-            Result := ControllerCodeWithoutView
-          else
-            Result := ControllerCode;
+          result := ModelInterf;
+          if sametext(FAncestorIdent, 'viewmodel') then
+            result := viewmodecodeInterf;
+          if sametext(FAncestorIdent, 'PersistentModel') then
+            result := ModelCodeBaseInterf;
         end;
-      end;
-    cPROJECT:
-      if isFMX then
-        Result := ProjectCodeFMX
-      else
-        Result := ProjectCode;
-  end;
+      CVIEWMODEL:
+        begin
+          result := viewmodecode;
+          if FViewModel then
+            result := stringReplace(result, '%ViewModelInit', '',
+              [rfReplaceAll, rfIgnoreCase]);
+        end;
+      cPersistentMODEL:
+        begin
+          result := ModelCodeBase;
+        end;
+      cCONTROLLER:
+        begin
+          if (not self.FCreateModel) and (not self.FCreateView) then
+            result := ControllerCodeOnly
+          else if (self.FCreateModel) and (not self.FCreateView) then
+            result := ControllerCodeWithoutView
+          else if (not self.FCreateModel) and (self.FCreateView) then
+            result := ControllerCodeWithoutModel
+          else
+          begin
+            if (not FModelAlone and not FViewAlone) then
+              result := ControllerCode2
+            else if (not self.FModelAlone and self.FViewAlone) then
+              result := ControllerCodeWithoutModel
+            else if (self.FModelAlone and not self.FViewAlone) then
+              result := ControllerCodeWithoutView
+            else
+              result := ControllerCode;
+          end;
+        end;
+      cPROJECT:
+        if isFMX then
+          result := ProjectCodeFMX
+        else
+          result := ProjectCode;
+    end;
 
   if self.FCreateModel and not self.FModelAlone then
   begin
-    Result := stringReplace(Result, '%ModelDef', ModelDef,
+    result := stringReplace(result, '%ModelDef', ModelDef,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := stringReplace(Result, '%ModelImpl', ModelImpl,
+    result := stringReplace(result, '%ModelImpl', ModelImpl,
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
   begin
-    Result := stringReplace(Result, '%ModelDef', '',
+    result := stringReplace(result, '%ModelDef', '',
       [rfReplaceAll, rfIgnoreCase]);
-    Result := stringReplace(Result, '%ModelImpl', '',
+    result := stringReplace(result, '%ModelImpl', '',
       [rfReplaceAll, rfIgnoreCase]);
   end;
 
   if self.FCreateView and not self.FViewAlone then
   begin
-    Result := stringReplace(Result, '%ViewDef', ViewDef,
+    result := stringReplace(result, '%ViewDef', ViewDef,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := stringReplace(Result, '%ViewImpl', ViewImpl,
+    result := stringReplace(result, '%ViewImpl', ViewImpl,
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
   begin
-    Result := stringReplace(Result, '%ViewDef', '',
+    result := stringReplace(result, '%ViewDef', '',
       [rfReplaceAll, rfIgnoreCase]);
-    Result := stringReplace(Result, '%ViewImpl', '',
+    result := stringReplace(result, '%ViewImpl', '',
       [rfReplaceAll, rfIgnoreCase]);
   end;
 
   // Parameterize the code with the current Identifiers
   if FViewIsForm then
   begin
-    Result := stringReplace(Result, '%ViewCreation', FormViewCreate,
+    result := stringReplace(result, '%ViewCreation', FormViewCreate,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := stringReplace(Result, '%FreeView', '',
+    result := stringReplace(result, '%FreeView', '',
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
   begin
-    Result := stringReplace(Result, '%ViewCreation', NormalViewCreate,
+    result := stringReplace(result, '%ViewCreation', NormalViewCreate,
       [rfReplaceAll, rfIgnoreCase]);
-    Result := stringReplace(Result, '%FreeView', NormalViewDestory,
+    result := stringReplace(result, '%FreeView', NormalViewDestory,
       [rfReplaceAll, rfIgnoreCase]);
   end;
 
   if FModelIdent <> '' then
-    Result := stringReplace(Result, '%ModelIdent', FModelIdent,
+    result := stringReplace(result, '%ModelIdent', FModelIdent,
       [rfReplaceAll, rfIgnoreCase]);
   if FFormIdent <> '' then
-    Result := stringReplace(Result, '%FormIdent', FFormIdent,
+    result := stringReplace(result, '%FormIdent', FFormIdent,
       [rfReplaceAll, rfIgnoreCase]);
   if FAncestorIdent <> '' then
-    Result := stringReplace(Result, '%AncestorIdent', FAncestorIdent,
+    result := stringReplace(result, '%AncestorIdent', FAncestorIdent,
       [rfReplaceAll, rfIgnoreCase]);
 
-  Result := stringReplace(Result, '%guid', GuidToString(TGuid.NewGuid),
+  result := stringReplace(result, '%guid', GuidToString(TGuid.NewGuid),
     [rfReplaceAll, rfIgnoreCase]);
 
-  // usa os templates;
+  // usa os templates - Primeira passada;
   for i := 0 to FTemplates.Count - 1 do
   begin
-    Result := stringReplace(Result, FTemplates.Names[i],
+    result := stringReplace(result, FTemplates.Names[i],
       FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
     Debug('Template: ' + FTemplates.Names[i] + '=' +
       FTemplates.ValueFromIndex[i]);
   end;
 
+  // usa os templates - segudna passada;
+  for i := 0 to FTemplates.Count - 1 do
+  begin
+    result := stringReplace(result, FTemplates.Names[i],
+      FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
+  end;
+
   str := TStringList.Create;
   with str do
     try
-      text := Result;
+      text := result;
       c := 0;
       for i := str.Count - 1 downto 0 do
       begin
@@ -273,7 +295,7 @@ begin
         else
           c := 0;
       end;
-      Result := text;
+      result := text;
     finally
       Free;
     end;

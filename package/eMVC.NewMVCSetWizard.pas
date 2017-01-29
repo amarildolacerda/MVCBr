@@ -225,7 +225,7 @@ begin
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := 'Novo MVCBr Set Veiw';
+  result := '2. ViewModel';
 end;
 
 function TNewMVCSetWizard.GetPage: string;

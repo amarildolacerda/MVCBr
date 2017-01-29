@@ -111,6 +111,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -206,6 +208,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -267,6 +271,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Finish'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 83

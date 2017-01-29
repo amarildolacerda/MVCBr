@@ -90,10 +90,11 @@ begin
       cPersistentMODEL);
   fc.isFMX := self.isFMX;
 
+  fc.Templates.Clear;
   fc.Templates.assign(Templates);
 
-  fc.Templates.AddPair('%mdl', Templates.Values['%modelName']);
-  fc.Templates.AddPair('%MdlInterf',Templates.Values['%modelName']+'.ViewModel.Interf');
+  fc.Templates.AddPair('%modelName', Templates.Values['%modelName']);
+  fc.Templates.AddPair('%modelNameInterf',Templates.Values['%modelName']+'.ViewModel.Interf');
 
   result := fc;
 end;

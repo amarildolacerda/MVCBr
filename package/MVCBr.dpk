@@ -25,6 +25,7 @@ package MVCBr;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
+{$DEFINE BPL}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Easy MVC 1.0a'}
 {$DESIGNONLY}
@@ -61,7 +62,9 @@ contains
   eMVC.OTAUtilities in 'eMVC.OTAUtilities.pas',
   eMVC.NewMVCSetWizard in 'eMVC.NewMVCSetWizard.pas',
   eMVC.PersistentModelCreator in 'eMVC.PersistentModelCreator.pas',
-  eMVC.ModelCreator in 'eMVC.ModelCreator.pas';
+  eMVC.ModelCreator in 'eMVC.ModelCreator.pas',
+  eMVC.ProjectGroupCreator in 'eMVC.ProjectGroupCreator.pas',
+  eMVC.DatasetModel in 'eMVC.DatasetModel.pas',
+  eMVC.PersistentModelConst in 'eMVC.PersistentModelConst.pas';
 
 end.
-

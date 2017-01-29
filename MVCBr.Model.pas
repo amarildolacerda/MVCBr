@@ -7,7 +7,7 @@ Uses System.Classes, System.SysUtils, System.Generics.collections, MVCBr.Interf;
 type
 
 
-  TMVCInterfacedObject = Class(TInterfacedObject)
+  TMVCInterfacedObject = Class(TMVCFactoryAbstract)
   public
     class function New(AClass: TInterfacedClass): IInterface;
   end;

@@ -87,9 +87,10 @@ var
 
 implementation
 
-uses eMVC.OTAUtilities;
+uses eMVC.OTAUtilities, eMVC.PersistentModelConst;
 
 {$R *.dfm}
+
 
 procedure TFormNewSetPersistentModel.FormCreate(Sender: TObject);
 var

@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{781E8B53-8E96-4B0D-91F1-3D5D3844D71A}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="package\MVCBr.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Exemplos\vcl\FireDAC\FireDACExemplo.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MVCBr">
+        <MSBuild Projects="package\MVCBr.dproj"/>
+    </Target>
+    <Target Name="MVCBr:Clean">
+        <MSBuild Projects="package\MVCBr.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBr:Make">
+        <MSBuild Projects="package\MVCBr.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="FireDACExemplo">
+        <MSBuild Projects="Exemplos\vcl\FireDAC\FireDACExemplo.dproj"/>
+    </Target>
+    <Target Name="FireDACExemplo:Clean">
+        <MSBuild Projects="Exemplos\vcl\FireDAC\FireDACExemplo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FireDACExemplo:Make">
+        <MSBuild Projects="Exemplos\vcl\FireDAC\FireDACExemplo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MVCBr;FireDACExemplo"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MVCBr:Clean;FireDACExemplo:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MVCBr:Make;FireDACExemplo:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -44,6 +44,7 @@ uses
   eMVC.ModelCreator,
   eMVC.ViewModelCreator,
   eMVC.AppWizardForm,
+  eMVC.ProjectGroupCreator,
   Dialogs,
   ToolsApi;
 
@@ -93,7 +94,8 @@ var
   ModelInterf: TViewModelCreator;
   Ctrl: TControllerCreator;
   AFMX: Boolean;
-  pg : IOTAProjectGroup;
+  pg: IOTAProjectGroup;
+  PGModel:TBDSProjectGroupCreator;
 begin
   // First create the Project
   // ProjectModule :=
@@ -111,6 +113,7 @@ begin
       appname := edtApp.text;
       if pos('.dpr', lowercase(appname)) <= 0 then
         appname := appname + '.dpr';
+      debug('AppName: '+appname);
       path := trim(edtPath.text);
       if path[length(path) - 1] <> '\' then
         path := path + '\';
@@ -118,22 +121,51 @@ begin
     end;
   end;
 
-{  // teste para criar um projectgroup
-  if (BorlandIDEServices as IOTAModuleServices).MainProjectGroup = nil then
-  begin
-    (BorlandIDEServices as IOTAModuleServices).CreateModule(TBDSProjectGroupCreator.Create);
+  try
+    if not GetCurrentProjectGroup(pg) then
+    begin
+      debug('Criar ProjectGroup');
+      // created project group
+      try
+      PGModel := TBDSProjectGroupCreator.Create;
+      PGModel.Path := path;
+      except
+         on e:Exception do
+            raise Exception.Create('Error Message: '+e.message);
+      end;
+      (BorlandIDEServices as IOTAModuleServices)
+        .CreateModule(  PGModel );
+
+    end;
+  except
+    on e: Exception do
+      debug('Erro (Group): ' + e.message);
   end;
-}
-  project := TProjectCreator.Create;
-  project.isFMX := AFMX;
-  project.setFileName(path + appname);
-  ProjectModule := (BorlandIDEServices as IOTAModuleServices)
-    .CreateModule(project);
-  Debug('App: ' + path + appname);
-  // showmessage(appname);
+
+  if not GetCurrentProjectGroup(pg) then
+  begin
+    raise Exception.Create
+      ('Opps, que vergonha - não consegui criar um ProjectGroup automático... Necessário ter um ProjectGroup criado');
+  end
+  else
+    debug('ProjectGroup Iniciado: ' + pg.FileName);
+
+  try
+    project := TProjectCreator.Create;
+    project.isFMX := AFMX;
+    project.setFileName(path + appname);
+    ProjectModule := (BorlandIDEServices as IOTAModuleServices)
+      .CreateModule(project);
+
+  except
+    on e: Exception do
+      debug('Erro (Project): ' + e.message);
+
+  end;
+  debug('AppWizard: ' +  path + appname);
 
   Ctrl := TControllerCreator.Create(path, 'Main', false);
-  Debug('Main Controller Creator');
+  debug('Main Controller Creator');
   Ctrl.Templates.AddPair('//ViewModelInit',
     'result.add( TMainViewModel.new(self));');
   Ctrl.isFMX := AFMX;
@@ -194,7 +226,7 @@ begin
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := 'MVCBr Assistente para criar projeto';
+  result := '1. Projeto MVCBr';
 end;
 
 function TNewProjectWizard.GetPage: string;

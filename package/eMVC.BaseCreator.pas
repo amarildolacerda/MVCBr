@@ -41,17 +41,17 @@ uses
 type
 
   TBaseCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
-  private
-    FFileCreator:TFileCreator;
+  protected
+    FFileCreator: TFileCreator;
     FAncestorName: string;
     FPath: string;
     FBaseName: string;
     FUnnamed: boolean;
     FTemplates: TStringList;
-    FIsFMX: Boolean;
+    FIsFMX: boolean;
     procedure setBaseName(ABaseName: string);
     procedure SetTemplates(const Value: TStringList);
-    procedure SetIsFMX(const Value: Boolean);
+    procedure SetIsFMX(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
       AUnNamed: boolean = true); virtual;
@@ -60,9 +60,9 @@ type
     function getpath: string;
     // IOTACreator
     function GetCreatorType: string; virtual;
-    function GetExisting: boolean;
+    function GetExisting: boolean; virtual;
     function GetFileSystem: string;
-    function GetOwner: IOTAModule;
+    function GetOwner: IOTAModule; virtual;
     function GetUnnamed: boolean; virtual;
     // IOTAModulCreator
     function GetAncestorName: string; virtual;
@@ -92,7 +92,7 @@ type
     property BaseName: string read getBaseName write setBaseName;
 
     property Templates: TStringList read FTemplates write SetTemplates;
-    property IsFMX:Boolean read FIsFMX write SetIsFMX;
+    property IsFMX: boolean read FIsFMX write SetIsFMX;
   end;
 
 implementation
@@ -141,7 +141,7 @@ begin
   FBaseName := ABaseName;
 end;
 
-procedure TBaseCreator.SetIsFMX(const Value: Boolean);
+procedure TBaseCreator.SetIsFMX(const Value: boolean);
 begin
   FIsFMX := Value;
 end;
@@ -216,11 +216,12 @@ begin
 end;
 
 function TBaseCreator.GetOwner: IOTAModule;
+var
+  ProjectGroup: IOTAProjectGroup;
 begin
   // Owned by current project
-  Result := GetCurrentProjectGroup;
-  if Assigned(Result) then
-    Result := (Result as IOTAProjectGroup).ActiveProject
+  if GetCurrentProjectGroup(ProjectGroup) then
+    Result := ProjectGroup.ActiveProject
   else
     Result := GetCurrentProject;
 end;
@@ -250,11 +251,11 @@ function TBaseCreator.NewImplSource(const ModuleIdent, FormIdent,
   AncestorIdent: string): IOTAFile;
 begin
   // default create the normal class
-  debug('FileCreator: '+ModuleIdent);
+  Debug('FileCreator: ' + ModuleIdent);
   FFileCreator := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent);
-  FFileCreator.isFMX := self.IsFMX;
+  FFileCreator.IsFMX := self.IsFMX;
   FFileCreator.Templates.Assign(self.FTemplates);
-  result := FFileCreator;
+  Result := FFileCreator;
 end;
 
 function TBaseCreator.NewIntfSource(const ModuleIdent, FormIdent,

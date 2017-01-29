@@ -35,7 +35,24 @@ uses System.Classes, System.SysUtils, System.Generics.Collections,
 
 type
 
+  // MVCBr Utils
+  TMVCBr = record
+    class function InvokeCreate<T: class>(const Args: TArray<TValue>)
+      : T; static;
+    class function InvokeMethod<T>(AInstance: TObject; AMethod: string;
+      const Args: TArray<TValue>): T; static;
+  end;
 
+  IMVCBase = interface
+    ['{6027634D-6A9E-4FC2-A1CE-71B2194ACCDF}']
+  end;
+
+  TMVCFactoryAbstract = class(TInterfacedObject)
+  public
+    function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+  end;
+
+  // InterfacedList que sera herdado na classes base com controle Threadsafe
   TMVCInterfacedList<T> = class(TInterfaceList)
   public
   end;
@@ -58,8 +75,10 @@ type
   TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent, mtNavigator);
   TModelTypes = set of TModelType;
 
+  // IModel Interfaces
   IModel = interface;
 
+  // Base para implementar IModel
   IModelBase = interface
     ['{E1622D13-701C-4AD8-8AD4-A1B64B8D251F}']
     function This: TInterfacedObject;
@@ -68,6 +87,7 @@ type
     function Update: IModel;
   end;
 
+  // IModel representa a interface onde implementa as regras de negócio
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     function Controller(const AController: IController): IModel;
@@ -91,6 +111,7 @@ type
     function Update: IView;
   end;
 
+  // IView é uma representação para FORM
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
     function Controller(const AController: IController): IView;
@@ -135,7 +156,7 @@ type
     function ControllerAs: T;
   end;
 
-  TControllerAbstract = class(TInterfacedObject)
+  TControllerAbstract = class(TMVCFactoryAbstract)
   protected
     FModels: TMVCInterfacedList<IModel>;
   public
@@ -143,6 +164,7 @@ type
     function GetModel<T>(): T; overload;
   end;
 
+  // IController manter associação entre o IView e IModel
   IController = interface(IControllerBase)
     ['{A7758E82-3AA1-44CA-8160-2DF77EC8D203}']
     function GetView: IView; overload;
@@ -166,6 +188,7 @@ type
     function Update(const AModel: IModel): IViewModel; overload;
   end;
 
+  // IViewModel associa o FORM com o o seu MODEL
   IViewModel = interface(IViewModelBase)
     ['{9F943F5D-4367-4537-857F-1399DBF7133F}']
     function Controller(const AController: IController): IViewModel;
@@ -203,10 +226,10 @@ implementation
 
 function TControllerAbstract.GetModel(const IID: TGUID; out intf): IModel;
 var
-  I: integer;
+  I: Integer;
 begin
   for I := 0 to FModels.Count - 1 do
-    if supports( (FModels.Items[I] as IModel).This, IID, intf) then
+    if supports((FModels.Items[I] as IModel).This, IID, intf) then
     begin
       result := FModels.Items[I] as IModel;
       supports(result.This, IID, intf);
@@ -216,17 +239,54 @@ end;
 
 function TControllerAbstract.GetModel<T>(): T;
 var
-  I: integer;
-  pInfo : PTypeInfo;
-  IID:TGuid;
+  I: Integer;
+  pInfo: PTypeInfo;
+  IID: TGUID;
 begin
   pInfo := TypeInfo(T);
   IID := GetTypeData(pInfo).Guid;
   for I := 0 to FModels.Count - 1 do
-    if supports( (FModels.Items[I] as IModel).This, IID , result) then
+    if supports((FModels.Items[I] as IModel).This, IID, result) then
     begin
       exit;
     end;
+end;
+
+{ TMVCBr }
+
+class function TMVCBr.InvokeCreate<T>(const Args: TArray<TValue>): T;
+var
+  ctx: TRttiContext;
+begin
+  ctx := TRttiContext.Create;
+  try
+    result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args)
+      .AsType<T>;
+  finally
+    ctx.Free();
+  end;
+end;
+
+class function TMVCBr.InvokeMethod<T>(AInstance: TObject; AMethod: string;
+  const Args: TArray<TValue>): T;
+var
+  ctx: TRttiContext;
+begin
+  ctx := TRttiContext.Create;
+  try
+    result := ctx.GetType(AInstance.ClassInfo).GetMethod(AMethod)
+      .Invoke(AInstance, Args).AsType<T>;
+  finally
+    ctx.Free();
+  end;
+end;
+
+{ TMVCFactoryAbstract }
+
+function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string;
+  const Args: TArray<TValue>): T;
+begin
+  result := TMVCBr.InvokeMethod<T>(Self, AMethod, Args);
 end;
 
 end.

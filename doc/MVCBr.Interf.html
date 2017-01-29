@@ -29,7 +29,8 @@ $(document).ready(function() {
 });
 </script>
 </p></td><td class="content">
-MVCBr<h1 class="unit">Unit MVCBr.Interf</h1>
+MVCBr
+<h1 class="unit">Unit MVCBr.Interf</h1>
 <table class="sections wide_list">
 <tr>
 <td><a class="section" href="#PasDoc-Description">Descri√ß√£o</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td>Fun√ß√µes e Procedimentos</td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Vari√°veis</td></tr></table>
@@ -43,90 +44,102 @@ MVCBr<h1 class="unit">Unit MVCBr.Interf</h1>
 <th class="itemdesc">Descri√ß√£o</th>
 </tr>
 <tr class="list">
-<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TMVCInterfacedList.html"><code>TMVCInterfacedList</code></a></td>
+<td class="itemname">record&nbsp;<a class="bold" href="MVCBr.Interf.TMVCBr.html"><code>TMVCBr</code></a></td>
+<td class="itemdesc">MVCBr Utils</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IMVCBase.html"><code>IMVCBase</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TMVCFactoryAbstract.html"><code>TMVCFactoryAbstract</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
 <tr class="list2">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TMVCInterfacedList.html"><code>TMVCInterfacedList</code></a></td>
+<td class="itemdesc">InterfacedList que sera herdado na classes base com controle Threadsafe</td>
+</tr>
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IThis.html"><code>IThis</code></a></td>
 <td class="itemdesc">uses <code>IThis</code> in base Classes</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IThisAs.html"><code>IThisAs</code></a></td>
 <td class="itemdesc">uses <code>IThisAs</code> in higher Classes</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModelBase.html"><code>IModelBase</code></a></td>
-<td class="itemdesc">&nbsp;</td>
+<td class="itemdesc">Base para implementar <a class="normal" href="MVCBr.Interf.IModel.html">IModel</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModel.html"><code>IModel</code></a></td>
+<td class="itemdesc"><code>IModel</code> representa a interface onde implementa as regras de negÛcio</td>
 </tr>
 <tr class="list">
-<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModel.html"><code>IModel</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModelAs.html"><code>IModelAs</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewBase.html"><code>IViewBase</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
-<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IView.html"><code>IView</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
 <tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IView.html"><code>IView</code></a></td>
+<td class="itemdesc"><code>IView</code> È uma representaÁ„o para FORM</td>
+</tr>
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewAs.html"><code>IViewAs</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IApplicationController.html"><code>IApplicationController</code></a></td>
 <td class="itemdesc">Main Controller for all Application - Have a list os Controllers</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IControllerBase.html"><code>IControllerBase</code></a></td>
 <td class="itemdesc">Controller for an Unit</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IControllerAs.html"><code>IControllerAs</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TControllerAbstract.html"><code>TControllerAbstract</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
-<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IController.html"><code>IController</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
 <tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IController.html"><code>IController</code></a></td>
+<td class="itemdesc"><code>IController</code> manter associaÁ„o entre o <a class="normal" href="MVCBr.Interf.IView.html">IView</a> e <a class="normal" href="MVCBr.Interf.IModel.html">IModel</a></td>
+</tr>
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModelAs.html"><code>IViewModelAs</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModelBase.html"><code>IViewModelBase</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
-<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModel.html"><code>IViewModel</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
 <tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModel.html"><code>IViewModel</code></a></td>
+<td class="itemdesc"><code>IViewModel</code> associa o FORM com o o seu <a class="normal" href="MVCBr.Interf.IViewModelBase.html#Model">MODEL</a></td>
+</tr>
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IPersistentModelBase.html"><code>IPersistentModelBase</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IPersistentModel.html"><code>IPersistentModel</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.INavigatorModelBase.html"><code>INavigatorModelBase</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.INavigatorModel.html"><code>INavigatorModel</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IValidateModel.html"><code>IValidateModel</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
@@ -171,6 +184,7 @@ mtNavigator: &nbsp;</li>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
-tireideletra.com.br<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
 </span>
 </td></tr></table></body></html>
