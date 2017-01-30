@@ -22,12 +22,14 @@ type
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
   public
+
     Constructor Create; override;
     Destructor Destroy; override;
     class function New(): IController; overload;
     class function New(const AView: IView; const AModel: IModel)
       : IController; overload;
     class function New(const AModel: IModel): IController; overload;
+    procedure init;override;
     function ThisAs: TMainController;
     function ModelAs: IMainViewModel;
   end;
@@ -84,6 +86,13 @@ Procedure TMainController.DoCommand(ACommand: string;
   const AArgs: Array of TValue);
 begin
   inherited;
+end;
+
+procedure TMainController.init;
+var ref:TMainView;
+begin
+  inherited;
+  Application.CreateForm( TMainView, ref );
 end;
 
 initialization

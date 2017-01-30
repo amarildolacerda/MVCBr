@@ -54,7 +54,7 @@ type
     // retorna interface base
     function ThisIntf: IDatabaseModel;
     // retorna o modelo abstract de herança para a classe
-    function This: TDatabaseModelAbstract; overload;
+    function This: TDatabaseModelFactory<T, Q>; overload;
     // retorna a conexão ativa
     function GetConnection: T;
     // Seta a conexão ativa
@@ -194,19 +194,19 @@ function TDatabaseModelFactory<T, Q>.Connection(const AConnection: T)
   : TDatabaseModelFactory<T, Q>;
 begin
   result := self;
+  if FConnection = AConnection then
+
   FConnection := AConnection;
 end;
 
 constructor TDatabaseModelFactory<T, Q>.create;
 begin
   inherited;
-  FConnection := TMVCBr.InvokeCreate<T>([nil]);
+  FConnection := TMVCBr.InvokeCreate<T>([ GetOwned ]);
 end;
 
 destructor TDatabaseModelFactory<T, Q>.destroy;
 begin
-  if Assigned(FConnection) then
-    FConnection.DisposeOf;
   inherited;
 end;
 
@@ -227,7 +227,7 @@ begin
   result := obj;
 end;
 
-function TDatabaseModelFactory<T, Q>.This: TDatabaseModelAbstract;
+function TDatabaseModelFactory<T, Q>.This: TDatabaseModelFactory<T, Q>;
 begin
   result := self;
 end;

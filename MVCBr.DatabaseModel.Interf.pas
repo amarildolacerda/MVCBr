@@ -17,6 +17,9 @@ type
   IDatabaseModel = interface(IPersistentModel)
     ['{26FC1185-D137-42B5-BA64-3D2D1D22E65F}']
     function This: TDatabaseModelAbstract;
+    procedure SetConnectionString(const Value: string);
+    function GetConnectionString: string;
+    property ConnectionString:string read GetConnectionString write SetConnectionString;
   end;
 
   // IQueryModel<T> Interface para acesso a Query
@@ -48,14 +51,36 @@ type
 
 
   TDatabaseModelAbstract = class(TPersistentModelFactory, IDatabaseModel)
+  private
+  protected
+    FConnectionString: string;
+    procedure SetConnectionString(const Value: string);virtual;
+    function GetConnectionString: string;virtual;
   public
     // Na herança é necessario indicar o retorno para THIS
     function This: TDatabaseModelAbstract; virtual;
+    function GetConnection<T:Class>():T;
+    property ConnectionString:string read GetConnectionString write SetConnectionString;
   end;
 
 implementation
 
 { TDatabaseModelAbstract }
+
+function TDatabaseModelAbstract.GetConnection<T>: T;
+begin
+   Result := T(Self);
+end;
+
+function TDatabaseModelAbstract.GetConnectionString: string;
+begin
+  result := FConnectionString;
+end;
+
+procedure TDatabaseModelAbstract.SetConnectionString(const Value: string);
+begin
+  FConnectionString := Value;
+end;
 
 function TDatabaseModelAbstract.This: TDatabaseModelAbstract;
 begin

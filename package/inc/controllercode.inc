@@ -35,6 +35,7 @@ ControllerCode =
   '      : IController; overload;                                   ' + #10#13 +
   '    class function New(const AModel: IModel): IController; overload;' +
   #10#13 + '    function ThisAs: T%FormIdentController;             ' + #10#13 +
+  '    procedure init;override;                                     ' + #10#13 +
   '    function ModelAs: I%FormIdentViewModel;                          ' +
   #10#13 + '  end;                                                  ' + #10#13 +
   '                                                                 ' + #10#13 +
@@ -93,9 +94,21 @@ ControllerCode =
   '    inherited;                                                   ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                                 ' + #10#13 +
+  'procedure T%FormIdentController.init;                            ' + #10#13 +
+  'var ref:TMainView;                                               ' + #10#13 +
+  'begin                                                            ' + #10#13 +
+  '  inherited;                                                     ' + #10#13 +
+  ' if not assigned(FView) then                            ' + #10#13 +
+  ' begin                                                           ' + #10#13 +
+  '   Application.CreateForm( T%FormIdentView, ref );                 ' + #10#13 +
+  '   supports(ref,IView,FView);                            ' + #10#13 +
+  ' end;                                                            ' + #10#13 +
+  ' endInit;                                                        ' + #10#13 +
+  'end;                                                             ' + #10#13 +
+  '                                                                 ' + #10#13 +
   'initialization                                                   ' + #10#13 +
-  '//T%FormIdentController.New(T%FormIdentView.New,T%FormIdentViewModel.New));'
-  + #10#13 + '                                                     ' + #10#13 +
+  '//T%FormIdentController.New(T%FormIdentView.New,T%FormIdentViewModel.New)).init();'+#10#13+
+  '                                                     ' + #10#13 +
   'end.                                                          ' + #10#13;
 
 ControllerCode2 = ControllerCode;

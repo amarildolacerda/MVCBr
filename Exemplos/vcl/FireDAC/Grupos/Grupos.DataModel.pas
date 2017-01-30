@@ -33,9 +33,6 @@ constructor TGruposDataModel.Create;
 begin
   inherited;
   ModelTypes := [mtPersistent];
-
-
-
 end;
 
 destructor TGruposDataModel.Destroy;

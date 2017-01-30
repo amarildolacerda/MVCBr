@@ -10,18 +10,20 @@ type
 
   TApplicationController = class(TMVCInterfacedObject, IApplicationController)
   private
-    FMainView: IView;
     FControllers: TMVCInterfacedList<IController>;
+  protected
+    FMainView: IView;
+  public
+    constructor create;
+    destructor destroy; override;
     function Count: integer;
     function Add(const AController: IController): integer;
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
-
-  public
-    constructor create;
-    destructor destroy; override;
     procedure Run(AClass: TComponentClass; AController: IController;
-      AModel: IModel; AFunc: TFunc < boolean >= nil);
+      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AController: IController;
+      AFunc: TFunc < boolean >= nil); overload;
     class function New: IApplicationController;
   end;
 
@@ -90,6 +92,12 @@ begin
   FControllers.Remove(AController);
 end;
 
+procedure TApplicationController.Run(AController: IController;
+  AFunc: TFunc<boolean>);
+begin
+  Run(nil, AController, nil, AFunc);
+end;
+
 procedure TApplicationController.Run(AClass: TComponentClass;
   AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
@@ -106,19 +114,30 @@ begin
 
   if rt then
   begin
-    application.CreateForm(AClass, reference);
-
-    if not supports(reference, IView) then
-      raise Exception.create('Não é uma classe que implementa IView');
-    FMainView := reference as IView;
     if assigned(AController) then
-      AController.View(FMainView);
-    if assigned(AModel) then
-      AController.Add(AModel);
+      AController.init;
+    if (AClass <> nil) and (Application.MainForm=nil) then
+    begin
+      application.CreateForm(AClass, reference);
+      if not supports(reference, IView) then
+        raise Exception.create('Não é uma classe que implementa IView');
+      FMainView := reference as IView;
+    end;
 
-   // application.Run;
-   FMainView.ShowView(nil);
+    if assigned(AModel) then
+      if AController.IndexOf(AModel) < 0 then
+        AController.Add(AModel);
+
+    if supports(application.MainForm, IView, FMainView) then
+    begin
+      if assigned(AController) then
+        AController.View(FMainView);
+      FMainView.ShowView(nil);
+    end;
+
   end;
+    if assigned(AController) then
+      AController.endInit;
 
 end;
 

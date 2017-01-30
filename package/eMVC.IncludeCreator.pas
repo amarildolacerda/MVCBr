@@ -52,7 +52,7 @@ function TIncludeCreator.GetImplFileName: string;
 begin
   result := self.getpath + 'inc\mvcbr.inc';
   debug('TIncludeCreator.GetImplFileName: ' + result);
-
+  ForceDirectories( ExtractFilePath(Result)  );
 end;
 
 constructor TIncludeCreator.Create(const APath: string; ABaseName: string;

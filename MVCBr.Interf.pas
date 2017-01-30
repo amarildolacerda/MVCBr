@@ -102,6 +102,7 @@ type
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     function Controller(const AController: IController): IModel;
     function GetModelTypes: TModelTypes;
+    function GetController:IController;
     procedure SetModelTypes(const AModelType: TModelTypes);
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
   end;
@@ -114,7 +115,7 @@ type
   // IView will be implements in TForm...
   IView = interface;
 
-  IViewBase = interface
+  IViewBase = interface(IMVCBase)
     ['{B3302253-353A-4890-B7B1-B45FC41247F6}']
     function This: TObject;
     function ShowView(const AProc: TProc<IView>): Integer;
@@ -136,7 +137,8 @@ type
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
     procedure Run(AClass: TComponentClass; AController: IController;
-      AModel: IModel; AFunc: TFunc < boolean >= nil);
+      AModel: IModel; AFunc: TFunc < boolean >= nil);overload;
+    procedure Run(AController: IController; AFunc: TFunc < boolean >= nil);overload;
     function Count: Integer;
     function Add(const AController: IController): Integer;
     procedure Delete(const idx: Integer);
@@ -148,6 +150,9 @@ type
   // Controller for an Unit
   IControllerBase = interface
     ['{5891921D-93C8-4B0A-8465-F7F0156AC228}']
+    procedure Init;
+    procedure BeginInit;
+    procedure EndInit;
     function IndexOfModelType(const AModelType: TModelType): Integer;
     function GetModelByType(const AModelType: TModelType): IModel;
     function UpdateByModel(AModel: IModel): IController;

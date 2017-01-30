@@ -15,17 +15,20 @@ type
   TControllerFactory = class(TControllerAbstract, IController,
     IControllerAs<TControllerFactory>)
   private
-    FView: IView;
-    function GetModelByID(const AID: String): IModel;
   protected
+    FView: IView;
+  public
     constructor Create; virtual;
     destructor destroy; override;
+    function GetModelByID(const AID: String): IModel;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetModel(const idx: integer): IModel; overload; virtual;
 
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
-
+    procedure Init; virtual;
+    procedure BeginInit; virtual;
+    procedure EndInit; virtual;
     function GetView: IView; virtual;
     function View(const AView: IView): IController; virtual;
     function This: TControllerAbstract; virtual;
@@ -38,7 +41,6 @@ type
     function UpdateAll: IController;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
-  public
   end;
 
   TControllerFactoryOf = class of TControllerFactory;
@@ -55,6 +57,11 @@ begin
   AModel.Controller(self);
   FModels.Add(AModel);
   result := FModels.Count - 1;
+end;
+
+procedure TControllerFactory.BeginInit;
+begin
+
 end;
 
 function TControllerFactory.ControllerAs: TControllerFactory;
@@ -97,8 +104,6 @@ begin
   result := FModels[idx] as IModel;
 end;
 
-
-
 function TControllerFactory.GetModelByID(const AID: String): IModel;
 var
   I: integer;
@@ -140,6 +145,23 @@ begin
       result := I;
       exit;
     end;
+end;
+
+procedure TControllerFactory.Init;
+begin
+  BeginInit;
+end;
+
+procedure TControllerFactory.EndInit;
+var
+  FModel: IModel;
+  vm: IViewModel;
+begin
+  FModel := GetModelByType(mtViewModel);
+  if Supports(FModel.This, IViewModel, vm) then
+  begin
+    vm.View(FView);
+  end;
 end;
 
 function TControllerFactory.This: TControllerAbstract;

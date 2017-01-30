@@ -9,13 +9,13 @@ interface
 uses Classes, forms, SysUtils,
   MVCBr.Interf, MVCBr.Model,
   MVCBr.FireDACModel.Interf,
-  MVCBr.Controller, MVCBr.DatabaseModel,MVCBr.DatabaseModel.Interf,
+  MVCBr.Controller, MVCBr.DatabaseModel, MVCBr.DatabaseModel.Interf,
   FireDAC.Comp.Client, FireDAC.Stan.Def;
 
 Type
 
-  TFireDACModel = class(TDatabaseModelFactory<TFDConnection, TFDQuery>, IFireDACModel,
-    IThisAs<TFireDACModel>)
+  TFireDACModel = class(TDatabaseModelFactory<TFDConnection, TFDQuery>,
+    IFireDACModel, IThisAs<TFireDACModel>)
   private
   protected
   public
@@ -29,10 +29,11 @@ Type
     function ConnectionName(const AConn: string): IFireDACModel;
     function UserName(const AUser: string): IFireDACModel;
     function Password(const APass: string): IFireDACModel;
+    procedure SetConnectionString(const Value: string); override;
 
-    //  Query
-    //function NewQuery(const AProcChange: TProc<Q>): IQueryModel<Q>; virtual;
 
+    // Query
+    // function NewQuery(const AProcChange: TProc<Q>): IQueryModel<Q>; virtual;
 
   end;
 
@@ -48,7 +49,14 @@ constructor TFireDACModel.Create;
 begin
   inherited;
   ModelTypes := [mtPersistent];
-  Connection(TFDConnection.Create(nil));
+  with TStringList.Create do
+    try
+      Assign(GetConnection.Params);
+      Delimiter := ';';
+      FConnectionString := DelimitedText;
+    finally
+      DisposeOf;
+    end;
 end;
 
 destructor TFireDACModel.Destroy;
@@ -91,6 +99,23 @@ begin
   result := Self;
   GetConnection.Params.Values['PASSWORD'] := APass;
 
+end;
+
+procedure TFireDACModel.SetConnectionString(const Value: string);
+var
+  Params: TStringList;
+  i:integer;
+begin
+  inherited;
+  Params := TStringList.Create;
+  try
+    Params.Delimiter := ';';
+    Params.DelimitedText := Value;
+    for I := 0 to Params.count-1 do
+       GetConnection.Params.Values[ Params.Names[i] ] :=  Params.ValueFromIndex[i];
+  finally
+    Params.free;
+  end;
 end;
 
 end.
