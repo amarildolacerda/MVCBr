@@ -65,6 +65,7 @@ contains
   eMVC.ModelCreator in 'eMVC.ModelCreator.pas',
   eMVC.ProjectGroupCreator in 'eMVC.ProjectGroupCreator.pas',
   eMVC.DatasetModel in 'eMVC.DatasetModel.pas',
-  eMVC.PersistentModelConst in 'eMVC.PersistentModelConst.pas';
+  eMVC.PersistentModelConst in 'eMVC.PersistentModelConst.pas',
+  eMVC.IncludeCreator in 'eMVC.IncludeCreator.pas';
 
 end.

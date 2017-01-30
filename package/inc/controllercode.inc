@@ -6,7 +6,7 @@ ControllerCode =
   'unit %ModelIdent;                                                ' + #10#13 +
   '                                                                 ' + #10#13 +
   'interface                                                        ' + #10#13 +
-  '                                                                 ' + #10#13 +
+  '//%include                                                       ' + #10#13 +
   'uses                                                             ' + #10#13 +
   '                                                                 ' + #10#13 +
   'SysUtils, forms, buttons, classes, controls,MVCBr.Interf,        ' + #10#13 +

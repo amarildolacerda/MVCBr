@@ -9,6 +9,21 @@
         <Projects Include="Exemplos\vcl\FireDAC\FireDACExemplo.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="c:\lixo\NewMVCApp1.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="c:\lixo\NewMVCApp3.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="c:\lixo\NewMVCApp4.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="c:\lixo\NewMVCApp5.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="c:\lixo\NewMVCApp6.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +50,59 @@
     <Target Name="FireDACExemplo:Make">
         <MSBuild Projects="Exemplos\vcl\FireDAC\FireDACExemplo.dproj" Targets="Make"/>
     </Target>
+    <Target Name="NewMVCApp1">
+        <MSBuild Projects="c:\lixo\NewMVCApp1.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp1:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp1.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp1:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp1.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp3">
+        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp3:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp3:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp4">
+        <MSBuild Projects="c:\lixo\NewMVCApp4.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp4:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp4.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp4:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp4.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp5">
+        <MSBuild Projects="c:\lixo\NewMVCApp5.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp5:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp5.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp5:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp5.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp6">
+        <MSBuild Projects="c:\lixo\NewMVCApp6.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp6:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp6.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp6:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp6.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;FireDACExemplo"/>
+        <CallTarget Targets="MVCBr;FireDACExemplo;NewMVCApp1;NewMVCApp3;NewMVCApp4;NewMVCApp5;NewMVCApp6"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;FireDACExemplo:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;FireDACExemplo:Clean;NewMVCApp1:Clean;NewMVCApp3:Clean;NewMVCApp4:Clean;NewMVCApp5:Clean;NewMVCApp6:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;FireDACExemplo:Make"/>
+        <CallTarget Targets="MVCBr:Make;FireDACExemplo:Make;NewMVCApp1:Make;NewMVCApp3:Make;NewMVCApp4:Make;NewMVCApp5:Make;NewMVCApp6:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

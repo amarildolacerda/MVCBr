@@ -20,7 +20,7 @@ ModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
   '  www.tireideletra.com.br                                     ' + #10#13 +
   '  amarildo lacerda                                            ' + #10#13 +
   '}                                                             ' + #10#13 +
-  '                                                              ' + #10#13 +
+  '//%include                                                    ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
   'uses Classes, forms, SysUtils, MVCBr.Interf, MVCBr.Model,     ' + #10#13 +

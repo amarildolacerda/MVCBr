@@ -2,22 +2,23 @@ ViewHead = 'unit %ModelIdent;                                ' + #10#13 +
   '                                                          ' + #10#13 +
   '// Código gerado pelo assistente     MVCBr OTA            ' + #10#13 +
   '// www.tireideletra.com.br                                ' + #10#13 +
-  '                                                          ' + #10#13 +
+  '//%include                                                ' + #10#13 +
   'interface                                                 ' + #10#13 +
   'uses                                                      ' + #10#13 +
   '  Windows, Messages, SysUtils,  Classes,Graphics,         ' + #10#13 +
   '  Controls,StdCtrls,ComCtrls,ExtCtrls,Forms,MVCBr.Interf, ' + #10#13 +
-  '  %MdlInterf ,MVCBr.Controller;          ' + #10#13 +
-  '                                                          ' + #10#13;
-ViewDef = 'type                                              ' + #10#13 +
+  '  MVCBr.View, %MdlInterf ,MVCBr.Controller;          ' + #10#13 +
+  '                                                     ' + #10#13;
+ViewDef = '                                   '#10#13 +
+  'type                                                 ' + #10#13 +
   '  I%FormIdent = interface(IView)                      ' + #10#13 +
   '    [''%guid'']                                           ' + #10#13 +
   '    // incluir especializacoes aqui                       ' + #10#13 +
   '  end;                                                    ' + #10#13 +
   '                                                          ' + #10#13 +
-  '  T%FormIdent = class(T%AncestorIdent,IView,IThisAs<T%FormIdent>,' + #10#13 +
-  '                      I%FormIdent,IViewAs<I%FormIdent>)' + #10#13 +
-  '                                                          ' + #10#13 +
+  '  T%FormIdent = class(TFormFactory {T%AncestorIdent} ,IView,IThisAs<T%FormIdent>,'
+  + #10#13 + '                      I%FormIdent,IViewAs<I%FormIdent>)' + #10#13
+  + '                                                          ' + #10#13 +
   '  private                                                 ' + #10#13 +
   '    FViewModel : I%FormIdentModel;                    ' + #10#13 +
   '    FController : IController;                            ' + #10#13 +
@@ -59,9 +60,9 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '  FController := AController;                             ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                          ' + #10#13 +
-  'function T%FormIdent.ViewModel(const AViewModel:I%FormIdentModel):IView;' + #10#13
-  + 'begin                                                     ' + #10#13 +
-  '   result := self;                                        ' + #10#13 +
+  'function T%FormIdent.ViewModel(const AViewModel:I%FormIdentModel):IView;' +
+  #10#13 + 'begin                                                     ' + #10#13
+  + '   result := self;                                        ' + #10#13 +
   '  if assigned(AViewModel) then                          ' + #10#13 +
   '   FViewModel := AViewModel;                          ' + #10#13 +
   'end;                                                      ' + #10#13 +
@@ -109,7 +110,6 @@ ViewCodeFMX = ViewHead + ViewDef +
   '                                                          ' + #10#13 +
   ViewImpl +
   'end.                                                      ' + #10#13;
-
 
 ViewCode2 = ViewHead + ViewDef +
   '                                                          ' + #10#13 +

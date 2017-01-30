@@ -42,6 +42,8 @@ type
     procedure SetModel( const AModel:IDatabaseModel);
     // Retorna a instancia da Query associada
     function Query:T;
+    // Operações com a Query
+
   end;
 
 

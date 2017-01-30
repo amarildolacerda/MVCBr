@@ -2,6 +2,8 @@ Unit Main.ViewModel;
 
 interface
 
+{$I+ ..\inc\mvcbr.inc}
+
 uses MVCBr.Interf, MVCBr.ViewModel, Main.ViewModel.Interf;
 
 Type

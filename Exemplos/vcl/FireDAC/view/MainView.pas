@@ -1,22 +1,27 @@
 unit MainView;
-
 // Código gerado pelo assistente     MVCBr OTA
 // www.tireideletra.com.br
+{$I+ ..\inc\mvcbr.inc}
+
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  Main.ViewModel.Interf, MVCBr.Controller;
+  MVCBr.View, Main.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
+  Vcl.DBGrids;
 
 type
   IMainView = interface(IView)
-    ['{68145032-A559-4926-B598-A7B670021BE1}']
+    ['{5D341F26-EB13-410D-BB31-DF3CC6F5E266}']
     // incluir especializacoes aqui
   end;
 
-  TMainView = class(TFORM, IView, IThisAs<TMainView>, IMainView,
-    IViewAs<IMainView>)
+  TMainView = class(TFormFactory { TFORM } , IView, IThisAs<TMainView>,
+    IMainView, IViewAs<IMainView>)
+    DBGrid1: TDBGrid;
+    btAbrir: TButton;
+    Button1: TButton;
   private
     FViewModel: IMainViewModel;
     FController: IController;

@@ -171,7 +171,7 @@ var
   fc: TProjectFileCreator;
 begin
   debug('Iniciando Project: ' + ProjectName);
-  fc := TProjectFileCreator.Create(FProjectName);
+  fc := TProjectFileCreator.Create(ProjectName);
   fc.isFMX := self.isFMX;
   Result := fc;
 end;

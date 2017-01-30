@@ -18,7 +18,7 @@ viewmodecodeInterf = 'Unit %ModelIdent;                    ' + #10#13 +
 viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
   '                                                               ' + #10#13 +
   'interface                                                      ' + #10#13 +
-  '                                                               ' + #10#13 +
+  '//%include                                                     ' + #10#13 +
   'uses MVCBr.Interf, MVCBr.ViewModel, %ModelIdent.Interf;        ' + #10#13 +
   '                                                               ' + #10#13 +
   'Type                                                           ' + #10#13 +

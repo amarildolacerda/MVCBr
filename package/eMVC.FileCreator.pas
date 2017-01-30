@@ -45,6 +45,7 @@ const
   cPersistentMODEL = 7;
   cModelInterf = 8;
   cProjectGroup = 9;
+  cInclude = 10;
 
 {$I .\inc\project.inc}
 {$I .\inc\viewcode.inc}
@@ -261,6 +262,13 @@ begin
 
   result := stringReplace(result, '%guid', GuidToString(TGuid.NewGuid),
     [rfReplaceAll, rfIgnoreCase]);
+
+  result := stringReplace(result, '%date', DateTimeToStr(now),
+    [rfReplaceAll, rfIgnoreCase]);
+
+  if FTemplates.Values['//%include'] = '' then
+    FTemplates.Values['//%include'] := '{$I+ ..\inc\mvcbr.inc}';
+
 
   // usa os templates - Primeira passada;
   for i := 0 to FTemplates.Count - 1 do

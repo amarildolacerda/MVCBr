@@ -9,7 +9,7 @@ ModelCodeBaseInterf = 'Unit  %ModelIdent;                         ' + #10#13 +
   '                                                              ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
-  'uses Classes, forms, SysUtils, MVCBr.Interf, //%uses  ' + #10#13 +
+  'uses Classes, forms, SysUtils, MVCBr.Interf, //%uses,  ' + #10#13 +
   '      //%Interf, ' + #10#13 + 'MVCBr.Controller;                 ' + #10#13 +
   '                                                              ' + #10#13 +
   'Type                                                           ' + #10#13 +
@@ -31,8 +31,8 @@ ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   '}                                                             ' + #10#13 +
   '                                                              ' + #10#13 +
   'interface                                                     ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'uses Classes, forms, SysUtils, MVCBr.Interf, //%uses     ' + #10#13 +
+  '//%include                                                    ' + #10#13 +
+  'uses Classes, forms, SysUtils, MVCBr.Interf, //%uses,     ' + #10#13 +
   '   %ModelIdent.Interf, //%Interf,  ' + #10#13 +
   'MVCBr.Controller;                 ' + #10#13 +
   '                                                              ' + #10#13 +

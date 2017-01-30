@@ -45,6 +45,7 @@ uses
   eMVC.ViewModelCreator,
   eMVC.AppWizardForm,
   eMVC.ProjectGroupCreator,
+  eMVC.IncludeCreator,
   Dialogs,
   ToolsApi;
 
@@ -93,6 +94,7 @@ var
   Model: TViewModelCreator;
   ModelInterf: TViewModelCreator;
   Ctrl: TControllerCreator;
+  incl:TIncludeCreator;
   AFMX: Boolean;
   pg: IOTAProjectGroup;
   PGModel:TBDSProjectGroupCreator;
@@ -162,7 +164,12 @@ begin
       debug('Erro (Project): ' + e.message);
 
   end;
+  try
   debug('AppWizard: ' +  path + appname);
+
+  incl:=TIncludeCreator.Create(path,'Main',false);
+  incl.IsFMX := AFMX;
+  (BorlandIDEServices as IOTAModuleServices).CreateModule(incl);
 
   Ctrl := TControllerCreator.Create(path, 'Main', false);
   debug('Main Controller Creator');
@@ -188,6 +195,10 @@ begin
   (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
 
   SetCurrentDir(path);
+  except
+     on e:Exception do
+        debug(e.message);
+  end;
 end;
 
 function TNewProjectWizard.GetAuthor: string;

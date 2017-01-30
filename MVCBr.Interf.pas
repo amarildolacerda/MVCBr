@@ -41,15 +41,25 @@ type
       : T; static;
     class function InvokeMethod<T>(AInstance: TObject; AMethod: string;
       const Args: TArray<TValue>): T; static;
+    class procedure SetProperty(AInstance: TObject; APropertyNome: string;
+      AValue: TValue); static;
+    class function GetProperty(AInstance: TObject; APropertyNome: string):TValue; static;
   end;
 
   IMVCBase = interface
     ['{6027634D-6A9E-4FC2-A1CE-71B2194ACCDF}']
+    function GetPropertyValue(ANome: string): TValue;
+    procedure SetPropertyValue(ANome: string; const Value: TValue);
+    property PropertyValue[ ANome:string]:TValue  read GetPropertyValue write SetPropertyValue;
   end;
 
-  TMVCFactoryAbstract = class(TInterfacedObject)
+  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBase)
+  private
+    function GetPropertyValue(ANome: string): TValue;
+    procedure SetPropertyValue(ANome: string; const Value: TValue);
   public
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+    property PropertyValue[ ANome:string]:TValue  read GetPropertyValue write SetPropertyValue;
   end;
 
   // InterfacedList que sera herdado na classes base com controle Threadsafe
@@ -254,6 +264,22 @@ end;
 
 { TMVCBr }
 
+class function TMVCBr.GetProperty(AInstance: TObject;
+  APropertyNome: string): TValue;
+var
+  ctx: TRttiContext;
+  prp: TRttiProperty;
+begin
+  ctx := TRttiContext.Create;
+  try
+    prp := ctx.GetType(AInstance.ClassType).GetProperty(APropertyNome);
+    if Assigned(prp) then
+      result := prp.GetValue(AInstance);
+  finally
+    ctx.Free();
+  end;
+end;
+
 class function TMVCBr.InvokeCreate<T>(const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
@@ -281,12 +307,39 @@ begin
   end;
 end;
 
+class procedure TMVCBr.SetProperty(AInstance: TObject; APropertyNome: string;
+  AValue: TValue);
+var
+  ctx: TRttiContext;
+  prp: TRttiProperty;
+begin
+  ctx := TRttiContext.Create;
+  try
+    prp := ctx.GetType(AInstance.ClassType).GetProperty(APropertyNome);
+    if Assigned(prp) then
+      prp.SetValue(AInstance, AValue);
+  finally
+    ctx.Free();
+  end;
+end;
+
 { TMVCFactoryAbstract }
+
+function TMVCFactoryAbstract.GetPropertyValue(ANome: string): TValue;
+begin
+
+end;
 
 function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(Self, AMethod, Args);
+end;
+
+procedure TMVCFactoryAbstract.SetPropertyValue(ANome: string;
+  const Value: TValue);
+begin
+
 end;
 
 end.
