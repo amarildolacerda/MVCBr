@@ -1,80 +1,120 @@
 unit eMVC.DataModuleCreator;
-{**********************************************************************}
-{ Copyright 2005 Reserved by Eazisoft.com                              }
-{ File Name: DataModuleCreator.pas                                     }
-{ Author: Larry Le                                                     }
-{ Description:                                                         }
-{ Implement IOTAModuleCreator for the TProjectCreatorWizard to create  }
-{ a DataModule                                                         }
-{                                                                      }
-{ History:                                                             }
-{ - 1.0, 19 May 2006                                                   }
-{   First version                                                      }
-{                                                                      }
-{ Email: linfengle@gmail.com                                           }
-{                                                                      }
-{ The contents of this file are subject to the Mozilla Public License }
-{ Version 1.1 (the "License"); you may not use this file except in     }
-{ compliance with the License. You may obtain a copy of the License at }
-{ http://www.mozilla.org/MPL/                                          }
-{                                                                      }
-{ Software distributed under the License is distributed on an "AS IS"  }
-{ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See  }
-{ the License for the specific language governing rights and           }
-{ limitations under the License.                                       }
-{                                                                      }
-{ The Original Code is written in Delphi.                              }
-{                                                                      }
-{ The Initial Developer of the Original Code is Larry Le.              }
-{ Copyright (C) eazisoft.com. All Rights Reserved.                     }
-{                                                                      }
-{**********************************************************************}
-
 
 interface
 
 uses
   Windows, SysUtils,
-  eMVC.ViewCreator,
+  System.Classes,
+  eMVC.OTAUtilities,
+  eMVC.FileCreator,
   ToolsApi,
   eMVC.BaseCreator;
 
+const
+{$I .\inc\Datamodule.inc}
 type
-  //
-  // Implements the necessary interfaces for a Delphi DataModule.  The IDE typically
-  //
   TDataModuleCreator = class(TBaseCreator)
+  private
+    FIsInterf: Boolean;
+    FUnitBase:string;
+    procedure SetIsInterf(const Value: Boolean);
   public
-    function GetAncestorName: string; override;
+    constructor Create(const APath: string = ''; ABaseName: string = '';
+      AUnNamed: Boolean = true; AnAncestorName: string = dataModuleAncestorName); reintroduce;
+    function GetFormName: string; override;
     function GetCreatorType: string; override;
+    function GetImplFileName: string; override;
+    function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
+      : IOTAFile; override;
+    procedure FormCreated(const FormEditor: IOTAFormEditor); override;
+    property IsInterf: Boolean read FIsInterf write SetIsInterf;
   end;
 
 implementation
 
-{$IFDEF GXDEBUG}
-
-function FmtStr(Str: string): string;
-begin
-  if Str = '' then
-    Result := '<nil>'
-  else
-    Result := Str
-end;
-{$ENDIF GXDEBUG}
-
+uses eMVC.toolbox;
 
 { TDataModuleCreator }
 
-
-function TDataModuleCreator.GetAncestorName: string;
+constructor TDataModuleCreator.Create(const APath: string = '';
+  ABaseName: string = ''; AUnNamed: Boolean = true;
+  AnAncestorName: string = dataModuleAncestorName);
 begin
-  Result := 'DataModule';
+  inherited Create(APath, ABaseName, AUnNamed);
+  SetAncestorName(  dataModuleAncestorName );
+  setBaseName( StringReplace(ABaseName,'.','',[]) );
+  FUnitBase := ABaseName;
+  debug('BaseName: '+ABaseName);
+end;
 
+function TDataModuleCreator.GetImplFileName: string;
+begin
+  result := self.getpath + FUnitBase + '.pas';
+  if IsInterf then
+    result := self.getpath + FUnitBase + '.Interf.pas';
+
+  debug('TDataModuleCreator.GetImplFileName: ' + result);
+end;
+
+function TDataModuleCreator.GetFormName: string;
+begin
+  result := StringReplace(GetBaseName, '.', '', []);
+  debug('TDataModuleCreator.GetFormName: ' + result);
+end;
+
+function TDataModuleCreator.NewImplSource(const ModuleIdent, FormIdent,
+  AncestorIdent: string): IOTAFile;
+var
+  fc: TFileCreator;
+  dfm: string;
+begin
+  if IsInterf then
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
+      cModelInterf)
+  else
+  begin
+     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cCLASS);
+  end;
+  fc.isFMX := self.isFMX;
+  fc.Templates.Assign(self.Templates);
+  fc.Templates.Values['%MdlInterf'] := FUnitBase + '.Interf';
+
+  fc.FFuncSource := function: string
+    begin
+      if IsInterf then
+        result := dataModuleCodeInterf
+      else
+        result := dataModuleCode;
+    end;
+
+  result := fc;
+end;
+
+procedure TDataModuleCreator.SetIsInterf(const Value: Boolean);
+begin
+  FIsInterf := Value;
+end;
+
+procedure TDataModuleCreator.FormCreated(const FormEditor: IOTAFormEditor);
+begin
+  // One way to get the FormEditor to create Components.  The TButtons are
+  // created TProjectCreatorWizard.Execute method.
+  debug('TDataModuleCreator.FormCreated');
+  inherited;
 end;
 
 function TDataModuleCreator.GetCreatorType: string;
 begin
-  Result := sForm;
+
+{  if ((sametext(GetAncestorName, 'FORM')) or (sametext(GetAncestorName, 'FRAME')
+    ) or (sametext(GetAncestorName, dataModuleAncestorName))) and (not IsInterf)
+  then
+    result := sForm
+  else
+}    result := sUnit;
+
+  debug('TDataModuleCreator.GetCreatorType=' + GetAncestorName + ',Type='
+    + result);
 end;
 
 end.

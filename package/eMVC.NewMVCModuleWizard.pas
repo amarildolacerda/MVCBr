@@ -1,4 +1,4 @@
-unit eMVC.NewMVCPersistentWizard;
+unit eMVC.NewMVCModuleWizard;
 
 { ********************************************************************** }
 { Copyright 2005 Reserved by Eazisoft.com }
@@ -43,14 +43,18 @@ uses
   eMVC.BaseCreator,
   eMVC.ControllerCreator,
   eMVC.ModelCreator,
-  eMVC.PersistentModelCreator,
-  eMVC.NewSetPersistentModelForm,
+  eMVC.DataModuleCreator,
+  eMVC.NewSetDataModuleModelForm,
   ToolsApi;
 
 type
-  TNewMVCSetPersistentModelWizard = class(TNotifierObject, IOTAWizard,
+  TNewMVCSetDatamoduleModelWizard = class(TNotifierObject, IOTAWizard,
     IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
     IOTAMenuWizard{$ENDIF})
+  private
+    FIsFMX: boolean;
+    procedure SetIsFMX(const Value: boolean);
+  published
     // IOTAWizard
     function GetIDString: string;
     function GetName: string;
@@ -64,13 +68,14 @@ type
 {$IFDEF MENUDEBUG}
     function GetMenuText: string;
 {$ENDIF}
+  property IsFMX:boolean read FIsFMX write SetIsFMX;
   end;
 
 procedure Register;
 
 implementation
 
-uses eMVC.PersistentModelConst;
+uses eMVC.ModuleModelConst;
 
 { TNewMVCSetWizard }
 
@@ -82,11 +87,11 @@ begin
 end;
 {$ENDIF}
 
-procedure TNewMVCSetPersistentModelWizard.Execute;
+procedure TNewMVCSetDatamoduleModelWizard.Execute;
 var
   path: string;
   project: string;
-  Model: TPersistentModelCreator;
+  Model: TDataModuleCreator;
 
   function getProjectName: string;
   var
@@ -108,7 +113,7 @@ var
   begin
     with TStringList.create do
       try
-        text := ModelCodeAncestor;
+        text := ModuleCodeAncestor;
         result := Strings[idx];
       finally
         free;
@@ -118,7 +123,7 @@ var
   begin
     with TStringList.create do
       try
-        text := ModelCodeType;
+        text := ModuleCodeType;
         result := Strings[idx];
       finally
         free;
@@ -129,11 +134,12 @@ var
   begin
     with TStringList.create do
       try
-        text := ModelUses;
+        text := ModuleUses;
         result := Strings[idx];
       finally
         free;
       end;
+
   end;
 
 // %modelInher
@@ -141,7 +147,7 @@ var
   begin
     with TStringList.create do
       try
-        text := ModelInherited;
+        text := ModuleInherited;
         result := Strings[idx];
       finally
         free;
@@ -158,10 +164,11 @@ begin
     exit;
   end;
   path := extractFilePath(project);
-  with TFormNewSetPersistentModel.create(nil) do
+  with TFormNewModuleModel.create(nil) do
   begin
     if showModal = mrOK then
     begin
+      IsFMX := cbFMX.Checked;
       setname := trim(edtSetname.text);
 
       if SetNameExists(setname) then
@@ -178,7 +185,7 @@ begin
             ForceDirectories(path);
         end;
         debug('Pronto para criar o Modulo');
-        Model := TPersistentModelCreator.create(path, setname, false);
+        Model := TDataModuleCreator.create(path, setname+'.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
         //Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%intf',
@@ -194,11 +201,14 @@ begin
         Model.Templates.AddPair('%interfInherited',
           GetModelInher(ComboBox1.ItemIndex));
 
+        if IsFMX then
+           Model.Templates.AddPair('*.dfm','*.fmx');
+
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
         debug('Criou o Model');
 
-        Model := TPersistentModelCreator.create(path, setname, false);
+        Model := TDataModuleCreator.create(path, setname+'.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
        // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
@@ -227,7 +237,7 @@ begin
   end;
 end;
 
-function TNewMVCSetPersistentModelWizard.GetAuthor: string;
+function TNewMVCSetDatamoduleModelWizard.GetAuthor: string;
 begin
   //
   // When Object Repository is in Detail mode used in the Author column
@@ -235,43 +245,43 @@ begin
   result := 'MVCBr'
 end;
 
-function TNewMVCSetPersistentModelWizard.GetComment: string;
+function TNewMVCSetDatamoduleModelWizard.GetComment: string;
 begin
   //
   // When Object Repository is in Detail mode used in the Comment column
   //
-  result := 'MVCBr Criar Model '
+  result := 'MVCBr Criar Datamodule '
 end;
 
-function TNewMVCSetPersistentModelWizard.GetGlyph:
+function TNewMVCSetDatamoduleModelWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
   result := LoadIcon(hInstance, 'SAMPLEWIZARD');
 end;
 
-function TNewMVCSetPersistentModelWizard.GetIDString: string;
+function TNewMVCSetDatamoduleModelWizard.GetIDString: string;
 begin
   //
   // Unique name for the Wizard used internally by Delphi
   //
-  result := 'MVCBr.MVCSetPersistentModelWizard';
+  result := 'MVCBr.MVCSetDataModuleModelWizard';
 end;
 
-function TNewMVCSetPersistentModelWizard.GetName: string;
+function TNewMVCSetDatamoduleModelWizard.GetName: string;
 begin
   //
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := '3. Models';
+  result := '4. Datamodule';
 end;
 
-function TNewMVCSetPersistentModelWizard.GetPage: string;
+function TNewMVCSetDatamoduleModelWizard.GetPage: string;
 begin
   result := 'MVCBr'
 end;
 
-function TNewMVCSetPersistentModelWizard.GetState: TWizardState;
+function TNewMVCSetDatamoduleModelWizard.GetState: TWizardState;
 begin
   //
   // For Menu Item Wizards only
@@ -279,9 +289,14 @@ begin
   result := [wsEnabled];
 end;
 
+procedure TNewMVCSetDatamoduleModelWizard.SetIsFMX(const Value: boolean);
+begin
+  FIsFMX := Value;
+end;
+
 procedure Register;
 begin
-  RegisterPackageWizard(TNewMVCSetPersistentModelWizard.create);
+  RegisterPackageWizard(TNewMVCSetDatamoduleModelWizard.create);
 end;
 
 end.

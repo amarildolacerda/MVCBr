@@ -6,7 +6,7 @@
         <Projects Include="package\MVCBr.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Exemplos\vcl\FireDAC\controller\FireDACExemplo.dproj">
+        <Projects Include="C:\lixo\Filial\datamodule\NewMVCApp.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +26,23 @@
     <Target Name="MVCBr:Make">
         <MSBuild Projects="package\MVCBr.dproj" Targets="Make"/>
     </Target>
-    <Target Name="FireDACExemplo">
-        <MSBuild Projects="Exemplos\vcl\FireDAC\controller\FireDACExemplo.dproj"/>
+    <Target Name="NewMVCApp">
+        <MSBuild Projects="C:\lixo\Filial\datamodule\NewMVCApp.dproj"/>
     </Target>
-    <Target Name="FireDACExemplo:Clean">
-        <MSBuild Projects="Exemplos\vcl\FireDAC\controller\FireDACExemplo.dproj" Targets="Clean"/>
+    <Target Name="NewMVCApp:Clean">
+        <MSBuild Projects="C:\lixo\Filial\datamodule\NewMVCApp.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="FireDACExemplo:Make">
-        <MSBuild Projects="Exemplos\vcl\FireDAC\controller\FireDACExemplo.dproj" Targets="Make"/>
+    <Target Name="NewMVCApp:Make">
+        <MSBuild Projects="C:\lixo\Filial\datamodule\NewMVCApp.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;FireDACExemplo"/>
+        <CallTarget Targets="MVCBr;NewMVCApp"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;FireDACExemplo:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;NewMVCApp:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;FireDACExemplo:Make"/>
+        <CallTarget Targets="MVCBr:Make;NewMVCApp:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

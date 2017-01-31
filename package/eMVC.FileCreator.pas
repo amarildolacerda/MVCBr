@@ -46,6 +46,7 @@ const
   cModelInterf = 8;
   cProjectGroup = 9;
   cInclude = 10;
+  cDataModule = 11;
 
 {$I .\inc\project.inc}
 {$I .\inc\viewcode.inc}
@@ -54,6 +55,7 @@ const
 {$I .\inc\classcode.inc}
 {$I .\inc\viewmodel.inc}
 {$I .\inc\persistentmodel.inc}
+{$I .\inc\datamodule.inc}
 
 type
   TFileCreator = class(TInterfacedObject, IOTAFile)
@@ -69,10 +71,10 @@ type
     FViewModel: boolean;
     FTemplates: TStringList;
     FIsFMX: boolean;
-    FFuncSource: TFunc<string>;
     procedure SetTemplates(const Value: TStringList);
     procedure SetisFMX(const Value: boolean);
   public
+    FFuncSource: TFunc<string>;
     constructor Create(const ModelIdent, FormIdent, AncestorIdent: string;
       ACreateType: smallint = cNORMAL; ACreateModel: boolean = false;
       ACreateView: boolean = false; AModelAlone: boolean = true;
@@ -147,10 +149,16 @@ begin
       cNORMAL:
         result := classCode;
       cVIEW:
-        if FIsFMX then
-          result := ViewCodeFMX
-        else
-          result := ViewCode;
+        begin
+          if FIsFMX then
+            result := ViewCodeFMX
+          else
+            result := ViewCode;
+          if SameText(FAncestorIdent, dataModuleAncestorName) then
+          begin
+            result := dataModuleCode;
+          end;
+        end;
       cCLASS:
         result := ViewCode2;
       cMODEL:
@@ -161,10 +169,12 @@ begin
       cModelInterf:
         begin
           result := ModelInterf;
-          if sametext(FAncestorIdent, 'viewmodel') then
+          if SameText(FAncestorIdent, 'viewmodel') then
             result := viewmodecodeInterf;
-          if sametext(FAncestorIdent, 'PersistentModel') then
+          if SameText(FAncestorIdent, 'PersistentModel') then
             result := ModelCodeBaseInterf;
+          if SameText(FAncestorIdent,dataModuleAncestorName) then
+            Result := dataModuleCodeInterf;
         end;
       CVIEWMODEL:
         begin
@@ -267,8 +277,10 @@ begin
     [rfReplaceAll, rfIgnoreCase]);
 
   if FTemplates.Values['//%include'] = '' then
-    FTemplates.Values['//%include'] := '{$I+ ..\inc\mvcbr.inc}';
+    FTemplates.Values['//%include'] := '{.$I ..\inc\mvcbr.inc}';
 
+  if isFMX then
+    FTemplates.AddPair('*.dfm', '*.fmx');
 
   // usa os templates - Primeira passada;
   for i := 0 to FTemplates.Count - 1 do

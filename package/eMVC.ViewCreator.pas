@@ -44,7 +44,7 @@ end;
 
 function TViewCreator.GetFormName: string;
 begin
-  result := GetBaseName + 'View';
+  result := StringReplace(GetBaseName + 'View', '.', '', []);
   debug('Form View: ' + result);
 end;
 
@@ -57,9 +57,9 @@ begin
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cView)
   else
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cClass);
-  fc.isFMX := self.IsFMX;
+  fc.isFMX := self.isFMX;
   fc.Templates.Assign(self.Templates);
-  fc.Templates.Values['%MdlInterf'] :=getBaseName+'.ViewModel.Interf';
+  fc.Templates.Values['%MdlInterf'] := GetBaseName + '.ViewModel.Interf';
 
   result := fc;
 end;
@@ -68,6 +68,7 @@ procedure TViewCreator.FormCreated(const FormEditor: IOTAFormEditor);
 begin
   // One way to get the FormEditor to create Components.  The TButtons are
   // created TProjectCreatorWizard.Execute method.
+  debug('TViewCreator.FormCreated');
   inherited;
 end;
 

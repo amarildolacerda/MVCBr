@@ -82,7 +82,7 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtCommon, mtViewModel, mtValidate, mtPersistent, mtNavigator);
+  TModelType = (mtCommon, mtViewModel,mtModule, mtValidate, mtPersistent, mtNavigator);
   TModelTypes = set of TModelType;
 
   // IModel Interfaces
@@ -91,7 +91,7 @@ type
   // Base para implementar IModel
   IModelBase = interface
     ['{E1622D13-701C-4AD8-8AD4-A1B64B8D251F}']
-    function This: TInterfacedObject;
+    function This: TObject;
     function GetID: string;
     function ID(const AID: String): IModel;
     function Update: IModel;
@@ -234,6 +234,11 @@ type
   IValidateModel = interface(IModel)
     ['{01A80AFD-8674-4E05-BCC4-00514DE84D88}']
   end;
+
+  IModuleModel = interface(IModel)
+    ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
+  end;
+
 
 implementation
 

@@ -32,7 +32,7 @@ type
     function GetController: IController;
     function GetOwned:TComponent; override;
     function Controller(const AController: IController): IModel; virtual;
-    function This: TInterfacedObject; virtual;
+    function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
     function Update: IModel;
@@ -95,7 +95,7 @@ begin
   FController := AController;
 end;
 
-function TModelFactory.This: TInterfacedObject;
+function TModelFactory.This: TObject;
 begin
   result := self;
 end;
