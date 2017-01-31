@@ -43,14 +43,16 @@ type
       const Args: TArray<TValue>): T; static;
     class procedure SetProperty(AInstance: TObject; APropertyNome: string;
       AValue: TValue); static;
-    class function GetProperty(AInstance: TObject; APropertyNome: string):TValue; static;
+    class function GetProperty(AInstance: TObject; APropertyNome: string)
+      : TValue; static;
   end;
 
   IMVCBase = interface
     ['{6027634D-6A9E-4FC2-A1CE-71B2194ACCDF}']
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
-    property PropertyValue[ ANome:string]:TValue  read GetPropertyValue write SetPropertyValue;
+    property PropertyValue[ANome: string]: TValue read GetPropertyValue
+      write SetPropertyValue;
   end;
 
   TMVCFactoryAbstract = class(TInterfacedObject, IMVCBase)
@@ -59,12 +61,14 @@ type
     procedure SetPropertyValue(ANome: string; const Value: TValue);
   public
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
-    property PropertyValue[ ANome:string]:TValue  read GetPropertyValue write SetPropertyValue;
+    property PropertyValue[ANome: string]: TValue read GetPropertyValue
+      write SetPropertyValue;
   end;
 
   // InterfacedList que sera herdado na classes base com controle Threadsafe
   TMVCInterfacedList<T> = class(TInterfaceList)
   public
+    procedure DoLoop(AGuid: TGUID; AProc: TProc<T>);
   end;
 
   IController = interface;
@@ -82,7 +86,8 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtCommon, mtViewModel,mtModule, mtValidate, mtPersistent, mtNavigator);
+  TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
+    mtNavigator);
   TModelTypes = set of TModelType;
 
   // IModel Interfaces
@@ -102,9 +107,10 @@ type
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     function Controller(const AController: IController): IModel;
     function GetModelTypes: TModelTypes;
-    function GetController:IController;
+    function GetController: IController;
     procedure SetModelTypes(const AModelType: TModelTypes);
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+    procedure AfterInit;
   end;
 
   IModelAs<T> = interface
@@ -137,12 +143,14 @@ type
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
     procedure Run(AClass: TComponentClass; AController: IController;
-      AModel: IModel; AFunc: TFunc < boolean >= nil);overload;
-    procedure Run(AController: IController; AFunc: TFunc < boolean >= nil);overload;
+      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AController: IController;
+      AFunc: TFunc < boolean >= nil); overload;
     function Count: Integer;
     function Add(const AController: IController): Integer;
     procedure Delete(const idx: Integer);
     procedure Remove(const AController: IController);
+    procedure DoLoop(AProc: TProc<IController>);
   end;
 
   TControllerAbstract = class;
@@ -185,6 +193,7 @@ type
     function GetView: IView; overload;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
+    procedure DoLoop(AProc: TProc<IModel>);
   end;
 
   IViewModelAs<T> = interface
@@ -207,6 +216,7 @@ type
   IViewModel = interface(IViewModelBase)
     ['{9F943F5D-4367-4537-857F-1399DBF7133F}']
     function Controller(const AController: IController): IViewModel;
+    procedure AfterInit;
   end;
 
   IPersistentModel = interface;
@@ -238,7 +248,6 @@ type
   IModuleModel = interface(IModel)
     ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
   end;
-
 
 implementation
 
@@ -337,7 +346,7 @@ end;
 
 function TMVCFactoryAbstract.GetPropertyValue(ANome: string): TValue;
 begin
-
+  result := TMVCBr.GetProperty(Self, ANome);
 end;
 
 function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string;
@@ -349,7 +358,22 @@ end;
 procedure TMVCFactoryAbstract.SetPropertyValue(ANome: string;
   const Value: TValue);
 begin
+  TMVCBr.SetProperty(Self, ANome, Value);
+end;
 
+{ TMVCInterfacedList<T> }
+
+procedure TMVCInterfacedList<T>.DoLoop(AGuid: TGUID; AProc: TProc<T>);
+var
+  I: Integer;
+  intf: T;
+begin
+  if Assigned(AProc) then
+    for I := 0 to Count - 1 do
+    begin
+      supports(Items[I], AGuid, intf);
+      AProc(intf);
+    end;
 end;
 
 end.

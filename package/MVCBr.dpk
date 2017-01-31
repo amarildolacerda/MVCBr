@@ -68,6 +68,8 @@ contains
   eMVC.PersistentModelConst in 'eMVC.PersistentModelConst.pas',
   eMVC.IncludeCreator in 'eMVC.IncludeCreator.pas',
   eMVC.ModuleModelConst in 'eMVC.ModuleModelConst.pas',
-  eMVC.NewMVCModuleWizard in 'eMVC.NewMVCModuleWizard.pas';
+  eMVC.NewMVCModuleWizard in 'eMVC.NewMVCModuleWizard.pas',
+  eMVC.NewSetDataModuleModelForm in 'eMVC.NewSetDataModuleModelForm.pas' {FormNewModuleModel},
+  eMVC.NewSetForm in 'eMVC.NewSetForm.pas' {FormNewSet};
 
 end.

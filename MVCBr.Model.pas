@@ -9,7 +9,7 @@ type
   TMVCInterfacedObject = Class(TMVCFactoryAbstract)
   public
     class function New(AClass: TInterfacedClass): IInterface;
-    function GetOwned:TComponent;virtual;
+    function GetOwned: TComponent; virtual;
   end;
 
   TModelFactory = class;
@@ -28,9 +28,9 @@ type
   public
 
     constructor create; virtual;
-    destructor destroy;override;
+    destructor destroy; override;
     function GetController: IController;
-    function GetOwned:TComponent; override;
+    function GetOwned: TComponent; override;
     function Controller(const AController: IController): IModel; virtual;
     function This: TObject; virtual;
     function GetID: string; virtual;
@@ -38,7 +38,7 @@ type
     function Update: IModel;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes
       default [mtCommon];
-
+    procedure AfterInit; virtual;
   end;
 
 implementation
@@ -75,7 +75,7 @@ end;
 
 function TModelFactory.GetOwned: TComponent;
 begin
-   result := FOwned;
+  result := FOwned;
 end;
 
 function TModelFactory.ID(const AID: String): IModel;
@@ -87,6 +87,11 @@ end;
 procedure TModelFactory.SetModelTypes(const AModelTypes: TModelTypes);
 begin
   FModelTypes := AModelTypes;
+end;
+
+procedure TModelFactory.AfterInit;
+begin
+  // chamado apos a conclusao do controller
 end;
 
 function TModelFactory.Controller(const AController: IController): IModel;
@@ -106,7 +111,6 @@ begin
 end;
 
 { TMVCInterfacedObject }
-
 
 function TMVCInterfacedObject.GetOwned: TComponent;
 begin

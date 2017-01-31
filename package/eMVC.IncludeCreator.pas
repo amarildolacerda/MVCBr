@@ -50,7 +50,7 @@ end;
 
 function TIncludeCreator.GetImplFileName: string;
 begin
-  result := self.getpath + 'inc\mvcbr.inc';
+  result := self.getpath + 'mvcbr.inc';
   debug('TIncludeCreator.GetImplFileName: ' + result);
   ForceDirectories( ExtractFilePath(Result)  );
 end;

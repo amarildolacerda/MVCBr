@@ -9,7 +9,10 @@
         <Projects Include="vcl\basico\ExemploBasico.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="vcl\RTTIView\RttiSample.dproj">
+        <Projects Include="vcl\ACBr\ACBrExemplo.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="vcl\ModuloBasico\ModuloModelExemplo.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -38,23 +41,32 @@
     <Target Name="ExemploBasico:Make">
         <MSBuild Projects="vcl\basico\ExemploBasico.dproj" Targets="Make"/>
     </Target>
-    <Target Name="RttiSample">
-        <MSBuild Projects="vcl\RTTIView\RttiSample.dproj"/>
+    <Target Name="ACBrExemplo">
+        <MSBuild Projects="vcl\ACBr\ACBrExemplo.dproj"/>
     </Target>
-    <Target Name="RttiSample:Clean">
-        <MSBuild Projects="vcl\RTTIView\RttiSample.dproj" Targets="Clean"/>
+    <Target Name="ACBrExemplo:Clean">
+        <MSBuild Projects="vcl\ACBr\ACBrExemplo.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="RttiSample:Make">
-        <MSBuild Projects="vcl\RTTIView\RttiSample.dproj" Targets="Make"/>
+    <Target Name="ACBrExemplo:Make">
+        <MSBuild Projects="vcl\ACBr\ACBrExemplo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ModuloModelExemplo">
+        <MSBuild Projects="vcl\ModuloBasico\ModuloModelExemplo.dproj"/>
+    </Target>
+    <Target Name="ModuloModelExemplo:Clean">
+        <MSBuild Projects="vcl\ModuloBasico\ModuloModelExemplo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ModuloModelExemplo:Make">
+        <MSBuild Projects="vcl\ModuloBasico\ModuloModelExemplo.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;ExemploBasico;RttiSample"/>
+        <CallTarget Targets="MVCBr;ExemploBasico;ACBrExemplo;ModuloModelExemplo"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;ExemploBasico:Clean;RttiSample:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;ExemploBasico:Clean;ACBrExemplo:Clean;ModuloModelExemplo:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;ExemploBasico:Make;RttiSample:Make"/>
+        <CallTarget Targets="MVCBr:Make;ExemploBasico:Make;ACBrExemplo:Make;ModuloModelExemplo:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

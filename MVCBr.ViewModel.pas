@@ -15,18 +15,25 @@ type
     constructor create; override;
     class function New(const AView: IView; const AModel: IModel)
       : IViewModel; virtual;
+    procedure AfterInit; virtual;
     function Update(const AView: IView): IViewModel; overload;
     function Update(const AModel: IModel): IViewModel; overload;
     function This: TObject; virtual;
     function View(const AView: IView = nil): IViewModel; virtual;
     function Model(const AModel: IModel = nil): IViewModel; virtual;
-    function Controller(const AController: IController): IViewModel; reintroduce; virtual;
+    function Controller(const AController: IController): IViewModel;
+      reintroduce; virtual;
 
   end;
 
 implementation
 
 { TViewModelFactory }
+
+procedure TViewModelFactory.AfterInit;
+begin
+  // disparado apos
+end;
 
 function TViewModelFactory.Controller(const AController: IController)
   : IViewModel;
@@ -44,7 +51,7 @@ end;
 function TViewModelFactory.Model(const AModel: IModel): IViewModel;
 begin
   result := self;
-  if not assigned(AModel) then
+  if not Assigned(AModel) then
     exit;
   FModel := AModel;
 end;
@@ -65,21 +72,21 @@ end;
 function TViewModelFactory.Update(const AModel: IModel): IViewModel;
 begin
   result := self;
-  if assigned(FView) then
+  if Assigned(FView) then
     FView.Update;
 end;
 
 function TViewModelFactory.Update(const AView: IView): IViewModel;
 begin
   result := self;
-  if assigned(FModel) then
+  if Assigned(FModel) then
     FModel.Update;
 end;
 
 function TViewModelFactory.View(const AView: IView): IViewModel;
 begin
   result := self;
-  if not assigned(AView) then
+  if not Assigned(AView) then
     exit;
   FView := AView;
 end;

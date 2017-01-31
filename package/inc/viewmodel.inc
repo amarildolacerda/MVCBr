@@ -31,6 +31,7 @@ viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
   '      function ViewModelAs:I%FormIdentViewModel;               ' + #10#13 +
   '      class function new():I%FormIdentViewModel;overload;               ' + #10#13 +
   '      class function new(const AController:IController):I%FormIdentViewModel; overload;' + #10#13 +
+  '      procedure AfterInit;override;                            ' + #10#13 +
   '    end;                                                       ' + #10#13 +
   '                                                               ' + #10#13 +
   'implementation                                                 ' + #10#13 +
@@ -49,6 +50,12 @@ viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
   'begin                                                          ' + #10#13 +
   '  result := T%FormIdentViewModel.create;                       ' + #10#13 +
   '  result.controller(AController);                             ' + #10#13 +
+  'end;                                                           ' + #10#13 +
+  '                                                               ' + #10#13 +
+  'procedure T%FormIdentViewModel.AfterInit;                      ' + #10#13 +
+  'begin                                                          ' + #10#13 +
+  '    // evento disparado apos a definicao do Controller;        ' + #10#13 +
+  '                                                               ' + #10#13 +
   'end;                                                           ' + #10#13 +
   '                                                               ' + #10#13 +
   'end.                                                           ' + #10#13;

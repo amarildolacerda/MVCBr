@@ -16,11 +16,12 @@ type
   TDataModuleCreator = class(TBaseCreator)
   private
     FIsInterf: Boolean;
-    FUnitBase:string;
+    FUnitBase: string;
     procedure SetIsInterf(const Value: Boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
-      AUnNamed: Boolean = true; AnAncestorName: string = dataModuleAncestorName); reintroduce;
+      AUnNamed: Boolean = true;
+      AnAncestorName: string = dataModuleAncestorName); reintroduce;
     function GetFormName: string; override;
     function GetCreatorType: string; override;
     function GetImplFileName: string; override;
@@ -41,10 +42,10 @@ constructor TDataModuleCreator.Create(const APath: string = '';
   AnAncestorName: string = dataModuleAncestorName);
 begin
   inherited Create(APath, ABaseName, AUnNamed);
-  SetAncestorName(  dataModuleAncestorName );
-  setBaseName( StringReplace(ABaseName,'.','',[]) );
+  SetAncestorName(dataModuleAncestorName);
+  setBaseName(StringReplace(ABaseName, '.', '', []));
   FUnitBase := ABaseName;
-  debug('BaseName: '+ABaseName);
+  debug('BaseName: ' + ABaseName);
 end;
 
 function TDataModuleCreator.GetImplFileName: string;
@@ -73,7 +74,7 @@ begin
       cModelInterf)
   else
   begin
-     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cCLASS);
+    fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cCLASS);
   end;
   fc.isFMX := self.isFMX;
   fc.Templates.Assign(self.Templates);
@@ -106,12 +107,12 @@ end;
 function TDataModuleCreator.GetCreatorType: string;
 begin
 
-{  if ((sametext(GetAncestorName, 'FORM')) or (sametext(GetAncestorName, 'FRAME')
+  { if ((sametext(GetAncestorName, 'FORM')) or (sametext(GetAncestorName, 'FRAME')
     ) or (sametext(GetAncestorName, dataModuleAncestorName))) and (not IsInterf)
-  then
+    then
     result := sForm
-  else
-}    result := sUnit;
+    else
+  } result := sUnit;
 
   debug('TDataModuleCreator.GetCreatorType=' + GetAncestorName + ',Type='
     + result);

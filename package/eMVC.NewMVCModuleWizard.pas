@@ -45,6 +45,8 @@ uses
   eMVC.ModelCreator,
   eMVC.DataModuleCreator,
   eMVC.NewSetDataModuleModelForm,
+  MVCBr.ModuleModel,
+  DesignIntf,
   ToolsApi;
 
 type
@@ -297,6 +299,14 @@ end;
 procedure Register;
 begin
   RegisterPackageWizard(TNewMVCSetDatamoduleModelWizard.create);
+
+  UnlistPublishedProperty(TModuleFactory,'Font');
+  UnlistPublishedProperty(TModuleFactory,'ClientWidth');
+  UnlistPublishedProperty(TModuleFactory,'ClientHeight');
+  UnlistPublishedProperty(TModuleFactory,'Color');
+  UnlistPublishedProperty(TModuleFactory,'PixelsPerInch');
+  UnlistPublishedProperty(TModuleFactory,'TextHeight');
+
 end;
 
 end.

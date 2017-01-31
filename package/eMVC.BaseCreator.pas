@@ -159,21 +159,21 @@ end;
 function TBaseCreator.getpath: string;
 begin
   Result := FPath;
-  Result := Result +LowerCase(FAncestorName) +'\';
-{  if sametext(FAncestorName, 'form') or sametext(FAncestorName, 'frame') then
-    Result := Result + 'view\';
+  if sametext(FAncestorName, 'form') or sametext(FAncestorName, 'frame') then
+    Result := Result + 'view\'
+  else if sametext(FAncestorName, 'datamodule') then
+    Result := Result + 'module\'
+  else if sametext(FAncestorName, 'model') then
+    Result := Result + 'model\'
+  else if sametext(FAncestorName, 'viewmodel') then
+    Result := Result + 'viewmodel\'
+  else if sametext(FAncestorName, 'viewmodel') then
+    Result := Result + 'viewmodel\'
+  else if sametext(FAncestorName, 'include') then
+    Result := Result + 'inc\'
+  else
+    Result := Result + LowerCase(FAncestorName) + '\';
 
-  if sametext(FAncestorName, 'module') then
-    Result := Result + 'module\';
-
-  if sametext(FAncestorName, 'model') then
-    Result := Result + 'model\';
-  if sametext(FAncestorName, 'viewmodel') then
-    Result := Result + 'viewmodel\';
-
-  if sametext(FAncestorName, 'controller') then
-    Result := Result + 'controller\';
-}
   if not DirectoryExists(Result) then
     ForceDirectories(Result);
   Debug('Path: ' + Result);

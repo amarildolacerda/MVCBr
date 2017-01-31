@@ -2,28 +2,29 @@ unit MainView;
 
 // Código gerado pelo assistente     MVCBr OTA
 // www.tireideletra.com.br
+{ .$I ..\inc\mvcbr.inc }
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  MVCbr.View,
-  Main.ViewModel.Interf, MVCBr.Controller;
+  Pessoas.ModuleModel.Interf,
+  MVCBr.View, Main.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
+  Vcl.DBGrids;
 
 type
   IMainView = interface(IView)
-    ['{FBC8D581-6590-4F9B-8CBE-51FF51968922}']
+    ['{965F82C7-8527-4B7A-BDB1-BF8CA6391B36}']
     // incluir especializacoes aqui
   end;
 
-  TMainView = class(TFormFactory, IView, IThisAs<TMainView>, IMainView,
-    IViewAs<IMainView>)
-    Label1: TLabel;
-    Edit1: TEdit;
-    Button1: TButton;
-    procedure Button1Click(Sender: TObject);
+  TMainView = class(TFormFactory { TFORM } , IView, IThisAs<TMainView>,
+    IMainView, IViewAs<IMainView>)
+    DBGrid1: TDBGrid;
+    procedure FormShow(Sender: TObject);
   private
     FViewModel: IMainViewModel;
+    FCadastroModel:IPessoasModuleModel;
     FController: IController;
   protected
     function Controller(const aController: IController): IView;
@@ -55,15 +56,18 @@ begin
   result := self;
 end;
 
+procedure TMainView.FormShow(Sender: TObject);
+begin
+   FCadastroModel := FController.This.GetModel<IPessoasModuleModel>;
+
+   DBGrid1.DataSource := FCadastroModel.CadastroDatasource;
+
+end;
+
 class function TMainView.New(aController: IController): IView;
 begin
   result := TMainView.create(nil);
   result.Controller(aController);
-end;
-
-procedure TMainView.Button1Click(Sender: TObject);
-begin
-  FViewModel.ValidarCPF(Edit1.Text);
 end;
 
 function TMainView.Controller(const aController: IController): IView;

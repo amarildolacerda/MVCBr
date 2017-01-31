@@ -1015,12 +1015,26 @@ end;
 ///////////////////////////////////////////////////////////////////
 
 function BrowseForFolder(const browseTitle: string; const initialFolder: string = ''): string;
-var
+{var
   browse_info: TBrowseInfo;
   folder: array[0..MAX_PATH] of char;
   find_context: PItemIDList;
-begin
-  FillChar(browse_info, SizeOf(browse_info), #0);
+}begin
+  result := initialFolder;
+  with TFileOpenDialog.Create(nil) do
+    try
+      Title := 'Selecione a pasta';
+      Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem]; // YMMV
+      OkButtonLabel := 'Ok';
+      DefaultFolder := initialFolder;
+      FileName := initialFolder;
+      if Execute then
+        result := FileName;
+    finally
+      Free;
+    end;
+
+{  FillChar(browse_info, SizeOf(browse_info), #0);
   lg_StartFolder := initialFolder;
   browse_info.pszDisplayName := @folder[0];
   browse_info.lpszTitle := PChar(browseTitle);
@@ -1039,6 +1053,7 @@ begin
   end
   else
     result := '';
+    }
 end;
 
 //procedure debug(s: string);

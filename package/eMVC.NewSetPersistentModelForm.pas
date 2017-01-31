@@ -41,7 +41,6 @@ type
     btnBack: TBitBtn;
     btnCancel: TBitBtn;
     ScrollBox1: TScrollBox;
-    Image1: TImage;
     nb: TNotebook;
     btnOKNext: TBitBtn;
     edtSetName: TEdit;
@@ -63,6 +62,7 @@ type
     Label5: TLabel;
     ComboBox1: TComboBox;
     cbFMX: TCheckBox;
+    Image1: TImage;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);

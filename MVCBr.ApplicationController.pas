@@ -25,6 +25,7 @@ type
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
     class function New: IApplicationController;
+    procedure DoLoop( AProc:TProc<IController>);
   end;
 
 function ApplicationController: IApplicationController;
@@ -80,6 +81,14 @@ destructor TApplicationController.destroy;
 begin
   FControllers.Free;
   inherited;
+end;
+
+procedure TApplicationController.DoLoop(AProc: TProc<IController>);
+var i:integer;
+begin
+   if Assigned(AProc) then
+   for I := 0 to FControllers.Count-1 do
+      AProc(FControllers.Items[i] as IController);
 end;
 
 class function TApplicationController.New: IApplicationController;

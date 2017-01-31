@@ -40,6 +40,8 @@ ModelDef = 'type                                                 ' + #10#13 +
   '    class function new(' + #10#13 +
   '      const AController:IController):I%FormIdentModel;overload;' + #10#13 +
   '    function ThisAs:T%FormIdentModel;                         ' + #10#13 +
+  '    procedure AfterInit;override;                             ' + #10#13 +
+
   '  end;                                                        ' + #10#13 +
   '                                                              ' + #10#13;
 
@@ -63,6 +65,10 @@ ModelImpl = 'Constructor T%FormIdentModel.Create;                ' + #10#13 +
   '   result := new(nil);                                        ' + #10#13+
   'end;                                                          ' + #10#13+
   '                                                              ' + #10#13 +
+  'procedure T%FormIdentModel.AfterInit;                         ' + #10#13 +
+  'begin                                                         ' + #10#13 +
+  '    // executado apos concluido o controller                 ' + #10#13 +
+  'end;                                                          ' + #10#13 +
   'class function T%FormIdentModel.new(const AController:IController):I%FormIdentModel;'
   + #10#13 + 'begin                                                         ' +
   #10#13 + '  result := T%FormIdentModel.create;                          ' +

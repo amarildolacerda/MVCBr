@@ -2,26 +2,28 @@ unit MainView;
 
 // Código gerado pelo assistente     MVCBr OTA
 // www.tireideletra.com.br
+{ .$I ..\inc\mvcbr.inc }
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  MVCbr.View,
-  Main.ViewModel.Interf, MVCBr.Controller;
+  MVCBr.View, Main.ViewModel.Interf, MVCBr.Controller;
 
 type
   IMainView = interface(IView)
-    ['{FBC8D581-6590-4F9B-8CBE-51FF51968922}']
+    ['{0A6B1F59-A0BD-4E27-BC3F-109AE712EBBF}']
     // incluir especializacoes aqui
   end;
 
-  TMainView = class(TFormFactory, IView, IThisAs<TMainView>, IMainView,
-    IViewAs<IMainView>)
+  TMainView = class(TFormFactory { TFORM } , IView, IThisAs<TMainView>,
+    IMainView, IViewAs<IMainView>)
     Label1: TLabel;
     Edit1: TEdit;
     Button1: TButton;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     FViewModel: IMainViewModel;
     FController: IController;
@@ -41,6 +43,8 @@ type
 implementation
 
 {$R *.dfm}
+
+uses Dialogs, ACBrUtils.Model.Interf, ACBrValidador.Model.Interf;
 
 function TMainView.Update: IView;
 begin
@@ -62,8 +66,29 @@ begin
 end;
 
 procedure TMainView.Button1Click(Sender: TObject);
+var
+  Model: IACBrUtilsModel;
 begin
-  FViewModel.ValidarCPF(Edit1.Text);
+
+  // exemplo utilizando o Controller para pegar qual o MODEL que faz o tipo de validação
+  Model := FController.This.GetModel<IACBrUtilsModel>(); // < procura o ´MODEL
+  if Model.EAN13Valido(Edit1.text) then
+    showmessage('EAN é válido')
+  else
+    showmessage('Não é um código EAN');
+
+end;
+
+procedure TMainView.Button2Click(Sender: TObject);
+var
+   msg:String;
+begin
+  msg := FController.This.GetModel<IACBrValidadorModel>()
+    .ValidarCNPJouCPF(Edit1.text);
+  if msg='' then
+    showmessage('Número OK')
+  else
+    showmessage('Inválido: '+msg);
 end;
 
 function TMainView.Controller(const aController: IController): IView;

@@ -38,6 +38,7 @@ type
     function IndexOfModelType(const AModelType: TModelType): integer;
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
+    procedure DoLoop(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
@@ -99,6 +100,15 @@ begin
 
 end;
 
+procedure TControllerFactory.DoLoop(AProc: TProc<IModel>);
+var
+  i: integer;
+begin
+  if assigned(AProc) then
+    for i := 0 to FModels.Count - 1 do
+      AProc(FModels.Items[i] as IModel);
+end;
+
 function TControllerFactory.GetModel(const idx: integer): IModel;
 begin
   result := FModels[idx] as IModel;
@@ -106,13 +116,13 @@ end;
 
 function TControllerFactory.GetModelByID(const AID: String): IModel;
 var
-  I: integer;
+  i: integer;
 begin
   result := nil;
-  for I := 0 to FModels.Count - 1 do
-    if sameText(AID, (FModels.Items[I] as IModel).GetID) then
+  for i := 0 to FModels.Count - 1 do
+    if sameText(AID, (FModels.Items[i] as IModel).GetID) then
     begin
-      result := FModels.Items[I] as IModel;
+      result := FModels.Items[i] as IModel;
       exit;
     end;
 end;
@@ -120,12 +130,12 @@ end;
 function TControllerFactory.GetModelByType(const AModelType
   : TModelType): IModel;
 var
-  I: integer;
+  i: integer;
 begin
   result := nil;
-  I := IndexOfModelType(AModelType);
-  if I >= 0 then
-    result := FModels.Items[I] as IModel;
+  i := IndexOfModelType(AModelType);
+  if i >= 0 then
+    result := FModels.Items[i] as IModel;
 end;
 
 function TControllerFactory.IndexOf(const AModel: IModel): integer;
@@ -136,13 +146,13 @@ end;
 function TControllerFactory.IndexOfModelType(const AModelType
   : TModelType): integer;
 var
-  I: integer;
+  i: integer;
 begin
   result := -1;
-  for I := 0 to FModels.Count - 1 do
-    if AModelType in (FModels.Items[I] as IModel).ModelTypes then
+  for i := 0 to FModels.Count - 1 do
+    if AModelType in (FModels.Items[i] as IModel).ModelTypes then
     begin
-      result := I;
+      result := i;
       exit;
     end;
 end;
@@ -160,8 +170,15 @@ begin
   FModel := GetModelByType(mtViewModel);
   if Supports(FModel.This, IViewModel, vm) then
   begin
-    vm.View(FView);
+    vm.View(FView).Controller(self);
   end;
+
+  DoLoop(
+    procedure(AModel: IModel)
+    begin
+       AModel.AfterInit;
+    end);
+
 end;
 
 function TControllerFactory.This: TControllerAbstract;
@@ -171,11 +188,11 @@ end;
 
 function TControllerFactory.UpdateAll: IController;
 var
-  I: integer;
+  i: integer;
 begin
   result := self;
-  for I := 0 to FModels.Count - 1 do
-    (FModels.Items[I] as IModel).Update;
+  for i := 0 to FModels.Count - 1 do
+    (FModels.Items[i] as IModel).Update;
   FView.Update;
 end;
 
@@ -186,10 +203,10 @@ end;
 
 function TControllerFactory.UpdateByView(AView: IView): IController;
 var
-  I: integer;
+  i: integer;
 begin
-  for I := 0 to FModels.Count - 1 do
-    (FModels.Items[I] as IModel).Update;
+  for i := 0 to FModels.Count - 1 do
+    (FModels.Items[i] as IModel).Update;
 end;
 
 function TControllerFactory.View(const AView: IView): IController;
