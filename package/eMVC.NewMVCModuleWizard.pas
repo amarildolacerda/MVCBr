@@ -70,7 +70,7 @@ type
 {$IFDEF MENUDEBUG}
     function GetMenuText: string;
 {$ENDIF}
-  property IsFMX:boolean read FIsFMX write SetIsFMX;
+    property IsFMX: boolean read FIsFMX write SetIsFMX;
   end;
 
 procedure Register;
@@ -186,10 +186,14 @@ begin
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
+
+        ChDir(extractFilePath(project));
+
         debug('Pronto para criar o Modulo');
-        Model := TDataModuleCreator.create(path, setname+'.ModuleModel', false);
+        Model := TDataModuleCreator.create(path,
+          setname + '.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
-        //Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+        // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%intf',
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
         Model.Templates.AddPair('%modelType',
@@ -198,21 +202,22 @@ begin
           GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
+        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
 
         Model.Templates.AddPair('%interfInherited',
           GetModelInher(ComboBox1.ItemIndex));
 
         if IsFMX then
-           Model.Templates.AddPair('*.dfm','*.fmx');
+          Model.Templates.AddPair('*.dfm', '*.fmx');
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
         debug('Criou o Model');
 
-        Model := TDataModuleCreator.create(path, setname+'.ModuleModel', false);
+        Model := TDataModuleCreator.create(path,
+          setname + '.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
-       // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+        // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
         Model.Templates.AddPair('%intf',
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
@@ -226,7 +231,7 @@ begin
           GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
+        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -300,12 +305,12 @@ procedure Register;
 begin
   RegisterPackageWizard(TNewMVCSetDatamoduleModelWizard.create);
 
-  UnlistPublishedProperty(TModuleFactory,'Font');
-  UnlistPublishedProperty(TModuleFactory,'ClientWidth');
-  UnlistPublishedProperty(TModuleFactory,'ClientHeight');
-  UnlistPublishedProperty(TModuleFactory,'Color');
-  UnlistPublishedProperty(TModuleFactory,'PixelsPerInch');
-  UnlistPublishedProperty(TModuleFactory,'TextHeight');
+  UnlistPublishedProperty(TModuleFactory, 'Font');
+  UnlistPublishedProperty(TModuleFactory, 'ClientWidth');
+  UnlistPublishedProperty(TModuleFactory, 'ClientHeight');
+  UnlistPublishedProperty(TModuleFactory, 'Color');
+  UnlistPublishedProperty(TModuleFactory, 'PixelsPerInch');
+  UnlistPublishedProperty(TModuleFactory, 'TextHeight');
 
 end;
 

@@ -55,8 +55,7 @@ end;
 constructor TModuleFactory.Create(AOwner: TComponent);
 begin
   inherited;
-  BorderIcons:=[];
-
+  //BorderIcons:=[];
   // FFont:= TFont.Create;
 end;
 

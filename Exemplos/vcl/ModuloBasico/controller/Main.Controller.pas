@@ -100,7 +100,7 @@ begin
     Application.CreateForm(TMainView, ref);
     supports(ref, IView, FView);
   end;
-  endInit;
+  AfterInit;
 end;
 
 // Adicionar os modulos e MODELs personalizados
@@ -116,4 +116,11 @@ end;
 initialization
 
 // TMainController.New(TMainView.New,TMainViewModel.New)).init();
+RegisterInterfacedClass(TMainController.ClassName,IMainController,TMainController);
+
+finalization
+
+unRegisterInterfacedClass(TMainController.ClassName);
+//UnRegisterClass(TPersistentClass(TMainController.ClassInfo));
+
 end.

@@ -177,6 +177,9 @@ begin
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
+
+        ChDir(ExtractFilePath(project));
+
         debug('Pronto para criar o Modulo');
         Model := TPersistentModelCreator.create(path, setname, false);
         Model.IsFMX := cbFMX.Checked;

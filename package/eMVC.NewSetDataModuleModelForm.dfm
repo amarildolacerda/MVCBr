@@ -94,6 +94,8 @@ object FormNewModuleModel: TFormNewModuleModel
         Width = 233
         Height = 17
         Caption = 'criar sub-pasta para o artefato'
+        Checked = True
+        State = cbChecked
         TabOrder = 1
       end
       object cbFMX: TCheckBox

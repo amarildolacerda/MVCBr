@@ -16,8 +16,8 @@ type
     class function New(const AView: IView; const AModel: IModel)
       : IViewModel; virtual;
     procedure AfterInit; virtual;
-    function Update(const AView: IView): IViewModel; overload;
-    function Update(const AModel: IModel): IViewModel; overload;
+    function Update(const AView: IView): IViewModel;overload;virtual;
+    function Update(const AModel: IModel): IViewModel;overload;virtual;
     function This: TObject; virtual;
     function View(const AView: IView = nil): IViewModel; virtual;
     function Model(const AModel: IModel = nil): IViewModel; virtual;

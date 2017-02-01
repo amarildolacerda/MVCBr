@@ -52,6 +52,7 @@ type
     Label3: TLabel;
     BitBtn4: TBitBtn;
     cbFMX: TCheckBox;
+    cbUsarNomeProjeto: TCheckBox;
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);

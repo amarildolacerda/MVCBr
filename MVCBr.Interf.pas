@@ -159,8 +159,8 @@ type
   IControllerBase = interface
     ['{5891921D-93C8-4B0A-8465-F7F0156AC228}']
     procedure Init;
-    procedure BeginInit;
-    procedure EndInit;
+    procedure BeforeInit;
+    procedure AfterInit;
     function IndexOfModelType(const AModelType: TModelType): Integer;
     function GetModelByType(const AModelType: TModelType): IModel;
     function UpdateByModel(AModel: IModel): IController;

@@ -3332,7 +3332,7 @@ object FormAppWizard: TFormAppWizard
       end
       object cbFMX: TCheckBox
         Left = 24
-        Top = 144
+        Top = 154
         Width = 169
         Height = 17
         Caption = 'FMX - Firemonkey'
@@ -3397,5 +3397,15 @@ object FormAppWizard: TFormAppWizard
     ModalResult = 2
     TabOrder = 4
     OnClick = BitBtn3Click
+  end
+  object cbUsarNomeProjeto: TCheckBox
+    Left = 162
+    Top = 136
+    Width = 207
+    Height = 17
+    Caption = 'Usar nome projeto para o Controller'
+    Checked = True
+    State = cbChecked
+    TabOrder = 5
   end
 end

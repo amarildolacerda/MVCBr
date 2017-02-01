@@ -137,6 +137,9 @@ begin
             ForceDirectories(path);
         end;
 
+        ChDir(ExtractFilePath(project));
+
+
         Ctrl := TControllerCreator.create(path, setname, false, CreateModule,
           CreateView, ModelAlone, ViewAlone, trim(lowercase(edtClassName.Text))
           = 'tform');

@@ -94,13 +94,15 @@ var
   Model: TViewModelCreator;
   ModelInterf: TViewModelCreator;
   Ctrl: TControllerCreator;
-  incl:TIncludeCreator;
+  incl: TIncludeCreator;
   AFMX: Boolean;
   pg: IOTAProjectGroup;
-  PGModel:TBDSProjectGroupCreator;
+  PGModel: TBDSProjectGroupCreator;
+  identProject: string;
 begin
   // First create the Project
   // ProjectModule :=
+  identProject := 'Main';
   with TFormAppWizard.Create(nil) do
   begin
     OK := showModal = mrOK;
@@ -113,9 +115,11 @@ begin
     begin
       AFMX := cbFMX.Checked;
       appname := edtApp.text;
+      if cbUsarNomeProjeto.Checked then
+        identProject := appname;
       if pos('.dpr', lowercase(appname)) <= 0 then
         appname := appname + '.dpr';
-      debug('AppName: '+appname);
+      debug('AppName: ' + appname);
       path := trim(edtPath.text);
       if path[length(path) - 1] <> '\' then
         path := path + '\';
@@ -129,14 +133,13 @@ begin
       debug('Criar ProjectGroup');
       // created project group
       try
-      PGModel := TBDSProjectGroupCreator.Create;
-      PGModel.Path := path;
+        PGModel := TBDSProjectGroupCreator.Create;
+        PGModel.path := path;
       except
-         on e:Exception do
-            raise Exception.Create('Error Message: '+e.message);
+        on e: Exception do
+          raise Exception.Create('Error Message: ' + e.message);
       end;
-      (BorlandIDEServices as IOTAModuleServices)
-        .CreateModule(  PGModel );
+      (BorlandIDEServices as IOTAModuleServices).CreateModule(PGModel);
 
     end;
   except
@@ -165,39 +168,44 @@ begin
 
   end;
   try
-  debug('AppWizard: ' +  path + appname);
+    debug('AppWizard: ' + path + appname);
 
-  incl:=TIncludeCreator.Create(path,'Main',false);
-  incl.IsFMX := AFMX;
-  (BorlandIDEServices as IOTAModuleServices).CreateModule(incl);
+    incl := TIncludeCreator.Create(path, identProject, false);
+    incl.isFMX := AFMX;
+    incl.Templates.addPair('%ModuleIdent',identProject);
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(incl);
 
-  Ctrl := TControllerCreator.Create(path, 'Main', false);
-  debug('Main Controller Creator');
-  Ctrl.Templates.AddPair('//ViewModelInit',
-    'result.add( TMainViewModel.new(self));');
-  Ctrl.isFMX := AFMX;
-  (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+    Ctrl := TControllerCreator.Create(path, identProject, false);
+    debug('Main Controller Creator');
+    Ctrl.Templates.AddPair('//ViewModelInit',
+      'result.add( T'+identProject+'ViewModel.new(self));');
+    Ctrl.isFMX := AFMX;
+    Ctrl.Templates.addPair('%ModuleIdent',identProject);
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
-  ModelInterf := TViewModelCreator.Create(path, 'Main', false);
-  ModelInterf.isInterf := true;
-  ModelInterf.isFMX := AFMX;
-  (BorlandIDEServices as IOTAModuleServices).CreateModule(ModelInterf);
+    ModelInterf := TViewModelCreator.Create(path, identProject, false);
+    ModelInterf.isInterf := true;
+    ModelInterf.isFMX := AFMX;
+    ModelInterf.Templates.addPair('%ModuleIdent',identProject);
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(ModelInterf);
 
-  Model := TViewModelCreator.Create(path, 'Main', false);
-  Model.isFMX := AFMX;
-  Model.Templates.AddPair('%MdlInterf', 'Main.ViewModel.Interf');
+    Model := TViewModelCreator.Create(path, identProject, false);
+    Model.isFMX := AFMX;
+    Model.Templates.AddPair('%MdlInterf', identProject+'.ViewModel.Interf');
+    Model.Templates.addPair('%ModuleIdent',identProject);
 
-  (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
-  // Now create a Form for the Project since the code added to the Project expects it.
-  view := TViewCreator.Create(path, 'Main', false);
-  view.isFMX := AFMX;
-  (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
+    // Now create a Form for the Project since the code added to the Project expects it.
+    view := TViewCreator.Create(path, identProject, false);
+    view.isFMX := AFMX;
+    view.Templates.addPair('%ModuleIdent',identProject);
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
 
-  SetCurrentDir(path);
+    SetCurrentDir(path);
   except
-     on e:Exception do
-        debug(e.message);
+    on e: Exception do
+      debug(e.message);
   end;
 end;
 

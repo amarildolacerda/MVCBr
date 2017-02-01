@@ -31,10 +31,24 @@ type
 function ApplicationController: IApplicationController;
 procedure SetApplicationController(AController: IApplicationController);
 
+procedure RegisterInterfacedClass(const ANome:string; const IID:TGUID;  AClass:TInterfacedClass);
+procedure UnregisterInterfacedClass(const ANome:string);
+
 implementation
 
 var
   FApplication: IApplicationController;
+
+procedure RegisterInterfacedClass(const ANome:string; const IID:TGUID;  AClass:TInterfacedClass);
+begin
+
+end;
+
+procedure UnregisterInterfacedClass(const ANome:string);
+begin
+
+end;
+
 
 function ApplicationController(): IApplicationController;
 begin
@@ -146,7 +160,7 @@ begin
 
   end;
     if assigned(AController) then
-      AController.endInit;
+      AController.AfterInit;
 
 end;
 

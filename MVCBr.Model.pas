@@ -25,6 +25,7 @@ type
     procedure SetModelTypes(const AModelTypes: TModelTypes);
   private
     FController: IController;
+    procedure SetID(const AID:string);
   public
 
     constructor create; virtual;
@@ -35,7 +36,7 @@ type
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
-    function Update: IModel;
+    function Update: IModel;virtual;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes
       default [mtCommon];
     procedure AfterInit; virtual;
@@ -49,12 +50,13 @@ constructor TModelFactory.create;
 begin
   inherited create;
   FOwned := TComponent.create(nil);
-  FID := self.classname;
+  ID ( self.classname );
 end;
 
 destructor TModelFactory.destroy;
 begin
   FOwned.DisposeOf;
+  UnRegisterClass(GetClass(FID));
   inherited;
 end;
 
@@ -81,7 +83,16 @@ end;
 function TModelFactory.ID(const AID: String): IModel;
 begin
   result := self;
+  SetID(AID);
+end;
+
+procedure TModelFactory.SetID(const AID: string);
+begin
+  if FID<>'' then
+     UnRegisterClass(GetClass(FID));
   FID := AID;
+  RegisterClassAlias( TPersistentClass(Self.ClassType)   ,FID);
+
 end;
 
 procedure TModelFactory.SetModelTypes(const AModelTypes: TModelTypes);

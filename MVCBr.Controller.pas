@@ -17,9 +17,12 @@ type
   private
   protected
     FView: IView;
+    FID: string;
+    procedure SetID( const AID:string );
   public
     constructor Create; virtual;
     destructor destroy; override;
+    function ID(const AID: string): IController;
     function GetModelByID(const AID: String): IModel;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
@@ -27,8 +30,8 @@ type
 
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
     procedure Init; virtual;
-    procedure BeginInit; virtual;
-    procedure EndInit; virtual;
+    procedure BeforeInit; virtual;
+    procedure AfterInit; virtual;
     function GetView: IView; virtual;
     function View(const AView: IView): IController; virtual;
     function This: TControllerAbstract; virtual;
@@ -42,6 +45,9 @@ type
     function UpdateAll: IController;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
+
+    function GetExternalController(   )  :IController;
+
   end;
 
   TControllerFactoryOf = class of TControllerFactory;
@@ -60,7 +66,7 @@ begin
   result := FModels.Count - 1;
 end;
 
-procedure TControllerFactory.BeginInit;
+procedure TControllerFactory.BeforeInit;
 begin
 
 end;
@@ -80,6 +86,7 @@ begin
   inherited Create;
   ApplicationController.Add(self);
   FModels := TMVCInterfacedList<IModel>.Create;
+  ID(self.ClassName);
 end;
 
 procedure TControllerFactory.Delete(const Index: integer);
@@ -90,6 +97,7 @@ end;
 destructor TControllerFactory.destroy;
 begin
   FModels.Free;
+  UnRegisterClass(GetClass(FID));
   ApplicationController.remove(self);
   inherited;
 end;
@@ -107,6 +115,11 @@ begin
   if assigned(AProc) then
     for i := 0 to FModels.Count - 1 do
       AProc(FModels.Items[i] as IModel);
+end;
+
+function TControllerFactory.GetExternalController: IController;
+begin
+   //ApplicationController.
 end;
 
 function TControllerFactory.GetModel(const idx: integer): IModel;
@@ -138,6 +151,12 @@ begin
     result := FModels.Items[i] as IModel;
 end;
 
+function TControllerFactory.ID(const AID: string): IController;
+begin
+  result := self;
+  SetID(AID);
+end;
+
 function TControllerFactory.IndexOf(const AModel: IModel): integer;
 begin
   result := FModels.IndexOf(AModel);
@@ -159,10 +178,18 @@ end;
 
 procedure TControllerFactory.Init;
 begin
-  BeginInit;
+  BeforeInit;
 end;
 
-procedure TControllerFactory.EndInit;
+procedure TControllerFactory.SetID(const AID: string);
+begin
+  if FID<>'' then
+     UnRegisterClass(GetClass(FID));
+  FID := AID;
+  RegisterClassAlias( TPersistentClass(Self.ClassType)   ,FID);
+end;
+
+procedure TControllerFactory.AfterInit;
 var
   FModel: IModel;
   vm: IViewModel;
@@ -176,7 +203,7 @@ begin
   DoLoop(
     procedure(AModel: IModel)
     begin
-       AModel.AfterInit;
+      AModel.AfterInit;
     end);
 
 end;
