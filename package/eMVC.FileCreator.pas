@@ -214,6 +214,7 @@ begin
           result := ProjectCode;
     end;
 
+  result := ClassHeader+#10#13+result  ;
   if self.FCreateModel and not self.FModelAlone then
   begin
     result := stringReplace(result, '%ModelDef', ModelDef,

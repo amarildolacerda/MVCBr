@@ -1,5 +1,5 @@
 
-ModelCodeBaseInterf = 'Unit  %ModelIdent;                         ' + #10#13 +
+ModelCodeBaseInterf = 'Unit  %ModelIdent ;                         ' + #10#13 +
   '                                                               ' + #10#13 +
   '                                                              ' + #10#13 +
   '{ MVCBr                                                       ' + #10#13 +
@@ -47,6 +47,9 @@ ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   '    class function new():I%FormIdent%modelName; overload;           ' +
   #10#13 + '    class function new(const AController:IController):I%FormIdent%modelName;  overload;          '
   + #10#13 + '    function ThisAs:T%FormIdent%modelName;                ' +
+  #10#13 + '                                                               ' +
+  #10#13 + '      // implementaçoes                                        ' +
+  #10#13 + '                                                               ' +
   #10#13 + '  end;                                                         ' +
   #10#13 + '                                                               ' +
   #10#13 + '                                                               ' +

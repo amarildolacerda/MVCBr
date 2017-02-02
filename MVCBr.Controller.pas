@@ -1,3 +1,28 @@
+{***************************************************************************}
+{                                                                           }
+{           MVCBr é o resultado de esforços de um grupo                     }
+{                                                                           }
+{           Copyright (C) 2017 MVCBr                                        }
+{                                                                           }
+{           amarildo lacerda                                                }
+{           http://www.tireideletra.com.br                                  }
+{                                                                           }
+{                                                                           }
+{***************************************************************************}
+{                                                                           }
+{  Licensed under the Apache License, Version 2.0 (the "License");          }
+{  you may not use this file except in compliance with the License.         }
+{  You may obtain a copy of the License at                                  }
+{                                                                           }
+{      http://www.apache.org/licenses/LICENSE-2.0                           }
+{                                                                           }
+{  Unless required by applicable law or agreed to in writing, software      }
+{  distributed under the License is distributed on an "AS IS" BASIS,        }
+{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{  See the License for the specific language governing permissions and      }
+{  limitations under the License.                                           }
+{                                                                           }
+{***************************************************************************}
 unit MVCBr.Controller;
 
 interface
@@ -20,7 +45,7 @@ type
     FID: string;
     procedure SetID( const AID:string );
   public
-    constructor Create; virtual;
+    constructor Create; override;
     destructor destroy; override;
     function ID(const AID: string): IController;
     function GetModelByID(const AID: String): IModel;
@@ -41,12 +66,11 @@ type
     function IndexOfModelType(const AModelType: TModelType): integer;
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
-    procedure DoLoop(AProc: TProc<IModel>); virtual;
+    procedure ForEach(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
 
-    function GetExternalController(   )  :IController;
 
   end;
 
@@ -108,7 +132,7 @@ begin
 
 end;
 
-procedure TControllerFactory.DoLoop(AProc: TProc<IModel>);
+procedure TControllerFactory.ForEach(AProc: TProc<IModel>);
 var
   i: integer;
 begin
@@ -117,10 +141,8 @@ begin
       AProc(FModels.Items[i] as IModel);
 end;
 
-function TControllerFactory.GetExternalController: IController;
-begin
-   //ApplicationController.
-end;
+
+
 
 function TControllerFactory.GetModel(const idx: integer): IModel;
 begin
@@ -200,7 +222,7 @@ begin
     vm.View(FView).Controller(self);
   end;
 
-  DoLoop(
+  ForEach(
     procedure(AModel: IModel)
     begin
       AModel.AfterInit;

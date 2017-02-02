@@ -1,4 +1,35 @@
-unit MVCBr.Interf;
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
+{ Créditos: }
+{ Kleberson Toro }
+{ Regys Silveira }
+{ Ivan Cesar }
+{ Décio Morais }
+{ Carlos Eduardo (Morfik) }
+{ *************************************************************************** }
 
 {
   Como organizar:
@@ -28,14 +59,25 @@ unit MVCBr.Interf;
   - ApplicationController have a list of controllers
 }
 
+unit MVCBr.Interf;
+
+/// ---------------------------------------------------------------------------
+/// MVCBr.Interf  declara as interfaces bases para o MVCBr
+/// O uso de interface objetivo minimizar o acoplamento das UNITs
+/// o que irá permitir reutilização das mesmas interfaces
+/// para um numero grande de UNIT;
+/// ---------------------------------------------------------------------------
+
 interface
 
 uses System.Classes, System.SysUtils, System.Generics.Collections,
   System.TypInfo, System.RTTI;
 
 type
-
-  // MVCBr Utils
+  ///
+  /// MVCBr Utils
+  /// Record para implementas utilidades de RTTI e outras Class Functions
+  ///
   TMVCBr = record
     class function InvokeCreate<T: class>(const Args: TArray<TValue>)
       : T; static;
@@ -68,7 +110,7 @@ type
   // InterfacedList que sera herdado na classes base com controle Threadsafe
   TMVCInterfacedList<T> = class(TInterfaceList)
   public
-    procedure DoLoop(AGuid: TGUID; AProc: TProc<T>);
+    procedure ForEach(AGuid: TGUID; AProc: TProc<T>);
   end;
 
   IController = interface;
@@ -146,11 +188,12 @@ type
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
+    function This: TObject;
     function Count: Integer;
     function Add(const AController: IController): Integer;
     procedure Delete(const idx: Integer);
     procedure Remove(const AController: IController);
-    procedure DoLoop(AProc: TProc<IController>);
+    procedure ForEach(AProc: TProc<IController>);
   end;
 
   TControllerAbstract = class;
@@ -183,9 +226,18 @@ type
   protected
     FModels: TMVCInterfacedList<IModel>;
   public
+    constructor create; virtual;
+    function This: TControllerAbstract;
     function GetModel(const IID: TGUID; out intf): IModel; overload; virtual;
+    function GetModel(const IID: TGUID): IModel; overload; virtual;
     function GetModel<T>(): T; overload;
+    procedure ResolveController(const AIID: TGUID; out ref) overload;
+    function ResolveController(const AIID: TGUID):IController; overload;
+    Function ResolveController(const ANome: string): IController; overload;
+    Function ResolveController<T>:T;overload;
   end;
+
+  TControllerClass = class of TControllerAbstract;
 
   // IController manter associação entre o IView e IModel
   IController = interface(IControllerBase)
@@ -193,7 +245,9 @@ type
     function GetView: IView; overload;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
-    procedure DoLoop(AProc: TProc<IModel>);
+    procedure ForEach(AProc: TProc<IModel>);
+    function ResolveController(const AName: string): IController;
+    function This: TControllerAbstract;
   end;
 
   IViewModelAs<T> = interface
@@ -249,9 +303,34 @@ type
     ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
   end;
 
+procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
+  AClass: TControllerClass);
+procedure UnregisterInterfacedClass(const ANome: string);
+
 implementation
 
+uses MVCBr.IoC;
+
+var
+  FControllersClass: TMVCBrIoC;
+
+procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
+  AClass: TControllerClass);
+begin
+  FControllersClass.RegisterController(IID, AClass, ANome);
+end;
+
+procedure UnregisterInterfacedClass(const ANome: string);
+begin
+  /// nao precisa fazer nada.
+end;
+
 { TControllerAbstract }
+
+constructor TControllerAbstract.create;
+begin
+  inherited;
+end;
 
 function TControllerAbstract.GetModel(const IID: TGUID; out intf): IModel;
 var
@@ -264,6 +343,11 @@ begin
       supports(result.This, IID, intf);
       exit;
     end;
+end;
+
+function TControllerAbstract.GetModel(const IID: TGUID): IModel;
+begin
+   GetModel(IID,result)
 end;
 
 function TControllerAbstract.GetModel<T>(): T;
@@ -281,6 +365,44 @@ begin
     end;
 end;
 
+function TControllerAbstract.ResolveController(const ANome: string)
+  : IController;
+begin
+  result := FControllersClass.Resolve<IController>(ANome);
+  result.Init;
+end;
+
+function TControllerAbstract.ResolveController<T>: T;
+var  pInfo: PTypeInfo;
+  IID: TGUID;
+begin
+  pInfo := TypeInfo(T);
+  IID := GetTypeData(pInfo).Guid;
+  ResolveController(IID,result);
+end;
+
+function TControllerAbstract.ResolveController(const AIID: TGUID): IController;
+begin
+   ResolveController(AIID,result);
+end;
+
+procedure TControllerAbstract.ResolveController(const AIID: TGUID; out ref);
+var
+  achei: string;
+  ii: IController;
+begin
+  achei := FControllersClass.GetName(AIID);
+  if achei = '' then
+    exit;
+  ii := ResolveController(achei);
+  supports(ii.This, AIID, ref);
+end;
+
+function TControllerAbstract.This: TControllerAbstract;
+begin
+  result := self;
+end;
+
 { TMVCBr }
 
 class function TMVCBr.GetProperty(AInstance: TObject;
@@ -289,7 +411,7 @@ var
   ctx: TRttiContext;
   prp: TRttiProperty;
 begin
-  ctx := TRttiContext.Create;
+  ctx := TRttiContext.create;
   try
     prp := ctx.GetType(AInstance.ClassType).GetProperty(APropertyNome);
     if Assigned(prp) then
@@ -303,7 +425,7 @@ class function TMVCBr.InvokeCreate<T>(const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
 begin
-  ctx := TRttiContext.Create;
+  ctx := TRttiContext.create;
   try
     result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args)
       .AsType<T>;
@@ -317,7 +439,7 @@ class function TMVCBr.InvokeMethod<T>(AInstance: TObject; AMethod: string;
 var
   ctx: TRttiContext;
 begin
-  ctx := TRttiContext.Create;
+  ctx := TRttiContext.create;
   try
     result := ctx.GetType(AInstance.ClassInfo).GetMethod(AMethod)
       .Invoke(AInstance, Args).AsType<T>;
@@ -332,7 +454,7 @@ var
   ctx: TRttiContext;
   prp: TRttiProperty;
 begin
-  ctx := TRttiContext.Create;
+  ctx := TRttiContext.create;
   try
     prp := ctx.GetType(AInstance.ClassType).GetProperty(APropertyNome);
     if Assigned(prp) then
@@ -346,24 +468,24 @@ end;
 
 function TMVCFactoryAbstract.GetPropertyValue(ANome: string): TValue;
 begin
-  result := TMVCBr.GetProperty(Self, ANome);
+  result := TMVCBr.GetProperty(self, ANome);
 end;
 
 function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
-  result := TMVCBr.InvokeMethod<T>(Self, AMethod, Args);
+  result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
 procedure TMVCFactoryAbstract.SetPropertyValue(ANome: string;
   const Value: TValue);
 begin
-  TMVCBr.SetProperty(Self, ANome, Value);
+  TMVCBr.SetProperty(self, ANome, Value);
 end;
 
 { TMVCInterfacedList<T> }
 
-procedure TMVCInterfacedList<T>.DoLoop(AGuid: TGUID; AProc: TProc<T>);
+procedure TMVCInterfacedList<T>.ForEach(AGuid: TGUID; AProc: TProc<T>);
 var
   I: Integer;
   intf: T;
@@ -375,5 +497,13 @@ begin
       AProc(intf);
     end;
 end;
+
+initialization
+
+FControllersClass := TMVCBrIoC.create;
+
+finalization
+
+FControllersClass.Free;
 
 end.

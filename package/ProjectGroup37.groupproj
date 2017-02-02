@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{2BA50F97-2A7D-4242-BA11-D0F69D995FC9}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MVCBr.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\Ferramentas\eSAT\eSAT.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MVCBr">
+        <MSBuild Projects="MVCBr.dproj"/>
+    </Target>
+    <Target Name="MVCBr:Clean">
+        <MSBuild Projects="MVCBr.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBr:Make">
+        <MSBuild Projects="MVCBr.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="eSAT">
+        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj"/>
+    </Target>
+    <Target Name="eSAT:Clean">
+        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="eSAT:Make">
+        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MVCBr;eSAT"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MVCBr:Clean;eSAT:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MVCBr:Make;eSAT:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

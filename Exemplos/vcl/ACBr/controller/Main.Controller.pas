@@ -100,7 +100,7 @@ begin
     Application.CreateForm(TMainView, ref);
     supports(ref, IView, FView);
   end;
-  endInit;
+  AfterInit;
 end;
 
 // Adicionar os modulos e MODELs personalizados

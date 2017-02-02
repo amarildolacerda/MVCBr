@@ -21,18 +21,17 @@ ViewDef = '                                   '#10#13 +
   + '                                                          ' + #10#13 +
   '  private                                                 ' + #10#13 +
   '    FViewModel : I%FormIdentModel;                    ' + #10#13 +
-  '    FController : IController;                            ' + #10#13 +
   '  protected                                               ' + #10#13 +
-  '    function Controller(const aController: IController): IView;' + #10#13 +
+  '    function Controller(const aController: IController): IView;override;'+ #10#13 +
   '  public                                                    ' + #10#13 +
   '   { Public declarations }                                ' + #10#13 +
   '    class function New(AController:IController):IView;    ' + #10#13 +
   '    function ViewModel(const AViewModel:I%FormIdentModel):IView;' + #10#13 +
-  '    function This: TObject;                               ' + #10#13 +
-  '    function ThisAs:T%FormIdent;                          ' + #10#13 +
+  '    function This: TObject;override;                  ' + #10#13 +
+  '    function ThisAs:T%FormIdent;                      ' + #10#13 +
   '    function ViewAs:I%FormIdent;                      ' + #10#13 +
-  '    function ShowView(const AProc: TProc<IView>): integer;' + #10#13 +
-  '    function Update: IView;                               ' + #10#13 +
+  '    function ShowView(const AProc: TProc<IView>): integer;override;' + #10#13 +
+  '    function Update: IView;override;                      ' + #10#13 +
   '  end;                                                    ' + #10#13 +
   '                                                          ' + #10#13;
 
@@ -56,8 +55,7 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '                                                          ' + #10#13 +
   'function T%FormIdent.Controller(const AController:IController):IView; ' +
   #10#13 + 'begin                                              ' + #10#13 +
-  '  result := self;                                         ' + #10#13 +
-  '  FController := AController;                             ' + #10#13 +
+  '  result := inherited Controller(AController);            ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                          ' + #10#13 +
   'function T%FormIdent.ViewModel(const AViewModel:I%FormIdentModel):IView;' +
@@ -69,7 +67,7 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '                                                          ' + #10#13 +
   'function T%FormIdent.This:TObject;                        ' + #10#13 +
   'begin                                                     ' + #10#13 +
-  '   result := self;                                        ' + #10#13 +
+  '   result := inherited This;                         ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                          ' + #10#13 +
   'function T%FormIdent.ThisAs:T%FormIdent;                  ' + #10#13 +

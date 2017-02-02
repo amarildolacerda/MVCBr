@@ -94,6 +94,7 @@ var
   path: string;
   project: string;
   Model: TDataModuleCreator;
+  identProject:string;
 
   function getProjectName: string;
   var
@@ -172,7 +173,7 @@ begin
     begin
       IsFMX := cbFMX.Checked;
       setname := trim(edtSetname.text);
-
+      identProject := stringReplace(setName,'.','',[rfReplaceAll]);
       if SetNameExists(setname) then
       begin
         eMVC.toolBox.showInfo('Desculpe, o projeto "' + setname +
@@ -209,6 +210,7 @@ begin
 
         if IsFMX then
           Model.Templates.AddPair('*.dfm', '*.fmx');
+        model.Templates.AddPair('%UnitBase',setname);
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
@@ -232,6 +234,7 @@ begin
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
         Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
+        model.Templates.AddPair('%UnitBase',setname);
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);

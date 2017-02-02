@@ -1,9 +1,35 @@
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
 unit MVCBr.ApplicationController;
 
 interface
 
 uses Forms, System.Classes,
   System.Generics.Collections,
+
   System.SysUtils, MVCBr.Model, MVCBr.Interf;
 
 type
@@ -16,6 +42,7 @@ type
   public
     constructor create;
     destructor destroy; override;
+    function This: TObject;
     function Count: integer;
     function Add(const AController: IController): integer;
     procedure Delete(const idx: integer);
@@ -25,30 +52,16 @@ type
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
     class function New: IApplicationController;
-    procedure DoLoop( AProc:TProc<IController>);
+    procedure ForEach(AProc: TProc<IController>);
   end;
 
 function ApplicationController: IApplicationController;
 procedure SetApplicationController(AController: IApplicationController);
 
-procedure RegisterInterfacedClass(const ANome:string; const IID:TGUID;  AClass:TInterfacedClass);
-procedure UnregisterInterfacedClass(const ANome:string);
-
 implementation
 
 var
   FApplication: IApplicationController;
-
-procedure RegisterInterfacedClass(const ANome:string; const IID:TGUID;  AClass:TInterfacedClass);
-begin
-
-end;
-
-procedure UnregisterInterfacedClass(const ANome:string);
-begin
-
-end;
-
 
 function ApplicationController(): IApplicationController;
 begin
@@ -97,11 +110,12 @@ begin
   inherited;
 end;
 
-procedure TApplicationController.DoLoop(AProc: TProc<IController>);
-var i:integer;
+procedure TApplicationController.ForEach(AProc: TProc<IController>);
+var
+  i: integer;
 begin
-   if Assigned(AProc) then
-   for I := 0 to FControllers.Count-1 do
+  if assigned(AProc) then
+    for i := 0 to FControllers.Count - 1 do
       AProc(FControllers.Items[i] as IController);
 end;
 
@@ -119,6 +133,11 @@ procedure TApplicationController.Run(AController: IController;
   AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
+end;
+
+function TApplicationController.This: TObject;
+begin
+  result := self;
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;
@@ -139,7 +158,7 @@ begin
   begin
     if assigned(AController) then
       AController.init;
-    if (AClass <> nil) and (Application.MainForm=nil) then
+    if (AClass <> nil) and (application.MainForm = nil) then
     begin
       application.CreateForm(AClass, reference);
       if not supports(reference, IView) then
@@ -159,11 +178,9 @@ begin
     end;
 
   end;
-    if assigned(AController) then
-      AController.AfterInit;
+  if assigned(AController) then
+    AController.AfterInit;
 
 end;
-
-initialization
 
 end.

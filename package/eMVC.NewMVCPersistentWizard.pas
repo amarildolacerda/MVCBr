@@ -87,6 +87,8 @@ var
   path: string;
   project: string;
   Model: TPersistentModelCreator;
+  identProject:string;
+
 
   function getProjectName: string;
   var
@@ -162,7 +164,8 @@ begin
   begin
     if showModal = mrOK then
     begin
-      setname := trim(edtSetname.text);
+      setname :=  trim(edtSetname.text);
+      identProject := stringReplace(setName,'.','',[rfReplaceAll]);
 
       if SetNameExists(setname) then
       begin
@@ -181,7 +184,7 @@ begin
         ChDir(ExtractFilePath(project));
 
         debug('Pronto para criar o Modulo');
-        Model := TPersistentModelCreator.create(path, setname, false);
+        Model := TPersistentModelCreator.create(path, identProject, false);
         Model.IsFMX := cbFMX.Checked;
         //Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.AddPair('%intf',
@@ -193,6 +196,7 @@ begin
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
         Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
+        Model.Templates.AddPair('%UnitBase',Setname);
 
         Model.Templates.AddPair('%interfInherited',
           GetModelInher(ComboBox1.ItemIndex));
@@ -201,7 +205,7 @@ begin
 
         debug('Criou o Model');
 
-        Model := TPersistentModelCreator.create(path, setname, false);
+        Model := TPersistentModelCreator.create(path, identProject, false);
         Model.IsFMX := cbFMX.Checked;
        // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
@@ -218,6 +222,7 @@ begin
         Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
         Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
+        Model.Templates.AddPair('%UnitBase',Setname);
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);

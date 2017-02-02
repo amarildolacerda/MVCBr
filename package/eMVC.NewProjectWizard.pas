@@ -116,7 +116,7 @@ begin
       AFMX := cbFMX.Checked;
       appname := edtApp.text;
       if cbUsarNomeProjeto.Checked then
-        identProject := appname;
+        identProject := stringReplace( appname,'.','',[rfReplaceAll]);
       if pos('.dpr', lowercase(appname)) <= 0 then
         appname := appname + '.dpr';
       debug('AppName: ' + appname);
@@ -173,6 +173,7 @@ begin
     incl := TIncludeCreator.Create(path, identProject, false);
     incl.isFMX := AFMX;
     incl.Templates.addPair('%ModuleIdent',identProject);
+    incl.Templates.AddPair('%UnitBase',appname);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(incl);
 
     Ctrl := TControllerCreator.Create(path, identProject, false);
@@ -181,18 +182,22 @@ begin
       'result.add( T'+identProject+'ViewModel.new(self));');
     Ctrl.isFMX := AFMX;
     Ctrl.Templates.addPair('%ModuleIdent',identProject);
+    Ctrl.Templates.AddPair('%UnitBase',appname);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
     ModelInterf := TViewModelCreator.Create(path, identProject, false);
     ModelInterf.isInterf := true;
     ModelInterf.isFMX := AFMX;
     ModelInterf.Templates.addPair('%ModuleIdent',identProject);
+    ModelInterf.Templates.AddPair('%UnitBase',appname);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(ModelInterf);
 
     Model := TViewModelCreator.Create(path, identProject, false);
     Model.isFMX := AFMX;
     Model.Templates.AddPair('%MdlInterf', identProject+'.ViewModel.Interf');
     Model.Templates.addPair('%ModuleIdent',identProject);
+    Model.Templates.AddPair('%UnitBase',appname);
+
 
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
@@ -200,6 +205,7 @@ begin
     view := TViewCreator.Create(path, identProject, false);
     view.isFMX := AFMX;
     view.Templates.addPair('%ModuleIdent',identProject);
+    view.Templates.AddPair('%UnitBase',appname);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
 
     SetCurrentDir(path);
