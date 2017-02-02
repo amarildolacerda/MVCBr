@@ -8,7 +8,7 @@ ProjectCode = 'PROGRAM %ModuleIdent;                         ' + #10#13 +
   '                                                          ' + #10#13 +
   '{$R *.res}                                                ' + #10#13 +
   'begin                                                     ' + #10#13 +
-  '  ApplicationController.Run(TMainController.New,' + #10#13 +
+  '  ApplicationController.Run(T%ModuleIdentController.New,' + #10#13 +
   '    function :boolean                                     ' + #10#13 +
   '    begin                                                 ' + #10#13 +
   '      // retornar True se o applicatio pode ser carregado ' + #10#13 +

@@ -176,7 +176,7 @@ begin
     incl.Templates.AddPair('%UnitBase',appname);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(incl);
 
-    Ctrl := TControllerCreator.Create(path, identProject, false);
+    Ctrl := TControllerCreator.Create(path, identProject, false,true,true,false,false,true);
     debug('Main Controller Creator');
     Ctrl.Templates.AddPair('//ViewModelInit',
       'result.add( T'+identProject+'ViewModel.new(self));');

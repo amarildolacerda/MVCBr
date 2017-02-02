@@ -41,7 +41,7 @@ uses
 
 type
   TControllerCreator = class(TBaseCreator)
-  private
+  protected
     FCreateModule, FCreateView: boolean;
     FModelAlone, FViewAlone: boolean;
     FViewIsForm: Boolean; //true:view is a child of TForm

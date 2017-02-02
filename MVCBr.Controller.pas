@@ -1,28 +1,28 @@
-{***************************************************************************}
-{                                                                           }
-{           MVCBr é o resultado de esforços de um grupo                     }
-{                                                                           }
-{           Copyright (C) 2017 MVCBr                                        }
-{                                                                           }
-{           amarildo lacerda                                                }
-{           http://www.tireideletra.com.br                                  }
-{                                                                           }
-{                                                                           }
-{***************************************************************************}
-{                                                                           }
-{  Licensed under the Apache License, Version 2.0 (the "License");          }
-{  you may not use this file except in compliance with the License.         }
-{  You may obtain a copy of the License at                                  }
-{                                                                           }
-{      http://www.apache.org/licenses/LICENSE-2.0                           }
-{                                                                           }
-{  Unless required by applicable law or agreed to in writing, software      }
-{  distributed under the License is distributed on an "AS IS" BASIS,        }
-{  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
-{  See the License for the specific language governing permissions and      }
-{  limitations under the License.                                           }
-{                                                                           }
-{***************************************************************************}
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
 unit MVCBr.Controller;
 
 interface
@@ -43,7 +43,7 @@ type
   protected
     FView: IView;
     FID: string;
-    procedure SetID( const AID:string );
+    procedure SetID(const AID: string);
   public
     constructor Create; override;
     destructor destroy; override;
@@ -70,7 +70,6 @@ type
     function UpdateAll: IController;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
-
 
   end;
 
@@ -141,9 +140,6 @@ begin
       AProc(FModels.Items[i] as IModel);
 end;
 
-
-
-
 function TControllerFactory.GetModel(const idx: integer): IModel;
 begin
   result := FModels[idx] as IModel;
@@ -205,10 +201,10 @@ end;
 
 procedure TControllerFactory.SetID(const AID: string);
 begin
-  if FID<>'' then
-     UnRegisterClass(GetClass(FID));
+  if FID <> '' then
+    UnRegisterClass(GetClass(FID));
   FID := AID;
-  RegisterClassAlias( TPersistentClass(Self.ClassType)   ,FID);
+  RegisterClassAlias(TPersistentClass(self.ClassType), FID);
 end;
 
 procedure TControllerFactory.AfterInit;
@@ -217,10 +213,11 @@ var
   vm: IViewModel;
 begin
   FModel := GetModelByType(mtViewModel);
-  if Supports(FModel.This, IViewModel, vm) then
-  begin
-    vm.View(FView).Controller(self);
-  end;
+  if assigned(FModel) then
+    if Supports(FModel.This, IViewModel, vm) then
+    begin
+      vm.View(FView).Controller(self);
+    end;
 
   ForEach(
     procedure(AModel: IModel)
