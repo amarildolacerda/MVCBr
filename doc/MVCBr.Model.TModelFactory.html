@@ -54,23 +54,39 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#Controller">Controller</a></b>(const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IModel.html">IModel</a>; virtual;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.Model.TModelFactory.html#destroy">destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#This">This</a></b>: TInterfacedObject; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#GetController">GetController</a></b>: <a  href="MVCBr.Interf.IController.html">IController</a>;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#GetOwned">GetOwned</a></b>: TComponent; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#Controller">Controller</a></b>(const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IModel.html">IModel</a>; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#This">This</a></b>: TObject; virtual;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#GetID">GetID</a></b>: string; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#ID">ID</a></b>(const AID: String): <a  href="MVCBr.Interf.IModel.html">IModel</a>;</code></td>
 </tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#Update">Update</a></b>: <a  href="MVCBr.Interf.IModel.html">IModel</a>; virtual;</code></td>
+</tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Model.TModelFactory.html#Update">Update</a></b>: <a  href="MVCBr.Interf.IModel.html">IModel</a>;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Model.TModelFactory.html#AfterInit">AfterInit</a></b>; virtual;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -94,6 +110,30 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="destroy"></a><code>destructor <b>destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetController"></a><code>function <b>GetController</b>: <a  href="MVCBr.Interf.IController.html">IController</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetOwned"></a><code>function <b>GetOwned</b>: TComponent; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Controller"></a><code>function <b>Controller</b>(const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IModel.html">IModel</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -102,7 +142,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TInterfacedObject; virtual;</code></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -126,7 +166,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: <a  href="MVCBr.Interf.IModel.html">IModel</a>;</code></td>
+<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: <a  href="MVCBr.Interf.IModel.html">IModel</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AfterInit"></a><code>procedure <b>AfterInit</b>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

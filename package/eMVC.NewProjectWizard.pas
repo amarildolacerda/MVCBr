@@ -157,6 +157,7 @@ begin
 
   try
     project := TProjectCreator.Create;
+
     project.isFMX := AFMX;
     project.setFileName(path + appname);
     ProjectModule := (BorlandIDEServices as IOTAModuleServices)

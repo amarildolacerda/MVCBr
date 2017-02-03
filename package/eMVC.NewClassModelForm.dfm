@@ -1,9 +1,9 @@
-object FormAppWizard: TFormAppWizard
+object FormClassModel: TFormClassModel
   Left = 306
   Top = 209
   ActiveControl = btnOK
   BorderStyle = bsDialog
-  Caption = 'Assitente para o Projeto MVC'
+  Caption = 'Assistente para gerar Class Model'
   ClientHeight = 345
   ClientWidth = 504
   Color = clBtnFace
@@ -16,6 +16,8 @@ object FormAppWizard: TFormAppWizard
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object ScrollBox1: TScrollBox
@@ -3264,8 +3266,8 @@ object FormAppWizard: TFormAppWizard
     end
   end
   object Notebook1: TNotebook
-    Left = 138
-    Top = 18
+    Left = 135
+    Top = 20
     Width = 351
     Height = 263
     Font.Charset = DEFAULT_CHARSET
@@ -3281,24 +3283,24 @@ object FormAppWizard: TFormAppWizard
       Caption = 'Step 1'
       object Label1: TLabel
         Left = 24
-        Top = 40
-        Width = 156
+        Top = 136
+        Width = 163
         Height = 13
-        Caption = 'Nome identificador para o projeto'
+        Caption = 'Nome indenficador para o MODEL'
       end
       object Label2: TLabel
         Left = 24
-        Top = 80
-        Width = 109
+        Top = 94
+        Width = 152
         Height = 13
-        Caption = 'Caminha para o projeto'
+        Caption = 'Class base para extrair o m'#243'dulo'
       end
       object Label3: TLabel
-        Left = 0
+        Left = 3
         Top = 16
-        Width = 176
+        Width = 193
         Height = 16
-        Caption = 'Gerar um ApplicationController'
+        Caption = 'Gerar um Model para a Classe ...'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -3306,66 +3308,108 @@ object FormAppWizard: TFormAppWizard
         Font.Style = []
         ParentFont = False
       end
-      object edtApp: TEdit
+      object Label7: TLabel
         Left = 24
-        Top = 56
+        Top = 51
+        Width = 152
+        Height = 13
+        Caption = 'Unit base para extrair as classes'
+      end
+      object edModelName: TEdit
+        Left = 24
+        Top = 152
         Width = 225
         Height = 21
         TabOrder = 0
-        Text = 'NewMVCApp'
+        OnExit = edModelNameExit
       end
-      object edtPath: TEdit
+      object cbClassName: TComboBox
         Left = 24
-        Top = 96
-        Width = 225
+        Top = 109
+        Width = 313
         Height = 21
         TabOrder = 1
+        OnChange = cbClassNameChange
       end
-      object BitBtn4: TBitBtn
-        Left = 255
-        Top = 94
-        Width = 75
-        Height = 25
-        Caption = '&Localizar...'
-        TabOrder = 2
-        OnClick = BitBtn4Click
-      end
-      object cbFMX: TCheckBox
+      object edUnit: TEdit
         Left = 24
-        Top = 154
-        Width = 169
-        Height = 17
-        Caption = 'FMX - Firemonkey'
+        Top = 65
+        Width = 249
+        Height = 21
+        TabOrder = 2
+        Text = 'minhaUnit.pas'
+        OnExit = edUnitExit
+      end
+      object edUnitButton: TButton
+        Left = 274
+        Top = 63
+        Width = 63
+        Height = 25
+        Caption = 'Localizar'
         TabOrder = 3
+        OnClick = edUnitButtonClick
       end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      object Label4: TLabel
+        Left = 16
+        Top = 11
+        Width = 173
+        Height = 13
+        Caption = 'Gerar Interface para as propriedades'
+      end
+      object clPropriedades: TCheckListBox
+        Left = 16
+        Top = 27
+        Width = 313
+        Height = 206
+        ItemHeight = 13
+        TabOrder = 0
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      object Label5: TLabel
+        Left = 24
+        Top = 19
+        Width = 152
+        Height = 13
+        Caption = 'Gerar Interface para os m'#233'todos'
+      end
+      object clMetodos: TCheckListBox
+        Left = 24
+        Top = 35
+        Width = 313
+        Height = 206
+        ItemHeight = 13
+        TabOrder = 0
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 4'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
-    end
-    object TPage
-      Left = 0
-      Top = 0
-      Caption = 'Step 5'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
+      object Label6: TLabel
+        Left = 24
+        Top = 17
+        Width = 45
+        Height = 13
+        Caption = 'Parab'#233'ns'
+      end
+      object Memo1: TMemo
+        Left = 24
+        Top = 36
+        Width = 313
+        Height = 213
+        Lines.Strings = (
+          'Memo1')
+        TabOrder = 0
+      end
     end
   end
   object btnBack: TBitBtn
@@ -3376,9 +3420,10 @@ object FormAppWizard: TFormAppWizard
     Caption = '&Voltar'
     TabOrder = 2
     Visible = False
+    OnClick = btnBackClick
   end
   object btnOK: TBitBtn
-    Left = 332
+    Left = 333
     Top = 296
     Width = 75
     Height = 25
@@ -3396,15 +3441,5 @@ object FormAppWizard: TFormAppWizard
     ModalResult = 2
     TabOrder = 4
     OnClick = BitBtn3Click
-  end
-  object cbUsarNomeProjeto: TCheckBox
-    Left = 162
-    Top = 136
-    Width = 207
-    Height = 17
-    Caption = 'Usar nome projeto para o Controller'
-    Checked = True
-    State = cbChecked
-    TabOrder = 5
   end
 end

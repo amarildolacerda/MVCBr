@@ -42,7 +42,7 @@ MVCBr
 <code>type TMVCBr = record</code></p>
 <h2 class="description">Descrição</h2>
 <p>
-MVCBr Utils</p>
+MVCBr Utils Record para implementas utilidades de RTTI e outras Class Functions</p>
 <h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
@@ -51,6 +51,12 @@ MVCBr Utils</p>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>class function <b><a  href="MVCBr.Interf.TMVCBr.html#InvokeMethod">InvokeMethod</a></b>&lt;T&gt;(AInstance: TObject; AMethod: string; const Args: TArray&lt;TValue&gt;): T; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.Interf.TMVCBr.html#SetProperty">SetProperty</a></b>(AInstance: TObject; APropertyNome: string; AValue: TValue); static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.Interf.TMVCBr.html#GetProperty">GetProperty</a></b>(AInstance: TObject; APropertyNome: string) : TValue; static;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -65,6 +71,20 @@ MVCBr Utils</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="InvokeMethod"></a><code>class function <b>InvokeMethod</b>&lt;T&gt;(AInstance: TObject; AMethod: string; const Args: TArray&lt;TValue&gt;): T; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="SetProperty"></a><code>class procedure <b>SetProperty</b>(AInstance: TObject; APropertyNome: string; AValue: TValue); static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetProperty"></a><code>class function <b>GetProperty</b>(AInstance: TObject; APropertyNome: string) : TValue; static;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

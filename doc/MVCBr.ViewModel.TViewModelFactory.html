@@ -70,25 +70,29 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Update">Update</a></b>(const AView: <a  href="MVCBr.Interf.IView.html">IView</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#AfterInit">AfterInit</a></b>; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Update">Update</a></b>(const AModel: <a  href="MVCBr.Interf.IModel.html">IModel</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Update">Update</a></b>(const AView: <a  href="MVCBr.Interf.IView.html">IView</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Update">Update</a></b>(const AModel: <a  href="MVCBr.Interf.IModel.html">IModel</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#This">This</a></b>: TObject; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#View">View</a></b>(const AView: <a  href="MVCBr.Interf.IView.html">IView</a> = nil): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Model">Model</a></b>(const AModel: <a  href="MVCBr.Interf.IModel.html">IModel</a> = nil): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Controller">Controller</a></b>(const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; reintroduce; virtual;</code></td>
 </tr>
@@ -131,7 +135,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>(const AView: <a  href="MVCBr.Interf.IView.html">IView</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload;</code></td>
+<td class="itemcode"><a name="AfterInit"></a><code>procedure <b>AfterInit</b>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -139,7 +143,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>(const AModel: <a  href="MVCBr.Interf.IModel.html">IModel</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload;</code></td>
+<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>(const AView: <a  href="MVCBr.Interf.IView.html">IView</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>(const AModel: <a  href="MVCBr.Interf.IModel.html">IModel</a>): <a  href="MVCBr.Interf.IViewModel.html">IViewModel</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

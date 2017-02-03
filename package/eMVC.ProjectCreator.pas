@@ -37,16 +37,20 @@ uses
   Windows, SysUtils,
   eMVC.OTAUtilities,
   eMVC.ProjectFileCreator,
+  PlatformAPI,
   ToolsApi;
 
 type
   TProjectCreator = class(TInterfacedObject, IOTACreator, IOTAProjectCreator
-{$IFDEF COMPILER_8_UP}, IOTAProjectCreator80{$ENDIF COMPILER_8_UP})
+{$IFDEF COMPILER_8_UP}, IOTAProjectCreator80{$ENDIF COMPILER_8_UP}
+{$IF compilerVersion>=28}, IOTAProjectCreator160{$ENDIF}
+    )
   private
     FProjectName: string;
     FisFMX: Boolean;
     procedure SetisFMX(const Value: Boolean);
   public
+    constructor create; virtual;
     // IOTACreator
     function GetCreatorType: string;
     function GetExisting: Boolean;
@@ -70,6 +74,23 @@ type
 {$ENDIF COMPILER_8_UP}
     procedure setFileName(AFilename: string);
     property isFMX: Boolean read FisFMX write SetisFMX;
+
+{$IF CompilerVersion>=28}
+  private
+    FPersonality: string;
+  protected
+    function GetProjectPersonality: string;
+
+    // IOTAProjectCreator160
+    function GetPlatforms: TArray<string>;
+    function GetFrameworkType: string;
+    function GetPreferredPlatform: string;
+    procedure SetInitialOptions(const NewProject: IOTAProject);
+    procedure NewDefaultProjectModule(const Project: IOTAProject);
+
+  public
+    property Personality: string read FPersonality write FPersonality;
+{$ENDIF}
   end;
 
 implementation
@@ -84,6 +105,12 @@ end;
 procedure TProjectCreator.SetisFMX(const Value: Boolean);
 begin
   FisFMX := Value;
+end;
+
+constructor TProjectCreator.create;
+begin
+  inherited;
+  FPersonality := sDelphiPersonality;
 end;
 
 function TProjectCreator.GetCreatorType: string;
@@ -117,7 +144,7 @@ var
 begin
   Result := nil;
   if GetCurrentProjectGroup(ProjectGroup) then
-    result := ProjectGroup;
+    Result := ProjectGroup;
 end;
 
 {$IFDEF COMPILER_8_UP}
@@ -171,9 +198,67 @@ var
   fc: TProjectFileCreator;
 begin
   debug('Iniciando Project: ' + ProjectName);
-  fc := TProjectFileCreator.Create(ProjectName);
+  fc := TProjectFileCreator.create(ProjectName);
   fc.isFMX := self.isFMX;
   Result := fc;
 end;
+
+{$IF CompilerVersion>=28}
+
+function TProjectCreator.GetProjectPersonality: string;
+begin
+  Result := FPersonality;
+end;
+
+// IOTAProjectCreator160
+function TProjectCreator.GetPlatforms: TArray<string>;
+begin
+  if Personality = sDelphiPersonality then
+    Result := TArray<string>.create(cWin32Platform, cWin64Platform,
+      cOSX32Platform, cAndroidPlatform, ciOSSimulatorPlatform
+      {$IFDEF DELPHI_XE8_UP}, ciOSDevice32Platform, ciOSDevice64Platform
+      {$ENDIF})
+  else
+    Result := TArray<string>.create(cWin32Platform, cWin64Platform,
+      cOSX32Platform, cAndroidPlatform
+      {$IFDEF DELPHI_XE8_UP}, ciOSDevice32Platform, ciOSDevice64Platform
+      {$ENDIF});
+
+end;
+
+function TProjectCreator.GetFrameworkType: string;
+begin
+    if isFMX then
+      result := sFrameworkTypeFMX
+    else
+      result := sFrameworkTypeVCL;
+end;
+
+function TProjectCreator.GetPreferredPlatform: string;
+begin
+  result := '';
+end;
+
+procedure TProjectCreator.SetInitialOptions(const NewProject: IOTAProject);
+var
+  LBuildConf: IOTAProjectOptionsConfigurations;
+begin
+  if Supports(NewProject.ProjectOptions, IOTAProjectOptionsConfigurations, LBuildConf) then
+  begin
+    LBuildConf.BaseConfiguration.AsBoolean['UsingDelphiRTL'] := True;
+    if FPersonality = sCBuilderPersonality then
+    begin
+      LBuildConf.BaseConfiguration.PlatformConfiguration[cAndroidPlatform].AsBoolean['ILINK_LinkwithDUnitXRuntime'] := True;
+      LBuildConf.BaseConfiguration.PlatformConfiguration[ciOSDevice32Platform].AsBoolean['ILINK_LinkwithDUnitXRuntime'] := True;
+      LBuildConf.BaseConfiguration.PlatformConfiguration[ciOSDevice64Platform].AsBoolean['ILINK_LinkwithDUnitXRuntime'] := True;
+    end;
+  end;
+
+end;
+procedure TProjectCreator.NewDefaultProjectModule(const Project: IOTAProject);
+begin
+end;
+
+{$ENDIF}
 
 end.

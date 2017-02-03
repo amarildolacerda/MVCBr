@@ -1,4 +1,4 @@
-package MVCBr;
+package MVCBrExperimental;
 
 {$R *.res}
 {$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
@@ -70,9 +70,6 @@ contains
   eMVC.NewSetControllerForm in 'eMVC.NewSetControllerForm.pas' {FormNewModuleModel},
   eMVC.NewSetForm in 'eMVC.NewSetForm.pas' {FormNewSet},
   eMVC.NewMVCModuleWizard in 'eMVC.NewMVCModuleWizard.pas',
-  eMVC.ModelCreator in 'eMVC.ModelCreator.pas',
-  eMVC.NewClassModelWizard in 'eMVC.NewClassModelWizard.pas',
-  eMVC.ClassModelCreator in 'eMVC.ClassModelCreator.pas',
-  eMVC.NewClassModelForm in 'eMVC.NewClassModelForm.pas' {FormClassModel};
+  eMVC.ModelCreator in 'eMVC.ModelCreator.pas';
 
 end.

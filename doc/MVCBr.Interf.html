@@ -33,9 +33,17 @@ MVCBr
 <h1 class="unit">Unit MVCBr.Interf</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td>Funções e Procedimentos</td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Funções e Procedimentos</a></td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
-&nbsp;<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
+<p>
+Como organizar: - Um aplicativo s� pode ter um <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> - Um Controler pode estar ligando a 0 ou 1 view... e pode conter uma lista de Models; - Todo Controller dever� se auto registrar no <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> - Cada Controller � um Observable - Cada Model � um Observer - O controller pode enviar Update para os Models e para o View - O View pode receber Update do Controller e Enviar UpdateByView para o Controller - O Model pode receber Update do Controller e Enviar UpdateByModel para o Controller - Toda View conhece seu Controller - Todo Model conhece seu Controller - Um view pode ter somente um controller
+
+<p>Agenda: - One Aplicattion have only one <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> - One Controller contains View and Models (Zero or 1 View) ( Zero or more Models ) - every Controller need self register on ApplicationControler
+
+<p>- With Controller is an Observable - may dispach events for any Models - with Model is an Observer - may receive events from Controller (Observable) - with Model Know what is his controller (perhaps only one) - with Model can send event update for his controller that can send update for controller's view - with view have only one controller and can send update for his controller
+
+<p>- <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> have a list of controllers</p>
+<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
 <ul class="useslist"><li>System.Classes</li><li>System.SysUtils</li><li>System.Generics.Collections</li><li>System.TypInfo</li><li>System.RTTI</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
 <table class="classestable wide_list">
@@ -45,7 +53,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="itemname">record&nbsp;<a class="bold" href="MVCBr.Interf.TMVCBr.html"><code>TMVCBr</code></a></td>
-<td class="itemdesc">MVCBr Utils</td>
+<td class="itemdesc">MVCBr Utils Record para implementas utilidades de RTTI e outras Class Functions</td>
 </tr>
 <tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IMVCBase.html"><code>IMVCBase</code></a></td>
@@ -143,6 +151,19 @@ MVCBr
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IValidateModel.html"><code>IValidateModel</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModuleModel.html"><code>IModuleModel</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="PasDoc-FuncsProcs"></a><h3 class="summary">Funções e Procedimentos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Interf.html#RegisterInterfacedClass">RegisterInterfacedClass</a></b>(const ANome: string; IID: TGUID; AClass: <a  href="MVCBr.Interf.html#TControllerClass">TControllerClass</a>; bSingleton:Boolean=true);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Interf.html#UnregisterInterfacedClass">UnregisterInterfacedClass</a></b>(const ANome: string);</code></td>
+</tr>
 </table>
 <a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
 <table class="summary wide_list">
@@ -152,8 +173,26 @@ MVCBr
 <tr class="list2">
 <td class="itemcode"><code><b><a  href="MVCBr.Interf.html#TModelTypes">TModelTypes</a></b> = set of <a  href="MVCBr.Interf.html#TModelType">TModelType</a>;</code></td>
 </tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="MVCBr.Interf.html#TControllerClass">TControllerClass</a></b> = class of <a  href="MVCBr.Interf.TControllerAbstract.html">TControllerAbstract</a>;</code></td>
+</tr>
 </table>
 <h2 class="description">Descrição</h2>
+<h3 class="detail">Funções e Procedimentos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RegisterInterfacedClass"></a><code>procedure <b>RegisterInterfacedClass</b>(const ANome: string; IID: TGUID; AClass: <a  href="MVCBr.Interf.html#TControllerClass">TControllerClass</a>; bSingleton:Boolean=true);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="UnregisterInterfacedClass"></a><code>procedure <b>UnregisterInterfacedClass</b>(const ANome: string);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
 <h3 class="detail">Tipos</h3>
 <table class="detail wide_list">
 <tr class="list">
@@ -169,6 +208,8 @@ mtCommon: &nbsp;</li>
 <li>
 mtViewModel: &nbsp;</li>
 <li>
+mtModule: &nbsp;</li>
+<li>
 mtValidate: &nbsp;</li>
 <li>
 mtPersistent: &nbsp;</li>
@@ -180,6 +221,13 @@ mtNavigator: &nbsp;</li>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="TModelTypes"></a><code><b>TModelTypes</b> = set of <a  href="MVCBr.Interf.html#TModelType">TModelType</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TControllerClass"></a><code><b>TControllerClass</b> = class of <a  href="MVCBr.Interf.TControllerAbstract.html">TControllerAbstract</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

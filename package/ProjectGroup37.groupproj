@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{2BA50F97-2A7D-4242-BA11-D0F69D995FC9}</ProjectGuid>
+        <ProjectGuid>{BEF0DD59-FBBB-4CD6-B8D9-BB9CD5733B09}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="MVCBr.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\..\Ferramentas\eSAT\eSAT.dproj">
+        <Projects Include="C:\lixo\Clientes.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +26,23 @@
     <Target Name="MVCBr:Make">
         <MSBuild Projects="MVCBr.dproj" Targets="Make"/>
     </Target>
-    <Target Name="eSAT">
-        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj"/>
+    <Target Name="Clientes">
+        <MSBuild Projects="C:\lixo\Clientes.dproj"/>
     </Target>
-    <Target Name="eSAT:Clean">
-        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj" Targets="Clean"/>
+    <Target Name="Clientes:Clean">
+        <MSBuild Projects="C:\lixo\Clientes.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="eSAT:Make">
-        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj" Targets="Make"/>
+    <Target Name="Clientes:Make">
+        <MSBuild Projects="C:\lixo\Clientes.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;eSAT"/>
+        <CallTarget Targets="MVCBr;Clientes"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;eSAT:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;Clientes:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;eSAT:Make"/>
+        <CallTarget Targets="MVCBr:Make;Clientes:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

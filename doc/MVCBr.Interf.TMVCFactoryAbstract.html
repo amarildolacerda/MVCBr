@@ -33,13 +33,13 @@ MVCBr
 <a name="TMVCFactoryAbstract"></a><h1 class="cio">Classe TMVCFactoryAbstract</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td>Properties</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="MVCBr.Interf.html">MVCBr.Interf</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TMVCFactoryAbstract = class(TInterfacedObject)</code></p>
+<code>type TMVCFactoryAbstract = class(TInterfacedObject, <a class="normal" href="MVCBr.Interf.IMVCBase.html">IMVCBase</a>)</code></p>
 <h2 class="description">Descrição</h2>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
 <ul class="hierarchy"><li class="ancestor">TInterfacedObject</li>
@@ -51,12 +51,30 @@ MVCBr
 <td class="itemcode"><code>function <b><a  href="MVCBr.Interf.TMVCFactoryAbstract.html#InvokeMethod">InvokeMethod</a></b>&lt;T&gt;(AMethod: string; const Args: TArray&lt;TValue&gt;): T;</code></td>
 </tr>
 </table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.Interf.TMVCFactoryAbstract.html#PropertyValue">PropertyValue</a></b>[ANome:string]: TValue read GetPropertyValue
+      write SetPropertyValue;</code></td>
+</tr>
+</table>
 <h2 class="description">Descrição</h2>
 <h3 class="detail">Métodos</h3>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="InvokeMethod"></a><code>function <b>InvokeMethod</b>&lt;T&gt;(AMethod: string; const Args: TArray&lt;TValue&gt;): T;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PropertyValue"></a><code>property <b>PropertyValue</b>[ANome:string]: TValue read GetPropertyValue
+      write SetPropertyValue;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
