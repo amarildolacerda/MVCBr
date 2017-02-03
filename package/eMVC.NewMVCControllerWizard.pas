@@ -147,6 +147,33 @@ begin
         ChDir(extractFilePath(project));
 
         debug('Pronto para criar o Modulo');
+
+        Ctrl := TControllerCreator.create(path,
+          setname + '', false,false,false,true,true,false);
+        Ctrl.IsFMX := cbFMX.Checked;
+        // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
+        Ctrl.Templates.AddPair('%intf',
+          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
+       // Ctrl.Templates.AddPair('%modelType',
+       //   GetModelType(ComboBox1.ItemIndex));
+       // Ctrl.Templates.AddPair('%modelName',
+       //   GetAncestorX(ComboBox1.ItemIndex));
+        Ctrl.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+          [ComboBox1.ItemIndex]);
+       // Ctrl.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
+
+       // Ctrl.Templates.AddPair('%interfInherited',
+       //   GetModelInher(ComboBox1.ItemIndex));
+
+       // if IsFMX then
+       //   Ctrl.Templates.AddPair('*.dfm', '*.fmx');
+        Ctrl.Templates.AddPair('%UnitBase',setname);
+        Ctrl.IsInterf := true;
+        Ctrl.Templates.AddPair('%MdlInterf', setname + '.Controller.Interf');
+        (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+
+
+
         Ctrl := TControllerCreator.create(path,
           setname + '', false,false,false,true,true,false);
         Ctrl.IsFMX := cbFMX.Checked;
@@ -169,6 +196,10 @@ begin
         Ctrl.Templates.AddPair('%UnitBase',setname);
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+
+
+
+
 
         debug('Criou o Controller');
 

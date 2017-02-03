@@ -164,8 +164,8 @@ begin
   begin
     nb.PageIndex := nb.PageIndex + 1;
 
-    // if (nb.PageIndex = 2) and not CreateModule then
-    // nb.PageIndex := 3;
+     if (nb.PageIndex = 2) {and not CreateModule} then
+     nb.PageIndex := 3;
 
     if (nb.PageIndex = 2) and not CreateView then
       nb.PageIndex := 3;
@@ -194,6 +194,9 @@ begin
 
     if (nb.PageIndex = 2) and not CreateModule then
       nb.PageIndex := 1;
+
+    if (nb.PageIndex = 3)  then
+      nb.PageIndex := 1; // 2;
 
     if nb.PageIndex = nb.Pages.Count - 1 then
       btnOKNext.Caption := '&Finalizar'

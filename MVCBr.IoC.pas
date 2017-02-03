@@ -104,7 +104,7 @@ type
     function GetName(AGuid:TGuid): string;
 
     procedure RegisterController(AII: TGuid; AClass: TControllerClass;
-      AName: String);
+      AName: String;bSingleton:boolean);
 
     // Returns true if we have such a service.
     function HasService<T: IInterface>: boolean;
@@ -472,7 +472,7 @@ begin
 end;
 
 procedure TMVCBrIoC.RegisterController(AII: TGuid; AClass: TControllerClass;
-  AName: String);
+  AName: String; bSingleton:boolean);
 var
   Interf: PInterfaceEntry;
   rego: TIoCRegistration<IController>;
@@ -489,7 +489,7 @@ begin
   rego.name := AName;
   rego.IInterface := nil;
   rego.ImplClass := AClass;
-  rego.IsSingleton := false;
+  rego.IsSingleton := bSingleton;
   rego.Instance := nil;
 
   rego.ActivatorDelegate := function: IController

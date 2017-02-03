@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{781E8B53-8E96-4B0D-91F1-3D5D3844D71A}</ProjectGuid>
+        <ProjectGuid>{2BA50F97-2A7D-4242-BA11-D0F69D995FC9}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="package\MVCBr.dproj">
+        <Projects Include="MVCBr.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="c:\lixo\NewMVCApp.dproj">
+        <Projects Include="..\..\Ferramentas\eSAT\eSAT.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -18,31 +18,31 @@
         </BorlandProject>
     </ProjectExtensions>
     <Target Name="MVCBr">
-        <MSBuild Projects="package\MVCBr.dproj"/>
+        <MSBuild Projects="MVCBr.dproj"/>
     </Target>
     <Target Name="MVCBr:Clean">
-        <MSBuild Projects="package\MVCBr.dproj" Targets="Clean"/>
+        <MSBuild Projects="MVCBr.dproj" Targets="Clean"/>
     </Target>
     <Target Name="MVCBr:Make">
-        <MSBuild Projects="package\MVCBr.dproj" Targets="Make"/>
+        <MSBuild Projects="MVCBr.dproj" Targets="Make"/>
     </Target>
-    <Target Name="NewMVCApp">
-        <MSBuild Projects="c:\lixo\NewMVCApp.dproj"/>
+    <Target Name="eSAT">
+        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj"/>
     </Target>
-    <Target Name="NewMVCApp:Clean">
-        <MSBuild Projects="c:\lixo\NewMVCApp.dproj" Targets="Clean"/>
+    <Target Name="eSAT:Clean">
+        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="NewMVCApp:Make">
-        <MSBuild Projects="c:\lixo\NewMVCApp.dproj" Targets="Make"/>
+    <Target Name="eSAT:Make">
+        <MSBuild Projects="..\..\Ferramentas\eSAT\eSAT.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;NewMVCApp"/>
+        <CallTarget Targets="MVCBr;eSAT"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;NewMVCApp:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;eSAT:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;NewMVCApp:Make"/>
+        <CallTarget Targets="MVCBr:Make;eSAT:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

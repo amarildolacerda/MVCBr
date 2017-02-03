@@ -2,6 +2,22 @@ FormViewCreate = 'Application.CreateForm(T%FormIdentView, view)';
 NormalViewCreate = 'view := T%FormIdentView.create(nil)';
 NormalViewDestory = 'freeAndNil(view)';
 
+
+ControllerCodeInterf =
+  'unit %ModelIdent;                                                ' + #10#13 +
+  '                                                                 ' + #10#13 +
+  'interface                                                        ' + #10#13 +
+  'uses                                                             ' + #10#13 +
+  'SysUtils, forms, buttons, classes, controls,MVCBr.Interf;        ' + #10#13 +
+  'type                                                             ' + #10#13 +
+  '  I%FormIdentController = interface(IController)' + #10#13 +
+  '         [''%guid'']                                             ' + #10#13 +
+  '         // incluir especializações aqui                         ' + #10#13 +
+  '  end;                                                           ' + #10#13 +
+  'Implementation                                                   ' + #10#13 +
+  'end.                                                          ' + #10#13;
+
+
 ControllerCode =
   'unit %ModelIdent;                                                ' + #10#13 +
   '                                                                 ' + #10#13 +
@@ -11,15 +27,10 @@ ControllerCode =
   '                                                                 ' + #10#13 +
   'SysUtils, forms, buttons, classes, controls,MVCBr.Interf,        ' + #10#13 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #10#13 +
-  'System.RTTI,                                                     ' + #10#13 +
+  'System.RTTI, %ModelIdent.interf,                                 ' + #10#13 +
   '%FormIdent.ViewModel, %FormIdent.ViewModel.Interf,%FormIdentView;' + #10#13 +
   '                                                                 ' + #10#13 +
   'type                                                             ' + #10#13 +
-  '                                                                 ' + #10#13 +
-  '  I%FormIdentController = interface(IController)' + #10#13 +
-  '         [''%guid'']                                             ' + #10#13 +
-  '         // incluir especializações aqui                         ' + #10#13 +
-  '  end;                                                           ' + #10#13 +
   '                                                                 ' + #10#13 +
   '  T%FormIdentController = class(TControllerFactory,              ' + #10#13 +
   '    I%FormIdentController,                                       ' + #10#13 +
@@ -147,15 +158,10 @@ ControllerCodeOnly =
   '                                                                 ' + #10#13 +
   'SysUtils, forms, buttons, classes, controls,MVCBr.Interf,        ' + #10#13 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #10#13 +
-  '//%FormIdent.ViewModel, %FormIdent.ViewModel.Interf,%FormIdentView,' + #10#13 +
+  '%ModelIdent.interf,                                              ' + #10#13 +
   'System.RTTI;                                                     ' + #10#13 +
   '                                                                 ' + #10#13 +
   'type                                                             ' + #10#13 +
-  '                                                                 ' + #10#13 +
-  '  I%FormIdentController = interface(IController)' + #10#13 +
-  '         [''%guid'']                                             ' + #10#13 +
-  '         // incluir especializações aqui                         ' + #10#13 +
-  '  end;                                                           ' + #10#13 +
   '                                                                 ' + #10#13 +
   '  T%FormIdentController = class(TControllerFactory,              ' + #10#13 +
   '    I%FormIdentController,                                       ' + #10#13 +

@@ -304,7 +304,7 @@ type
   end;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
-  AClass: TControllerClass);
+  AClass: TControllerClass; bSingleton:Boolean=true);
 procedure UnregisterInterfacedClass(const ANome: string);
 
 implementation
@@ -315,9 +315,9 @@ var
   FControllersClass: TMVCBrIoC;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
-  AClass: TControllerClass);
+  AClass: TControllerClass; bSingleton:Boolean=true);
 begin
-  FControllersClass.RegisterController(IID, AClass, ANome);
+  FControllersClass.RegisterController(IID, AClass, ANome,bSingleton);
 end;
 
 procedure UnregisterInterfacedClass(const ANome: string);

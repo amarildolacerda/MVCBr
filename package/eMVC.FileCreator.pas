@@ -175,6 +175,8 @@ begin
             result := ModelCodeBaseInterf;
           if SameText(FAncestorIdent,dataModuleAncestorName) then
             Result := dataModuleCodeInterf;
+          if sametext(FAncestorIdent,'Controller') then
+            Result := ControllerCodeInterf;
         end;
       CVIEWMODEL:
         begin

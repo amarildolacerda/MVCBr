@@ -144,7 +144,20 @@ begin
           CreateView, ModelAlone, ViewAlone, trim(lowercase(edtClassName.Text))
           = 'tform');
         Ctrl.IsFMX := chFMX.Checked;
+        Ctrl.IsInterf := true;
+        Ctrl.Templates.AddPair('%MdlInterf', setname + '.Controller.Interf');
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+
+        Ctrl := TControllerCreator.create(path, setname, false, CreateModule,
+          CreateView, ModelAlone, ViewAlone, trim(lowercase(edtClassName.Text))
+          = 'tform');
+        Ctrl.IsFMX := chFMX.Checked;
+        Ctrl.IsInterf := false;
+        Ctrl.Templates.AddPair('%MdlInterf', setname + '.Controller.Interf');
+        (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+
+
+
 
         if ViewAlone and CreateView then
         begin

@@ -3,7 +3,7 @@ object FormNewModuleModel: TFormNewModuleModel
   Top = 165
   ActiveControl = btnOKNext
   BorderStyle = bsDialog
-  Caption = 'Assistente para adicionar Model'
+  Caption = 'Assistente para adicionar Controller'
   ClientHeight = 318
   ClientWidth = 503
   Color = clBtnFace
@@ -44,9 +44,9 @@ object FormNewModuleModel: TFormNewModuleModel
       object Label1: TLabel
         Left = 9
         Top = 15
-        Width = 227
+        Width = 214
         Height = 16
-        Caption = 'Assistente para DataModule Factory'
+        Caption = 'Assistente para Controller Factory'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -111,8 +111,6 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -213,8 +211,6 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -276,8 +272,6 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 83

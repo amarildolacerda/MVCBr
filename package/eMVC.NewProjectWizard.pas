@@ -185,6 +185,18 @@ begin
     Ctrl.Templates.AddPair('%UnitBase',appname);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
+
+    Ctrl := TControllerCreator.Create(path, identProject, false,true,true,false,false,true);
+    debug('Main Controller Creator');
+    Ctrl.Templates.AddPair('//ViewModelInit',
+      'result.add( T'+identProject+'ViewModel.new(self));');
+    Ctrl.isFMX := AFMX;
+    Ctrl.Templates.addPair('%ModuleIdent',identProject);
+    Ctrl.Templates.AddPair('%UnitBase',appname);
+    Ctrl.IsInterf := true;
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
+
+
     ModelInterf := TViewModelCreator.Create(path, identProject, false);
     ModelInterf.isInterf := true;
     ModelInterf.isFMX := AFMX;
