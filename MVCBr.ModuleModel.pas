@@ -38,7 +38,7 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 
-{$R *.dfm}
+{.$R *.dfm}
 { TModuleFactory }
 
 procedure TModuleFactory.AfterInit;
