@@ -89,7 +89,8 @@ type
       : TValue; static;
   end;
 
-  IMVCBase = interface
+  /// IMVCBrBase publica assinatura de base para as classes Factories Base
+  IMVCBrBase = interface
     ['{6027634D-6A9E-4FC2-A1CE-71B2194ACCDF}']
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
@@ -97,7 +98,9 @@ type
       write SetPropertyValue;
   end;
 
-  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBase)
+  /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns
+  /// a todos as classes Factories
+  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase)
   private
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
@@ -105,6 +108,7 @@ type
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
+    function AsType<TInterface: IInterface>: TInterface;
   end;
 
   // InterfacedList que sera herdado na classes base com controle Threadsafe
@@ -115,14 +119,16 @@ type
 
   IController = interface;
 
-  // uses IThis in base Classes
-  IThis<T> = interface
+  /// uses IThis in base Classes
+  /// Function This espera retornoar um TObject.
+  ///
+  IThis<T: class> = interface
     ['{D6AB571A-3644-43CF-809A-34E1CFD96A78}']
     function This: T;
   end;
 
   // uses IThisAs in higher Classes
-  IThisAs<T> = interface
+  IThisAs<T: class> = interface
     ['{F4D37AD4-3F22-464B-B407-7958F425AD1C}']
     function ThisAs: T;
   end;
@@ -155,7 +161,7 @@ type
     procedure AfterInit;
   end;
 
-  IModelAs<T> = interface
+  IModelAs<T: IInterface> = interface
     ['{2272BBD1-26B9-4F75-A820-E66AB4A16E86}']
     function ModelAs: T;
   end;
@@ -163,7 +169,7 @@ type
   // IView will be implements in TForm...
   IView = interface;
 
-  IViewBase = interface(IMVCBase)
+  IViewBase = interface(IMVCBrBase)
     ['{B3302253-353A-4890-B7B1-B45FC41247F6}']
     function This: TObject;
     function ShowView(const AProc: TProc<IView>): Integer;
@@ -176,12 +182,14 @@ type
     function Controller(const AController: IController): IView;
   end;
 
-  IViewAs<T> = interface
+  /// IViewAs a ser utilizado para fazer cast nas classes factories publicando
+  /// a interface do factory superior
+  IViewAs<T: IInterface> = interface
     ['{F6831540-5311-4910-B25C-70AB21F3EF29}']
     function ViewAs: T;
   end;
 
-  // Main Controller for all Application  - Have a list os Controllers
+  /// Main Controller for all Application  - Have a list os Controllers
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
     procedure Run(AClass: TComponentClass; AController: IController;
@@ -194,6 +202,8 @@ type
     procedure Delete(const idx: Integer);
     procedure Remove(const AController: IController);
     procedure ForEach(AProc: TProc<IController>);
+    procedure UpdateAll;
+    procedure Update(const AIID: TGUID);
   end;
 
   TControllerAbstract = class;
@@ -217,7 +227,7 @@ type
     function This: TControllerAbstract;
   end;
 
-  IControllerAs<T> = interface
+  IControllerAs<T: IInterface> = interface
     ['{F190C15D-91EA-4CD4-AA5D-59ADB6D5AECB}']
     function ControllerAs: T;
   end;
@@ -231,10 +241,10 @@ type
     function GetModel(const IID: TGUID; out intf): IModel; overload; virtual;
     function GetModel(const IID: TGUID): IModel; overload; virtual;
     function GetModel<T>(): T; overload;
-    procedure ResolveController(const AIID: TGUID; out ref) overload;
-    function ResolveController(const AIID: TGUID):IController; overload;
+    procedure ResolveController(const AIID: TGUID; out ref)overload;
+    function ResolveController(const AIID: TGUID): IController; overload;
     Function ResolveController(const ANome: string): IController; overload;
-    Function ResolveController<T>:T;overload;
+    Function ResolveController<T>: T; overload;
   end;
 
   TControllerClass = class of TControllerAbstract;
@@ -250,7 +260,7 @@ type
     function This: TControllerAbstract;
   end;
 
-  IViewModelAs<T> = interface
+  IViewModelAs<T: IInterface> = interface
     ['{79D16DA9-EB18-4F17-A748-6A7E29A59992}']
     function ViewModelAs: T;
   end;
@@ -304,7 +314,7 @@ type
   end;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
-  AClass: TControllerClass; bSingleton:Boolean=true);
+  AClass: TControllerClass; bSingleton: boolean = true);
 procedure UnregisterInterfacedClass(const ANome: string);
 
 implementation
@@ -315,14 +325,15 @@ var
   FControllersClass: TMVCBrIoC;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
-  AClass: TControllerClass; bSingleton:Boolean=true);
+  AClass: TControllerClass; bSingleton: boolean = true);
 begin
-  FControllersClass.RegisterController(IID, AClass, ANome,bSingleton);
+  FControllersClass.RegisterController(IID, AClass, ANome, bSingleton);
 end;
 
 procedure UnregisterInterfacedClass(const ANome: string);
 begin
   /// nao precisa fazer nada.
+  /// avaliar se seria interessate retirar o registro da memoria ainda que nao seja necessario.
 end;
 
 { TControllerAbstract }
@@ -347,7 +358,7 @@ end;
 
 function TControllerAbstract.GetModel(const IID: TGUID): IModel;
 begin
-   GetModel(IID,result)
+  GetModel(IID, result)
 end;
 
 function TControllerAbstract.GetModel<T>(): T;
@@ -373,17 +384,18 @@ begin
 end;
 
 function TControllerAbstract.ResolveController<T>: T;
-var  pInfo: PTypeInfo;
+var
+  pInfo: PTypeInfo;
   IID: TGUID;
 begin
   pInfo := TypeInfo(T);
   IID := GetTypeData(pInfo).Guid;
-  ResolveController(IID,result);
+  ResolveController(IID, result);
 end;
 
 function TControllerAbstract.ResolveController(const AIID: TGUID): IController;
 begin
-   ResolveController(AIID,result);
+  ResolveController(AIID, result);
 end;
 
 procedure TControllerAbstract.ResolveController(const AIID: TGUID; out ref);
@@ -465,6 +477,16 @@ begin
 end;
 
 { TMVCFactoryAbstract }
+
+function TMVCFactoryAbstract.AsType<TInterface>: TInterface;
+var
+  pInfo: PTypeInfo;
+  IID: TGUID;
+begin
+  pInfo := TypeInfo(TInterface);
+  IID := GetTypeData(pInfo).Guid;
+  supports(self, IID, result);
+end;
 
 function TMVCFactoryAbstract.GetPropertyValue(ANome: string): TValue;
 begin

@@ -48,7 +48,7 @@ type
     function Update: IView; virtual;
   end;
 
-  TFormFactory = class(TForm, IMVCBase, IView)
+  TFormFactory = class(TForm, IMVCBrBase, IView)
   private
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);

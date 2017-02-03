@@ -6,7 +6,7 @@
         <Projects Include="package\MVCBr.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="c:\lixo\NewMVCApp.dproj">
+        <Projects Include="C:\lixo\NewMVCApp.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -27,13 +27,13 @@
         <MSBuild Projects="package\MVCBr.dproj" Targets="Make"/>
     </Target>
     <Target Name="NewMVCApp">
-        <MSBuild Projects="c:\lixo\NewMVCApp.dproj"/>
+        <MSBuild Projects="C:\lixo\NewMVCApp.dproj"/>
     </Target>
     <Target Name="NewMVCApp:Clean">
-        <MSBuild Projects="c:\lixo\NewMVCApp.dproj" Targets="Clean"/>
+        <MSBuild Projects="C:\lixo\NewMVCApp.dproj" Targets="Clean"/>
     </Target>
     <Target Name="NewMVCApp:Make">
-        <MSBuild Projects="c:\lixo\NewMVCApp.dproj" Targets="Make"/>
+        <MSBuild Projects="C:\lixo\NewMVCApp.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
         <CallTarget Targets="MVCBr;NewMVCApp"/>

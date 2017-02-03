@@ -53,6 +53,8 @@ type
       AFunc: TFunc < boolean >= nil); overload;
     class function New: IApplicationController;
     procedure ForEach(AProc: TProc<IController>);
+    procedure UpdateAll;
+    procedure Update(const AIID:TGuid);
   end;
 
 function ApplicationController: IApplicationController;
@@ -138,6 +140,21 @@ end;
 function TApplicationController.This: TObject;
 begin
   result := self;
+end;
+
+procedure TApplicationController.Update(const AIID: TGuid);
+var i:Integer;
+begin
+    for I := 0 to count-1 do
+      if supports(FControllers.items[i],AIID) then
+         (FControllers.items[i] as IController).UpdateAll;
+end;
+
+procedure TApplicationController.UpdateAll;
+var i:integer;
+begin
+   for I := 0 to FControllers.count-1 do
+       (FControllers.items[i] as IController).UpdateAll;
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;
