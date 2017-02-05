@@ -108,6 +108,7 @@ begin
   CheckNotNull(ReturnValue);
 end;
 
+
 procedure TestTFormFactory.SetUp;
 var
   Controller: IController;
@@ -141,14 +142,17 @@ begin
   // TODO: Validate method results
 end;
 
+Type
+  TFormFactoryEx = class(TTesteFormView);
+
 procedure TestTFormFactory.TestInvokeMethod;
 var
   ReturnValue: Boolean;
 begin
   // TODO: Setup method call parameters
-  FFormFactory.InvokeMethod<Boolean>('SetShowModal', [true]);
+  FFormFactory.PropertyValue['isShowModal'] := true;
   CheckTrue(FFormFactory.isShowModal, 'Não alterou o ShowModal');
-  ReturnValue := FFormFactory.InvokeMethod<Boolean>('GetShowModal', []);
+  ReturnValue := TFormFactoryEx(FFormFactory).InvokeMethod<Boolean>('GetShowModalStub', []);
   CheckTrue(ReturnValue, 'Não funcionou RTTI');
   // TODO: Validate method results
 end;
@@ -159,7 +163,7 @@ var
   AProc: TProc<IView>;
 begin
   // TODO: Setup method call parameters
-  FFormFactory.SetShowModal(false);
+  FFormFactory.isShowModal := false;
   ReturnValue := FFormFactory.ShowView(AProc);
 
   // TODO: Validate method results

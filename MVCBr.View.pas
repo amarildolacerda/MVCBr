@@ -23,6 +23,11 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
+
+
+/// <summary>
+///  Unit MVCBr.View implementas os objeto Factory para a camada de visualização
+/// </summary>
 unit MVCBr.View;
 
 interface
@@ -34,6 +39,10 @@ type
 
   TViewFactoryClass = class of TViewFactory;
 
+  /// <summary>
+  ///     TViewFactory é um Factory abstrato a ser utilizado com finalidades genericas
+  ///     sem ligação direta com um visualizador
+  ///  </summary>
   TViewFactory = class(TMVCInterfacedObject, IView)
   private
     // FView: IView;
@@ -52,28 +61,6 @@ type
 
   end;
 
-  TFormFactory = class(TForm, IMVCBrBase, IView)
-  private
-    function GetPropertyValue(ANome: string): TValue;
-    procedure SetPropertyValue(ANome: string; const Value: TValue);
-  protected
-    FController: IController;
-    FShowModal: boolean;
-    procedure SetController(const AController: IController);
-    function Controller(const AController: IController): IView; virtual;
-    procedure AfterConstruction; override;
-  public
-    function isShowModal: boolean;
-    procedure SetShowModal(const AShowModal: boolean);
-    function GetShowModal: boolean;
-    function GetController: IController; virtual;
-    function This: TObject; virtual;
-    function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
-    property PropertyValue[ANome: string]: TValue read GetPropertyValue
-      write SetPropertyValue;
-    function ShowView(const AProc: TProc<IView>): Integer; virtual;
-    function Update: IView; virtual;
-  end;
 
 implementation
 
@@ -124,77 +111,5 @@ begin
   result := self;
 end;
 
-{ TViewFormFacotry }
-procedure TFormFactory.AfterConstruction;
-begin
-  inherited;
-  FShowModal := true;
-end;
-
-function TFormFactory.Controller(const AController: IController): IView;
-begin
-  result := self;
-  FController := AController;
-end;
-
-function TFormFactory.GetController: IController;
-begin
-  result := FController;
-end;
-
-function TFormFactory.GetPropertyValue(ANome: string): TValue;
-begin
-  result := TMVCBr.GetProperty(self, ANome);
-end;
-
-function TFormFactory.GetShowModal: boolean;
-begin
-  result := isShowModal;
-end;
-
-function TFormFactory.InvokeMethod<T>(AMethod: string;
-  const Args: TArray<TValue>): T;
-begin
-  result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
-end;
-
-function TFormFactory.isShowModal: boolean;
-begin
-  result := FShowModal;
-end;
-
-procedure TFormFactory.SetController(const AController: IController);
-begin
-  FController := AController;
-end;
-
-procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);
-begin
-  TMVCBr.SetProperty(self, ANome, Value);
-end;
-
-procedure TFormFactory.SetShowModal(const AShowModal: boolean);
-begin
-  FShowModal := AShowModal;
-end;
-
-function TFormFactory.ShowView(const AProc: TProc<IView>): Integer;
-begin
-  result := 0;
-  if FShowModal then
-    result := ord(ShowModal);
-  if assigned(AProc) then
-    AProc(self);
-end;
-
-function TFormFactory.This: TObject;
-begin
-  result := self;
-end;
-
-function TFormFactory.Update: IView;
-begin
-  result := self;
-end;
 
 end.

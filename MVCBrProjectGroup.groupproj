@@ -15,9 +15,6 @@
         <Projects Include="C:\lixo\NewMVCApp2.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="c:\lixo\NewMVCApp3.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -62,23 +59,14 @@
     <Target Name="NewMVCApp2:Make">
         <MSBuild Projects="C:\lixo\NewMVCApp2.dproj" Targets="Make"/>
     </Target>
-    <Target Name="NewMVCApp3">
-        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj"/>
-    </Target>
-    <Target Name="NewMVCApp3:Clean">
-        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="NewMVCApp3:Make">
-        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;MVCBrTests;NewMVCApp;NewMVCApp2;NewMVCApp3"/>
+        <CallTarget Targets="MVCBr;MVCBrTests;NewMVCApp;NewMVCApp2"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;MVCBrTests:Clean;NewMVCApp:Clean;NewMVCApp2:Clean;NewMVCApp3:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;MVCBrTests:Clean;NewMVCApp:Clean;NewMVCApp2:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;MVCBrTests:Make;NewMVCApp:Make;NewMVCApp2:Make;NewMVCApp3:Make"/>
+        <CallTarget Targets="MVCBr:Make;MVCBrTests:Make;NewMVCApp:Make;NewMVCApp2:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

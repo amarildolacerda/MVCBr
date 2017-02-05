@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  MVCBr.View,
+  MVCBr.View,MVCBr.FormView,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
 
 type
@@ -13,6 +13,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    function GetShowModalStub:boolean;
   end;
 
 var
@@ -21,5 +22,12 @@ var
 implementation
 
 {$R *.dfm}
+
+{ TTesteFormView }
+
+function TTesteFormView.GetShowModalStub: boolean;
+begin
+  result := GetShowModal;
+end;
 
 end.

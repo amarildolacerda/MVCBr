@@ -7,7 +7,7 @@ ViewHead = 'unit %ModelIdent;                                ' + #10#13 +
   'uses                                                      ' + #10#13 +
   '  Windows, Messages, SysUtils,  Classes,Graphics,         ' + #10#13 +
   '  Controls,StdCtrls,ComCtrls,ExtCtrls,Forms,MVCBr.Interf, ' + #10#13 +
-  '  MVCBr.View, %MdlInterf ,MVCBr.Controller;          ' + #10#13 +
+  '  MVCBr.View,MVCBr.FormView, %MdlInterf ,MVCBr.Controller;          ' + #10#13 +
   '                                                     ' + #10#13;
 ViewDef = '                                   '#10#13 +
   'type                                                 ' + #10#13 +

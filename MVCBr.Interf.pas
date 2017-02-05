@@ -130,9 +130,9 @@ type
   TMVCFactoryAbstractClass = class of TMVCFactoryAbstract;
 
   // InterfacedList que sera herdado na classes base com controle Threadsafe
-  TMVCInterfacedList<T> = class(TInterfaceList)
+  TMVCInterfacedList<TInterface> = class(TInterfaceList)
   public
-    procedure ForEach(AGuid: TGuid; AProc: TProc<T>);
+    procedure ForEach(AGuid: TGuid; AProc: TProc<TInterface>);
   end;
 
   IController = interface;
@@ -179,9 +179,9 @@ type
     procedure AfterInit;
   end;
 
-  IModelAs<T: IInterface> = interface
+  IModelAs<TInterface: IInterface> = interface
     ['{2272BBD1-26B9-4F75-A820-E66AB4A16E86}']
-    function ModelAs: T;
+    function ModelAs: TInterface;
   end;
 
   // IView will be implements in TForm...
@@ -204,9 +204,9 @@ type
 
   /// IViewAs a ser utilizado para fazer cast nas classes factories publicando
   /// a interface do factory superior
-  IViewAs<T: IInterface> = interface
+  IViewAs<TInterface: IInterface> = interface
     ['{F6831540-5311-4910-B25C-70AB21F3EF29}']
-    function ViewAs: T;
+    function ViewAs: TInterface;
   end;
 
   /// Main Controller for all Application  - Have a list os Controllers
@@ -247,9 +247,9 @@ type
     function This: TControllerAbstract;
   end;
 
-  IControllerAs<T: IInterface> = interface
+  IControllerAs<TInterface: IInterface> = interface
     ['{F190C15D-91EA-4CD4-AA5D-59ADB6D5AECB}']
-    function ControllerAs: T;
+    function ControllerAs: TInterface;
   end;
 
   TControllerAbstract = class(TMVCFactoryAbstract)
@@ -260,11 +260,11 @@ type
     function This: TControllerAbstract;
     function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
     function GetModel(const IID: TGuid): IModel; overload; virtual;
-    function GetModel<T>(): T; overload;
+    function GetModel<TInterface>(): TInterface; overload;
     procedure ResolveController(const AIID: TGuid; out ref)overload;
     function ResolveController(const AIID: TGuid): IController; overload;
     Function ResolveController(const ANome: string): IController; overload;
-    Function ResolveController<T>: T; overload;
+    Function ResolveController<TInterface>: TInterface; overload;
   end;
 
   TControllerClass = class of TControllerAbstract;
@@ -280,9 +280,9 @@ type
     function This: TControllerAbstract;
   end;
 
-  IViewModelAs<T: IInterface> = interface
+  IViewModelAs<TInterface: IInterface> = interface
     ['{79D16DA9-EB18-4F17-A748-6A7E29A59992}']
-    function ViewModelAs: T;
+    function ViewModelAs: TInterface;
   end;
 
   IViewModel = interface;
@@ -396,13 +396,13 @@ begin
   GetModel(IID, result)
 end;
 
-function TControllerAbstract.GetModel<T>(): T;
+function TControllerAbstract.GetModel<TInterface>(): TInterface;
 var
   I: Integer;
   pInfo: PTypeInfo;
   IID: TGuid;
 begin
-  pInfo := TypeInfo(T);
+  pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   for I := 0 to FModels.Count - 1 do
     if supports((FModels.Items[I] as IModel).This, IID, result) then
@@ -418,12 +418,12 @@ begin
   result.Init;
 end;
 
-function TControllerAbstract.ResolveController<T>: T;
+function TControllerAbstract.ResolveController<TInterface>: TInterface;
 var
   pInfo: PTypeInfo;
   IID: TGuid;
 begin
-  pInfo := TypeInfo(T);
+  pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   ResolveController(IID, result);
 end;
@@ -612,10 +612,10 @@ end;
 
 { TMVCInterfacedList<T> }
 
-procedure TMVCInterfacedList<T>.ForEach(AGuid: TGuid; AProc: TProc<T>);
+procedure TMVCInterfacedList<TInterface>.ForEach(AGuid: TGuid; AProc: TProc<TInterface>);
 var
   I: Integer;
-  intf: T;
+  intf: TInterface;
 begin
   if Assigned(AProc) then
     for I := 0 to Count - 1 do

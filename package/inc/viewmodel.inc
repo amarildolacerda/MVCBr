@@ -23,7 +23,6 @@ viewmodecode = 'Unit %ModelIdent;                            ' + #10#13 +
   '                                                               ' + #10#13 +
   'Type                                                           ' + #10#13 +
   '                                                               ' + #10#13 +
-  '                                                               ' + #10#13 +
   '    T%FormIdentViewModel=class(TViewModelFactory,              ' + #10#13 +
   '      I%FormIdentViewModel, IViewModelAs<I%FormIdentViewModel>)' + #10#13 +
   '                                                               ' + #10#13 +
