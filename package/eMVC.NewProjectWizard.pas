@@ -222,6 +222,7 @@ begin
     (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
 
     SetCurrentDir(path);
+    Debug('Path: '+path);
   except
     on e: Exception do
       debug(e.message);

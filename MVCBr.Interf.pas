@@ -62,10 +62,12 @@
 unit MVCBr.Interf;
 
 /// ---------------------------------------------------------------------------
+/// <summary>
 /// MVCBr.Interf  declara as interfaces bases para o MVCBr
 /// O uso de interface objetivo minimizar o acoplamento das UNITs
 /// o que irá permitir reutilização das mesmas interfaces
 /// para um numero grande de UNIT;
+/// </summary>
 /// ---------------------------------------------------------------------------
 
 interface
@@ -79,8 +81,20 @@ type
   /// Record para implementas utilidades de RTTI e outras Class Functions
   ///
   TMVCBr = record
-    class function InvokeCreate<T: class>(const Args: TArray<TValue>)
-      : T; static;
+    class function GetQualifieName( AII:TGuid):string;static;
+    class function IsSame( I1,I2:TGuid):boolean;static;
+    class function IsService<TInterface: IInterface>(Const Obj: TObject)
+      : Boolean; static;
+    class function GetGuid<TInterface: IInterface>: TGuid; overload; static;
+    class function GetGuid(const AInterface: IInterface): TGuid;
+      overload; static;
+
+    class function InvokeCreate<TInterface: IInterface>(const AClass: TClass)
+      : TInterface; overload; static;
+    class function InvokeCreate(Const AGuid: TGuid; AClass: TClass): IInterface;
+      overload; static;
+    class function InvokeCreate<T: class>(const Args: TArray<TValue>): T;
+      overload; static;
     class function InvokeMethod<T>(AInstance: TObject; AMethod: string;
       const Args: TArray<TValue>): T; static;
     class procedure SetProperty(AInstance: TObject; APropertyNome: string;
@@ -105,16 +119,20 @@ type
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
   public
+    class function New<TInterface: IInterface>(AClass: TClass)
+      : TInterface; overload;
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
     function AsType<TInterface: IInterface>: TInterface;
   end;
 
+  TMVCFactoryAbstractClass = class of TMVCFactoryAbstract;
+
   // InterfacedList que sera herdado na classes base com controle Threadsafe
   TMVCInterfacedList<T> = class(TInterfaceList)
   public
-    procedure ForEach(AGuid: TGUID; AProc: TProc<T>);
+    procedure ForEach(AGuid: TGuid; AProc: TProc<T>);
   end;
 
   IController = interface;
@@ -180,6 +198,8 @@ type
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
     function Controller(const AController: IController): IView;
+    function GetController: IController;
+    procedure SetController(const AController: IController);
   end;
 
   /// IViewAs a ser utilizado para fazer cast nas classes factories publicando
@@ -193,9 +213,9 @@ type
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
     procedure Run(AClass: TComponentClass; AController: IController;
-      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+      AModel: IModel; AFunc: TFunc < Boolean >= nil); overload;
     procedure Run(AController: IController;
-      AFunc: TFunc < boolean >= nil); overload;
+      AFunc: TFunc < Boolean >= nil); overload;
     function This: TObject;
     function Count: Integer;
     function Add(const AController: IController): Integer;
@@ -203,7 +223,7 @@ type
     procedure Remove(const AController: IController);
     procedure ForEach(AProc: TProc<IController>);
     procedure UpdateAll;
-    procedure Update(const AIID: TGUID);
+    procedure Update(const AIID: TGuid);
   end;
 
   TControllerAbstract = class;
@@ -238,11 +258,11 @@ type
   public
     constructor create; virtual;
     function This: TControllerAbstract;
-    function GetModel(const IID: TGUID; out intf): IModel; overload; virtual;
-    function GetModel(const IID: TGUID): IModel; overload; virtual;
+    function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
+    function GetModel(const IID: TGuid): IModel; overload; virtual;
     function GetModel<T>(): T; overload;
-    procedure ResolveController(const AIID: TGUID; out ref)overload;
-    function ResolveController(const AIID: TGUID): IController; overload;
+    procedure ResolveController(const AIID: TGuid; out ref)overload;
+    function ResolveController(const AIID: TGuid): IController; overload;
     Function ResolveController(const ANome: string): IController; overload;
     Function ResolveController<T>: T; overload;
   end;
@@ -313,21 +333,36 @@ type
     ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
   end;
 
-procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
-  AClass: TControllerClass; bSingleton: boolean = true);
+  TMVCRegister = record
+    class procedure RegisterInterfaced<TInterface: IInterface>
+      (const ANome: string; IID: TGuid; AClass: TMVCFactoryAbstractClass;
+      bSingleton: Boolean = true); Static;
+  end;
+
+procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
+  AClass: TControllerClass; bSingleton: Boolean = true);
 procedure UnregisterInterfacedClass(const ANome: string);
+
+var
+  FControllersClass: TObject;
 
 implementation
 
-uses MVCBr.IoC;
+uses MVCBr.IoC{, MVCBr.InterfaceHelper};
 
-var
-  FControllersClass: TMVCBrIoC;
-
-procedure RegisterInterfacedClass(const ANome: string; IID: TGUID;
-  AClass: TControllerClass; bSingleton: boolean = true);
+procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
+  AClass: TControllerClass; bSingleton: Boolean = true);
 begin
-  FControllersClass.RegisterController(IID, AClass, ANome, bSingleton);
+  // TMVCBrIoC(FControllersClass).RegisterController(IID, AClass, ANome,
+  // bSingleton);
+  TMVCRegister.RegisterInterfaced<IController>(ANome, IID, AClass, bSingleton);
+end;
+
+class procedure TMVCRegister.RegisterInterfaced<TInterface>(const ANome: string;
+  IID: TGuid; AClass: TMVCFactoryAbstractClass; bSingleton: Boolean = true);
+begin
+  TMVCBrIoC(FControllersClass).RegisterInterfaced<TInterface>(IID, AClass,
+    ANome, bSingleton);
 end;
 
 procedure UnregisterInterfacedClass(const ANome: string);
@@ -343,7 +378,7 @@ begin
   inherited;
 end;
 
-function TControllerAbstract.GetModel(const IID: TGUID; out intf): IModel;
+function TControllerAbstract.GetModel(const IID: TGuid; out intf): IModel;
 var
   I: Integer;
 begin
@@ -356,7 +391,7 @@ begin
     end;
 end;
 
-function TControllerAbstract.GetModel(const IID: TGUID): IModel;
+function TControllerAbstract.GetModel(const IID: TGuid): IModel;
 begin
   GetModel(IID, result)
 end;
@@ -365,7 +400,7 @@ function TControllerAbstract.GetModel<T>(): T;
 var
   I: Integer;
   pInfo: PTypeInfo;
-  IID: TGUID;
+  IID: TGuid;
 begin
   pInfo := TypeInfo(T);
   IID := GetTypeData(pInfo).Guid;
@@ -379,31 +414,31 @@ end;
 function TControllerAbstract.ResolveController(const ANome: string)
   : IController;
 begin
-  result := FControllersClass.Resolve<IController>(ANome);
+  result := TMVCBrIoC(FControllersClass).Resolve<IController>(ANome);
   result.Init;
 end;
 
 function TControllerAbstract.ResolveController<T>: T;
 var
   pInfo: PTypeInfo;
-  IID: TGUID;
+  IID: TGuid;
 begin
   pInfo := TypeInfo(T);
   IID := GetTypeData(pInfo).Guid;
   ResolveController(IID, result);
 end;
 
-function TControllerAbstract.ResolveController(const AIID: TGUID): IController;
+function TControllerAbstract.ResolveController(const AIID: TGuid): IController;
 begin
   ResolveController(AIID, result);
 end;
 
-procedure TControllerAbstract.ResolveController(const AIID: TGUID; out ref);
+procedure TControllerAbstract.ResolveController(const AIID: TGuid; out ref);
 var
   achei: string;
   ii: IController;
 begin
-  achei := FControllersClass.GetName(AIID);
+  achei := TMVCBrIoC(FControllersClass).GetName(AIID);
   if achei = '' then
     exit;
   ii := ResolveController(achei);
@@ -416,6 +451,24 @@ begin
 end;
 
 { TMVCBr }
+
+class function TMVCBr.GetGuid(const AInterface: IInterface): TGuid;
+var
+  pInfo: PTypeInfo;
+  IID: TGuid;
+begin
+  //pInfo := TypeInfo(AInterface);
+  //result := GetTypeData(AInterface).Guid;
+end;
+
+class function TMVCBr.GetGuid<TInterface>: TGuid;
+var
+  pInfo: PTypeInfo;
+  IID: TGuid;
+begin
+  pInfo := TypeInfo(TInterface);
+  result := GetTypeData(pInfo).Guid;
+end;
 
 class function TMVCBr.GetProperty(AInstance: TObject;
   APropertyNome: string): TValue;
@@ -433,6 +486,22 @@ begin
   end;
 end;
 
+class function TMVCBr.GetQualifieName(AII: TGuid): string;
+begin
+   //result := TInterfaceHelper.GetQualifiedName(AII);
+end;
+
+class function TMVCBr.InvokeCreate(const AGuid: TGuid; AClass: TClass)
+  : IInterface;
+var
+  Obj: TObject;
+begin
+  Obj := AClass.create;
+  supports(Obj, AGuid, result);
+  if not Assigned(result) then
+    Obj.DisposeOf;
+end;
+
 class function TMVCBr.InvokeCreate<T>(const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
@@ -446,18 +515,43 @@ begin
   end;
 end;
 
+class function TMVCBr.InvokeCreate<TInterface>(const AClass: TClass)
+  : TInterface;
+var
+  Obj: TObject;
+begin
+  Obj := AClass.create;
+  supports(Obj, GetGuid<TInterface>, result);
+  if not Assigned(result) then
+    Obj.DisposeOf;
+end;
+
 class function TMVCBr.InvokeMethod<T>(AInstance: TObject; AMethod: string;
   const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
+  mtd: TRttiMethod;
+  value:TValue;
 begin
   ctx := TRttiContext.create;
   try
-    result := ctx.GetType(AInstance.ClassInfo).GetMethod(AMethod)
-      .Invoke(AInstance, Args).AsType<T>;
+    Mtd := ctx.GetType(AInstance.ClassInfo).GetMethod(AMethod);
+    Value := mtd.Invoke(AInstance, Args) ;//.AsType<T>;
+    Value.TryAsType(result);
   finally
     ctx.Free();
   end;
+end;
+
+class function TMVCBr.IsSame(I1, I2: TGuid): boolean;
+begin
+ //result := TInterfaceHelper.GetQualifiedName(I1)=TInterfaceHelper.GetQualifiedName(I2);
+end;
+
+
+class function TMVCBr.IsService<TInterface>(const Obj: TObject): Boolean;
+begin
+  result := supports(Obj, GetGuid<TInterface>);
 end;
 
 class procedure TMVCBr.SetProperty(AInstance: TObject; APropertyNome: string;
@@ -481,7 +575,7 @@ end;
 function TMVCFactoryAbstract.AsType<TInterface>: TInterface;
 var
   pInfo: PTypeInfo;
-  IID: TGUID;
+  IID: TGuid;
 begin
   pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
@@ -499,6 +593,17 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
+class function TMVCFactoryAbstract.New<TInterface>(AClass: TClass): TInterface;
+var
+  IID: TGuid;
+  Obj: TObject;
+begin
+  IID := TMVCBr.GetGuid<TInterface>();
+  Obj := AClass.create;
+  if not supports(Obj, IID, result) then
+    Obj.DisposeOf;
+end;
+
 procedure TMVCFactoryAbstract.SetPropertyValue(ANome: string;
   const Value: TValue);
 begin
@@ -507,7 +612,7 @@ end;
 
 { TMVCInterfacedList<T> }
 
-procedure TMVCInterfacedList<T>.ForEach(AGuid: TGUID; AProc: TProc<T>);
+procedure TMVCInterfacedList<T>.ForEach(AGuid: TGuid; AProc: TProc<T>);
 var
   I: Integer;
   intf: T;

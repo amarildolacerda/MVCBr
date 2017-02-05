@@ -54,7 +54,7 @@ type
     class function New: IApplicationController;
     procedure ForEach(AProc: TProc<IController>);
     procedure UpdateAll;
-    procedure Update(const AIID:TGuid);
+    procedure Update(const AIID: TGuid);
   end;
 
 function ApplicationController: IApplicationController;
@@ -108,7 +108,15 @@ end;
 
 destructor TApplicationController.destroy;
 begin
-  FControllers.Free;
+  if assigned(FControllers) then
+  begin
+    try
+      FControllers.clear;
+      FControllers.DisposeOf;
+    except
+    end;
+    FControllers := nil;
+  end;
   inherited;
 end;
 
@@ -143,18 +151,20 @@ begin
 end;
 
 procedure TApplicationController.Update(const AIID: TGuid);
-var i:Integer;
+var
+  i: integer;
 begin
-    for I := 0 to count-1 do
-      if supports(FControllers.items[i],AIID) then
-         (FControllers.items[i] as IController).UpdateAll;
+  for i := 0 to Count - 1 do
+    if supports(FControllers.Items[i], AIID) then
+      (FControllers.Items[i] as IController).UpdateAll;
 end;
 
 procedure TApplicationController.UpdateAll;
-var i:integer;
+var
+  i: integer;
 begin
-   for I := 0 to FControllers.count-1 do
-       (FControllers.items[i] as IController).UpdateAll;
+  for i := 0 to FControllers.Count - 1 do
+    (FControllers.Items[i] as IController).UpdateAll;
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;

@@ -40,15 +40,21 @@ type
   TControllerFactory = class(TControllerAbstract, IController,
     IControllerAs<TControllerFactory>)
   private
+    FLoaded: boolean;
+    FRefModelCount: integer;
   protected
     FView: IView;
     FID: string;
+    procedure Load; virtual;
     procedure SetID(const AID: string);
+    procedure AfterConstruction; override;
+
   public
     constructor Create; override;
     destructor destroy; override;
-    function ID(const AID: string): IController;
-    function GetModelByID(const AID: String): IModel;
+    function ID(const AID: string): IController;virtual;
+    function GetID:String;virtual;
+    function GetModelByID(const AID: String): IModel;virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetModel(const idx: integer): IModel; overload; virtual;
@@ -63,11 +69,11 @@ type
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
     function IndexOf(const AModel: IModel): integer; virtual;
-    function IndexOfModelType(const AModelType: TModelType): integer;
+    function IndexOfModelType(const AModelType: TModelType): integer;virtual;
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
-    function UpdateAll: IController;
+    function UpdateAll: IController; virtual;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
 
@@ -107,9 +113,7 @@ end;
 constructor TControllerFactory.Create;
 begin
   inherited Create;
-  ApplicationController.Add(self);
-  FModels := TMVCInterfacedList<IModel>.Create;
-  ID(self.ClassName);
+  Load;
 end;
 
 procedure TControllerFactory.Delete(const Index: integer);
@@ -119,8 +123,15 @@ end;
 
 destructor TControllerFactory.destroy;
 begin
-  FModels.Free;
-  UnRegisterClass(GetClass(FID));
+  if assigned(FModels) then
+  begin
+    try
+      FModels.Clear;
+      FModels.DisposeOf;
+    except
+    end;
+    FModels := nil;
+  end;
   ApplicationController.remove(self);
   inherited;
 end;
@@ -138,6 +149,11 @@ begin
   if assigned(AProc) then
     for i := 0 to FModels.Count - 1 do
       AProc(FModels.Items[i] as IModel);
+end;
+
+function TControllerFactory.GetID: String;
+begin
+   result := FID;
 end;
 
 function TControllerFactory.GetModel(const idx: integer): IModel;
@@ -184,14 +200,18 @@ function TControllerFactory.IndexOfModelType(const AModelType
   : TModelType): integer;
 var
   i: integer;
+  FModel: IModel;
 begin
   result := -1;
   for i := 0 to FModels.Count - 1 do
-    if AModelType in (FModels.Items[i] as IModel).ModelTypes then
+  begin
+    FModel := FModels.Items[i] as IModel;
+    if AModelType in FModel.ModelTypes then
     begin
       result := i;
       exit;
     end;
+  end;
 end;
 
 procedure TControllerFactory.Init;
@@ -199,12 +219,28 @@ begin
   BeforeInit;
 end;
 
+procedure TControllerFactory.Load;
+begin
+  if not assigned(FModels) then
+    FModels := TMVCInterfacedList<IModel>.Create;
+  if (not FLoaded) then
+  begin
+    ApplicationController.Add(self);
+    ID(self.ClassName);
+    FLoaded := true;
+    FRefModelCount := 0;
+  end;
+end;
+
 procedure TControllerFactory.SetID(const AID: string);
 begin
-  if FID <> '' then
-    UnRegisterClass(GetClass(FID));
   FID := AID;
-  RegisterClassAlias(TPersistentClass(self.ClassType), FID);
+end;
+
+procedure TControllerFactory.AfterConstruction;
+begin
+  inherited;
+  Load;
 end;
 
 procedure TControllerFactory.AfterInit;
@@ -237,22 +273,48 @@ var
   i: integer;
 begin
   result := self;
-  for i := 0 to FModels.Count - 1 do
-    (FModels.Items[i] as IModel).Update;
-  FView.Update;
+  if FRefModelCount = 0 then
+  begin
+    inc(FRefModelCount); // previne para nao entrar em LOOP
+    try
+      for i := 0 to FModels.Count - 1 do
+        (FModels.Items[i] as IModel).Update;
+      FView.Update;
+    finally
+      dec(FRefModelCount);
+    end;
+  end;
 end;
 
 function TControllerFactory.UpdateByModel(AModel: IModel): IController;
 begin
-  FView.Update;
+  result := self;
+  if FRefModelCount = 0 then
+  begin
+    inc(FRefModelCount); // previne para nao entrar em LOOP
+    try
+      FView.Update;
+    finally
+      dec(FRefModelCount);
+    end;
+  end;
 end;
 
 function TControllerFactory.UpdateByView(AView: IView): IController;
 var
   i: integer;
 begin
-  for i := 0 to FModels.Count - 1 do
-    (FModels.Items[i] as IModel).Update;
+  result := self;
+  if FRefModelCount = 0 then
+  begin
+    inc(FRefModelCount); // previne para nao entrar em LOOP
+    try
+      for i := 0 to FModels.Count - 1 do
+        (FModels.Items[i] as IModel).Update;
+    finally
+      dec(FRefModelCount);
+    end;
+  end;
 end;
 
 function TControllerFactory.View(const AView: IView): IController;

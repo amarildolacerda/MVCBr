@@ -103,8 +103,10 @@ type
       : TInterface;
     function GetName(AGuid:TGuid): string;
 
-    procedure RegisterController(AII: TGuid; AClass: TControllerClass;
+{    procedure RegisterController(AII: TGuid; AClass: TControllerClass;
       AName: String;bSingleton:boolean);
+}    procedure RegisterInterfaced<TInterface:IInterface>(AII: TGuid; AClass: TInterfacedClass;
+      AName: String;bSingleton:boolean);overload;
 
     // Returns true if we have such a service.
     function HasService<T: IInterface>: boolean;
@@ -428,6 +430,38 @@ begin
       [pInfo.name, name]));
 end;
 
+procedure TMVCBrIoC.RegisterInterfaced<TInterface>(AII: TGuid; AClass: TInterfacedClass;
+  AName: String; bSingleton: boolean);
+var
+  Interf: PInterfaceEntry;
+  rego: TIoCRegistration<IUnknown>;
+  key: string;
+begin
+
+  Interf := GetInterfaceEntry(AII);
+
+  key := GetInterfaceKey<TInterface>(AName);
+
+
+  rego := TIoCRegistration<IUnknown>.Create;
+  rego.Guid := AII;
+  rego.name := AName;
+  rego.IInterface := nil;
+  rego.ImplClass := AClass;
+  rego.IsSingleton := bSingleton;
+  rego.Instance := nil;
+
+  rego.ActivatorDelegate := function: IUnknown
+    var
+      obj: TInterfacedObject;
+    begin
+      obj := AClass.Create;
+      Supports(obj, AII, result);
+    end;
+  FContainerInfo.Add(key, rego);
+
+end;
+
 procedure TMVCBrIoC.RegisterType<TInterface>(const singleton: boolean;
   const delegate: TActivatorDelegate<TInterface>; const name: string);
 begin
@@ -471,7 +505,7 @@ begin
   end;
 end;
 
-procedure TMVCBrIoC.RegisterController(AII: TGuid; AClass: TControllerClass;
+{procedure TMVCBrIoC.RegisterController(AII: TGuid; AClass: TControllerClass;
   AName: String; bSingleton:boolean);
 var
   Interf: PInterfaceEntry;
@@ -502,5 +536,5 @@ begin
   FContainerInfo.Add(key, rego);
 
 end;
-
+}
 end.

@@ -6,7 +6,16 @@
         <Projects Include="package\MVCBr.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="C:\lixo\NewMVCApp.dproj">
+        <Projects Include="Tests\MVCBrTests.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="C:\Users\amari\Documents\Embarcadero\Studio\Projects\NewMVCApp.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="C:\lixo\NewMVCApp2.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="c:\lixo\NewMVCApp3.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +35,50 @@
     <Target Name="MVCBr:Make">
         <MSBuild Projects="package\MVCBr.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MVCBrTests">
+        <MSBuild Projects="Tests\MVCBrTests.dproj"/>
+    </Target>
+    <Target Name="MVCBrTests:Clean">
+        <MSBuild Projects="Tests\MVCBrTests.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrTests:Make">
+        <MSBuild Projects="Tests\MVCBrTests.dproj" Targets="Make"/>
+    </Target>
     <Target Name="NewMVCApp">
-        <MSBuild Projects="C:\lixo\NewMVCApp.dproj"/>
+        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\NewMVCApp.dproj"/>
     </Target>
     <Target Name="NewMVCApp:Clean">
-        <MSBuild Projects="C:\lixo\NewMVCApp.dproj" Targets="Clean"/>
+        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\NewMVCApp.dproj" Targets="Clean"/>
     </Target>
     <Target Name="NewMVCApp:Make">
-        <MSBuild Projects="C:\lixo\NewMVCApp.dproj" Targets="Make"/>
+        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\NewMVCApp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp2">
+        <MSBuild Projects="C:\lixo\NewMVCApp2.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp2:Clean">
+        <MSBuild Projects="C:\lixo\NewMVCApp2.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp2:Make">
+        <MSBuild Projects="C:\lixo\NewMVCApp2.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp3">
+        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp3:Clean">
+        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp3:Make">
+        <MSBuild Projects="c:\lixo\NewMVCApp3.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;NewMVCApp"/>
+        <CallTarget Targets="MVCBr;MVCBrTests;NewMVCApp;NewMVCApp2;NewMVCApp3"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;NewMVCApp:Clean"/>
+        <CallTarget Targets="MVCBr:Clean;MVCBrTests:Clean;NewMVCApp:Clean;NewMVCApp2:Clean;NewMVCApp3:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;NewMVCApp:Make"/>
+        <CallTarget Targets="MVCBr:Make;MVCBrTests:Make;NewMVCApp:Make;NewMVCApp2:Make;NewMVCApp3:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

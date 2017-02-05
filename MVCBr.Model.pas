@@ -33,7 +33,7 @@ type
 
   TMVCInterfacedObject = Class(TMVCFactoryAbstract)
   public
-    class function New(AClass: TInterfacedClass): IInterface;
+    //class function New(AClass: TInterfacedClass): IInterface;
     function GetOwned: TComponent; virtual;
   end;
 
@@ -51,10 +51,11 @@ type
   private
     FController: IController;
     procedure SetID(const AID:string);
+    procedure AfterConstruction ;override;
   public
-
     constructor create; virtual;
     destructor destroy; override;
+    procedure SetController(const AController:IController);
     function GetController: IController;
     function GetOwned: TComponent; override;
     function Controller(const AController: IController): IModel; virtual;
@@ -74,14 +75,11 @@ implementation
 constructor TModelFactory.create;
 begin
   inherited create;
-  FOwned := TComponent.create(nil);
-  ID ( self.classname );
 end;
 
 destructor TModelFactory.destroy;
 begin
   FOwned.DisposeOf;
-  UnRegisterClass(GetClass(FID));
   inherited;
 end;
 
@@ -111,18 +109,28 @@ begin
   SetID(AID);
 end;
 
+
+procedure TModelFactory.SetController(const AController: IController);
+begin
+  FController := AController;
+end;
+
 procedure TModelFactory.SetID(const AID: string);
 begin
-  if FID<>'' then
-     UnRegisterClass(GetClass(FID));
   FID := AID;
-  RegisterClassAlias( TPersistentClass(Self.ClassType)   ,FID);
-
 end;
 
 procedure TModelFactory.SetModelTypes(const AModelTypes: TModelTypes);
 begin
   FModelTypes := AModelTypes;
+end;
+
+procedure TModelFactory.afterConstruction;
+begin
+  inherited;
+  FModelTypes := [mtCommon];
+  FOwned := TComponent.create(nil);
+  SetID( self.classname );
 end;
 
 procedure TModelFactory.AfterInit;
@@ -153,9 +161,9 @@ begin
   result := nil;
 end;
 
-class function TMVCInterfacedObject.New(AClass: TInterfacedClass): IInterface;
+{class function TMVCInterfacedObject.New(AClass: TInterfacedClass): IInterface;
 begin
   result := AClass.create;
 end;
-
+}
 end.
