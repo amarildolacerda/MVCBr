@@ -39,7 +39,7 @@ ClassModelDef = 'type                                                 ' + #10#13
   '  public                                                      ' + #10#13 +
   '    Constructor Create; override;                             ' + #10#13 +
   '    Destructor Destroy; override;                             ' + #10#13 +
-  '    function Base:T%FormIdentModel;                         ' + #10#13 +
+  '    function Base:%ClassConector;                         ' + #10#13 +
   '    class function new:I%FormIdentModel;overload;             ' + #10#13 +
   '    class function new(' + #10#13 +
   '      const AController:IController):I%FormIdentModel;overload;' + #10#13 +
@@ -56,7 +56,7 @@ ClassModelImpl = 'Constructor T%FormIdentModel.Create;                ' + #10#13
   '  F%ClassModel:= TMVCBr.InvokeCreate<%ClassConector>([nil]);  ' + #10#13 +
   'end;                                                          ' + #10#13 +
   '                                                              ' + #10#13 +
-  'function T%FormIdentModel.Base:T%FormIdentModel;              ' + #10#13 +
+  'function T%FormIdentModel.Base:%ClassConector;              ' + #10#13 +
   'begin                                                         ' + #10#13 +
   '    result := F%ClassModel;                                   ' + #10#13 +
   'end;                                                          ' + #10#13 +
