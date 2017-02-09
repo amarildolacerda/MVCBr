@@ -3349,6 +3349,24 @@ object FormClassModel: TFormClassModel
         TabOrder = 3
         OnClick = edUnitButtonClick
       end
+      object cbViewModel: TCheckBox
+        Left = 255
+        Top = 154
+        Width = 79
+        Height = 17
+        Caption = 'ViewModel'
+        TabOrder = 4
+      end
+      object cbCreateDir: TCheckBox
+        Left = 24
+        Top = 187
+        Width = 233
+        Height = 17
+        Caption = 'criar sub-pasta para o artefato'
+        Checked = True
+        State = cbChecked
+        TabOrder = 5
+      end
     end
     object TPage
       Left = 0

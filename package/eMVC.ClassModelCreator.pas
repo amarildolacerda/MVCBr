@@ -41,12 +41,16 @@ uses
 
 const
 {$I .\inc\ClassModelCode.inc}
+{$I .\inc\ClassViewModelCode.inc}
 type
 
   TClassModelCreator = class(TBaseCreator)
   private
     FisInterf: boolean;
+    FisViewModel: boolean;
     procedure SetisInterf(const Value: boolean);
+    procedure SetisViewModel(const Value: boolean);
+    function ModelBase: String;
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
       AUnNamed: boolean = true); override;
@@ -54,6 +58,7 @@ type
     function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
       : IOTAFile; override;
     property isInterf: boolean read FisInterf write SetisInterf;
+    property isViewModel:boolean read FisViewModel write SetisViewModel;
   end;
 
 implementation
@@ -64,15 +69,28 @@ constructor TClassModelCreator.Create(const APath: string = '';
   ABaseName: string = ''; AUnNamed: boolean = true);
 begin
   inherited Create(APath, ABaseName, AUnNamed);
-  self.SetAncestorName('classmodel');
+  self.SetAncestorName('model');
+end;
+
+function TClassModelCreator.ModelBase:String;
+begin
+  if isViewModel then
+     result := '.ViewModel'
+  else
+     result := '.Model';
 end;
 
 function TClassModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + '.Model.pas';
+  result := self.getpath + getBaseName + ModelBase+'.pas';
   if isInterf then
-    result := self.getpath + getBaseName + '.Model.Interf.pas';
+    result := self.getpath + getBaseName + ModelBase+'.Interf.pas';
   debug('TModelCreator.GetImplFileName: ' + result);
+
+  if isViewModel then
+     SetAncestorName('ViewModel')
+  else
+     SetAncestorName('Model');
 
 end;
 
@@ -90,6 +108,8 @@ begin
     fc.FFuncSource := function: string
       begin
         result := ClassModelInterf;
+        if isViewModel then
+          result := classViewModelInterf;
       end;
   end
   else
@@ -98,6 +118,8 @@ begin
     fc.FFuncSource := function : string
     begin
       result := ClassModelCode;
+      if isViewModel then
+        result := classViewModelCode;
     end;
   end;
   fc.Templates.assign(Templates);
@@ -109,6 +131,11 @@ end;
 procedure TClassModelCreator.SetisInterf(const Value: boolean);
 begin
   FisInterf := Value;
+end;
+
+procedure TClassModelCreator.SetisViewModel(const Value: boolean);
+begin
+  FisViewModel := Value;
 end;
 
 end.

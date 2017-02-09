@@ -61,6 +61,7 @@ type
 
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
     procedure Init; virtual;
+    function Start:IController;virtual;
     procedure BeforeInit; virtual;
     procedure AfterInit; virtual;
     function GetView: IView; virtual;
@@ -86,6 +87,7 @@ implementation
 { TController }
 
 function TControllerFactory.Add(const AModel: IModel): integer;
+var vm:IViewModel;
 begin
   result := -1;
   if not assigned(AModel) then
@@ -93,6 +95,14 @@ begin
   AModel.Controller(self);
   FModels.Add(AModel);
   result := FModels.Count - 1;
+
+  if mtViewModel in  AModel.ModelTypes  then
+  begin
+    if supports(AModel.this,IViewModel,vm) then
+     vm.view(GetView);
+  end;
+
+
 end;
 
 procedure TControllerFactory.BeforeInit;
@@ -235,6 +245,12 @@ end;
 procedure TControllerFactory.SetID(const AID: string);
 begin
   FID := AID;
+end;
+
+function TControllerFactory.Start: IController;
+begin
+   result := self;
+   init;
 end;
 
 procedure TControllerFactory.AfterConstruction;

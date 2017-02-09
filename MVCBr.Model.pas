@@ -34,7 +34,7 @@ type
   TMVCInterfacedObject = Class(TMVCFactoryAbstract)
   public
     //class function New(AClass: TInterfacedClass): IInterface;
-    function GetOwned: TComponent; virtual;
+    function GetOwner: TComponent; virtual;
   end;
 
   TModelFactory = class;
@@ -57,7 +57,7 @@ type
     destructor destroy; override;
     procedure SetController(const AController:IController);
     function GetController: IController;
-    function GetOwned: TComponent; override;
+    function GetOwner: TComponent; override;
     function Controller(const AController: IController): IModel; virtual;
     function This: TObject; virtual;
     function GetID: string; virtual;
@@ -98,7 +98,7 @@ begin
   result := FModelTypes;
 end;
 
-function TModelFactory.GetOwned: TComponent;
+function TModelFactory.GetOwner: TComponent;
 begin
   result := FOwned;
 end;
@@ -156,7 +156,7 @@ end;
 
 { TMVCInterfacedObject }
 
-function TMVCInterfacedObject.GetOwned: TComponent;
+function TMVCInterfacedObject.GetOwner: TComponent;
 begin
   result := nil;
 end;

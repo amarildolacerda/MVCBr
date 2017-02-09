@@ -167,8 +167,6 @@ begin
     Result := Result + 'model\'
   else if sametext(FAncestorName, 'viewmodel') then
     Result := Result + 'viewmodel\'
-  else if sametext(FAncestorName, 'viewmodel') then
-    Result := Result + 'viewmodel\'
   else if sametext(FAncestorName, 'include') then
     Result := Result + 'inc\'
   else

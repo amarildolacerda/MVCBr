@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
-  Graphics, Controls, Forms,
+  Graphics, Controls, Forms, intfParser,
   Dialogs, ComCtrls, {$IFDEF VER130}FileCtrl, {$ENDIF}ExtCtrls, StdCtrls,
   Buttons, eMVC.toolbox, Vcl.CheckLst;
 
@@ -59,6 +59,8 @@ type
     Label7: TLabel;
     edUnit: TEdit;
     edUnitButton: TButton;
+    cbViewModel: TCheckBox;
+    cbCreateDir: TCheckBox;
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -73,15 +75,22 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
+    FUnit: TIntfParser;
+
+    FOldClassName: string;
     FCanClose: Boolean;
     FClassTypeList: TStringList;
     FClassGetMethods: TProc;
     procedure proximaPagina(incPage: integer);
-
+    procedure ParseUnit;
+    procedure PreencherOsMethods;
+    procedure GerarCodigos;
   public
     { Public declarations }
     FillListClassesProc: TProc;
     procedure SetClassesList(value: String; AProc: TProc);
+    function GetCodigos: string;
+    function GetInterf: string;
   end;
 
 var
@@ -90,6 +99,8 @@ var
 implementation
 
 {$R *.dfm}
+
+uses CastaliaPasLexTypes, TokenInterfaces;
 
 procedure TFormClassModel.BitBtn4Click(Sender: TObject);
 var
@@ -104,6 +115,7 @@ end;
 
 procedure TFormClassModel.FormCreate(Sender: TObject);
 begin
+  FUnit := TIntfParser.create;
   FClassTypeList := TStringList.create;
   FCanClose := false;
   // edtPath.Text := '';
@@ -112,16 +124,88 @@ end;
 procedure TFormClassModel.FormDestroy(Sender: TObject);
 begin
   FClassTypeList.free;
+  FUnit.free;
 end;
 
 procedure TFormClassModel.FormShow(Sender: TObject);
 begin
   Notebook1.PageIndex := 0;
   proximaPagina(0);
-  if edUnit.text<>'' then
-   if fileExists(edUnit.text) then
-   if assigned(FillListClassesProc) then
-      FillListClassesProc;
+  if edUnit.text <> '' then
+    if fileExists(edUnit.text) then
+      if assigned(FillListClassesProc) then
+        FillListClassesProc;
+end;
+
+const
+  CRLF = #10#13;
+
+procedure TFormClassModel.GerarCodigos;
+var
+  i: integer;
+  s: string;
+  function GetProc(p: integer): string;
+  var
+    intf: IInterfaceType;
+    x, n: integer;
+    mtd: IMethod;
+  begin
+    result := '';
+    intf := nil;
+    for x := 0 to FUnit.AUnit.Interfaces.count - 1 do
+      if FUnit.AUnit.Interfaces.items[x].name = cbClassName.text then
+      begin
+        intf := FUnit.AUnit.Interfaces.items[x];
+        break;
+      end;
+    if not assigned(intf) then
+      exit;
+    mtd := intf.Methods.items[p];
+    result := mtd.name + '(';
+    for n := 0 to mtd.Params.count - 1 do
+    begin
+      if n > 0 then
+        result := result + ', ';
+      result := result + mtd.Params.items[n].name;
+    end;
+    result := result + ')';
+  end;
+
+begin
+  Memo1.lines.clear;
+  for i := 0 to clMetodos.items.count - 1 do
+    if clMetodos.Checked[i] then
+      with Memo1.lines do
+      begin
+        add(clMetodos.items[i]);
+        add('begin ');;
+        if pos('function ', clMetodos.items[i]) > 0 then
+          add('  result := base.' + GetProc(i) + ';')
+        else
+          add('  base.' + GetProc(i) + ';');
+        add('end; ');
+        add('');
+      end;
+  Memo1.lines.text := stringReplace(Memo1.lines.text, '%Ident',
+    'T' + edModelName.text+'Model', [rfReplaceAll]);
+end;
+
+function TFormClassModel.GetCodigos: string;
+begin
+  result := Memo1.lines.text;
+end;
+
+function TFormClassModel.GetInterf: string;
+var
+  i: integer;
+begin
+  result := '';
+  for i := 0 to clMetodos.items.count - 1 do
+    if clMetodos.Checked[i] then
+    begin
+      result := result + clMetodos.items[i] + CRLF;
+    end;
+  result := stringReplace(result, '%Ident.', '', [rfReplaceAll]);
 end;
 
 procedure TFormClassModel.FormCloseQuery(Sender: TObject;
@@ -170,6 +254,12 @@ begin
   if edModelName.text = '' then
     Notebook1.PageIndex := 0;
 
+  if (Notebook1.PageIndex = 1) and (FOldClassName <> cbClassName.text) then
+    PreencherOsMethods;
+
+  if (Notebook1.PageIndex = 3) then
+    GerarCodigos;
+
 end;
 
 procedure TFormClassModel.SetClassesList(value: String; AProc: TProc);
@@ -192,9 +282,94 @@ begin
 
 end;
 
+procedure TFormClassModel.ParseUnit;
+var
+  tmp, s: string;
+  AUnit: IUnit;
+  i: integer;
+  interf: IInterfaceType;
+  inInterface: Boolean;
+  tokenId: TptTokenKind;
+  LClassName: string;
+begin
+  cbClassName.items.clear;
+  tmp := cbClassName.text + '.' + edModelName.text;
+  if FOldClassName = tmp then
+    exit;
+
+  try
+    FUnit.InterfaceOnly := true;
+    FUnit.LoadAndRun(edUnit.text);
+
+    AUnit := FUnit.AUnit;
+
+    // for s in AUnit.UsesUnits do
+    // showmessage(s);
+
+    for i := 0 to AUnit.Interfaces.count - 1 do
+    begin
+      interf := AUnit.Interfaces.items[i];
+      cbClassName.items.add(interf.name);
+    end;
+
+  finally
+  end;
+end;
+
+procedure TFormClassModel.PreencherOsMethods;
+var
+  i, p: integer;
+  interf: IInterfaceType;
+  mtds: IMethod;
+  prm: IParameter;
+  s: string;
+begin
+
+  if FUnit.AUnit.Interfaces.count = 0 then
+    ParseUnit;
+
+  interf := nil;
+  for i := 0 to FUnit.AUnit.Interfaces.count - 1 do
+    if FUnit.AUnit.Interfaces.items[i].name = cbClassName.text then
+    begin
+      interf := FUnit.AUnit.Interfaces.items[i];
+      break;
+    end;
+  if interf = nil then
+    exit;
+
+  clMetodos.clear;
+  for i := 0 to interf.Methods.count - 1 do
+  begin
+    mtds := interf.Methods.items[i];
+    s := 'procedure %Ident.' + mtds.name + '(';
+    for p := 0 to mtds.Params.count - 1 do
+    begin
+      prm := mtds.Params.items[p];
+      if p > 0 then
+        s := s + '; ';
+      case prm.Modifier of
+        pmVar:
+          s := s + ' var ';
+        pmConst:
+          s := s + ' const ';
+        pmOut:
+          s := s + ' out ';
+      end;
+      s := s + prm.name + ': ' + prm.DataType;
+    end;
+    s := s + ');';
+    clMetodos.items.add(s);
+    clMetodos.Checked[clMetodos.items.count - 1] := true;
+  end;
+
+  FOldClassName := cbClassName.text;
+
+end;
+
 procedure TFormClassModel.cbClassNameChange(Sender: TObject);
 begin
-  edModelName.text := cbClassName.text ;
+  edModelName.text := cbClassName.text;
   if edModelName.text[1] = 'T' then
     edModelName.text := copy(edModelName.text, 2, length(edModelName.text));
   proximaPagina(0);
@@ -214,8 +389,10 @@ end;
 
 procedure TFormClassModel.edUnitExit(Sender: TObject);
 begin
-  if assigned(FillListClassesProc) then
-    FillListClassesProc;
+  // if assigned(FillListClassesProc) then
+  // FillListClassesProc;
+  if fileExists(edUnit.text) then
+    ParseUnit;
 end;
 
 procedure TFormClassModel.BitBtn3Click(Sender: TObject);

@@ -278,6 +278,7 @@ type
     procedure ForEach(AProc: TProc<IModel>);
     function ResolveController(const AName: string): IController;
     function This: TControllerAbstract;
+    function Start:IController;
   end;
 
   IViewModelAs<TInterface: IInterface> = interface

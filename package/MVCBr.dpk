@@ -73,6 +73,13 @@ contains
   eMVC.ModelCreator in 'eMVC.ModelCreator.pas',
   eMVC.NewClassModelWizard in 'eMVC.NewClassModelWizard.pas',
   eMVC.ClassModelCreator in 'eMVC.ClassModelCreator.pas',
-  eMVC.NewClassModelForm in 'eMVC.NewClassModelForm.pas' {FormClassModel};
+  eMVC.NewClassModelForm in 'eMVC.NewClassModelForm.pas' {FormClassModel},
+  IntfParser in 'parser\IntfParser.pas',
+  TokenClasses in 'parser\TokenClasses.pas',
+  TokenInterfaces in 'parser\TokenInterfaces.pas',
+  CastaliaPasLex in 'castalia\CastaliaPasLex.pas',
+  CastaliaPasLexTypes in 'castalia\CastaliaPasLexTypes.pas',
+  CastaliaSimplePasPar in 'castalia\CastaliaSimplePasPar.pas',
+  CastaliaSimplePasParTypes in 'castalia\CastaliaSimplePasParTypes.pas';
 
 end.
