@@ -3275,6 +3275,7 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    PageIndex = 1
     ParentFont = False
     TabOrder = 1
     object TPage
@@ -3375,11 +3376,11 @@ object FormClassModel: TFormClassModel
       object Label4: TLabel
         Left = 16
         Top = 11
-        Width = 173
+        Width = 150
         Height = 13
-        Caption = 'Gerar Interface para as propriedades'
+        Caption = 'Gerar Interface para as fun'#231#245'es'
       end
-      object clPropriedades: TCheckListBox
+      object clFunctions: TCheckListBox
         Left = 16
         Top = 27
         Width = 313

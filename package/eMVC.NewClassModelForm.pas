@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
-  Graphics, Controls, Forms, intfParser,
+  Graphics, Controls, Forms, intfParser, TokenInterfaces,
   Dialogs, ComCtrls, {$IFDEF VER130}FileCtrl, {$ENDIF}ExtCtrls, StdCtrls,
   Buttons, eMVC.toolbox, Vcl.CheckLst;
 
@@ -50,7 +50,7 @@ type
     BitBtn3: TBitBtn;
     Label3: TLabel;
     cbClassName: TComboBox;
-    clPropriedades: TCheckListBox;
+    clFunctions: TCheckListBox;
     Label4: TLabel;
     clMetodos: TCheckListBox;
     Label5: TLabel;
@@ -85,6 +85,7 @@ type
     procedure ParseUnit;
     procedure PreencherOsMethods;
     procedure GerarCodigos;
+    procedure GerarParametros(params: IParameterList; var s: string);
   public
     { Public declarations }
     FillListClassesProc: TProc;
@@ -100,7 +101,7 @@ implementation
 
 {$R *.dfm}
 
-uses CastaliaPasLexTypes, TokenInterfaces;
+uses CastaliaPasLexTypes;
 
 procedure TFormClassModel.BitBtn4Click(Sender: TObject);
 var
@@ -135,6 +136,8 @@ begin
     if fileExists(edUnit.text) then
       if assigned(FillListClassesProc) then
         FillListClassesProc;
+  postmessage(edUnit.handle, WM_SETFOCUS, 0, 0);
+
 end;
 
 const
@@ -162,14 +165,42 @@ var
       exit;
     mtd := intf.Methods.items[p];
     result := mtd.name + '(';
-    for n := 0 to mtd.Params.count - 1 do
+    for n := 0 to mtd.params.count - 1 do
     begin
       if n > 0 then
         result := result + ', ';
-      result := result + mtd.Params.items[n].name;
+      result := result + mtd.params.items[n].name;
     end;
     result := result + ')';
   end;
+
+  function GetFunc(p: integer): string;
+  var
+    intf: IInterfaceType;
+    x, n: integer;
+    fnc: IFunction;
+  begin
+    result := '';
+    intf := nil;
+    for x := 0 to FUnit.AUnit.Interfaces.count - 1 do
+      if FUnit.AUnit.Interfaces.items[x].name = cbClassName.text then
+      begin
+        intf := FUnit.AUnit.Interfaces.items[x];
+        break;
+      end;
+    if not assigned(intf) then
+      exit;
+    fnc := intf.Functions.items[p];
+    result := fnc.name + '(';
+    for n := 0 to fnc.params.count - 1 do
+    begin
+      if n > 0 then
+        result := result + ', ';
+      result := result + fnc.params.items[n].name;
+    end;
+    result := result + ');';
+  end;
+
 
 begin
   Memo1.lines.clear;
@@ -186,8 +217,24 @@ begin
         add('end; ');
         add('');
       end;
+
+  for i := 0 to clFunctions.items.count - 1 do
+    if clFunctions.Checked[i] then
+      with Memo1.lines do
+      begin
+        add(clFunctions.items[i]);
+        add('begin ');;
+        if pos('function ', clFunctions.items[i]) > 0 then
+          add('  result := base.' + GetFunc(i) + ';')
+        else
+          add('  base.' + GetFunc(i) + ';');
+        add('end; ');
+        add('');
+      end;
+
+
   Memo1.lines.text := stringReplace(Memo1.lines.text, '%Ident',
-    'T' + edModelName.text+'Model', [rfReplaceAll]);
+    'T' + edModelName.text + 'Model', [rfReplaceAll]);
 end;
 
 function TFormClassModel.GetCodigos: string;
@@ -199,13 +246,44 @@ function TFormClassModel.GetInterf: string;
 var
   i: integer;
 begin
-  result := '';
+  result :=  CRLF+'// metodos  <'+cbClassName.text+'//'.PadLeft(70) +CRLF;
   for i := 0 to clMetodos.items.count - 1 do
     if clMetodos.Checked[i] then
     begin
       result := result + clMetodos.items[i] + CRLF;
     end;
+
+  result := result +CRLF+ '// functions  <'+cbClassName.text+'//'.PadLeft(70) +CRLF;
+  for i := 0 to clFunctions.items.count - 1 do
+    if clFunctions.Checked[i] then
+    begin
+      result := result + clFunctions.items[i] + CRLF;
+    end;
   result := stringReplace(result, '%Ident.', '', [rfReplaceAll]);
+end;
+
+procedure TFormClassModel.GerarParametros(params: IParameterList;
+  var s: string);
+var
+  p: integer;
+  prm: IParameter;
+begin
+  for p := 0 to params.count - 1 do
+  begin
+    prm := params.items[p];
+    if p > 0 then
+      s := s + '; ';
+    case prm.Modifier of
+      pmVar:
+        s := s + ' var ';
+      pmConst:
+        s := s + ' const ';
+      pmOut:
+        s := s + ' out ';
+    end;
+    s := s + prm.name + ': ' + prm.DataType;
+  end;
+  s := s + ')';
 end;
 
 procedure TFormClassModel.FormCloseQuery(Sender: TObject;
@@ -318,10 +396,10 @@ end;
 
 procedure TFormClassModel.PreencherOsMethods;
 var
-  i, p: integer;
+  i: integer;
   interf: IInterfaceType;
   mtds: IMethod;
-  prm: IParameter;
+  fncs: IFunction;
   s: string;
 begin
 
@@ -343,24 +421,23 @@ begin
   begin
     mtds := interf.Methods.items[i];
     s := 'procedure %Ident.' + mtds.name + '(';
-    for p := 0 to mtds.Params.count - 1 do
-    begin
-      prm := mtds.Params.items[p];
-      if p > 0 then
-        s := s + '; ';
-      case prm.Modifier of
-        pmVar:
-          s := s + ' var ';
-        pmConst:
-          s := s + ' const ';
-        pmOut:
-          s := s + ' out ';
-      end;
-      s := s + prm.name + ': ' + prm.DataType;
-    end;
-    s := s + ');';
+
+    GerarParametros(mtds.params, s);
+    s := s + ';';
     clMetodos.items.add(s);
+
     clMetodos.Checked[clMetodos.items.count - 1] := true;
+  end;
+
+  clFunctions.clear;
+  for i := 0 to interf.Functions.count - 1 do
+  begin
+    fncs := interf.Functions.items[i];
+    s := 'function %Ident.' + fncs.name + '(';
+    GerarParametros(fncs.params, s);
+    s := s+':' + fncs.ReturnType + ';';
+    clFunctions.items.add(s);
+    clFunctions.Checked[clFunctions.items.count - 1] := true;
   end;
 
   FOldClassName := cbClassName.text;

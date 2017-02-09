@@ -129,6 +129,8 @@ end;
 //==============================================================================
 procedure TIntfParser.ClassFunctionHeading;
 begin
+  if FCurrentMethod<>nil then
+     FCurrentMethod := nil;
   if Assigned(FCurrentInterface) then
     FCurrentFunction := FCurrentInterface.Functions.Add;
   inherited;
@@ -154,10 +156,12 @@ end;
 //==============================================================================
 procedure TIntfParser.ClassProcedureHeading;
 begin
+  if FCurrentFunction<>nil then
+     FCurrentFunction := nil;
+
   if Assigned(FCurrentInterface) then
     FCurrentMethod := FCurrentInterface.Methods.Add;
   inherited;
-  //FCurrentMethod := nil;
 end;
 
 procedure TIntfParser.ProcedureMethodName;

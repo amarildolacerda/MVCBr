@@ -320,7 +320,7 @@ begin
         SetClassesList(FClassesLists,
           procedure
           begin
-            FillMethods(edModelName.text, clMetodos.items, clPropriedades.items);
+            //FillMethods(edModelName.text, clMetodos.items, clPropriedades.items);
           end);
       end;
     if showModal = mrOK then
