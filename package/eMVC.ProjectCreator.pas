@@ -236,7 +236,7 @@ end;
 
 function TProjectCreator.GetPreferredPlatform: string;
 begin
-  result := '';
+  result := cWin32Platform;
 end;
 
 procedure TProjectCreator.SetInitialOptions(const NewProject: IOTAProject);
