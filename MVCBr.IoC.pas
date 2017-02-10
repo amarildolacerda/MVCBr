@@ -46,21 +46,20 @@ type
   TActivatorDelegate<TInterface: IInterface> = reference to function
     : TInterface;
 
-
   TMVCBrIoC = class
   private
     FRaiseIfNotFound: boolean;
 
   type
-  TIoCRegistration<T: IInterface> = class
-    Guid: TGuid;
-    name:string;
-    IInterface: PTypeInfo;
-    ImplClass: TClass;
-    ActivatorDelegate: TActivatorDelegate<T>;
-    IsSingleton: boolean;
-    Instance: IInterface;
-  end;
+    TIoCRegistration<T: IInterface> = class
+      Guid: TGuid;
+      name: string;
+      IInterface: PTypeInfo;
+      ImplClass: TClass;
+      ActivatorDelegate: TActivatorDelegate<T>;
+      IsSingleton: boolean;
+      Instance: IInterface;
+    end;
 
   private
 
@@ -93,6 +92,8 @@ type
       const delegate: TActivatorDelegate<TInterface>;
       const name: string = ''); overload;
 
+    procedure RevokeInstance(AInstance: IInterface);
+
     // Register an instance as a signleton. If there is more than one instance that implements the interface
     // then use the name parameter
     procedure RegisterSingleton<TInterface: IInterface>(const Instance
@@ -101,12 +102,12 @@ type
     // Resolution
     function Resolve<TInterface: IInterface>(const name: string = '')
       : TInterface;
-    function GetName(AGuid:TGuid): string;
+    function GetName(AGuid: TGuid): string;
 
-{    procedure RegisterController(AII: TGuid; AClass: TControllerClass;
+    { procedure RegisterController(AII: TGuid; AClass: TControllerClass;
       AName: String;bSingleton:boolean);
-}    procedure RegisterInterfaced<TInterface:IInterface>(AII: TGuid; AClass: TInterfacedClass;
-      AName: String;bSingleton:boolean);overload;
+    } procedure RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
+      AClass: TInterfacedClass; AName: String; bSingleton: boolean); overload;
 
     // Returns true if we have such a service.
     function HasService<T: IInterface>: boolean;
@@ -292,20 +293,20 @@ begin
   result := LowerCase(result);
 end;
 
-function TMVCBrIoC.GetName(AGuid:TGuid): string;
+function TMVCBrIoC.GetName(AGuid: TGuid): string;
 var
   LName: string;
-  rogo:TIoCRegistration<IController>;
-  achei:string;
+  rogo: TIoCRegistration<IController>;
+  achei: string;
 begin
-  achei:='';
+  achei := '';
   for LName in FContainerInfo.keys do
   begin
-    rogo := TIoCRegistration<IController> (FContainerInfo.items[LName]);
-    if rogo.guid = AGuid  then
+    rogo := TIoCRegistration<IController>(FContainerInfo.items[LName]);
+    if rogo.Guid = AGuid then
     begin
-       achei := rogo.name ;
-       break;
+      achei := rogo.name;
+      Break;
     end;
   end;
   result := achei;
@@ -430,8 +431,8 @@ begin
       [pInfo.name, name]));
 end;
 
-procedure TMVCBrIoC.RegisterInterfaced<TInterface>(AII: TGuid; AClass: TInterfacedClass;
-  AName: String; bSingleton: boolean);
+procedure TMVCBrIoC.RegisterInterfaced<TInterface>(AII: TGuid;
+  AClass: TInterfacedClass; AName: String; bSingleton: boolean);
 var
   Interf: PInterfaceEntry;
   rego: TIoCRegistration<IUnknown>;
@@ -441,7 +442,6 @@ begin
   Interf := GetInterfaceEntry(AII);
 
   key := GetInterfaceKey<TInterface>(AName);
-
 
   rego := TIoCRegistration<IUnknown>.Create;
   rego.Guid := AII;
@@ -467,6 +467,25 @@ procedure TMVCBrIoC.RegisterType<TInterface>(const singleton: boolean;
 begin
   InternalRegisterType<TInterface>(singleton, nil, delegate, name);
 end;
+
+procedure TMVCBrIoC.RevokeInstance(AInstance: IInterface);
+var
+  LName: string;
+  rogo: TIoCRegistration<IUnknown>;
+  achei: string;
+begin
+  achei := '';
+  for LName in FContainerInfo.keys do
+  begin
+    rogo := TIoCRegistration<IUnknown>(FContainerInfo.items[LName]);
+    if rogo.Instance = AInstance then
+    begin
+      rogo.Instance := nil;
+      Break;
+    end;
+  end;
+end;
+
 
 function TMVCBrIoC.Resolve<TInterface>(const name: string = ''): TInterface;
 var
@@ -505,14 +524,14 @@ begin
   end;
 end;
 
-{procedure TMVCBrIoC.RegisterController(AII: TGuid; AClass: TControllerClass;
+{ procedure TMVCBrIoC.RegisterController(AII: TGuid; AClass: TControllerClass;
   AName: String; bSingleton:boolean);
-var
+  var
   Interf: PInterfaceEntry;
   rego: TIoCRegistration<IController>;
   // typeInfo: TTypeInfo;
   key: string;
-begin
+  begin
 
   Interf := GetInterfaceEntry(AII);
 
@@ -527,14 +546,14 @@ begin
   rego.Instance := nil;
 
   rego.ActivatorDelegate := function: IController
-    var
-      obj: TControllerAbstract;
-    begin
-      obj := AClass.Create;
-      Supports(obj, AII, result);
-    end;
+  var
+  obj: TControllerAbstract;
+  begin
+  obj := AClass.Create;
+  Supports(obj, AII, result);
+  end;
   FContainerInfo.Add(key, rego);
 
-end;
+  end;
 }
 end.

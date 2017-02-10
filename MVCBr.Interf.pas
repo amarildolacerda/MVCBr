@@ -265,6 +265,7 @@ type
     function ResolveController(const AIID: TGuid): IController; overload;
     Function ResolveController(const ANome: string): IController; overload;
     Function ResolveController<TInterface>: TInterface; overload;
+    procedure RevokeInstance(const AII:IInterface);virtual;
   end;
 
   TControllerClass = class of TControllerAbstract;
@@ -427,6 +428,11 @@ begin
   pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   ResolveController(IID, result);
+end;
+
+procedure TControllerAbstract.RevokeInstance(const AII: IInterface);
+begin
+     TMVCBrIoC(FControllersClass).RevokeInstance(AII);
 end;
 
 function TControllerAbstract.ResolveController(const AIID: TGuid): IController;

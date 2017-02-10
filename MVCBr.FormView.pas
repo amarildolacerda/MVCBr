@@ -2,11 +2,14 @@ unit MVCBr.FormView;
 
 interface
 
-uses Forms, System.Classes, System.SysUtils, System.RTTI,
+uses {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, System.SysUtils, System.RTTI,
   MVCBr.Interf, MVCBr.View;
 
 type
 
+{$IFDEF FMX}
+  TFormClass = class of TForm;
+{$ENDIF}
   TViewFactoryAdapter = class;
 
   IViewAdpater = interface(IView)
@@ -28,7 +31,8 @@ type
     FForm: TForm;
     procedure DoClose(Sender: TObject; var Action: TCloseAction);
   public
-    class function New(AClass: TFormClass; const AShowModal: boolean = true): IView;
+    class function New(AClass: TFormClass;
+      const AShowModal: boolean = true): IView;
     property isShowModal: boolean read FisShowModal write SetisShowModal;
     function ShowView(const AProc: TProc<IView>): Integer; override;
     function Form: TForm;
@@ -52,6 +56,8 @@ type
     /// Retorna se a apresentação do formulário é ShowModal
     function GetShowModal: boolean;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
     function GetController: IController; virtual;
@@ -59,10 +65,14 @@ type
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+    function ResolveController(const IID: TGuid): IController; virtual;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
-    property PropertyValue[ANome: string]: TValue read GetPropertyValue write SetPropertyValue;
+    property PropertyValue[ANome: string]: TValue read GetPropertyValue
+      write SetPropertyValue;
     /// Apresenta o VIEW para o usuario
-    function ShowView(const AProc: TProc<IView>): Integer; virtual;
+    function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
+    function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
+      : IView; overload; virtual;
     /// Evento para atualizar os dados da VIEW
     function Update: IView; virtual;
   end;
@@ -82,6 +92,18 @@ begin
   FController := AController;
 end;
 
+constructor TFormFactory.Create(AOwner: TComponent);
+begin
+  inherited;
+end;
+
+destructor TFormFactory.Destroy;
+begin
+  if assigned(FController) then
+    FController.This.RevokeInstance(FController);
+  inherited;
+end;
+
 function TFormFactory.GetController: IController;
 begin
   result := FController;
@@ -97,9 +119,15 @@ begin
   result := FShowModal;
 end;
 
-function TFormFactory.InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+function TFormFactory.InvokeMethod<T>(AMethod: string;
+  const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
+end;
+
+function TFormFactory.ResolveController(const IID: TGuid): IController;
+begin
+  result := FController.This.ResolveController(IID);
 end;
 
 procedure TFormFactory.SetController(const AController: IController);
@@ -115,6 +143,19 @@ end;
 procedure TFormFactory.SetShowModal(const AShowModal: boolean);
 begin
   FShowModal := AShowModal;
+end;
+
+function TFormFactory.ShowView(const IIDController: TGuid;
+  const AProc: TProc<IView>): IView;
+var
+  LController: IController;
+begin
+  LController := ResolveController(IIDController);
+  if assigned(LController) then
+  begin
+    result := LController.GetView;
+    result.ShowView(AProc);
+  end;
 end;
 
 function TFormFactory.ShowView(const AProc: TProc<IView>): Integer;
@@ -138,7 +179,8 @@ end;
 
 { TViewFactoryAdapter }
 
-procedure TViewFactoryAdapter.DoClose(Sender: TObject; var Action: TCloseAction);
+procedure TViewFactoryAdapter.DoClose(Sender: TObject;
+  var Action: TCloseAction);
 begin
   if assigned(FOnProc) then
     FOnProc(self);
@@ -149,12 +191,13 @@ begin
   result := FForm;
 end;
 
-class function TViewFactoryAdapter.New(AClass: TFormClass; const AShowModal: boolean): IView;
+class function TViewFactoryAdapter.New(AClass: TFormClass;
+  const AShowModal: boolean): IView;
 var
   obj: TViewFactoryAdapter;
 begin
-  obj := TViewFactoryAdapter.create;
-  obj.FForm := AClass.create(nil);
+  obj := TViewFactoryAdapter.Create;
+  obj.FForm := AClass.Create(nil);
   obj.isShowModal := AShowModal;
   result := obj;
 end;

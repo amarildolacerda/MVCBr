@@ -27,7 +27,7 @@ unit MVCBr.ApplicationController;
 
 interface
 
-uses Forms, System.Classes,
+uses  {$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,
   System.Generics.Collections,
 
   System.SysUtils, MVCBr.Model, MVCBr.Interf;

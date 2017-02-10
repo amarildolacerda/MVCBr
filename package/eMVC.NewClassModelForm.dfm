@@ -3275,13 +3275,15 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 1
+    PageIndex = 3
     ParentFont = False
     TabOrder = 1
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 1'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 136
