@@ -24,15 +24,15 @@
 { }
 { *************************************************************************** }
 
-
 /// <summary>
-///  Unit MVCBr.View implementas os objeto Factory para a camada de visualização
+/// Unit MVCBr.View implementas os objeto Factory para a camada de visualização
 /// </summary>
 unit MVCBr.View;
 
 interface
 
-uses Forms, system.Classes, system.SysUtils, system.Rtti, MVCBr.Model,
+uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} system.Classes,
+  system.SysUtils, system.Rtti, MVCBr.Model,
   MVCBr.Interf;
 
 type
@@ -40,9 +40,9 @@ type
   TViewFactoryClass = class of TViewFactory;
 
   /// <summary>
-  ///     TViewFactory é um Factory abstrato a ser utilizado com finalidades genericas
-  ///     sem ligação direta com um visualizador
-  ///  </summary>
+  /// TViewFactory é um Factory abstrato a ser utilizado com finalidades genericas
+  /// sem ligação direta com um visualizador
+  /// </summary>
   TViewFactory = class(TMVCInterfacedObject, IView)
   private
     // FView: IView;
@@ -60,7 +60,6 @@ type
     function GetController: IController;
 
   end;
-
 
 implementation
 
@@ -110,6 +109,5 @@ function TViewFactory.Update: IView;
 begin
   result := self;
 end;
-
 
 end.

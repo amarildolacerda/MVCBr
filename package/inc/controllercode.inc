@@ -5,10 +5,16 @@ NormalViewDestory = 'freeAndNil(view)';
 
 ControllerCodeInterf =
   'unit %ModelIdent;                                                ' + #10#13 +
-  '                                                                 ' + #10#13 +
+  ' ///                                                          ' + #10#13 +
+  ' /// <summary>                                                ' + #10#13 +
+  ' ///  I%FormIdentController                                   ' + #10#13 +
+  ' ///     Interaface de acesso ao object factory do controller ' + #10#13 +
+  ' /// </summary>                                               ' + #10#13 +
+  ' ///                                                          ' + #10#13 +
   'interface                                                        ' + #10#13 +
   'uses                                                             ' + #10#13 +
-  'SysUtils, forms, buttons, classes, controls,MVCBr.Interf;        ' + #10#13 +
+  'System.SysUtils,{$ifdef FMX} FMX.Forms,{$else}VCL.Forms,{$endif}' + #10#13 +
+  'System.Classes, MVCBr.Interf;                                   ' + #10#13 +
   'type                                                             ' + #10#13 +
   '  I%FormIdentController = interface(IController)' + #10#13 +
   '         [''%guid'']                                             ' + #10#13 +
@@ -19,13 +25,24 @@ ControllerCodeInterf =
 
 
 ControllerCode =
+  ' /// <summary>                                                ' + #10#13 +
+  ' /// O controller possui as seguintes características:        ' + #10#13 +
+  ' ///   - pode possuir 1 view associado  (GetView)             ' + #10#13 +
+  ' ///   - pode receber 0 ou mais Model   (GetModel<Ixxx>)      ' + #10#13 +
+  ' ///   - se auto registra no application controller           ' + #10#13 +
+  ' ///   - pode localizar controller externos e instanciá-los   ' + #10#13 +
+  ' ///     (resolveController<I..>)                             ' + #10#13 +
+  ' /// </summary>                                               ' + #10#13 +
   'unit %ModelIdent;                                                ' + #10#13 +
-  '                                                                 ' + #10#13 +
+  ' /// <summary>                                                ' + #10#13 +
+  ' ///    Object Factory para implementar o Controller          ' + #10#13 +
+  ' /// </summary>                                               ' + #10#13 +
   'interface                                                        ' + #10#13 +
   '//%include                                                       ' + #10#13 +
   'uses                                                             ' + #10#13 +
   '                                                                 ' + #10#13 +
-  'SysUtils, forms, buttons, classes, controls,MVCBr.Interf,        ' + #10#13 +
+  'System.SysUtils, {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}'+#10#13+
+  'System.Classes, MVCBr.Interf,                                      ' + #10#13 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #10#13 +
   'System.RTTI, %ModelIdent.interf,                                 ' + #10#13 +
   '%FormIdent.ViewModel, %FormIdent.ViewModel.Interf,%FormIdentView;' + #10#13 +
@@ -43,12 +60,15 @@ ControllerCode =
   '    Procedure CreateModules;virtual;                             ' + #10#13 +
   '    Constructor Create;override;                                 ' + #10#13 +
   '    Destructor Destroy; override;                                ' + #10#13 +
+  ' /// New Cria nova instância para o Controller                   ' + #10#13 +
   '    class function New(): IController; overload;                 ' + #10#13 +
   '    class function New(const AView: IView; const AModel: IModel) ' + #10#13 +
   '      : IController; overload;                                   ' + #10#13 +
   '    class function New(const AModel: IModel): IController; overload;' +
   #10#13 + '    function ThisAs: T%FormIdentController;             ' + #10#13 +
+  ' /// Init após criado a instância é chamado para concluir init    ' + #10#13 +
   '    procedure init;override;                                     ' + #10#13 +
+  ' /// ModeAs retornar a própria interface do controller        ' + #10#13 +
   '    function ModelAs: I%FormIdentViewModel;                          ' +
   #10#13 + '  end;                                                  ' + #10#13 +
   '                                                                 ' + #10#13 +
@@ -116,8 +136,12 @@ ControllerCode =
   '  inherited;                                                     ' + #10#13 +
   ' if not assigned(FView) then                            ' + #10#13 +
   ' begin                                                           ' + #10#13 +
-  '   Application.CreateForm( T%FormIdentView, ref );                 ' + #10#13
-  + '   supports(ref,IView,FView);                            ' + #10#13 +
+  '   Application.CreateForm( T%FormIdentView, ref );               ' + #10#13 +
+  '   supports(ref,IView,FView);                            ' + #10#13 +
+  '  {$ifdef FMX}                                                   ' + #10#13 +
+  '    if Application.MainForm=nil then                             ' + #10#13 +
+  '      Application.RealCreateForms;                               ' + #10#13 +
+  '  {$endif}                                                       ' + #10#13 +
   ' end;                                                            ' + #10#13 +
   ' AfterInit;                                                        ' + #10#13 +
   'end;                                                             ' + #10#13 +

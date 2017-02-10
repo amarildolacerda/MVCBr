@@ -73,7 +73,7 @@ procedure TestTModelFactory.TestGetOwned;
 var
   ReturnValue: TComponent;
 begin
-  ReturnValue := FModelFactory.GetOwned;
+  ReturnValue := FModelFactory.GetOwner;
   CheckNotNull(ReturnValue, 'Nao retornou');
 
   // TODO: Validate method results

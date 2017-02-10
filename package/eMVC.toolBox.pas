@@ -987,19 +987,18 @@ function BrowseForFolder(const browseTitle: string;
   begin
   with TFileOpenDialog.Create(nil) do
     try
-      if ext <> '' then
+      if ext = '' then
       begin
         title := 'Selecione a pasta';
         Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem];
-        // YMMV
         FileName := initialFolder;
       end
       else
       begin
         FileName := ext;
+        DefaultFolder := initialFolder;
       end;
       OkButtonLabel := 'Ok';
-      DefaultFolder := initialFolder;
       if Execute then
         Result := FileName;
     finally

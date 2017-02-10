@@ -207,10 +207,17 @@ begin
   newName := name;
 
   pInfo := TypeInfo(TInterface);
+{$IFDEF ANDROID}
+  if newName = '' then
+    key := pInfo.name.ToString
+  else
+    key := pInfo.name.ToString + '_' + newName;
+{$ELSE}
   if newName = '' then
     key := string(pInfo.name)
   else
     key := string(pInfo.name) + '_' + newName;
+{$ENDIF}
   key := LowerCase(key);
 
   if not FContainerInfo.TryGetValue(key, o) then
@@ -284,8 +291,11 @@ var
 begin
   // By default the key is the interface name unless otherwise found.
   pInfo := TypeInfo(TInterface);
+{$IFDEF ANDROID}
+  result := pInfo.name.ToString;
+{$ELSE}
   result := string(pInfo.name);
-
+{$ENDIF}
   if (AName <> '') then
     result := result + '_' + AName;
 
@@ -485,7 +495,6 @@ begin
     end;
   end;
 end;
-
 
 function TMVCBrIoC.Resolve<TInterface>(const name: string = ''): TInterface;
 var

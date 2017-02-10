@@ -27,37 +27,54 @@ unit MVCBr.ApplicationController;
 
 interface
 
-uses  {$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,
+uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes,
   System.Generics.Collections,
 
   System.SysUtils, MVCBr.Model, MVCBr.Interf;
 
 type
-
+  /// <summary>
+  /// AplicationController é uma instancia SINGLETON iniciada ao carregar o MVCBr
+  /// No ApplicationController fica armazenado uma lista de Controllers
+  /// ativos
+  /// </summary>
   TApplicationController = class(TMVCInterfacedObject, IApplicationController)
   private
+    /// Lista de controllers instanciados
     FControllers: TMVCInterfacedList<IController>;
   protected
+    // MainView para o Application
     FMainView: IView;
   public
     constructor create;
     destructor destroy; override;
+    /// This retorna o Self do ApplicationController Object Factory
     function This: TObject;
+    /// Count retorna a quantidade de controllers empilhados na lista
     function Count: integer;
+    /// Add Adiciona um controller a lista de controller instaciados
     function Add(const AController: IController): integer;
+    /// Delete Remove um controller da lista
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
+    /// Executa o ApplicationController
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    /// Executa
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
     class function New: IApplicationController;
+    /// Loop que chama AProc para cada um dos controllers da lista
     procedure ForEach(AProc: TProc<IController>);
+    /// Envia evnet de Update a todos os controllers da lista
     procedure UpdateAll;
+    /// envia event de Update a um Controller que contenha a IInterface
     procedure Update(const AIID: TGuid);
   end;
 
+  /// ApplicationController é uma instância que implementa a interface ...
 function ApplicationController: IApplicationController;
+/// Altera o ApplicationController
 procedure SetApplicationController(AController: IApplicationController);
 
 implementation
@@ -120,6 +137,7 @@ begin
   inherited;
 end;
 
+/// ForEach Execut a AProc passar a instancia de cada um dos controllers instanciados.
 procedure TApplicationController.ForEach(AProc: TProc<IController>);
 var
   i: integer;
@@ -201,13 +219,14 @@ begin
     begin
       if assigned(AController) then
         AController.View(FMainView);
-      FMainView.ShowView(nil);
+      //FMainView.ShowView(nil);
+      Application.run;
     end;
 
   end;
-  if assigned(AController) then
+{  if assigned(AController) then
     AController.AfterInit;
-
+}
 end;
 
 end.

@@ -4,16 +4,19 @@ ClassHeader=
 '{//         Código gerado pelo assistente                      //}'+ #10#13 +
 '{//                                                            //}'+ #10#13 +
 '{//         Projeto MVCBr                                      //}'+ #10#13 +
-'{//         tireideletra.com.br                                //}'+ #10#13 +
+'{//         tireideletra.com.br  / amarildo lacerda            //}'+ #10#13 +
 '{//************************************************************//}'+ #10#13 +
 '{// Data: %date                                  //}'+ #10#13 +
 '{//************************************************************//}';
 
 ClassCode = 'unit %ModuleIdent;                                 ' + #10#13 +
   '                                                    ' + #10#13 +
-  '  // Codigo gerado pelo MVCBr                               ' + #10#13 +
-  '  // www.tireideletra.com.br - amarildo lacerdas            ' + #10#13 +
-  '                                                          ' + #10#13 +
+  ' ///                                                ' + #10#13 +
+  ' /// <summary>                                            ' + #10#13 +
+  ' ///    O Model recebe as regras de negócios        ' + #10#13 +
+  ' ///    do sistema.                                 ' + #10#13 +
+  ' /// </ummary>                                            ' + #10#13 +
+  ' ///                                                ' + #10#13 +
   'interface                                                 ' + #10#13 +
   'uses                                                      ' + #10#13 +
   '  Windows, Messages, SysUtils, Variants, Classes,         ' + #10#13 +

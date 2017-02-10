@@ -2,11 +2,9 @@
 dataModuleAncestorName = 'Datamodule';
 
 dataModuleCodeInterf =
-'// Implementação para o interface:  I%FormIdent '+#10#13+
-'// Data: %date                                                    '+#10#13+
-'// Criado automático pelo assistente do MVCBr (amarildo lacerda)  '+#10#13+
-'//                                                                '+#10#13+
-'// ---------------------------------------------------------------'+#10#13+
+'/// <summary>                                                ' + #10#13 +
+'/// Implementação para a interface:  I%FormIdent '+#10#13+
+'/// </summary>                                                    '+#10#13+
 'Unit %ModelIdent;                                                 '+#10#13+
 '                                                                  '+#10#13+
 '//%include                                                        '+#10#13+
@@ -17,6 +15,7 @@ dataModuleCodeInterf =
 '                                                                  '+#10#13+
 'Type                                                              '+#10#13+
 '                                                                  '+#10#13+
+' /// Interaface para o ModuleModel                            ' + #10#13 +
 '    I%FormIdent = interface(IModuleModel)              '+#10#13+
 '       [''%guid'']                                                '+#10#13+
 '       // incluir aqui as especializações                         '+#10#13+
@@ -30,12 +29,9 @@ dataModuleCodeInterf =
 
 
 dataModuleCode =
-'// Implementação para o interface:  I%FormIdent '+#10#13+
-'// Data: %date                                                    '+#10#13+
-'// Criado automático pelo assistente do MVCBr (amarildo lacerda)  '+#10#13+
-'//                                                                '+#10#13+
-'// ---------------------------------------------------------------'+#10#13+
-'                                                                  '+#10#13+
+'/// <summary>                                                ' + #10#13 +
+'///    Implementação para o interface:  I%FormIdent '+#10#13+
+'/// </summary>                                                    '+#10#13+
 'Unit %ModelIdent;                                                 '+#10#13+
 '                                                                  '+#10#13+
 '//%include                                                        '+#10#13+
@@ -51,6 +47,7 @@ dataModuleCode =
 '    private                                                       '+#10#13+
 '                                                                  '+#10#13+
 '    protected                                                     '+#10#13+
+'///  ThisAs retorna o Object Factory para a interface        ' + #10#13 +
 '      function ThisAs: T%FormIdent;                               '+#10#13+
 '    public                                                        '+#10#13+
 '      class Function New():I%FormIdent; overload;                 '+#10#13+
@@ -63,6 +60,7 @@ dataModuleCode =
 '                                                                  '+#10#13+
 '{$R *.dfm}                                                         '+#10#13+
 '                                                                  '+#10#13+
+'/// ThisAs retorna o Object Factory para a interface         ' + #10#13 +
 'function T%FormIdent.ThisAs: T%FormIdent;                         '+#10#13+
 'begin                                                             '+#10#13+
 '    result := self;                                               '+#10#13+
@@ -73,6 +71,12 @@ dataModuleCode =
 '   result :=  new(nil);                                           '+#10#13+
 'end;                                                              '+#10#13+
 '                                                                  '+#10#13+
+'/// <summary>                                                     ' + #10#13 +
+'///     New cria uma nova instância para o Object Factory         ' + #10#13 +
+'/// </summary>                                                    ' + #10#13 +
+'/// <param name="AController">                                    ' + #10#13 +
+'///    AController é o controller ao qual o módulo esta associado ' + #10#13 +
+'/// </param>                                                      ' + #10#13 +
 'class function T%FormIdent.new(const AController: IController)    '+#10#13+
 '          : I%FormIdent;                                          '+#10#13+
 'begin                                                             '+#10#13+

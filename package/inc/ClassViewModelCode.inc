@@ -1,4 +1,7 @@
 ClassViewModelInterf = 'Unit %ModelIdent;              '+#10#13+
+  ' ///   <summary>                                              ' + #10#13 +
+  ' ///      Interface para o Model                              ' + #10#13 +
+  ' ///   </summary>                                             ' + #10#13 +
   '                                                              ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
@@ -6,6 +9,9 @@ ClassViewModelInterf = 'Unit %ModelIdent;              '+#10#13+
   'Uses MVCBr.Interf,MVCBr.ViewModel;                            ' + #10#13 +
   '                                                              ' + #10#13 +
   'Type                                                          ' + #10#13 +
+  ' ///                                                          ' + #10#13 +
+  ' ///  Interface de acesso ao object factory                   ' + #10#13 +
+  ' ///                                                          ' + #10#13 +
   '                                                              ' + #10#13 +
   '  I%FormIdentViewModel = interface(IViewModel)                        ' + #10#13 +
   '         [''%guid'']                                             ' + #10#13 +
@@ -17,11 +23,10 @@ ClassViewModelInterf = 'Unit %ModelIdent;              '+#10#13+
 
 
 ClassViewModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
+  ' /// <summary>                                                ' + #10#13 +
+  ' ///    Object Factory para implementar a interface do Model  ' + #10#13 +
+  ' /// </summary>                                               ' + #10#13 +
   '                                                              ' + #10#13 +
-  '{ MVCBr                                                       ' + #10#13 +
-  '  www.tireideletra.com.br                                     ' + #10#13 +
-  '  amarildo lacerda                                            ' + #10#13 +
-  '}                                                             ' + #10#13 +
   '//%include                                                    ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
@@ -40,10 +45,13 @@ ClassViewModelDef = 'type                                                 ' + #1
   '  public                                                      ' + #10#13 +
   '    Constructor Create; override;                             ' + #10#13 +
   '    Destructor Destroy; override;                             ' + #10#13 +
+  ' ///  New cria um nova instância para o Model                 ' + #10#13 +
   '    class function new:I%FormIdentViewModel;overload;             ' + #10#13 +
   '    class function new(' + #10#13 +
   '      const AController:IController):I%FormIdentViewModel;overload;' + #10#13 +
+  ' ///  ThisAs retorna o próprio Object Factory                 ' + #10#13 +
   '    function ThisAs:T%FormIdentViewModel;                         ' + #10#13 +
+  ' ///  AfterInit é executado após a completar a carga do controller' + #10#13 +
   '    procedure AfterInit;override;                             ' + #10#13 +
   '    //  Codigo para a ClassModel                              ' + #10#13 +
   '    //InterfImplem                                            ' + #10#13 +
@@ -76,6 +84,17 @@ ClassViewModelImpl = 'Constructor T%FormIdentViewModel.Create;                ' 
   'begin                                                         ' + #10#13 +
   '    // executado apos concluido o controller                 ' + #10#13 +
   'end;                                                          ' + #10#13 +
+  ' ///                                                          ' + #10#13 +
+  ' /// <summary>                                                ' + #10#13 +
+  ' ///    New cria uma nova instância para o Model              ' + #10#13 +
+  ' /// </summary>                                               ' + #10#13 +
+  ' /// <param name="AController">                               ' + #10#13 +
+  ' ///    AController é o controller ao qual o Model esta       ' + #10#13 +
+  ' ///    associado                                             ' + #10#13 +
+  ' /// </param>                                                 ' + #10#13 +
+  ' /// <returns>                                                ' + #10#13 +
+  ' ///   Retorna a interface para o Model                       ' + #10#13 +
+  ' /// </returns>                                               ' + #10#13 +
   'class function T%FormIdentViewModel.new(const AController:IController):I%FormIdentViewModel;'
   + #10#13 + 'begin                                                         ' +
   #10#13 + '  result := T%FormIdentViewModel.create;                          ' +

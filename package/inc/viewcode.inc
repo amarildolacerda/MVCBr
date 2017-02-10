@@ -1,21 +1,26 @@
-ViewHead = 'unit %ModelIdent;                                ' + #10#13 +
+ViewHead =
+'/// <summary>                                                     ' + #10#13 +
+'///    Uma View representa a camada de apresentação ao usuário    ' + #10#13 +
+'///    deve esta associado a um controller onde ocorrerá          ' + #10#13 +
+'///    a troca de informações e comunicação com os Models         ' + #10#13 +
+'/// </summary>                                                    ' + #10#13 +
+  'unit %ModelIdent;                                ' + #10#13 +
   '                                                          ' + #10#13 +
-  '// Código gerado pelo assistente     MVCBr OTA            ' + #10#13 +
-  '// www.tireideletra.com.br                                ' + #10#13 +
-  '//%include                                                ' + #10#13 +
   'interface                                                 ' + #10#13 +
   'uses                                                      ' + #10#13 +
-  '  Windows, Messages, SysUtils,  Classes,Graphics,         ' + #10#13 +
-  '  Controls,StdCtrls,ComCtrls,ExtCtrls,Forms,MVCBr.Interf, ' + #10#13 +
-  '  MVCBr.View,MVCBr.FormView, %MdlInterf ,MVCBr.Controller;          ' + #10#13 +
+'{$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}           '+#10#13+
+  '  System.SysUtils, System.Classes,MVCBr.Interf,           ' + #10#13 +
+  '  MVCBr.View,MVCBr.FormView, %MdlInterf ,MVCBr.Controller; ' + #10#13 +
   '                                                     ' + #10#13;
 ViewDef = '                                   '#10#13 +
   'type                                                 ' + #10#13 +
+'/// Interface para a VIEW                                         ' + #10#13 +
   '  I%FormIdent = interface(IView)                      ' + #10#13 +
   '    [''%guid'']                                           ' + #10#13 +
   '    // incluir especializacoes aqui                       ' + #10#13 +
   '  end;                                                    ' + #10#13 +
   '                                                          ' + #10#13 +
+'/// Object Factory que implementa a interface da VIEW             ' + #10#13 +
   '  T%FormIdent = class(TFormFactory {T%AncestorIdent} ,IView,IThisAs<T%FormIdent>,'
   + #10#13 + '                      I%FormIdent,IViewAs<I%FormIdent>)' + #10#13
   + '                                                          ' + #10#13 +
