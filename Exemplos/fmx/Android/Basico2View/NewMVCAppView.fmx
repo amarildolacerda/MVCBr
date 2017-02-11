@@ -1,0 +1,18 @@
+object NewMVCAppView: TNewMVCAppView
+  Left = 0
+  Top = 0
+  Caption = 'NewMVCAppView'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 0
+  object Button1: TButton
+    Position.X = 128.000000000000000000
+    Position.Y = 104.000000000000000000
+    TabOrder = 0
+    Text = 'Button1'
+    OnClick = Button1Click
+  end
+end

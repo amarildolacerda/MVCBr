@@ -55,7 +55,8 @@ type
     { class Function New(AClass: TViewFactoryClass;
       const AController: IController): IView;
     }
-    function ShowView(const AProc: TProc<IView>): Integer; virtual;
+    function ShowView(const AProc: TProc<IView>): Integer; overload;virtual;
+    function ShowView(): IView; overload;virtual;
     function Update: IView; virtual;
     function GetController: IController;
 
@@ -87,6 +88,12 @@ end;
 procedure TViewFactory.SetController(const AController: IController);
 begin
   FController := AController;
+end;
+
+function TViewFactory.ShowView: IView;
+begin
+   result := self;
+   ShowView(nil);
 end;
 
 function TViewFactory.ShowView(const AProc: TProc<IView>): Integer;

@@ -190,7 +190,8 @@ type
   IViewBase = interface(IMVCBrBase)
     ['{B3302253-353A-4890-B7B1-B45FC41247F6}']
     function This: TObject;
-    function ShowView(const AProc: TProc<IView>): Integer;
+    function ShowView(const AProc: TProc<IView>): Integer;overload;
+    function ShowView():IView;overload;
     function Update: IView;
   end;
 

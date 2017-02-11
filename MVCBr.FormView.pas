@@ -44,12 +44,15 @@ type
   /// </summary>
   TFormFactory = class(TForm, IMVCBrBase, IView)
   private
+    FOnClose: TCloseEvent;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
+    procedure SetOnClose(const Value: TCloseEvent);
   protected
     FOnCloseProc: TProc<IView>;
     FController: IController;
     FShowModal: boolean;
+    procedure DoCloseView(Sender: TObject; var ACloseAction: TCloseAction);
     procedure SetController(const AController: IController);
     function Controller(const AController: IController): IView; virtual;
     procedure AfterConstruction; override;
@@ -74,8 +77,11 @@ type
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
     function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
       : IView; overload; virtual;
+    function ShowView():IView;overload;
     /// Evento para atualizar os dados da VIEW
     function Update: IView; virtual;
+  published
+    property OnClose: TCloseEvent read FOnClose write SetOnClose;
   end;
 
 implementation
@@ -136,6 +142,20 @@ begin
   FController := AController;
 end;
 
+procedure TFormFactory.SetOnClose(const Value: TCloseEvent);
+begin
+  FOnClose := Value;
+end;
+
+procedure TFormFactory.DoCloseView(Sender: TObject;
+  var ACloseAction: TCloseAction);
+begin
+  if assigned(FOnCloseProc) then
+    FOnCloseProc(self);
+  if assigned(FOnClose) then
+    FOnClose(Sender, ACloseAction);
+end;
+
 procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);
 begin
   TMVCBr.SetProperty(self, ANome, Value);
@@ -162,14 +182,15 @@ end;
 function TFormFactory.ShowView(const AProc: TProc<IView>): Integer;
 begin
   result := 0;
-{$IFDEF FMX}
-  FOnCloseProc := AProc;
-  Show;
-{$ELSE}
+{$IFDEF MSWINDOWS}
   if FShowModal then
     result := ord(ShowModal);
   if assigned(AProc) then
     AProc(self);
+{$ELSE}
+  FOnCloseProc := AProc;
+  OnClose := DoCloseView;
+  Show;
 {$ENDIF}
 end;
 
@@ -190,6 +211,8 @@ procedure TViewFactoryAdapter.DoClose(Sender: TObject;
 begin
   if assigned(FOnProc) then
     FOnProc(self);
+  if assigned(FForm) and assigned(FForm.OnClose) then
+    FForm.OnClose(Sender, Action);
 end;
 
 function TViewFactoryAdapter.Form: TForm;
@@ -232,6 +255,12 @@ end;
 function TViewFactoryAdapter.ThisAs: TViewFactoryAdapter;
 begin
   result := self;
+end;
+
+function TFormFactory.ShowView: IView;
+begin
+   result := self;
+   ShowView(nil);
 end;
 
 end.
