@@ -52,30 +52,30 @@ begin
           Break;
 end;
 
-function GetCurrentProjectGroup(out ProjectGroup: IOTAProjectGroup): boolean;
+
+function GetCurrentProjectGroup(out ProjectGroup: IOTAProjectGroup ):boolean;
 var
-  ModuleServices: IOTAModuleServices;
-  idx: integer;
-
+  IModuleServices: IOTAModuleServices;
+  IModule: IOTAModule;
+  IProjectGroup: IOTAProjectGroup;
+  i: Integer;
 begin
-  Result := false;
+  result := false;
   ProjectGroup := nil;
-
-  if SysUtils.Supports(BorlandIDEServices, IOTAModuleServices, ModuleServices)
-  then
+  IModuleServices := BorlandIDEServices as IOTAModuleServices;
+  for i := 0 to IModuleServices.ModuleCount - 1 do
   begin
-    idx := ModuleServices.ModuleCount - 1;
-
-    // Iterate over modules till we find a project group or list exhausted
-    while not((idx < 0) or SysUtils.Supports(ModuleServices.Modules[idx],
-      IOTAProjectGroup, ProjectGroup)) do
-      System.Dec(idx);
-
-    // Success if list wasn't ehausted.
-    Result := idx >= 0;
+    IModule := IModuleServices.Modules[i];
+    if IModule.QueryInterface(IOTAProjectGroup, IProjectGroup) = S_OK then
+    begin
+      ProjectGroup := IProjectGroup;
+      Break;
+    end;
   end;
-
+  result := assigned(ProjectGroup);
 end;
+
+
 
 function ModuleIsForm(Module: IOTAModule): boolean;
 var

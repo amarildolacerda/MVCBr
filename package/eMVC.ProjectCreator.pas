@@ -1,264 +1,224 @@
+
 unit eMVC.ProjectCreator;
-{ ********************************************************************** }
-{ Copyright 2005 Reserved by Eazisoft.com }
-{ File Name: ProjectCreator.pas }
-{ Author: Larry Le }
-{ Description: }
-{ This unit contains the Easy MVC petterns define }
-{ }
-{ History: }
-{ - 1.0, 19 May 2006 }
-{ First version }
-{ }
-{ Email: linfengle@gmail.com }
-{ }
-{ The contents of this file are subject to the Mozilla Public License }
-{ Version 1.1 (the "License"); you may not use this file except in }
-{ compliance with the License. You may obtain a copy of the License at }
-{ http://www.mozilla.org/MPL/ }
-{ }
-{ Software distributed under the License is distributed on an "AS IS" }
-{ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See }
-{ the License for the specific language governing rights and }
-{ limitations under the License. }
-{ }
-{ The Original Code is written in Delphi. }
-{ }
-{ The Initial Developer of the Original Code is Larry Le. }
-{ Copyright (C) eazisoft.com. All Rights Reserved. }
-{ }
-{ ********************************************************************** }
+// This is done to Warnings that I can't control, as Embarcadero has
+// deprecated the functions, but due to design you are still required to
+// to implement.
+{$WARN SYMBOL_DEPRECATED OFF}
 
 interface
 
-{$I .\inc\Compilers.inc}
-
 uses
-  Windows, SysUtils,
-  eMVC.OTAUtilities,
-  eMVC.ProjectFileCreator,
   PlatformAPI,
-  ToolsApi;
+  ToolsAPI;
 
 type
-  TProjectCreator = class(TInterfacedObject, IOTACreator, IOTAProjectCreator
-{$IFDEF COMPILER_8_UP}, IOTAProjectCreator80{$ENDIF COMPILER_8_UP}
-{$IF compilerVersion>=28}, IOTAProjectCreator160{$ENDIF}
-    )
-  private
-    FProjectName: string;
-    FisFMX: Boolean;
-    procedure SetisFMX(const Value: Boolean);
-  public
-    constructor create; virtual;
+  TNewProject = class abstract(TNotifierObject, IOTACreator, IOTAProjectCreator,
+    IOTAProjectCreator80)
+  protected
     // IOTACreator
-    function GetCreatorType: string;
+    function GetCreatorType: string; virtual;
     function GetExisting: Boolean;
     function GetFileSystem: string;
     function GetOwner: IOTAModule;
     function GetUnnamed: Boolean;
     // IOTAProjectCreator
     function GetFileName: string;
-    function GetOptionFileName: string;
+    function GetOptionFileName: string; deprecated;
     function GetShowSource: Boolean;
-    procedure NewDefaultModule;
-    function NewOptionSource(const ProjectName: string): IOTAFile;
+    procedure NewDefaultModule; deprecated;
+    function NewOptionSource(const ProjectName: string): IOTAFile; deprecated;
     procedure NewProjectResource(const Project: IOTAProject);
-    function NewProjectSource(const ProjectName: string): IOTAFile;
-{$IFDEF COMPILER_8_UP}
-    // IOTAProjectCreator50
-    procedure NewDefaultProjectModule(const Project: IOTAProject);
+    function NewProjectSource(const ProjectName: string): IOTAFile; virtual;
+      abstract; // MUST OVERRIDE!
     // IOTAProjectCreator80
-    function GetProjectPersonality: string;
-    property ProjectPersonality: string read GetProjectPersonality;
-{$ENDIF COMPILER_8_UP}
-    procedure setFileName(AFilename: string);
-    property isFMX: Boolean read FisFMX write SetisFMX;
+    function GetProjectPersonality: string; virtual;
+    procedure NewDefaultProjectModule(const Project: IOTAProject);
+  private
+    procedure SetFileName(const Value: String);
+  protected
+    FFileName: String;
+  public
+    property FileName: String read GetFileName write SetFileName;
+  end;
 
-{$IF CompilerVersion>=28}
+  TNewProjectEx = class(TNewProject, IOTAProjectCreator160)
   private
     FPersonality: string;
+    FisFMX: Boolean;
+
+    procedure SetisFMX(const Value: Boolean);
   protected
-    function GetProjectPersonality: string;
+    function GetProjectPersonality: string; override;
 
     // IOTAProjectCreator160
     function GetPlatforms: TArray<string>;
-    function GetFrameworkType: string;
+    function GetFrameworkType: string; virtual;
     function GetPreferredPlatform: string;
     procedure SetInitialOptions(const NewProject: IOTAProject);
-    procedure NewDefaultProjectModule(const Project: IOTAProject);
-
   public
     property Personality: string read FPersonality write FPersonality;
-{$ENDIF}
+    property isFMX: Boolean read FisFMX write SetisFMX;
   end;
+
+
+  TProjectCreator = class(TNewProjectEx)
+  private
+  protected
+    function NewProjectSource(const ProjectName: string): IOTAFile; override;
+    function GetFrameworkType: string; override;
+  public
+    constructor Create; overload;
+    constructor Create(const APersonality: string); overload;
+  end;
+
 
 implementation
 
-{ TProjectCreator }
+uses
+  eMVC.ProjectFileCreator,System.SysUtils;
 
-procedure TProjectCreator.setFileName(AFilename: string);
+{ TNewProject }
+
+function TNewProject.GetCreatorType: string;
 begin
-  self.FProjectName := AFilename;
+  Result := sConsole;
+  // May want to change this in the future, at least making method virtual
 end;
 
-procedure TProjectCreator.SetisFMX(const Value: Boolean);
+function TNewProject.GetExisting: Boolean;
 begin
-  FisFMX := Value;
+  Result := False;
 end;
 
-constructor TProjectCreator.create;
+function TNewProject.GetFileName: string;
 begin
-  inherited;
-  FPersonality := sDelphiPersonality;
+  Result := FFileName;
 end;
 
-function TProjectCreator.GetCreatorType: string;
+function TNewProject.GetFileSystem: string;
 begin
-  Result := sApplication;
+  Result := '';
 end;
 
-function TProjectCreator.GetExisting: Boolean;
+function TNewProject.GetOptionFileName: string;
 begin
-  Result := False; // Create a new module
+  Result := '';
 end;
 
-function TProjectCreator.GetFileName: string;
+function TNewProject.GetOwner: IOTAModule;
 begin
-  Result := FProjectName; // Delphi Defined default File name
+  Result := (BorlandIDEServices as IOTAModuleServices).MainProjectGroup;
 end;
 
-function TProjectCreator.GetFileSystem: string;
-begin
-  Result := ''; // Default File System
-end;
-
-function TProjectCreator.GetOptionFileName: string;
-begin
-  Result := ''; // C++ Only ?
-end;
-
-function TProjectCreator.GetOwner: IOTAModule;
-var
-  ProjectGroup: IOTAProjectGroup;
-begin
-  Result := nil;
-  if GetCurrentProjectGroup(ProjectGroup) then
-    Result := ProjectGroup;
-end;
-
-{$IFDEF COMPILER_8_UP}
-
-function TProjectCreator.GetProjectPersonality: string;
+function TNewProject.GetProjectPersonality: string;
 begin
   Result := sDelphiPersonality;
 end;
 
-{$ENDIF COMPILER_8_UP}
-
-function TProjectCreator.GetShowSource: Boolean;
+function TNewProject.GetShowSource: Boolean;
 begin
-  Result := True; // < Show the source in the editor
+  Result := False;
 end;
 
-function TProjectCreator.GetUnnamed: Boolean;
+function TNewProject.GetUnnamed: Boolean;
 begin
-  Result := True; // < Project needs to be named/saved
+  Result := True;
 end;
 
-procedure TProjectCreator.NewDefaultModule;
-begin
-  // No default modules are created
-end;
-
-{$IFDEF COMPILER_8_UP}
-
-procedure TProjectCreator.NewDefaultProjectModule(const Project: IOTAProject);
+procedure TNewProject.NewDefaultModule;
 begin
 end;
 
-{$ENDIF COMPILER_8_UP}
-
-function TProjectCreator.NewOptionSource(const ProjectName: string): IOTAFile;
+procedure TNewProject.NewDefaultProjectModule(const Project: IOTAProject);
 begin
-  Result := nil; // For BCB only
 end;
 
-procedure TProjectCreator.NewProjectResource(const Project: IOTAProject);
-// var
-// resname: string;
+function TNewProject.NewOptionSource(const ProjectName: string): IOTAFile;
 begin
-  // resname := self.GetFileName;
-  // StringReplace(resname, '.dpr', '.res', [rfIgnoreCase]);
-  // project.AddFile(resname, false);
+  Result := nil;
+end;
+
+procedure TNewProject.NewProjectResource(const Project: IOTAProject);
+begin
+end;
+
+procedure TNewProject.SetFileName(const Value: String);
+begin
+  FFileName := Value;
+end;
+
+function TNewProjectEx.GetFrameworkType: string;
+begin
+  Result := '';
+end;
+
+function TNewProjectEx.GetPlatforms: TArray<string>;
+begin
+  Result := TArray<string>.Create(cWin32Platform, cWin64Platform);
+end;
+
+function TNewProjectEx.GetPreferredPlatform: string;
+begin
+  Result := '';
+end;
+
+
+
+function TNewProjectEx.GetProjectPersonality: string;
+begin
+  Result := sDelphiPersonality
+end;
+
+procedure TNewProjectEx.SetInitialOptions(const NewProject: IOTAProject);
+var
+  LBuildConf: IOTAProjectOptionsConfigurations;
+begin
+  if Supports(NewProject.ProjectOptions, IOTAProjectOptionsConfigurations,
+    LBuildConf) then
+  begin
+    LBuildConf.BaseConfiguration.AsBoolean['UsingDelphiRTL'] := True;
+  end;
+
+end;
+
+
+procedure TNewProjectEx.SetisFMX(const Value: Boolean);
+begin
+  FisFMX := Value;
+end;
+
+
+
+constructor TProjectCreator.Create;
+begin
+  // TODO: Figure out how to make this be DMVCProjectX where X is the next available.
+  // Return Blank and the project will be 'ProjectX.dpr' where X is the next available number
+  FFileName := '';
+  FPersonality := sDelphiPersonality;
+end;
+
+constructor TProjectCreator.Create(const APersonality: string);
+begin
+  Create;
+  Personality := APersonality;
+end;
+
+function TProjectCreator.GetFrameworkType: string;
+begin
+  Result := 'VCL';
+  if isFMX then
+     result := 'FMX';
 end;
 
 function TProjectCreator.NewProjectSource(const ProjectName: string): IOTAFile;
 var
   fc: TProjectFileCreator;
 begin
-  debug('Iniciando Project: ' + ProjectName);
   fc := TProjectFileCreator.create(ProjectName);
   fc.isFMX := self.isFMX;
   Result := fc;
 end;
 
-{$IF CompilerVersion>=28}
 
-function TProjectCreator.GetProjectPersonality: string;
-begin
-  Result := FPersonality;
-end;
-
-// IOTAProjectCreator160
-function TProjectCreator.GetPlatforms: TArray<string>;
-begin
-  if Personality = sDelphiPersonality then
-    Result := TArray<string>.create(cWin32Platform, cWin64Platform,
-      cOSX32Platform, cAndroidPlatform, ciOSSimulatorPlatform
-      {$IFDEF DELPHI_XE8_UP}, ciOSDevice32Platform, ciOSDevice64Platform
-      {$ENDIF})
-  else
-    Result := TArray<string>.create(cWin32Platform, cWin64Platform,
-      cOSX32Platform, cAndroidPlatform
-      {$IFDEF DELPHI_XE8_UP}, ciOSDevice32Platform, ciOSDevice64Platform
-      {$ENDIF});
-
-end;
-
-function TProjectCreator.GetFrameworkType: string;
-begin
-    if isFMX then
-      result := sFrameworkTypeFMX
-    else
-      result := sFrameworkTypeVCL;
-end;
-
-function TProjectCreator.GetPreferredPlatform: string;
-begin
-  result := cWin32Platform;
-end;
-
-procedure TProjectCreator.SetInitialOptions(const NewProject: IOTAProject);
-var
-  LBuildConf: IOTAProjectOptionsConfigurations;
-begin
-  if Supports(NewProject.ProjectOptions, IOTAProjectOptionsConfigurations, LBuildConf) then
-  begin
-    LBuildConf.BaseConfiguration.AsBoolean['UsingDelphiRTL'] := True;
-    if FPersonality = sCBuilderPersonality then
-    begin
-      LBuildConf.BaseConfiguration.PlatformConfiguration[cAndroidPlatform].AsBoolean['ILINK_LinkwithDUnitXRuntime'] := True;
-      LBuildConf.BaseConfiguration.PlatformConfiguration[ciOSDevice32Platform].AsBoolean['ILINK_LinkwithDUnitXRuntime'] := True;
-      LBuildConf.BaseConfiguration.PlatformConfiguration[ciOSDevice64Platform].AsBoolean['ILINK_LinkwithDUnitXRuntime'] := True;
-    end;
-  end;
-
-end;
-procedure TProjectCreator.NewDefaultProjectModule(const Project: IOTAProject);
-begin
-end;
-
-{$ENDIF}
 
 end.
