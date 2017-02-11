@@ -19,8 +19,8 @@ ClassCode = 'unit %ModuleIdent;                                 ' + #10#13 +
   ' ///                                                ' + #10#13 +
   'interface                                                 ' + #10#13 +
   'uses                                                      ' + #10#13 +
-  '  Windows, Messages, SysUtils, Variants, Classes,         ' + #10#13 +
-  '  Graphics, Controls, Forms, MVCBr.Interf, MVCBr.View;    ' + #10#13 +
+  '  System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,' + #10#13 +
+  '  MVCBr.Interf, MVCBr.View;    ' + #10#13 +
   '                                                          ' + #10#13 +
   'type                                                      ' + #10#13 +
   '  T%FormIdent = class(T%AncestorIdent       )             ' + #10#13 +

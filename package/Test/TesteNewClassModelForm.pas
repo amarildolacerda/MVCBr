@@ -26,7 +26,7 @@ type
     procedure SetUp; override;
     procedure TearDown; override;
   published
-    procedure Show;
+    procedure TestShowClassModel;
   end;
 
 implementation
@@ -36,7 +36,7 @@ begin
   FFormClassModel := TFormClassModel.Create(nil);
 end;
 
-procedure TestTFormClassModel.Show;
+procedure TestTFormClassModel.TestShowClassModel;
 begin
   fformClassModel.ShowModal;
 end;

@@ -41,6 +41,8 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -111,6 +113,8 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -211,6 +215,8 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -272,6 +278,8 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Finish'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 83
@@ -331,8 +339,8 @@ object FormNewModuleModel: TFormNewModuleModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 293
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3564,6 +3572,7 @@ object FormNewModuleModel: TFormNewModuleModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
+      ExplicitWidth = 117
       ExplicitHeight = 305
     end
   end

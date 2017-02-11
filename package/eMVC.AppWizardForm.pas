@@ -53,11 +53,13 @@ type
     BitBtn4: TBitBtn;
     cbFMX: TCheckBox;
     cbUsarNomeProjeto: TCheckBox;
+    config: TButton;
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btnOKClick(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
+    procedure configClick(Sender: TObject);
   private
     { Private declarations }
     FCanClose: Boolean;
@@ -69,6 +71,9 @@ var
   FormAppWizard: TFormAppWizard;
 
 implementation
+
+
+uses eMVC.Config;
 
 {$R *.dfm}
 
@@ -111,6 +116,12 @@ end;
 procedure TFormAppWizard.btnOKClick(Sender: TObject);
 begin
   FCanClose := true;
+end;
+
+procedure TFormAppWizard.configClick(Sender: TObject);
+begin
+   with TMVCConfig.new do
+      ShowView(nil);
 end;
 
 procedure TFormAppWizard.BitBtn3Click(Sender: TObject);

@@ -27,8 +27,8 @@ object FormAppWizard: TFormAppWizard
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 299
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3260,6 +3260,7 @@ object FormAppWizard: TFormAppWizard
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
+      ExplicitWidth = 117
       ExplicitHeight = 305
     end
   end
@@ -3343,29 +3344,21 @@ object FormAppWizard: TFormAppWizard
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 4'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 5'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
   object btnBack: TBitBtn
@@ -3406,5 +3399,14 @@ object FormAppWizard: TFormAppWizard
     Checked = True
     State = cbChecked
     TabOrder = 5
+  end
+  object config: TButton
+    Left = 8
+    Top = 319
+    Width = 121
+    Height = 20
+    Caption = 'config'
+    TabOrder = 6
+    OnClick = configClick
   end
 end

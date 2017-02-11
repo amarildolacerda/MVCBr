@@ -111,6 +111,8 @@ object FormNewSet: TFormNewSet
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -284,6 +286,8 @@ object FormNewSet: TFormNewSet
       Left = 0
       Top = 0
       Caption = 'Finish'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label7: TLabel
         Left = 96
         Top = 16

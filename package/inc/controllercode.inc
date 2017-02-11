@@ -180,7 +180,8 @@ ControllerCodeOnly =
   '//%include                                                       ' + #10#13 +
   'uses                                                             ' + #10#13 +
   '                                                                 ' + #10#13 +
-  'SysUtils, forms, buttons, classes, controls,MVCBr.Interf,        ' + #10#13 +
+  'System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+
+  'MVCBr.Interf,        ' + #10#13 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #10#13 +
   '%ModelIdent.interf,                                              ' + #10#13 +
   'System.RTTI;                                                     ' + #10#13 +

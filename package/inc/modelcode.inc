@@ -23,7 +23,8 @@ ModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
   '//%include                                                    ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
-  'uses Classes, forms, SysUtils, MVCBr.Interf, MVCBr.Model,     ' + #10#13 +
+  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+
+  'MVCBr.Interf, MVCBr.Model,     ' + #10#13 +
   '     %ModelIdent.interf, MVCBr.Controller;                    ' + #10#13 +
   '                                                              ' + #10#13;
 

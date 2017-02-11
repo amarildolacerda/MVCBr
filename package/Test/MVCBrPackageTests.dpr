@@ -17,7 +17,9 @@ program MVCBrPackageTests;
 uses
   DUnitTestRunner,
   TesteNewClassModelForm in 'TesteNewClassModelForm.pas',
-  eMVC.NewClassModelForm in '..\eMVC.NewClassModelForm.pas';
+  eMVC.NewClassModelForm in '..\eMVC.NewClassModelForm.pas',
+  eMVC.AppWizardForm in '..\eMVC.AppWizardForm.pas' {FormAppWizard},
+  TesteMVCAppWizardForm in 'TesteMVCAppWizardForm.pas';
 
 {$R *.RES}
 

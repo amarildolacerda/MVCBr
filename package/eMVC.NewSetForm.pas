@@ -99,6 +99,8 @@ begin
   // this two params for future use
   ModelAlone := true;
   viewAlone := true;
+  chFMX.checked := GetFrameworkType='FMX';
+
 end;
 
 procedure TFormNewSet.btnOKNextClick(Sender: TObject);

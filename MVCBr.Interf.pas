@@ -277,7 +277,8 @@ type
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
-    function ResolveController(const AName: string): IController;
+    function ResolveController(const AName: string): IController;overload;
+    function ResolveController(const AIID: TGuid): IController; overload;
     function This: TControllerAbstract;
     function Start:IController;
   end;

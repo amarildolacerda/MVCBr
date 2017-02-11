@@ -90,9 +90,7 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '    if assigned(vm) then                            ' + #10#13 +
   '      supports(vm.This,I%FormIdentModel,FViewModel);      ' + #10#13 +
   '  end;                                              ' + #10#13 +
-  '  ShowModal;                                              ' + #10#13 +
-  '  result := ord(ModalResult);                             ' + #10#13 +
-  '  if assigned(AProc) then AProc(self);                    ' + #10#13 +
+  '  inherited;                                              ' + #10#13 +
   'end;                                                      ' + #10#13 +
   '                                                          ' + #10#13;
 

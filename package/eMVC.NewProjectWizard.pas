@@ -89,7 +89,7 @@ procedure TNewProjectWizard.Execute;
 var
   LProjectModule: IOTAModule;
   LOk: Boolean;
-  LPath, LAppName: string;
+  LPath,LPathBase, LAppName: string;
   LProjectCreate: TProjectCreator;
   LProjectIntrf: IOTAProject;
   LViewCreate: TViewCreator;
@@ -125,36 +125,15 @@ begin
         LAppName := LAppName + '.dpr';
       debug('AppName: ' + LAppName);
       LPath := trim(edtPath.text);
+      LPathBase := trim(edtPath.text);
       if LPath[length(LPath) - 1] <> '\' then
         LPath := LPath + '\';
       free;
     end;
   end;
 
-  { try
-    if not GetCurrentProjectGroup(pg) then
-    begin
-    debug('Criar ProjectGroup');
-    // created project group
-    try
-    PGModel := TBDSProjectGroupCreator.Create;
-    PGModel.path := path;
-    except
-    on e: Exception do
-    raise Exception.Create('Error Message: ' + e.message);
-    end;
-    (BorlandIDEServices as IOTAModuleServices).CreateModule(PGModel);
-
-    end;
-
-    except
-    on e: Exception do
-    debug('Erro (Group): ' + e.message);
-    end;
-  }
 
   try
-    SetCurrentDir(LPath);
     LProjectCreate := TProjectCreator.Create;
 
     LProjectCreate.isFMX := LIsFMX;
@@ -243,8 +222,10 @@ begin
     LViewCreate.Templates.addPair('%UnitBase', LAppName);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(LViewCreate);
 
-    SetCurrentDir(LPath);
     debug('Path: ' + LPath);
+
+    SetCurrentDir(LPathBase);
+
   except
     on e: Exception do
       debug(e.message);

@@ -3262,7 +3262,8 @@ object FormClassModel: TFormClassModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
+      ExplicitLeft = 3
+      ExplicitTop = 56
     end
   end
   object Notebook1: TNotebook
@@ -3275,15 +3276,12 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 3
     ParentFont = False
     TabOrder = 1
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 136
@@ -3375,6 +3373,8 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label4: TLabel
         Left = 16
         Top = 11
@@ -3395,6 +3395,8 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 19

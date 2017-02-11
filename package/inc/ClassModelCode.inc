@@ -1,4 +1,4 @@
-ClassModelInterf = 'Unit %ModelIdent;              '+#10#13+
+ClassModelInterf = 'Unit %ModelIdent;              ' + #10#13 +
   ' ///                                                ' + #10#13 +
   ' /// <summary>                                      ' + #10#13 +
   ' ///     Interface de acesso ao Model               ' + #10#13 +
@@ -23,10 +23,10 @@ ClassModelInterf = 'Unit %ModelIdent;              '+#10#13+
   '  end;                                                        ' + #10#13 +
   '                                                              ' + #10#13 +
   'Implementation                                                ' + #10#13 +
-  'end.                                                          ' + #10#13 ;
+  'end.                                                          ' + #10#13;
 
-ClassModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
-  '                                                              ' + #10#13 +
+ClassModelHead = 'unit %ModelIdent;                                   ' + #10#13
+  + '                                                              ' + #10#13 +
   ' ///                                                ' + #10#13 +
   ' ///  <summary>                                     ' + #10#13 +
   ' ///     Model para implementar regras de negócio   ' + #10#13 +
@@ -35,17 +35,18 @@ ClassModelHead = 'unit %ModelIdent;                                   ' + #10#13
   '//%include                                                    ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
-  'uses Classes, forms, SysUtils, MVCBr.Interf, MVCBr.Model,     ' + #10#13 +
-  '     %ClassUnit,                                              ' + #10#13 +
-  '     %ModelIdent.interf, MVCBr.Controller;                    ' + #10#13 +
-  '                                                              ' + #10#13;
+  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes, MVCBr.Interf, MVCBr.Model,     '
+  + #10#13 + '     %ClassUnit,                                              ' +
+  #10#13 + '     %ModelIdent.interf, MVCBr.Controller;                    ' +
+  #10#13 + '                                                              ' +
+  #10#13;
 
-ClassModelDef = 'type                                                 ' + #10#13 +
-  '                                                              ' + #10#13 +
+ClassModelDef = 'type                                                 ' + #10#13
+  + '                                                              ' + #10#13 +
   ' ///                                                          ' + #10#13 +
   ' ///  <summary>                                               ' + #10#13 +
-  ' ///     Implementado Objeto Factory para o Model T%FormIdentModel' + #10#13 +
-  ' ///  </summary>                                              ' + #10#13 +
+  ' ///     Implementado Objeto Factory para o Model T%FormIdentModel' + #10#13
+  + ' ///  </summary>                                              ' + #10#13 +
   ' ///                                                          ' + #10#13 +
   '  T%FormIdentModel = class(TModelFactory,I%FormIdentModel,' +
   '    IThisAs<T%FormIdentModel>)    ' + #10#13 +
@@ -91,9 +92,9 @@ ClassModelImpl =
   '                                                              ' + #10#13 +
   ' ///  Criar nova instância para o Model                      ' + #10#13 +
   'class function T%FormIdentModel.new:I%FormIdentModel;        ' + #10#13 +
-  'begin                                                         ' + #10#13+
-  '   result := new(nil);                                        ' + #10#13+
-  'end;                                                          ' + #10#13+
+  'begin                                                         ' + #10#13 +
+  '   result := new(nil);                                        ' + #10#13 +
+  'end;                                                          ' + #10#13 +
   '                                                              ' + #10#13 +
   'procedure T%FormIdentModel.AfterInit;                         ' + #10#13 +
   'begin                                                         ' + #10#13 +
@@ -113,18 +114,17 @@ ClassModelImpl =
   #10#13 + '  result := T%FormIdentModel.create;                          ' +
   #10#13 + '  result.Controller(AController);                             ' +
   #10#13 + 'end;                                                          ' +
-  #10#13 + '                                                      ' +#10#13 +
-  '    //InterfCode                                              ' + #10#13 +
-  #10#13;
+  #10#13 + '                                                      ' + #10#13 +
+  '    //InterfCode                                              ' +
+  #10#13 + #10#13;
 
 ClassModelCode = ClassModelHead + ClassModelDef +
   '                                                              ' + #10#13 +
   'implementation                                                ' + #10#13 +
   '                                                              ' + #10#13 +
   '                                                              ' + #10#13 +
-  ClassModelImpl + '                                                              ' +
-  #10#13 + 'end.                                                          ' +
-  #10#13;
-
+  ClassModelImpl +
+  '                                                              ' + #10#13 +
+  'end.                                                          ' + #10#13;
 
 ClassModelCodeFMX = ClassModelCode;

@@ -10,7 +10,7 @@ dataModuleCodeInterf =
 '//%include                                                        '+#10#13+
 'interface                                                         '+#10#13+
 '                                                                  '+#10#13+
-'uses Forms, System.Classes, System.SysUtils, System.RTTI,         '+#10#13+
+'uses System.SysUtils, System.Classes,'+#10#13+
 '     MVCBr.Interf, MVCBr.Model,MVCBr.Controller,MVCBr.ModuleModel;'+#10#13+
 '                                                                  '+#10#13+
 'Type                                                              '+#10#13+
@@ -37,7 +37,7 @@ dataModuleCode =
 '//%include                                                        '+#10#13+
 'interface                                                         '+#10#13+
 '                                                                  '+#10#13+
-'uses Forms, System.Classes, System.SysUtils, System.RTTI,         '+#10#13+
+'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+#10#13+
 '     %ModelIdent.Interf, MVCBr.ModuleModel,                         '+#10#13+
 '     MVCBr.Interf, MVCBr.Model, MVCBr.Controller;                 '+#10#13+
 '                                                                  '+#10#13+

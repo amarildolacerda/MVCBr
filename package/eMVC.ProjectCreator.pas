@@ -81,7 +81,7 @@ uses
 
 function TNewProject.GetCreatorType: string;
 begin
-  Result := sConsole;
+  Result := sApplication;
   // May want to change this in the future, at least making method virtual
 end;
 
@@ -149,17 +149,20 @@ end;
 
 function TNewProjectEx.GetFrameworkType: string;
 begin
-  Result := '';
+  if isFMX then
+     result := sFrameworkTypeFMX
+  else
+     Result := sFrameworkTypeVCL;
 end;
 
 function TNewProjectEx.GetPlatforms: TArray<string>;
 begin
-  Result := TArray<string>.Create(cWin32Platform, cWin64Platform);
+  Result := TArray<string>.Create(cWin32Platform, cWin64Platform,cAndroidPlatform,cOSX32Platform,cWinIoT32Platform,cLinux64Platform,ciOSDevicePlatform,cWinARMPlatform );
 end;
 
 function TNewProjectEx.GetPreferredPlatform: string;
 begin
-  Result := '';
+  Result := cWin32Platform;
 end;
 
 

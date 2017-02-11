@@ -112,6 +112,8 @@ begin
   // this two params for future use
   ModelAlone := true;
   viewAlone := true;
+  cbFMX.checked := GetFrameworkType='FMX';
+
 end;
 
 procedure TFormNewSetPersistentModel.btnOKNextClick(Sender: TObject);

@@ -97,6 +97,7 @@ type
 
 implementation
 
+uses eMVC.Config;
 { TSampleProjectCreatorModule }
 
 function TBaseCreator.GetAncestorName: string;
@@ -157,20 +158,31 @@ begin
 end;
 
 function TBaseCreator.getpath: string;
+var
+  LProject: IOTAProject;
 begin
+
+  LProject := GetCurrentProject;
+  if assigned(LProject) then
+    SetCurrentDir(ExtractFilePath(LProject.FileName));
+
   Result := FPath;
-  if sametext(FAncestorName, 'form') or sametext(FAncestorName, 'frame') then
-    Result := Result + 'view\'
-  else if sametext(FAncestorName, 'datamodule') then
-    Result := Result + 'module\'
-  else if sametext(FAncestorName, 'model') then
-    Result := Result + 'model\'
-  else if sametext(FAncestorName, 'viewmodel') then
-    Result := Result + 'viewmodel\'
-  else if sametext(FAncestorName, 'include') then
-    Result := Result + 'inc\'
-  else
-    Result := Result + LowerCase(FAncestorName) + '\';
+
+  if TMVCConfig.new.IsCreateSubFolder then
+  begin
+    if sametext(FAncestorName, 'form') or sametext(FAncestorName, 'frame') then
+      Result := Result + 'view\'
+    else if sametext(FAncestorName, 'datamodule') then
+      Result := Result + 'module\'
+    else if sametext(FAncestorName, 'model') then
+      Result := Result + 'model\'
+    else if sametext(FAncestorName, 'viewmodel') then
+      Result := Result + 'viewmodel\'
+    else if sametext(FAncestorName, 'include') then
+      Result := Result + 'inc\'
+    else
+      Result := Result + LowerCase(FAncestorName) + '\';
+  end;
 
   if not DirectoryExists(Result) then
     ForceDirectories(Result);

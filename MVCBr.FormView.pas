@@ -47,6 +47,7 @@ type
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
   protected
+    FOnCloseProc: TProc<IView>;
     FController: IController;
     FShowModal: boolean;
     procedure SetController(const AController: IController);
@@ -161,10 +162,15 @@ end;
 function TFormFactory.ShowView(const AProc: TProc<IView>): Integer;
 begin
   result := 0;
+{$IFDEF FMX}
+  FOnCloseProc := AProc;
+  Show;
+{$ELSE}
   if FShowModal then
     result := ord(ShowModal);
   if assigned(AProc) then
     AProc(self);
+{$ENDIF}
 end;
 
 function TFormFactory.This: TObject;
@@ -219,7 +225,7 @@ begin
   else
   begin
     FForm.OnClose := DoClose;
-    FForm.show;
+    FForm.Show;
   end;
 end;
 

@@ -22,8 +22,19 @@ function EditorIsProjectResEditor(Editor: IOTAEditor): boolean;
 function EditorIsTypeLibEditor(Editor: IOTAEditor): boolean;
 function EditorIsSourceEditor(Editor: IOTAEditor): boolean;
 function IsModule(Unk: IUnknown): boolean;
+function GetFrameworkType: string;
 
 implementation
+
+function GetFrameworkType: string;
+var
+  prj: IOTAProject;
+begin
+  result := '';
+  prj := GetCurrentProject;
+  if assigned(prj) then
+     result := prj.FrameworkType;
+end;
 
 procedure debug(s: string);
 begin
@@ -52,30 +63,27 @@ begin
           Break;
 end;
 
-
-function GetCurrentProjectGroup(out ProjectGroup: IOTAProjectGroup ):boolean;
+function GetCurrentProjectGroup(out ProjectGroup: IOTAProjectGroup): boolean;
 var
   IModuleServices: IOTAModuleServices;
   IModule: IOTAModule;
   IProjectGroup: IOTAProjectGroup;
-  i: Integer;
+  I: integer;
 begin
-  result := false;
+  Result := false;
   ProjectGroup := nil;
   IModuleServices := BorlandIDEServices as IOTAModuleServices;
-  for i := 0 to IModuleServices.ModuleCount - 1 do
+  for I := 0 to IModuleServices.ModuleCount - 1 do
   begin
-    IModule := IModuleServices.Modules[i];
+    IModule := IModuleServices.Modules[I];
     if IModule.QueryInterface(IOTAProjectGroup, IProjectGroup) = S_OK then
     begin
       ProjectGroup := IProjectGroup;
       Break;
     end;
   end;
-  result := assigned(ProjectGroup);
+  Result := assigned(ProjectGroup);
 end;
-
-
 
 function ModuleIsForm(Module: IOTAModule): boolean;
 var
@@ -83,7 +91,7 @@ var
   FormEdit: IOTAFormEditor;
 begin
   Result := false;
-  if Assigned(Module) then
+  if assigned(Module) then
   begin
     // Form Module will have a DFM and a PAS file associated with it
     if Module.GetModuleFileCount > 1 then
@@ -110,7 +118,7 @@ var
   Project: IOTAProject;
 begin
   Result := false;
-  if Assigned(Module) then
+  if assigned(Module) then
     Result := Succeeded(Module.QueryInterface(IOTAProject, Project))
 end;
 
@@ -119,7 +127,7 @@ var
   ProjectGroup: IOTAProjectGroup;
 begin
   Result := false;
-  if Assigned(Module) then
+  if assigned(Module) then
     Result := Succeeded(Module.QueryInterface(IOTAProjectGroup, ProjectGroup))
 end;
 
@@ -128,7 +136,7 @@ var
   TypeLib: IOTATypeLibModule;
 begin
   Result := false;
-  if Assigned(Module) then
+  if assigned(Module) then
     Result := Succeeded(Module.QueryInterface(IOTATypeLibModule, TypeLib))
 end;
 
@@ -161,7 +169,7 @@ var
   FormEdit: IOTAFormEditor;
 begin
   Result := false;
-  if Assigned(Editor) then
+  if assigned(Editor) then
     Result := Succeeded(Editor.QueryInterface(IOTAFormEditor, FormEdit))
 end;
 
@@ -170,7 +178,7 @@ var
   ProjRes: IOTAProjectResource;
 begin
   Result := false;
-  if Assigned(Editor) then
+  if assigned(Editor) then
     Result := Succeeded(Editor.QueryInterface(IOTAProjectResource, ProjRes))
 end;
 
@@ -179,7 +187,7 @@ var
   TypeLib: IOTATypeLibEditor;
 begin
   Result := false;
-  if Assigned(Editor) then
+  if assigned(Editor) then
     Result := Succeeded(Editor.QueryInterface(IOTATypeLibEditor, TypeLib))
 end;
 
@@ -188,7 +196,7 @@ var
   SourceEdit: IOTASourceEditor;
 begin
   Result := false;
-  if Assigned(Editor) then
+  if assigned(Editor) then
     Result := Succeeded(Editor.QueryInterface(IOTASourceEditor, SourceEdit))
 end;
 
@@ -197,7 +205,7 @@ var
   Module: IOTAModule;
 begin
   Result := false;
-  if Assigned(Unk) then
+  if assigned(Unk) then
     Result := Succeeded(Unk.QueryInterface(IOTAModule, Module))
 end;
 
