@@ -209,6 +209,7 @@ begin
       if not supports(reference, IView) then
         raise Exception.create('Não é uma classe que implementa IView');
       FMainView := reference as IView;
+      AController.view(FMainView);
     end;
 
     if assigned(AModel) then

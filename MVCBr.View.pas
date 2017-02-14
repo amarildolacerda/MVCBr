@@ -47,6 +47,7 @@ type
   private
     // FView: IView;
     FController: IController;
+    FViewModel: IViewModel;
     procedure SetController(const AController: IController);
   protected
     function Controller(const AController: IController): IView; virtual;
@@ -55,10 +56,14 @@ type
     { class Function New(AClass: TViewFactoryClass;
       const AController: IController): IView;
     }
-    function ShowView(const AProc: TProc<IView>): Integer; overload;virtual;
-    function ShowView(): IView; overload;virtual;
+    function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
+    function ShowView(): IView; overload; virtual;
+    function GetViewModel:IViewModel;virtual;
+    procedure SetViewModel( const AViewModel:IViewModel);virtual;
+
     function Update: IView; virtual;
     function GetController: IController;
+    function ViewModel(const AModel: IViewModel): IView;
 
   end;
 
@@ -76,6 +81,17 @@ begin
   result := FController;
 end;
 
+function TViewFactory.GetViewModel: IViewModel;
+begin
+  result := FViewModel;
+end;
+
+function TViewFactory.ViewModel(const AModel: IViewModel): IView;
+begin
+  result := self;
+  FViewModel := AModel;
+end;
+
 { class function TViewFactory.New(AClass: TViewFactoryClass;
   const AController: IController): IView;
   var obj:TViewFactory;
@@ -90,10 +106,15 @@ begin
   FController := AController;
 end;
 
+procedure TViewFactory.SetViewModel(const AViewModel: IViewModel);
+begin
+ FViewModel := AViewModel;
+end;
+
 function TViewFactory.ShowView: IView;
 begin
-   result := self;
-   ShowView(nil);
+  result := self;
+  ShowView(nil);
 end;
 
 function TViewFactory.ShowView(const AProc: TProc<IView>): Integer;

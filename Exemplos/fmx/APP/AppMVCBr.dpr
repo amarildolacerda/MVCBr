@@ -1,4 +1,4 @@
-PROGRAM FMXBasico;
+PROGRAM AppMVCBr;
 
 // Código gerado pelo Assistente MVCBr OTA
 // www.tireideletra.com.br
@@ -8,15 +8,15 @@ PROGRAM FMXBasico;
   FMX.Forms,
   MVCBr.ApplicationController,
   MVCBr.Controller,
-  FMXBasico.Controller in 'FMXBasico.Controller.pas',
-  FMXBasico.Controller.Interf in 'FMXBasico.Controller.Interf.pas',
-  FMXBasico.ViewModel.Interf in 'FMXBasico.ViewModel.Interf.pas',
-  FMXBasico.ViewModel in 'FMXBasico.ViewModel.pas',
-  FMXBasicoView in 'FMXBasicoView.pas' {FMXBasicoView};
+  AppMVCBr.Controller in 'AppMVCBr.Controller.pas',
+  AppMVCBr.Controller.Interf in 'AppMVCBr.Controller.Interf.pas',
+  AppMVCBr.ViewModel.Interf in 'AppMVCBr.ViewModel.Interf.pas',
+  AppMVCBr.ViewModel in 'AppMVCBr.ViewModel.pas',
+  AppMVCBrView in 'AppMVCBrView.pas' {AppMVCBrView};
 
 {$R *.res}
 begin
-  ApplicationController.Run(TFMXBasicoController.New,
+  ApplicationController.Run(TAppMVCBrController.New,
     function :boolean
     begin
       // retornar True se o applicatio pode ser carregado

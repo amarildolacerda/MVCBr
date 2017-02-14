@@ -1,4 +1,8 @@
+{
+  Auth:  http://stackoverflow.com/questions/39584234/how-to-obtain-rtti-from-an-interface-reference-in-delphi
+}
 unit MVCBr.InterfaceHelper;
+
 
 interface
 

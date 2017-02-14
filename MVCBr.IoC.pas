@@ -134,6 +134,10 @@ type
     class function CreateInstance(const AClass: TClass): IInterface;
   end;
 
+function GetInterfaceIID(const I: IInterface; var IID: TGUID): boolean;
+
+
+
 implementation
 
 { TActivator }
@@ -533,36 +537,48 @@ begin
   end;
 end;
 
-{ procedure TMVCBrIoC.RegisterController(AII: TGuid; AClass: TControllerClass;
-  AName: String; bSingleton:boolean);
-  var
-  Interf: PInterfaceEntry;
-  rego: TIoCRegistration<IController>;
-  // typeInfo: TTypeInfo;
-  key: string;
+
+function GetInterfaceEntry2(const I: IInterface): PInterfaceEntry;
+var
+  Instance: TObject;
+  InterfaceTable: PInterfaceTable;
+  j: integer;
+  CurrentClass: TClass;
+begin
+  Instance := I as TObject;
+  if Assigned(Instance) then
   begin
-
-  Interf := GetInterfaceEntry(AII);
-
-  key := 'icontroller_' + LowerCase(AName);
-
-  rego := TIoCRegistration<IController>.Create;
-  rego.Guid := AII;
-  rego.name := AName;
-  rego.IInterface := nil;
-  rego.ImplClass := AClass;
-  rego.IsSingleton := bSingleton;
-  rego.Instance := nil;
-
-  rego.ActivatorDelegate := function: IController
-  var
-  obj: TControllerAbstract;
-  begin
-  obj := AClass.Create;
-  Supports(obj, AII, result);
+    CurrentClass := Instance.ClassType;
+    while Assigned(CurrentClass) do
+    begin
+      InterfaceTable := CurrentClass.GetInterfaceTable;
+      if Assigned(InterfaceTable) then
+        for j := 0 to InterfaceTable.EntryCount-1 do
+        begin
+          Result := @InterfaceTable.Entries[j];
+          if Result.IOffset <> 0 then
+          begin
+            if Pointer(NativeInt(Instance) + Result^.IOffset) = Pointer(I) then
+              Exit;
+          end;
+          // TODO: implement checking interface implemented via implements delegation
+          // see System.TObject.GetInterface/System.InvokeImplGetter
+        end;
+      CurrentClass := CurrentClass.ClassParent
+    end;
   end;
-  FContainerInfo.Add(key, rego);
+  Result := nil;
+end;
 
-  end;
-}
+function GetInterfaceIID(const I: IInterface; var IID: TGUID): boolean;
+var
+  InterfaceEntry: PInterfaceEntry;
+begin
+  InterfaceEntry := GetInterfaceEntry2(I);
+  Result := Assigned(InterfaceEntry);
+  if Result then
+    IID := InterfaceEntry.IID;
+end;
+
+
 end.

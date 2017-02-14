@@ -52,16 +52,16 @@ type
   public
     constructor Create; override;
     destructor destroy; override;
-    function ID(const AID: string): IController;virtual;
-    function GetID:String;virtual;
-    function GetModelByID(const AID: String): IModel;virtual;
+    function ID(const AID: string): IController; virtual;
+    function GetID: String; virtual;
+    function GetModelByID(const AID: String): IModel; virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetModel(const idx: integer): IModel; overload; virtual;
 
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
     procedure Init; virtual;
-    function Start:IController;virtual;
+    function Start: IController; virtual;
     procedure BeforeInit; virtual;
     procedure AfterInit; virtual;
     function GetView: IView; virtual;
@@ -70,7 +70,7 @@ type
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
     function IndexOf(const AModel: IModel): integer; virtual;
-    function IndexOfModelType(const AModelType: TModelType): integer;virtual;
+    function IndexOfModelType(const AModelType: TModelType): integer; virtual;
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
@@ -87,7 +87,9 @@ implementation
 { TController }
 
 function TControllerFactory.Add(const AModel: IModel): integer;
-var vm:IViewModel;
+var
+  vm: IViewModel;
+  v: IView;
 begin
   result := -1;
   if not assigned(AModel) then
@@ -96,12 +98,18 @@ begin
   FModels.Add(AModel);
   result := FModels.Count - 1;
 
-  if mtViewModel in  AModel.ModelTypes  then
+  if mtViewModel in AModel.ModelTypes then
   begin
-    if supports(AModel.this,IViewModel,vm) then
-     vm.view(GetView);
+    if supports(AModel.This, IViewModel, vm) then
+    begin
+      v := GetView;
+      if assigned(v) then
+      begin
+        vm.View(v);
+        v.SetViewModel(vm);
+      end;
+    end;
   end;
-
 
 end;
 
@@ -163,7 +171,7 @@ end;
 
 function TControllerFactory.GetID: String;
 begin
-   result := FID;
+  result := FID;
 end;
 
 function TControllerFactory.GetModel(const idx: integer): IModel;
@@ -249,8 +257,8 @@ end;
 
 function TControllerFactory.Start: IController;
 begin
-   result := self;
-   init;
+  result := self;
+  Init;
 end;
 
 procedure TControllerFactory.AfterConstruction;
@@ -266,7 +274,7 @@ var
 begin
   FModel := GetModelByType(mtViewModel);
   if assigned(FModel) then
-    if Supports(FModel.This, IViewModel, vm) then
+    if supports(FModel.This, IViewModel, vm) then
     begin
       vm.View(FView).Controller(self);
     end;
@@ -334,11 +342,21 @@ begin
 end;
 
 function TControllerFactory.View(const AView: IView): IController;
+var
+  vm: IViewModel;
 begin
   result := self;
   FView := AView;
   if assigned(FView) then
+  begin
     FView.Controller(result);
+    vm := GetModelByType(mtViewModel) as IViewModel;
+    if assigned(vm) then
+    begin
+      vm.View(FView);
+      FView.SetViewModel(vm);
+    end;
+  end;
 end;
 
 function TControllerFactory.GetView: IView;

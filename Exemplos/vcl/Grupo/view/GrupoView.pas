@@ -17,7 +17,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  MVCBr.View, Grupo.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
+  MVCBr.FormView, Grupo.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
   TabGrupo.ModuleModel.Interf, Vcl.DBGrids;
 
 type

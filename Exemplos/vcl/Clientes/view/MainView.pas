@@ -8,7 +8,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  MVCBr.View, Main.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
+  MVCBr.FormView, Main.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
   Vcl.DBGrids, Vcl.Menus;
 
 type
@@ -36,7 +36,6 @@ type
     procedure ProcurarEndereo1Click(Sender: TObject);
   private
     FViewModel: IMainViewModel;
-    FController: IController;
   protected
     function Controller(const aController: IController): IView;
   public
@@ -92,7 +91,8 @@ end;
 procedure TMainView.Button1Click(Sender: TObject);
 begin
   // qual o MODEL...
-
+  if not assigned(FViewModel) then
+     FViewModel := getViewModel as IMainViewModel;
   FViewModel.ValidarCPF(Edit1.text);
 
 end;

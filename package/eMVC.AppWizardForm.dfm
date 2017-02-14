@@ -27,8 +27,8 @@ object FormAppWizard: TFormAppWizard
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 114
-      Height = 300
+      Width = 117
+      Height = 299
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3260,7 +3260,6 @@ object FormAppWizard: TFormAppWizard
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitWidth = 117
       ExplicitHeight = 305
     end
   end
@@ -3290,9 +3289,9 @@ object FormAppWizard: TFormAppWizard
       object Label2: TLabel
         Left = 24
         Top = 80
-        Width = 109
+        Width = 95
         Height = 13
-        Caption = 'Caminha para o projeto'
+        Caption = 'Pasta para o projeto'
       end
       object Label3: TLabel
         Left = 0
@@ -3344,21 +3343,29 @@ object FormAppWizard: TFormAppWizard
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 4'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 5'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
   end
   object btnBack: TBitBtn

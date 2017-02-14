@@ -3,9 +3,6 @@
         <ProjectGuid>{7C0A22B0-82F0-49D4-8694-BE6FA73E114C}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="..\package\MVCBr.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="vcl\basico\ExemploBasico.dproj">
             <Dependencies/>
         </Projects>
@@ -13,6 +10,12 @@
             <Dependencies/>
         </Projects>
         <Projects Include="vcl\ModuloBasico\ModuloModelExemplo.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="vcl\Grupo\Grupo.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="vcl\Clientes\Clientes.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -23,15 +26,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="MVCBr">
-        <MSBuild Projects="..\package\MVCBr.dproj"/>
-    </Target>
-    <Target Name="MVCBr:Clean">
-        <MSBuild Projects="..\package\MVCBr.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="MVCBr:Make">
-        <MSBuild Projects="..\package\MVCBr.dproj" Targets="Make"/>
-    </Target>
     <Target Name="ExemploBasico">
         <MSBuild Projects="vcl\basico\ExemploBasico.dproj"/>
     </Target>
@@ -59,14 +53,32 @@
     <Target Name="ModuloModelExemplo:Make">
         <MSBuild Projects="vcl\ModuloBasico\ModuloModelExemplo.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Grupo">
+        <MSBuild Projects="vcl\Grupo\Grupo.dproj"/>
+    </Target>
+    <Target Name="Grupo:Clean">
+        <MSBuild Projects="vcl\Grupo\Grupo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Grupo:Make">
+        <MSBuild Projects="vcl\Grupo\Grupo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Clientes">
+        <MSBuild Projects="vcl\Clientes\Clientes.dproj"/>
+    </Target>
+    <Target Name="Clientes:Clean">
+        <MSBuild Projects="vcl\Clientes\Clientes.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Clientes:Make">
+        <MSBuild Projects="vcl\Clientes\Clientes.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;ExemploBasico;ACBrExemplo;ModuloModelExemplo"/>
+        <CallTarget Targets="ExemploBasico;ACBrExemplo;ModuloModelExemplo;Grupo;Clientes"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;ExemploBasico:Clean;ACBrExemplo:Clean;ModuloModelExemplo:Clean"/>
+        <CallTarget Targets="ExemploBasico:Clean;ACBrExemplo:Clean;ModuloModelExemplo:Clean;Grupo:Clean;Clientes:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;ExemploBasico:Make;ACBrExemplo:Make;ModuloModelExemplo:Make"/>
+        <CallTarget Targets="ExemploBasico:Make;ACBrExemplo:Make;ModuloModelExemplo:Make;Grupo:Make;Clientes:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

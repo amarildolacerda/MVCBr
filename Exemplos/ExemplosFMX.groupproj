@@ -1,0 +1,72 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{17162DAA-89A9-43C2-9AFB-2D18DF4FE818}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="fmx\basico\FMXBasico.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="fmx\Android\Basico2View\NewMVCApp.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="fmx\APP\AppMVCBr.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="fmx\Aurelios\AureliosExemplo.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="FMXBasico">
+        <MSBuild Projects="fmx\basico\FMXBasico.dproj"/>
+    </Target>
+    <Target Name="FMXBasico:Clean">
+        <MSBuild Projects="fmx\basico\FMXBasico.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="FMXBasico:Make">
+        <MSBuild Projects="fmx\basico\FMXBasico.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCApp">
+        <MSBuild Projects="fmx\Android\Basico2View\NewMVCApp.dproj"/>
+    </Target>
+    <Target Name="NewMVCApp:Clean">
+        <MSBuild Projects="fmx\Android\Basico2View\NewMVCApp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCApp:Make">
+        <MSBuild Projects="fmx\Android\Basico2View\NewMVCApp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="AppMVCBr">
+        <MSBuild Projects="fmx\APP\AppMVCBr.dproj"/>
+    </Target>
+    <Target Name="AppMVCBr:Clean">
+        <MSBuild Projects="fmx\APP\AppMVCBr.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AppMVCBr:Make">
+        <MSBuild Projects="fmx\APP\AppMVCBr.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="AureliosExemplo">
+        <MSBuild Projects="fmx\Aurelios\AureliosExemplo.dproj"/>
+    </Target>
+    <Target Name="AureliosExemplo:Clean">
+        <MSBuild Projects="fmx\Aurelios\AureliosExemplo.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AureliosExemplo:Make">
+        <MSBuild Projects="fmx\Aurelios\AureliosExemplo.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="FMXBasico;NewMVCApp;AppMVCBr;AureliosExemplo"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="FMXBasico:Clean;NewMVCApp:Clean;AppMVCBr:Clean;AureliosExemplo:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="FMXBasico:Make;NewMVCApp:Make;AppMVCBr:Make;AureliosExemplo:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

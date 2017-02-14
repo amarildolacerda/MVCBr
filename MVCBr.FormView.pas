@@ -52,6 +52,7 @@ type
     FOnCloseProc: TProc<IView>;
     FController: IController;
     FShowModal: boolean;
+    // FViewModel:IViewModel;
     procedure DoCloseView(Sender: TObject; var ACloseAction: TCloseAction);
     procedure SetController(const AController: IController);
     function Controller(const AController: IController): IView; virtual;
@@ -77,7 +78,9 @@ type
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
     function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
       : IView; overload; virtual;
-    function ShowView():IView;overload;
+    function ShowView(): IView; overload;
+    procedure SetViewModel(const AViewModel: IViewModel); virtual;
+    function GetViewModel: IViewModel; virtual;
     /// Evento para atualizar os dados da VIEW
     function Update: IView; virtual;
   published
@@ -126,6 +129,13 @@ begin
   result := FShowModal;
 end;
 
+function TFormFactory.GetViewModel: IViewModel;
+begin
+  result := nil;
+  if assigned(FController) then
+    result := FController.GetModelByType(mtViewModel) as IViewModel;
+end;
+
 function TFormFactory.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
@@ -164,6 +174,14 @@ end;
 procedure TFormFactory.SetShowModal(const AShowModal: boolean);
 begin
   FShowModal := AShowModal;
+end;
+
+procedure TFormFactory.SetViewModel(const AViewModel: IViewModel);
+begin
+  // fazer herança
+  if assigned(AViewModel) then
+    AViewModel.View(self);
+
 end;
 
 function TFormFactory.ShowView(const IIDController: TGuid;
@@ -259,8 +277,8 @@ end;
 
 function TFormFactory.ShowView: IView;
 begin
-   result := self;
-   ShowView(nil);
+  result := self;
+  ShowView(nil);
 end;
 
 end.

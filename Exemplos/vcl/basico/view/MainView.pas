@@ -7,7 +7,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  MVCbr.View,
+  MVCbr.FormView,
   Main.ViewModel.Interf, MVCBr.Controller;
 
 type
@@ -24,7 +24,6 @@ type
     procedure Button1Click(Sender: TObject);
   private
     FViewModel: IMainViewModel;
-    FController: IController;
   protected
     function Controller(const aController: IController): IView;
   public
@@ -63,6 +62,8 @@ end;
 
 procedure TMainView.Button1Click(Sender: TObject);
 begin
+ if not assigned(FViewModel) then
+   FViewModel := GetViewModel as IMainViewModel;
   FViewModel.ValidarCPF(Edit1.Text);
 end;
 

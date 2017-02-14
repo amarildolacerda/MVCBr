@@ -27,7 +27,8 @@ uses
   MVCBr.InterfaceHelper in '..\MVCBr.InterfaceHelper.pas',
   MVCBr.Interf in '..\MVCBr.Interf.pas',
   TestMVCBr.View in 'TestMVCBr.View.pas',
-  MVCBr.View in '..\MVCBr.View.pas';
+  MVCBr.View in '..\MVCBr.View.pas',
+  TestMVCBrInterf in 'TestMVCBrInterf.pas';
 
 {$R *.RES}
 

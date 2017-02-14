@@ -9,7 +9,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
   Pessoas.ModuleModel.Interf,
-  MVCBr.View, Main.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
+  MVCBr.FormView, Main.ViewModel.Interf, MVCBr.Controller, Data.DB, Vcl.Grids,
   Vcl.DBGrids;
 
 type
@@ -25,7 +25,6 @@ type
   private
     FViewModel: IMainViewModel;
     FCadastroModel:IPessoasModuleModel;
-    FController: IController;
   protected
     function Controller(const aController: IController): IView;
   public

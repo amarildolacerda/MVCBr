@@ -60,8 +60,10 @@ ViewImpl = 'function T%FormIdent.Update:IView;             ' + #10#13 +
   '                                                          ' + #10#13 +
   'function T%FormIdent.Controller(const AController:IController):IView; ' +
   #10#13 + 'begin                                              ' + #10#13 +
-  '  result := inherited Controller(AController);            ' + #10#13 +
-  'end;                                                      ' + #10#13 +
+  '  result := inherited Controller(AController);              ' + #10#13 +
+  '  if not assigned(FViewModel) then                          ' + #10#13 +
+  '    FViewModel := getViewModel as I%FormIdentModel;         ' + #10#13 +
+  'end;                                                        ' + #10#13 +
   '                                                          ' + #10#13 +
   'function T%FormIdent.ViewModel(const AViewModel:I%FormIdentModel):IView;' +
   #10#13 + 'begin                                                     ' + #10#13

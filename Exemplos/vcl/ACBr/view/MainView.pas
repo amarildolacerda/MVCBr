@@ -8,7 +8,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   Controls, StdCtrls, ComCtrls, ExtCtrls, Forms, MVCBr.Interf,
-  MVCBr.View, Main.ViewModel.Interf, MVCBr.Controller;
+  MVCBr.FormView, Main.ViewModel.Interf, MVCBr.Controller;
 
 type
   IMainView = interface(IView)
@@ -26,7 +26,6 @@ type
     procedure Button2Click(Sender: TObject);
   private
     FViewModel: IMainViewModel;
-    FController: IController;
   protected
     function Controller(const aController: IController): IView;
   public
