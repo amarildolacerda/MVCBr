@@ -84,6 +84,8 @@ ModelCode = ModelHead + ModelDef +
   '                                                              ' + #10#13 +
   '                                                              ' + #10#13 +
   ModelImpl + '                                                              ' +
+  'Initialization                                                ' + #10#13 +
+  'TMVCRegister.RegisterType<I%FormIdentModel,T%FormIdentModel>(T%FormIdentModel.classname,true);' + #10#13 +
   #10#13 + 'end.                                                          ' +
   #10#13;
 

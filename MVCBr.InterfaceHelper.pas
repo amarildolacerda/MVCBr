@@ -8,6 +8,7 @@ interface
 
 uses System.Rtti, System.TypInfo, System.Generics.Collections, System.SysUtils;
 
+{$ifndef BPL}
 type
   TInterfaceHelper = record
   strict private
@@ -50,9 +51,11 @@ type
     class function InvokeMethod(AIntfInTValue: TValue; const MethodName: String;
       const Args: array of TValue): TValue; overload; static;
   end;
+{$endif}
 
 implementation
 
+{$ifndef BPL}
 uses System.Classes,
   System.SyncObjs, DUnitX.Utils;
 
@@ -283,5 +286,6 @@ begin
   if LType is TRttiInterfaceType then
     Result := LType as TRttiInterfaceType;
 end;
+{$endif}
 
 end.

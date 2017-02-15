@@ -59,8 +59,10 @@ type
     Label7: TLabel;
     edUnit: TEdit;
     edUnitButton: TButton;
-    cbViewModel: TCheckBox;
     cbCreateDir: TCheckBox;
+    CheckBox1: TCheckBox;
+    cbTodosProcs: TCheckBox;
+    RadioGroup1: TRadioGroup;
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -73,6 +75,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure edModelNameExit(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure cbTodosProcsClick(Sender: TObject);
   private
     { Private declarations }
     FUnit: TIntfParser;
@@ -86,6 +90,7 @@ type
     procedure PreencherOsMethods;
     procedure GerarCodigos;
     procedure GerarParametros(params: IParameterList; var s: string);
+    procedure MarkCheckList(AList: TCheckListBox; const AChecked: Boolean);
   public
     { Public declarations }
     FillListClassesProc: TProc;
@@ -198,9 +203,8 @@ var
         result := result + ', ';
       result := result + fnc.params.items[n].name;
     end;
-    result := result + ');';
+    result := result + ')';
   end;
-
 
 begin
   Memo1.lines.clear;
@@ -232,9 +236,9 @@ begin
         add('');
       end;
 
-
   Memo1.lines.text := stringReplace(Memo1.lines.text, '%Ident',
-    'T' + edModelName.text + 'Model', [rfReplaceAll]);
+    'T' + edModelName.text + RadioGroup1.items[RadioGroup1.ItemIndex],
+    [rfReplaceAll]);
 end;
 
 function TFormClassModel.GetCodigos: string;
@@ -246,14 +250,15 @@ function TFormClassModel.GetInterf: string;
 var
   i: integer;
 begin
-  result :=  CRLF+'// metodos  <'+cbClassName.text+'//'.PadLeft(70) +CRLF;
+  result := CRLF + '// metodos  <' + cbClassName.text + '//'.PadLeft(70) + CRLF;
   for i := 0 to clMetodos.items.count - 1 do
     if clMetodos.Checked[i] then
     begin
       result := result + clMetodos.items[i] + CRLF;
     end;
 
-  result := result +CRLF+ '// functions  <'+cbClassName.text+'//'.PadLeft(70) +CRLF;
+  result := result + CRLF + '// functions  <' + cbClassName.text +
+    '//'.PadLeft(70) + CRLF;
   for i := 0 to clFunctions.items.count - 1 do
     if clFunctions.Checked[i] then
     begin
@@ -435,7 +440,7 @@ begin
     fncs := interf.Functions.items[i];
     s := 'function %Ident.' + fncs.name + '(';
     GerarParametros(fncs.params, s);
-    s := s+':' + fncs.ReturnType + ';';
+    s := s + ':' + fncs.ReturnType + ';';
     clFunctions.items.add(s);
     clFunctions.Checked[clFunctions.items.count - 1] := true;
   end;
@@ -450,6 +455,25 @@ begin
   if edModelName.text[1] = 'T' then
     edModelName.text := copy(edModelName.text, 2, length(edModelName.text));
   proximaPagina(0);
+end;
+
+procedure TFormClassModel.MarkCheckList(AList: TCheckListBox;
+  Const AChecked: Boolean);
+var
+  i: integer;
+begin
+  for i := 0 to AList.count - 1 do
+    AList.Checked[i] := AChecked;
+end;
+
+procedure TFormClassModel.CheckBox1Click(Sender: TObject);
+begin
+  MarkCheckList(clFunctions, CheckBox1.Checked);
+end;
+
+procedure TFormClassModel.cbTodosProcsClick(Sender: TObject);
+begin
+  MarkCheckList(clMetodos, cbTodosProcs.Checked);
 end;
 
 procedure TFormClassModel.edModelNameExit(Sender: TObject);

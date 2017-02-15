@@ -45,7 +45,9 @@ uses
   ToolsApi;
 
 type
-  TNewClassModelWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG}, IOTAMenuWizard{$ENDIF})
+  TNewClassModelWizard = class(TNotifierObject, IOTAWizard,
+    IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
+    IOTAMenuWizard{$ENDIF})
   private
     FIsFMX: boolean;
     FClassesLists: string;
@@ -85,7 +87,8 @@ begin
 end;
 {$ENDIF}
 
-procedure TNewClassModelWizard.FillMethods(sClass: string; ListaMethds: TStrings; Prop: TStrings);
+procedure TNewClassModelWizard.FillMethods(sClass: string;
+  ListaMethds: TStrings; Prop: TStrings);
 var
   str: TStringList;
   s: string;
@@ -170,13 +173,14 @@ end;
 procedure TNewClassModelWizard.Execute;
 var
   isViewModel: boolean;
+  isController: boolean;
   s, path: string;
   setName: string;
   project: string;
   identProject: string;
-  FInterfImplem:string;
-  FCodeInterf:string;
-  I: TFormClassModel;
+  FInterfImplem: string;
+  FCodeInterf: string;
+  i: TFormClassModel;
 
   function getProjectName: string;
   var
@@ -185,9 +189,11 @@ var
     result := '';
     for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
     begin
-      if pos('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices).Modules[i].FileName)) > 0 then
+      if pos('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
+        .Modules[i].FileName)) > 0 then
       begin
-        result := (BorlandIDEServices as IOTAModuleServices).Modules[i].FileName;
+        result := (BorlandIDEServices as IOTAModuleServices).Modules[i]
+          .FileName;
         break;
       end;
     end;
@@ -208,44 +214,87 @@ var
 var
   cbClassNameText: string;
   edUnitText: string;
-
-  procedure CriarModel;
+  procedure CriarController;
   var
     Model: TClassModelCreator;
   begin
-    debug('Pronto para criar o Modulo');
+    debug('Pronto para criar o Controller');
     Model := TClassModelCreator.create(path, setName, false);
-    Model.templates.AddPair('//InterfImplem',FInterfImplem);
-    Model.templates.AddPair('//InterfCode',FCodeInterf);
-    Model.Templates.AddPair('%UnitBase', setName);
+    Model.templates.AddPair('//InterfImplem', FInterfImplem);
+    Model.templates.AddPair('//InterfCode', FCodeInterf);
+    Model.templates.AddPair('%UnitBase', setName);
 
-    Model.Templates.AddPair('%ClassConector', cbClassNameText);
+    Model.templates.AddPair('%ClassConector', cbClassNameText);
     s := cbClassNameText + 'Base';
     if s[1] = 'T' then
       s := copy(s, 2, length(s));
-    Model.Templates.AddPair('%ClassModel', s);
+    Model.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    Model.Templates.AddPair('%ClassUnit', s);
+    Model.templates.AddPair('%ClassUnit', s);
+    Model.isController := true;
 
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
     debug('Criou o Model');
 
     Model := TClassModelCreator.create(path, setName, false);
-    Model.templates.AddPair('//InterfImplem',FInterfImplem);
-    Model.templates.AddPair('//InterfCode',FCodeInterf);
-    Model.Templates.AddPair('%UnitBase', setName);
+    Model.templates.AddPair('//InterfImplem', FInterfImplem);
+    Model.templates.AddPair('//InterfCode', FCodeInterf);
+    Model.templates.AddPair('%UnitBase', setName);
 
-    Model.Templates.AddPair('%ClassConector', cbClassNameText);
+    Model.templates.AddPair('%ClassConector', cbClassNameText);
     s := cbClassNameText + 'Base';
     if s[1] = 'T' then
       s := copy(s, 2, length(s));
-    Model.Templates.AddPair('%ClassModel', s);
+    Model.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    Model.Templates.AddPair('%ClassUnit', s);
+    Model.templates.AddPair('%ClassUnit', s);
+    Model.isController := true;
 
+    Model.isInterf := true;
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+
+    debug('Criou o Model Interf');
+
+  end;
+  procedure CriarModel;
+  var
+    Model: TClassModelCreator;
+  begin
+    debug('Pronto para criar o Modulo');
+    Model := TClassModelCreator.create(path, setName, false);
+    Model.templates.AddPair('//InterfImplem', FInterfImplem);
+    Model.templates.AddPair('//InterfCode', FCodeInterf);
+    Model.templates.AddPair('%UnitBase', setName);
+
+    Model.templates.AddPair('%ClassConector', cbClassNameText);
+    s := cbClassNameText + 'Base';
+    if s[1] = 'T' then
+      s := copy(s, 2, length(s));
+    Model.templates.AddPair('%ClassModel', s);
+    s := ExtractFileName(edUnitText);
+    s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
+    Model.templates.AddPair('%ClassUnit', s);
+
+    (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+
+    debug('Criou o Model');
+
+    Model := TClassModelCreator.create(path, setName, false);
+    Model.templates.AddPair('//InterfImplem', FInterfImplem);
+    Model.templates.AddPair('//InterfCode', FCodeInterf);
+    Model.templates.AddPair('%UnitBase', setName);
+
+    Model.templates.AddPair('%ClassConector', cbClassNameText);
+    s := cbClassNameText + 'Base';
+    if s[1] = 'T' then
+      s := copy(s, 2, length(s));
+    Model.templates.AddPair('%ClassModel', s);
+    s := ExtractFileName(edUnitText);
+    s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
+    Model.templates.AddPair('%ClassUnit', s);
 
     Model.isInterf := true;
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -262,19 +311,19 @@ var
     ViewModel := TClassModelCreator.create(path, setName, false);
     ViewModel.isViewModel := true;
     ViewModel.SetAncestorName('ViewModel');
-    ViewModel.templates.AddPair('//InterfImplem',FInterfImplem);
-    ViewModel.templates.AddPair('//InterfCode',FCodeInterf);
+    ViewModel.templates.AddPair('//InterfImplem', FInterfImplem);
+    ViewModel.templates.AddPair('//InterfCode', FCodeInterf);
 
-    ViewModel.Templates.AddPair('%UnitBase', setName);
+    ViewModel.templates.AddPair('%UnitBase', setName);
 
-    ViewModel.Templates.AddPair('%ClassConector', cbClassNameText);
+    ViewModel.templates.AddPair('%ClassConector', cbClassNameText);
     s := cbClassNameText + 'Base';
     if s[1] = 'T' then
       s := copy(s, 2, length(s));
-    ViewModel.Templates.AddPair('%ClassModel', s);
+    ViewModel.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    ViewModel.Templates.AddPair('%ClassUnit', s);
+    ViewModel.templates.AddPair('%ClassUnit', s);
 
     (BorlandIDEServices as IOTAModuleServices).CreateModule(ViewModel);
 
@@ -283,18 +332,18 @@ var
     ViewModel := TClassModelCreator.create(path, setName, false);
     ViewModel.isViewModel := true;
     ViewModel.SetAncestorName('ViewModel');
-    ViewModel.templates.AddPair('//InterfImplem',FInterfImplem);
-    ViewModel.templates.AddPair('//InterfCode',FCodeInterf);
-    ViewModel.Templates.AddPair('%UnitBase', setName);
+    ViewModel.templates.AddPair('//InterfImplem', FInterfImplem);
+    ViewModel.templates.AddPair('//InterfCode', FCodeInterf);
+    ViewModel.templates.AddPair('%UnitBase', setName);
 
-    ViewModel.Templates.AddPair('%ClassConector', cbClassNameText);
+    ViewModel.templates.AddPair('%ClassConector', cbClassNameText);
     s := cbClassNameText + 'Base';
     if s[1] = 'T' then
       s := copy(s, 2, length(s));
-    ViewModel.Templates.AddPair('%ClassModel', s);
+    ViewModel.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    ViewModel.Templates.AddPair('%ClassUnit', s);
+    ViewModel.templates.AddPair('%ClassUnit', s);
 
     ViewModel.isInterf := true;
     (BorlandIDEServices as IOTAModuleServices).CreateModule(ViewModel);
@@ -302,12 +351,15 @@ var
     debug('Criou o Model Interf');
 
   end;
-  var n:integer;
+
+var
+  n: integer;
 begin
   project := getProjectName;
   if project = '' then
   begin
-    eMVC.toolBox.showInfo('Não encontrei o projeto MVCBr, criar um projeto antes!');
+    eMVC.toolBox.showInfo
+      ('Não encontrei o projeto MVCBr, criar um projeto antes!');
     Exit;
   end;
   path := extractFilePath(project);
@@ -320,7 +372,7 @@ begin
         SetClassesList(FClassesLists,
           procedure
           begin
-            //FillMethods(edModelName.text, clMetodos.items, clPropriedades.items);
+            // FillMethods(edModelName.text, clMetodos.items, clPropriedades.items);
           end);
       end;
     if showModal = mrOK then
@@ -328,7 +380,8 @@ begin
       // IsFMX := cbFMX.Checked;
       cbClassNameText := cbClassName.text;
       edUnitText := edUnit.text;
-      isViewModel := cbViewModel.checked;
+      isViewModel := RadioGroup1.ItemIndex = 1;
+      isController := RadioGroup1.ItemIndex = 2;
       setName := trim(edModelName.text);
       identProject := stringReplace(setName, '.', '', [rfReplaceAll]);
 
@@ -337,7 +390,8 @@ begin
 
       if SetNameExists(setName) then
       begin
-        eMVC.toolBox.showInfo('Desculpe, o projeto "' + setName + '" já existe!');
+        eMVC.toolBox.showInfo('Desculpe, o projeto "' + setName +
+          '" já existe!');
       end
       else
       begin
@@ -355,6 +409,8 @@ begin
         begin
           CriarViewModel;
         end
+        else if isController then
+          CriarController
         else
         begin
           CriarModel;

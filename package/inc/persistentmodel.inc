@@ -9,9 +9,9 @@ ModelCodeBaseInterf = 'Unit  %ModelIdent ;                         ' + #10#13 +
   '                                                              ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
-  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+
-  ' MVCBr.Interf, //%uses,  ' + #10#13 +
-  '      //%Interf, ' + #10#13 + 'MVCBr.Controller;                 ' + #10#13 +
+  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'
+  + ' MVCBr.Interf, //%uses,  ' + #10#13 + '      //%Interf, ' + #10#13 +
+  'MVCBr.Controller;                 ' + #10#13 +
   '                                                              ' + #10#13 +
   'Type                                                           ' + #10#13 +
   '  // Interface de acesso ao model                               ' + #10#13 +
@@ -33,8 +33,8 @@ ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   '                                                              ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '//%include                                                    ' + #10#13 +
-  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+
-  ' MVCBr.Interf, //%uses,     ' + #10#13 +
+  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'
+  + ' MVCBr.Interf, //%uses,     ' + #10#13 +
   '   %ModelIdent.Interf, //%Interf,  ' + #10#13 +
   'MVCBr.Controller;                 ' + #10#13 +
   '                                                              ' + #10#13 +
@@ -84,4 +84,6 @@ ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   #10#13 + '   result.controller(AController);                             ' +
   #10#13 + 'end;                                                           ' +
   #10#13 + '                                                               ' +
-  #10#13 + 'end.                                                           ';
+  #10#13 + 'Initialization                                                 ' +
+  #10#13 + 'TMVCRegister.RegisterType<I%FormIdent%modelName,T%FormIdent%modelName>(T%FormIdent%modelName.classname,true);'
+  + #10#13 + 'end.                                                           ';

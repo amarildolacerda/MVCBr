@@ -45,6 +45,7 @@ type
   TFormFactory = class(TForm, IMVCBrBase, IView)
   private
     FOnClose: TCloseEvent;
+    FID: string;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
     procedure SetOnClose(const Value: TCloseEvent);
@@ -63,6 +64,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetID: string;
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
     function GetController: IController; virtual;
@@ -102,9 +104,12 @@ begin
   FController := AController;
 end;
 
+var LFormCount:integer=0;
 constructor TFormFactory.Create(AOwner: TComponent);
 begin
   inherited;
+  inc (LFormCount);
+  FID := classname+'_'+intToStr(LFormCount);
 end;
 
 destructor TFormFactory.Destroy;
@@ -117,6 +122,11 @@ end;
 function TFormFactory.GetController: IController;
 begin
   result := FController;
+end;
+
+function TFormFactory.GetID: string;
+begin
+  result := FID;
 end;
 
 function TFormFactory.GetPropertyValue(ANome: string): TValue;

@@ -83,7 +83,8 @@ dataModuleCode =
 '   result :=  T%FormIdent.create(nil);                            '+#10#13+
 '   result.Controller(AController);                                '+#10#13+
 'end;                                                              '+#10#13+
-'                                                                  '+#10#13+
+'Initialization                                                    '+#10#13+
+'  TMVCRegister.RegisterType<I%FormIdent,T%FormIdent>(T%FormIdent.classname,true);' + #10#13 +
 'end.                                                              '+#10#13;
 
 

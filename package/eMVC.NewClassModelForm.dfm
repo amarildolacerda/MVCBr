@@ -3276,12 +3276,15 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    PageIndex = 2
     ParentFont = False
     TabOrder = 1
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 1'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 136
@@ -3350,14 +3353,6 @@ object FormClassModel: TFormClassModel
         TabOrder = 3
         OnClick = edUnitButtonClick
       end
-      object cbViewModel: TCheckBox
-        Left = 255
-        Top = 154
-        Width = 79
-        Height = 17
-        Caption = 'ViewModel'
-        TabOrder = 4
-      end
       object cbCreateDir: TCheckBox
         Left = 24
         Top = 187
@@ -3366,6 +3361,19 @@ object FormClassModel: TFormClassModel
         Caption = 'criar sub-pasta para o artefato'
         Checked = True
         State = cbChecked
+        TabOrder = 4
+      end
+      object RadioGroup1: TRadioGroup
+        Left = 252
+        Top = 148
+        Width = 82
+        Height = 64
+        Caption = 'InheritedFrom'
+        ItemIndex = 0
+        Items.Strings = (
+          'Model'
+          'ViewModel'
+          'Controller')
         TabOrder = 5
       end
     end
@@ -3390,13 +3398,22 @@ object FormClassModel: TFormClassModel
         ItemHeight = 13
         TabOrder = 0
       end
+      object CheckBox1: TCheckBox
+        Left = 17
+        Top = 234
+        Width = 97
+        Height = 17
+        Caption = 'Todos'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = CheckBox1Click
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 19
@@ -3408,15 +3425,28 @@ object FormClassModel: TFormClassModel
         Left = 24
         Top = 35
         Width = 313
-        Height = 206
+        Height = 198
         ItemHeight = 13
         TabOrder = 0
+      end
+      object cbTodosProcs: TCheckBox
+        Left = 28
+        Top = 236
+        Width = 97
+        Height = 17
+        Caption = 'Todos'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        OnClick = cbTodosProcsClick
       end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 4'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label6: TLabel
         Left = 24
         Top = 17
@@ -3428,7 +3458,7 @@ object FormClassModel: TFormClassModel
         Left = 24
         Top = 36
         Width = 313
-        Height = 213
+        Height = 198
         Lines.Strings = (
           'Memo1')
         TabOrder = 0
