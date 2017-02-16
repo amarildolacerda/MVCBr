@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: mwPasLexTypes, released November 14, 1999.
 
 The Initial Developer of the Original Code is Martin Waldenburg
-unit CastaliaPasLexTypes;
+unit MMCastaliaPasLexTypes;
 
 ----------------------------------------------------------------------------}
 
@@ -242,7 +242,7 @@ type
   {$ENDIF}
     ptString,
 	ptStringConst,
-    ptStringDQConst,	// 2002-01-14	
+    ptStringDQConst,	// 2002-01-14
     ptStringresource,
     ptSymbol,
     ptThen,

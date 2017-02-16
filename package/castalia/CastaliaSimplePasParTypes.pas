@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: mwSimplePasParTypes, released November 14, 1999.
 
 The Initial Developer of the Original Code is Martin Waldenburg
-unit CastaliaPasLexTypes;
+unit MMCastaliaPasLexTypes;
 
 ----------------------------------------------------------------------------}
 
@@ -121,7 +121,7 @@ type
 	ciDirectiveLibrary,		// DR 2001-10-20
 	ciDirectiveLocal,		// DR 2001-11-14
 	ciDirectivePlatform,	// DR 2001-10-20
-	ciDirectiveVarargs,		// DR 2001-11-14	
+	ciDirectiveVarargs,		// DR 2001-11-14
 	ciDispIDSpecifier,		// DR 2001-07-26
     ciDispInterfaceForward,
     ciEmptyStatement,

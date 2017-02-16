@@ -214,6 +214,16 @@ var
 var
   cbClassNameText: string;
   edUnitText: string;
+
+  function ExtractNameBased(s: string): String;
+  begin
+    if pos('<', s) > 0 then
+      s := copy(s, 1, pos('<', s) - 1);
+    if s[1] = 'T' then
+      s := copy(s, 2, length(s));
+    result := s;
+  end;
+
   procedure CriarController;
   var
     Model: TClassModelCreator;
@@ -225,9 +235,7 @@ var
     Model.templates.AddPair('%UnitBase', setName);
 
     Model.templates.AddPair('%ClassConector', cbClassNameText);
-    s := cbClassNameText + 'Base';
-    if s[1] = 'T' then
-      s := copy(s, 2, length(s));
+    s := ExtractNameBased(cbClassNameText) + 'Base';
     Model.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
@@ -244,9 +252,7 @@ var
     Model.templates.AddPair('%UnitBase', setName);
 
     Model.templates.AddPair('%ClassConector', cbClassNameText);
-    s := cbClassNameText + 'Base';
-    if s[1] = 'T' then
-      s := copy(s, 2, length(s));
+    s := ExtractNameBased(cbClassNameText) + 'Base';
     Model.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
@@ -270,9 +276,7 @@ var
     Model.templates.AddPair('%UnitBase', setName);
 
     Model.templates.AddPair('%ClassConector', cbClassNameText);
-    s := cbClassNameText + 'Base';
-    if s[1] = 'T' then
-      s := copy(s, 2, length(s));
+    s := ExtractNameBased(cbClassNameText) + 'Base';
     Model.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
@@ -288,9 +292,7 @@ var
     Model.templates.AddPair('%UnitBase', setName);
 
     Model.templates.AddPair('%ClassConector', cbClassNameText);
-    s := cbClassNameText + 'Base';
-    if s[1] = 'T' then
-      s := copy(s, 2, length(s));
+    s := ExtractNameBased(cbClassNameText) + 'Base';
     Model.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
@@ -317,9 +319,7 @@ var
     ViewModel.templates.AddPair('%UnitBase', setName);
 
     ViewModel.templates.AddPair('%ClassConector', cbClassNameText);
-    s := cbClassNameText + 'Base';
-    if s[1] = 'T' then
-      s := copy(s, 2, length(s));
+    s := ExtractNameBased(cbClassNameText) + 'Base';
     ViewModel.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
@@ -337,9 +337,7 @@ var
     ViewModel.templates.AddPair('%UnitBase', setName);
 
     ViewModel.templates.AddPair('%ClassConector', cbClassNameText);
-    s := cbClassNameText + 'Base';
-    if s[1] = 'T' then
-      s := copy(s, 2, length(s));
+    s := ExtractNameBased(cbClassNameText) + 'Base';
     ViewModel.templates.AddPair('%ClassModel', s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
@@ -378,12 +376,14 @@ begin
     if showModal = mrOK then
     begin
       // IsFMX := cbFMX.Checked;
-      cbClassNameText := cbClassName.text;
+      cbClassNameText := edModelName.text;
       edUnitText := edUnit.text;
       isViewModel := RadioGroup1.ItemIndex = 1;
       isController := RadioGroup1.ItemIndex = 2;
-      setName := trim(edModelName.text);
-      identProject := stringReplace(setName, '.', '', [rfReplaceAll]);
+      setName := ExtractNameBased(trim(cbClassNameText));
+      setName := StringReplace(setName, ExtractFileExt(setName), '', []);
+
+      identProject := StringReplace(setName, '.', '', [rfReplaceAll]);
 
       FInterfImplem := GetInterf;
       FCodeInterf := GetCodigos;

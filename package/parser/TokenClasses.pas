@@ -98,10 +98,10 @@ type
     function GetReturnType: string;
     procedure SetReturnType(const Value: string);
     function WriteParams: string;
-  public  
+  public
     function Write: string; override;
     property ReturnType: string read GetReturnType write SetReturnType;
-  end;    
+  end;
 
   TFunctionList = class(TGenericList, IFunctionList)
   private
@@ -114,7 +114,7 @@ type
   TProperty = class(TParameter, IProperty)
   private
     FIndex: IParameter;
-    FDefault: Boolean;            
+    FDefault: Boolean;
     FReader: string;
     FWriter: string;
     function GetDefault: Boolean;
@@ -143,7 +143,7 @@ type
     function GetItems(Index: Integer): IProperty;
   public
     property Items[Index: Integer]: IProperty read GetItems; default;
-  end; 
+  end;
 
   TAncestor = class(TInterfacedObject, IAncestor)
   private
@@ -151,7 +151,7 @@ type
     function GetName: string;
     procedure SetName(const Value: string);
   public
-    function Write: string;      
+    function Write: string;
     property Name: string read GetName write SetName;
   end;
 
@@ -169,10 +169,12 @@ type
     FFunctions: IFunctionList;
     FMethods: IMethodList;
     FProperties: IPropertyList;
+    FTypeParams : IParameterList;
     function GetAncestors: IAncestorList;
     function GetFunctions: IFunctionList;
     function GetMethods: IMethodList;
     function GetProperties: IPropertyList;
+    function GetTypeParams : IParameterList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -180,6 +182,7 @@ type
     property Functions: IFunctionList read GetFunctions;
     property Methods: IMethodList read GetMethods;
     property Properties: IPropertyList read GetProperties;
+    property TypeParams:IParameterList read GetTypeParams;
   end;
 
   TInterfacesList = class(TGenericList, IInterfacesList)
@@ -188,7 +191,7 @@ type
     function GetItems(Index: Integer): IInterfaceType;
   public
     property Items[Index: Integer]: IInterfaceType read GetItems; default;
-  end;  
+  end;
 
   TUnit = class(TNamedItem, IUnit)
   private
@@ -534,6 +537,7 @@ end;
 constructor TInterface.Create;
 begin
   inherited;
+  FTypeParams := TParameterList.Create;
   FAncestors := TAncestorList.Create;
   FFunctions := TFunctionList.Create;
   FMethods := TMethodList.Create;
@@ -546,6 +550,7 @@ begin
   FFunctions := nil;
   FMethods := nil;
   FProperties := nil;
+  FTypeParams := nil;
   inherited;
 end;
 
@@ -567,6 +572,11 @@ end;
 function TInterface.GetProperties: IPropertyList;
 begin
   Result := FProperties;
+end;
+
+function TInterface.GetTypeParams: IParameterList;
+begin
+  result := FTypeParams;
 end;
 
 { TInterfacesList }

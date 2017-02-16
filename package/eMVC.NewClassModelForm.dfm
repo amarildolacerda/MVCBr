@@ -29,8 +29,8 @@ object FormClassModel: TFormClassModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 299
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3264,6 +3264,8 @@ object FormClassModel: TFormClassModel
         0000}
       ExplicitLeft = 3
       ExplicitTop = 56
+      ExplicitWidth = 117
+      ExplicitHeight = 299
     end
   end
   object Notebook1: TNotebook
@@ -3276,7 +3278,6 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 2
     ParentFont = False
     TabOrder = 1
     object TPage
@@ -3288,9 +3289,9 @@ object FormClassModel: TFormClassModel
       object Label1: TLabel
         Left = 24
         Top = 136
-        Width = 163
+        Width = 187
         Height = 13
-        Caption = 'Nome indenficador para o MODEL'
+        Caption = 'Nome indenficador para a Classe BASE'
       end
       object Label2: TLabel
         Left = 24
@@ -3414,6 +3415,8 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 19

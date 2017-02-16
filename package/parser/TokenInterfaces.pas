@@ -119,10 +119,12 @@ type
     function GetFunctions: IFunctionList;
     function GetMethods: IMethodList;
     function GetProperties: IPropertyList;
+    function GetTypeParams: IParameterList;
     property Ancestors: IAncestorList read GetAncestors;
     property Functions: IFunctionList read GetFunctions;
     property Methods: IMethodList read GetMethods;
     property Properties: IPropertyList read GetProperties;
+    property TypeParams:IParameterList read GetTypeParams;
   end;
 
   IInterfacesList = interface(IGenericList)

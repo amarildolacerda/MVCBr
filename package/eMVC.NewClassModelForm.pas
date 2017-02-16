@@ -91,6 +91,13 @@ type
     procedure GerarCodigos;
     procedure GerarParametros(params: IParameterList; var s: string);
     procedure MarkCheckList(AList: TCheckListBox; const AChecked: Boolean);
+    function GetClassType(const intf: iInterfaceType): string;
+    function GetClassImplements(const intf: iInterfaceType;
+      const AModel: String): string;
+    function ExtractClassName(const s: String): string;
+    function ExtractClassBase(): string;
+    function GetClassImplementsParams(const intf: iInterfaceType): string;
+    procedure FindInterface(var intf: iInterfaceType);
   public
     { Public declarations }
     FillListClassesProc: TProc;
@@ -148,28 +155,35 @@ end;
 const
   CRLF = #10#13;
 
+procedure TFormClassModel.FindInterface(var intf: iInterfaceType);
+var
+  x: integer;
+begin
+  for x := 0 to FUnit.AUnit.Interfaces.count - 1 do
+    if FUnit.AUnit.Interfaces.items[x].name = ExtractClassName(cbClassName.text)
+    then
+    begin
+      intf := FUnit.AUnit.Interfaces.items[x];
+      break;
+    end;
+end;
+
 procedure TFormClassModel.GerarCodigos;
 var
+  intf: iInterfaceType;
   i: integer;
   s: string;
   function GetProc(p: integer): string;
   var
-    intf: IInterfaceType;
     x, n: integer;
     mtd: IMethod;
   begin
     result := '';
-    intf := nil;
-    for x := 0 to FUnit.AUnit.Interfaces.count - 1 do
-      if FUnit.AUnit.Interfaces.items[x].name = cbClassName.text then
-      begin
-        intf := FUnit.AUnit.Interfaces.items[x];
-        break;
-      end;
+    FindInterface(intf);
     if not assigned(intf) then
       exit;
     mtd := intf.Methods.items[p];
-    result := mtd.name + '(';
+    result := mtd.name + '%genParam' + '(';
     for n := 0 to mtd.params.count - 1 do
     begin
       if n > 0 then
@@ -181,22 +195,15 @@ var
 
   function GetFunc(p: integer): string;
   var
-    intf: IInterfaceType;
-    x, n: integer;
+    n: integer;
     fnc: IFunction;
   begin
     result := '';
-    intf := nil;
-    for x := 0 to FUnit.AUnit.Interfaces.count - 1 do
-      if FUnit.AUnit.Interfaces.items[x].name = cbClassName.text then
-      begin
-        intf := FUnit.AUnit.Interfaces.items[x];
-        break;
-      end;
+    FindInterface(intf);
     if not assigned(intf) then
       exit;
     fnc := intf.Functions.items[p];
-    result := fnc.name + '(';
+    result := fnc.name + '%genParam' + '(';
     for n := 0 to fnc.params.count - 1 do
     begin
       if n > 0 then
@@ -208,6 +215,7 @@ var
 
 begin
   Memo1.lines.clear;
+  intf := nil;
   for i := 0 to clMetodos.items.count - 1 do
     if clMetodos.Checked[i] then
       with Memo1.lines do
@@ -236,9 +244,14 @@ begin
         add('');
       end;
 
-  Memo1.lines.text := stringReplace(Memo1.lines.text, '%Ident',
-    'T' + edModelName.text + RadioGroup1.items[RadioGroup1.ItemIndex],
-    [rfReplaceAll]);
+  if intf <> nil then
+  begin
+    Memo1.lines.text := stringReplace(Memo1.lines.text, '%Ident',
+      GetClassImplements(intf, RadioGroup1.items[RadioGroup1.ItemIndex]),
+      [rfReplaceAll]);
+    Memo1.lines.text := stringReplace(Memo1.lines.text, '%genParam',
+      GetClassImplementsParams(intf), [rfReplaceAll]);
+  end;
 end;
 
 function TFormClassModel.GetCodigos: string;
@@ -365,12 +378,73 @@ begin
 
 end;
 
+function TFormClassModel.GetClassImplementsParams
+  (const intf: iInterfaceType): string;
+var
+  i: integer;
+  prm: IParameter;
+begin
+  result := '';
+  for i := 0 to intf.TypeParams.count - 1 do
+  begin
+    prm := intf.TypeParams.items[i];
+    if i = 0 then
+      result := result + '<';
+    if i > 0 then
+      result := result + ', ';
+    result := result + prm.name;
+  end;
+  if intf.TypeParams.count > 0 then
+    result := result + '>';
+end;
+
+function TFormClassModel.GetClassImplements(const intf: iInterfaceType;
+  const AModel: String): string;
+var
+  i: integer;
+  prm: IParameter;
+begin
+  result := intf.name + AModel;
+  for i := 0 to intf.TypeParams.count - 1 do
+  begin
+    prm := intf.TypeParams.items[i];
+    if i = 0 then
+      result := result + '<';
+    if i > 0 then
+      result := result + ', ';
+    result := result + prm.name;
+  end;
+  if intf.TypeParams.count > 0 then
+    result := result + '>';
+end;
+
+function TFormClassModel.GetClassType(const intf: iInterfaceType): string;
+var
+  i: integer;
+  prm: IParameter;
+begin
+  result := intf.name;
+  for i := 0 to intf.TypeParams.count - 1 do
+  begin
+    prm := intf.TypeParams.items[i];
+    if i = 0 then
+      result := result + '<';
+    if i > 0 then
+      result := result + '; ';
+    result := result + prm.name;
+    if prm.DataType <> '' then
+      result := result + ': ' + prm.DataType;
+  end;
+  if intf.TypeParams.count > 0 then
+    result := result + '>';
+end;
+
 procedure TFormClassModel.ParseUnit;
 var
   tmp, s: string;
   AUnit: IUnit;
   i: integer;
-  interf: IInterfaceType;
+  interf: iInterfaceType;
   inInterface: Boolean;
   tokenId: TptTokenKind;
   LClassName: string;
@@ -381,6 +455,9 @@ begin
     exit;
 
   try
+    FreeAndNil(FUnit);
+    FUnit := TIntfParser.create;
+
     FUnit.InterfaceOnly := true;
     FUnit.LoadAndRun(edUnit.text);
 
@@ -392,7 +469,7 @@ begin
     for i := 0 to AUnit.Interfaces.count - 1 do
     begin
       interf := AUnit.Interfaces.items[i];
-      cbClassName.items.add(interf.name);
+      cbClassName.items.add(GetClassType(interf));
     end;
 
   finally
@@ -402,7 +479,7 @@ end;
 procedure TFormClassModel.PreencherOsMethods;
 var
   i: integer;
-  interf: IInterfaceType;
+  interf: iInterfaceType;
   mtds: IMethod;
   fncs: IFunction;
   s: string;
@@ -413,7 +490,8 @@ begin
 
   interf := nil;
   for i := 0 to FUnit.AUnit.Interfaces.count - 1 do
-    if FUnit.AUnit.Interfaces.items[i].name = cbClassName.text then
+    if FUnit.AUnit.Interfaces.items[i].name = ExtractClassName(cbClassName.text)
+    then
     begin
       interf := FUnit.AUnit.Interfaces.items[i];
       break;
@@ -425,8 +503,8 @@ begin
   for i := 0 to interf.Methods.count - 1 do
   begin
     mtds := interf.Methods.items[i];
-    s := 'procedure %Ident.' + mtds.name + '(';
-
+    s := 'procedure %Ident.' + mtds.name;
+    s := s + '(';
     GerarParametros(mtds.params, s);
     s := s + ';';
     clMetodos.items.add(s);
@@ -438,22 +516,22 @@ begin
   for i := 0 to interf.Functions.count - 1 do
   begin
     fncs := interf.Functions.items[i];
-    s := 'function %Ident.' + fncs.name + '(';
+    s := 'function %Ident.' + fncs.name;
+
+    s := s + '(';
     GerarParametros(fncs.params, s);
     s := s + ':' + fncs.ReturnType + ';';
     clFunctions.items.add(s);
     clFunctions.Checked[clFunctions.items.count - 1] := true;
   end;
 
-  FOldClassName := cbClassName.text;
+  FOldClassName := cbClassName.text + '.' + edModelName.text;
 
 end;
 
 procedure TFormClassModel.cbClassNameChange(Sender: TObject);
 begin
-  edModelName.text := cbClassName.text;
-  if edModelName.text[1] = 'T' then
-    edModelName.text := copy(edModelName.text, 2, length(edModelName.text));
+  edModelName.text := ExtractClassBase();
   proximaPagina(0);
 end;
 
@@ -494,6 +572,24 @@ begin
   // FillListClassesProc;
   if fileExists(edUnit.text) then
     ParseUnit;
+end;
+
+function TFormClassModel.ExtractClassBase(): string;
+var
+  s: string;
+  intf: iInterfaceType;
+begin
+  result := ExtractClassName(cbClassName.text);
+  FindInterface(intf);
+  if assigned(intf) then
+     result := GetClassImplements(intf,'');
+end;
+
+function TFormClassModel.ExtractClassName(const s: String): string;
+begin
+  result := s;
+  if pos('<', s) > 0 then
+    result := copy(s, 1, pos('<', s) - 1);
 end;
 
 procedure TFormClassModel.BitBtn3Click(Sender: TObject);

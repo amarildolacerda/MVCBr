@@ -1,43 +1,43 @@
-{ -----------------------------------------------------------------------------
-  The contents of this file are subject to the Mozilla Public License Version
-  1.1 (the "License"); you may not use this file except in compliance with the
-  License. You may obtain a copy of the License at
-  http://www.mozilla.org/NPL/NPL-1_1Final.html
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License Version
+1.1 (the "License"); you may not use this file except in compliance with the
+License. You may obtain a copy of the License at
+http://www.mozilla.org/NPL/NPL-1_1Final.html
 
-  Software distributed under the License is distributed on an "AS IS" basis,
-  WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
-  the specific language governing rights and limitations under the License.
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+the specific language governing rights and limitations under the License.
 
-  The Original Code is: mwPasLex.PAS, released August 17, 1999.
+The Original Code is: mwPasLex.PAS, released August 17, 1999.
 
-  The Initial Developer of the Original Code is Martin Waldenburg
-  (Martin.Waldenburg@T-Online.de).
-  Portions created by Martin Waldenburg are Copyright (C) 1998, 1999 Martin
-  Waldenburg.
-  All Rights Reserved.
+The Initial Developer of the Original Code is Martin Waldenburg
+(Martin.Waldenburg@T-Online.de).
+Portions created by Martin Waldenburg are Copyright (C) 1998, 1999 Martin
+Waldenburg.
+All Rights Reserved.
 
-  Contributor(s): James Jacobson _____________________________________.
+Contributor(s): James Jacobson _____________________________________.
 
-  Last Modified: mm/dd/yyyy
-  Current Version: 2.2
+Last Modified: mm/dd/yyyy
+Current Version: 2.2
 
-  Notes: This program is a very fast Pascal tokenizer. I'd like to invite the
-  Delphi community to develop it further and to create a fully featured Object
-  Pascal parser.
+Notes: This program is a very fast Pascal tokenizer. I'd like to invite the
+Delphi community to develop it further and to create a fully featured Object
+Pascal parser.
 
-  Modification history:
+Modification history:
 
-  Daniel Rolf between 20010723 and 20020116
+Daniel Rolf between 20010723 and 20020116
 
-  Made ready for Delphi 6
+Made ready for Delphi 6
 
-  platform
-  deprecated
-  varargs
-  local
+platform
+deprecated
+varargs
+local
 
-  Known Issues:
-  ----------------------------------------------------------------------------- }
+Known Issues:
+-----------------------------------------------------------------------------}
 
 unit CastaliaPasLex;
 
@@ -46,19 +46,18 @@ unit CastaliaPasLex;
 interface
 
 uses
-  // !! pruned uses
-  SysUtils, Classes, Controls, CastaliaPasLexTypes;
+  //!! pruned uses
+  SysUtils, Classes, {Vcl.Controls,} CastaliaPasLexTypes;
 
 var
-  Identifiers: array [#0 .. #255] of ByteBool;
-  mHashTable: array [#0 .. #255] of Integer;
+  Identifiers: array[#0..#255] of ByteBool;
+  mHashTable: array[#0..#255] of Integer;
 
 type
   TmwBasePasLex = class;
   TDirectiveEvent = procedure(Sender: TmwBasePasLex) of object;
 
   PDefineRec = ^TDefineRec;
-
   TDefineRec = record
     Defined: Boolean;
     StartCount: Integer;
@@ -69,11 +68,11 @@ type
   private
     fCommentState: TCommentState;
     fOrigin: PChar;
-    fProcTable: array [#0 .. #255] of procedure of object;
+    fProcTable: array[#0..#255] of procedure of object;
     Run: Integer;
     RunAhead: Integer;
     TempRun: Integer;
-    fIdentFuncTable: array [0 .. 191] of function: TptTokenKind of object;
+    fIdentFuncTable: array[0..191] of function: TptTokenKind of object;
     fTokenPos: Integer;
     fLineNumber: Integer;
     FTokenID: TptTokenKind;
@@ -92,23 +91,23 @@ type
     fOnIfDirect: TDirectiveEvent;
     fOnIfEndDirect: TDirectiveEvent;
     fOnElseIfDirect: TDirectiveEvent;
-    fOnUnDefDirect: TDirectiveEvent;
-    FDirectiveParamOrigin: PChar;
+	fOnUnDefDirect: TDirectiveEvent;
+  FDirectiveParamOrigin: PChar;
 
-    fAsmCode: Boolean; // DR 2002-01-14
+  	fAsmCode : Boolean;		// DR 2002-01-14
 
     FDefines: TStrings;
     FDefineStack: Integer;
     FTopDefineRec: PDefineRec;
     FUseDefines: Boolean;
 
-    function KeyHash: Integer;
+	  function KeyHash: Integer;
     function KeyComp(const aKey: string): Boolean;
-    function Func9: TptTokenKind;
+    function Func9: tptTokenKind;
     function Func15: TptTokenKind;
     function Func19: TptTokenKind;
     function Func20: TptTokenKind;
-    function Func21: TptTokenKind;
+	function Func21: TptTokenKind;
     function Func23: TptTokenKind;
     function Func25: TptTokenKind;
     function Func27: TptTokenKind;
@@ -124,9 +123,9 @@ type
     function Func39: TptTokenKind;
     function Func40: TptTokenKind;
     function Func41: TptTokenKind;
-{$IFDEF D8_NEWER} // JThurman 2004-03-2003
+    {$IFDEF D8_NEWER} //JThurman 2004-03-2003
     function Func42: TptTokenKind;
-{$ENDIF}
+    {$ENDIF}
     function Func43: TptTokenKind;
     function Func44: TptTokenKind;
     function Func45: TptTokenKind;
@@ -135,7 +134,7 @@ type
     function Func49: TptTokenKind;
     function Func52: TptTokenKind;
     function Func54: TptTokenKind;
-    function Func55: TptTokenKind;
+	function Func55: TptTokenKind;
     function Func56: TptTokenKind;
     function Func57: TptTokenKind;
     function Func58: TptTokenKind;
@@ -145,13 +144,13 @@ type
     function Func62: TptTokenKind;
     function Func63: TptTokenKind;
     function Func64: TptTokenKind;
-    function Func65: TptTokenKind;
+	function Func65: TptTokenKind;
     function Func66: TptTokenKind;
     function Func69: TptTokenKind;
     function Func71: TptTokenKind;
-{$IFDEF D8_NEWER} // JThurman 2004-03-2003
+    {$IFDEF D8_NEWER} //JThurman 2004-03-2003
     function Func72: TptTokenKind;
-{$ENDIF}
+    {$ENDIF}
     function Func73: TptTokenKind;
     function Func75: TptTokenKind;
     function Func76: TptTokenKind;
@@ -159,13 +158,13 @@ type
     function Func79: TptTokenKind;
     function Func81: TptTokenKind;
     function Func84: TptTokenKind;
-    function Func85: TptTokenKind;
-    function Func86: TptTokenKind;
+	function Func85: TptTokenKind;
+	function Func86: TptTokenKind;
     function Func87: TptTokenKind;
     function Func88: TptTokenKind;
-{$IFDEF D8_NEWER}
-    function Func89: TptTokenKind; // JThurman 2004-03-03
-{$ENDIF}
+    {$IFDEF D8_NEWER}
+    function Func89: TptTokenKind; //JThurman 2004-03-03
+    {$ENDIF}
     function Func91: TptTokenKind;
     function Func92: TptTokenKind;
     function Func94: TptTokenKind;
@@ -185,7 +184,7 @@ type
     function Func108: TptTokenKind;
     function Func112: TptTokenKind;
     function Func117: TptTokenKind;
-    function Func123: TptTokenKind;
+	function Func123: TptTokenKind;
     function Func126: TptTokenKind;
     function Func127: TptTokenKind;
     function Func128: TptTokenKind;
@@ -207,9 +206,9 @@ type
     procedure SetRunPos(Value: Integer);
     procedure MakeMethodTables;
     procedure AddressOpProc;
-{$IFDEF D8_NEWER} // JThurman 2004-04-06
+    {$IFDEF D8_NEWER} //JThurman 2004-04-06
     procedure AmpersandOpProc;
-{$ENDIF}
+    {$ENDIF}
     procedure AsciiCharProc;
     procedure AnsiProc;
     procedure BorProc;
@@ -222,7 +221,7 @@ type
     procedure GreaterProc;
     procedure IdentProc;
     procedure IntegerProc;
-    procedure LFProc;
+	procedure LFProc;
     procedure LowerProc;
     procedure MinusProc;
     procedure NullProc;
@@ -238,8 +237,8 @@ type
     procedure SquareCloseProc;
     procedure SquareOpenProc;
     procedure StarProc;
-    procedure StringProc;
-    procedure StringDQProc;
+	procedure StringProc;
+	procedure StringDQProc;
     procedure SymbolProc;
     procedure UnknownProc;
     function GetToken: string;
@@ -262,8 +261,7 @@ type
     function GetIsRelativeOperator: Boolean;
     function GetIsCompilerDirective: Boolean;
     function GetIsOrdinalType: Boolean;
-    function GetGenID: TptTokenKind;
-    procedure SetOnElseIfDirect(const Value: TDirectiveEvent);
+    function GetGenID: TptTokenKind;procedure SetOnElseIfDirect(const Value: TDirectiveEvent);
 
     function IsDefined(const ADefine: string): Boolean;
     procedure EnterDefineBlock(ADefined: Boolean);
@@ -309,15 +307,14 @@ type
     property CommentState: Pointer read GetCommentState write SetCommentState;
     property CompilerDirective: string read GetCompilerDirective;
     property DirectiveParam: string read GetDirectiveParam;
-    property IsJunk: Boolean read GetIsJunk;
+	property IsJunk: Boolean read GetIsJunk;
     property IsSpace: Boolean read GetIsSpace;
     property Line: string write SetLine;
-    // Note: setting the following two properties does not GO to that line, it just sets the internal counters
+    //Note: setting the following two properties does not GO to that line, it just sets the internal counters
     property LineNumber: Integer read fLineNumber write fLineNumber;
     property LinePos: Integer read fLinePos write fLinePos;
     property Origin: PChar read fOrigin write SetOrigin;
-    property PosXY: TTokenPoint read GetPosXY;
-    // !! changed to TokenPoint //jdj 7/18/1999
+    property PosXY: TTokenPoint read GetPosXY; // !! changed to TokenPoint //jdj 7/18/1999
     property RunPos: Integer read Run write SetRunPos;
     property Token: string read GetToken;
     property TokenLen: Integer read GetTokenLen;
@@ -336,34 +333,24 @@ type
     property IsMulOperator: Boolean read GetIsMulOperator;
     property IsCompilerDirective: Boolean read GetIsCompilerDirective;
     property OnMessage: TMessageEvent read FOnMessage write FOnMessage;
-    property OnCompDirect: TDirectiveEvent read fOnCompDirect
-      write SetOnCompDirect;
-    property OnDefineDirect: TDirectiveEvent read fOnDefineDirect
-      write SetOnDefineDirect;
-    property OnElseDirect: TDirectiveEvent read fOnElseDirect
-      write SetOnElseDirect;
-    property OnEndIfDirect: TDirectiveEvent read fOnEndIfDirect
-      write SetOnEndIfDirect;
-    property OnIfDefDirect: TDirectiveEvent read fOnIfDefDirect
-      write SetOnIfDefDirect;
-    property OnIfNDefDirect: TDirectiveEvent read fOnIfNDefDirect
-      write SetOnIfNDefDirect;
-    property OnIfOptDirect: TDirectiveEvent read fOnIfOptDirect
-      write SetOnIfOptDirect;
-    property OnIncludeDirect: TDirectiveEvent read fOnIncludeDirect
-      write SetOnIncludeDirect;
+    property OnCompDirect: TDirectiveEvent read fOnCompDirect write SetOnCompDirect;
+    property OnDefineDirect: TDirectiveEvent read fOnDefineDirect write SetOnDefineDirect;
+    property OnElseDirect: TDirectiveEvent read fOnElseDirect write SetOnElseDirect;
+    property OnEndIfDirect: TDirectiveEvent read fOnEndIfDirect write SetOnEndIfDirect;
+    property OnIfDefDirect: TDirectiveEvent read fOnIfDefDirect write SetOnIfDefDirect;
+    property OnIfNDefDirect: TDirectiveEvent read fOnIfNDefDirect write SetOnIfNDefDirect;
+    property OnIfOptDirect: TDirectiveEvent read fOnIfOptDirect write SetOnIfOptDirect;
+    property OnIncludeDirect: TDirectiveEvent read fOnIncludeDirect write SetOnIncludeDirect;
     property OnIfDirect: TDirectiveEvent read fOnIfDirect write SetOnIfDirect;
-    property OnIfEndDirect: TDirectiveEvent read fOnIfEndDirect
-      write SetOnIfEndDirect;
-    property OnElseIfDirect: TDirectiveEvent read fOnElseIfDirect
-      write SetOnElseIfDirect;
-    property OnResourceDirect: TDirectiveEvent read fOnResourceDirect
-      write SetOnResourceDirect;
-    property OnUnDefDirect: TDirectiveEvent read fOnUnDefDirect
-      write SetOnUnDefDirect;
+    property OnIfEndDirect: TDirectiveEvent read fOnIfEndDirect write
+    SetOnIfEndDirect;
+    property OnElseIfDirect: TDirectiveEvent read fOnElseIfDirect write
+    SetOnElseIfDirect;
+	property OnResourceDirect: TDirectiveEvent read fOnResourceDirect write SetOnResourceDirect;
+	property OnUnDefDirect: TDirectiveEvent read fOnUnDefDirect write SetOnUnDefDirect;
 
-    property AsmCode: Boolean read fAsmCode write fAsmCode; // DR 2002-01-14
-    property DirectiveParamOrigin: PChar read FDirectiveParamOrigin;
+	property AsmCode : Boolean read fAsmCode write fAsmCode; // DR 2002-01-14
+  property DirectiveParamOrigin: pchar read FDirectiveParamOrigin;
 
     property UseDefines: Boolean read FUseDefines write FUseDefines;
 
@@ -415,17 +402,13 @@ begin
   for I := #0 to #255 do
   begin
     case I of
-      '_', '0' .. '9', 'a' .. 'z', 'A' .. 'Z':
-        Identifiers[I] := True;
-    else
-      Identifiers[I] := False;
+      '_', '0'..'9', 'a'..'z', 'A'..'Z': Identifiers[I] := True;
+    else Identifiers[I] := False;
     end;
     J := UpperCase(I)[1];
     case I of
-      'a' .. 'z', 'A' .. 'Z', '_':
-        mHashTable[I] := Ord(J) - 64;
-    else
-      mHashTable[Char(I)] := 0;
+	  'a'..'z', 'A'..'Z', '_': mHashTable[I] := Ord(J) - 64;
+    else mHashTable[Char(I)] := 0;
     end;
   end;
 end;
@@ -433,7 +416,7 @@ end;
 function TmwBasePasLex.CharAhead: Char;
 begin
   RunAhead := Run;
-  // while fOrigin[RunAhead] in [#1..#32] do
+//  while fOrigin[RunAhead] in [#1..#32] do
   while (fOrigin[RunAhead] > #0) and (fOrigin[RunAhead] < #33) do
 
     inc(RunAhead);
@@ -480,21 +463,21 @@ begin
   if Frame <> nil then
     Frame^.Next := nil;
 
-  // New(StackFrame);
-  // StackFrame^.Next := FTopDefineRec;
-  // StackFrame^.Defined := ADefined;
-  // StackFrame^.StartCount := FDefineStack;
-  // FTopDefineRec := StackFrame;
-  // if not ADefined then
-  // Inc(FDefineStack);
+//  New(StackFrame);
+//  StackFrame^.Next := FTopDefineRec;
+//  StackFrame^.Defined := ADefined;
+//  StackFrame^.StartCount := FDefineStack;
+//  FTopDefineRec := StackFrame;
+//  if not ADefined then
+//    Inc(FDefineStack);
 
 end;
 
 function TmwBasePasLex.GetPosXY: TTokenPoint;
-begin // jdj 7/18/1999
+begin //jdj 7/18/1999
   // !! changed setting code
-  Result.X := fTokenPos - fLinePos;
-  Result.Y := fLineNumber;
+  Result.X:= FTokenPos - FLinePos;
+  Result.Y:= FLineNumber;
 end;
 
 procedure TmwBasePasLex.InitIdent;
@@ -503,196 +486,105 @@ var
 begin
   for I := 0 to 191 do
     case I of
-{$IFDEF D8_NEWER}
-      9:
-        fIdentFuncTable[I] := Func9;
-{$ENDIF}
-      15:
-        fIdentFuncTable[I] := Func15;
-      19:
-        fIdentFuncTable[I] := Func19;
-      20:
-        fIdentFuncTable[I] := Func20;
-      21:
-        fIdentFuncTable[I] := Func21;
-      23:
-        fIdentFuncTable[I] := Func23;
-      25:
-        fIdentFuncTable[I] := Func25;
-      27:
-        fIdentFuncTable[I] := Func27;
-      28:
-        fIdentFuncTable[I] := Func28;
-      29:
-        fIdentFuncTable[I] := Func29;
-      30:
-        fIdentFuncTable[I] := Func30;
-      32:
-        fIdentFuncTable[I] := Func32;
-      33:
-        fIdentFuncTable[I] := Func33;
-      35:
-        fIdentFuncTable[I] := Func35;
-      36:
-        fIdentFuncTable[I] := Func36;
-      37:
-        fIdentFuncTable[I] := Func37;
-      38:
-        fIdentFuncTable[I] := Func38;
-      39:
-        fIdentFuncTable[I] := Func39;
-      40:
-        fIdentFuncTable[I] := Func40;
-      41:
-        fIdentFuncTable[I] := Func41;
-{$IFDEF D8_NEWER} // JThurman 2004-03-2003
-      42:
-        fIdentFuncTable[I] := Func42;
-{$ENDIF}
-      43:
-        fIdentFuncTable[I] := Func43;
-      44:
-        fIdentFuncTable[I] := Func44;
-      45:
-        fIdentFuncTable[I] := Func45;
-      46:
-        fIdentFuncTable[I] := Func46;
-      47:
-        fIdentFuncTable[I] := Func47;
-      49:
-        fIdentFuncTable[I] := Func49;
-      52:
-        fIdentFuncTable[I] := Func52;
-      54:
-        fIdentFuncTable[I] := Func54;
-      55:
-        fIdentFuncTable[I] := Func55;
-      56:
-        fIdentFuncTable[I] := Func56;
-      57:
-        fIdentFuncTable[I] := Func57;
-      58:
-        fIdentFuncTable[I] := Func58;
-      59:
-        fIdentFuncTable[I] := Func59;
-      60:
-        fIdentFuncTable[I] := Func60;
-      61:
-        fIdentFuncTable[I] := Func61;
-      62:
-        fIdentFuncTable[I] := Func62;
-      63:
-        fIdentFuncTable[I] := Func63;
-      64:
-        fIdentFuncTable[I] := Func64;
-      65:
-        fIdentFuncTable[I] := Func65;
-      66:
-        fIdentFuncTable[I] := Func66;
-      69:
-        fIdentFuncTable[I] := Func69;
-      71:
-        fIdentFuncTable[I] := Func71;
-{$IFDEF D8_NEWER} // JThurman 2004-03-2003
-      72:
-        fIdentFuncTable[I] := Func72;
-{$ENDIF}
-      73:
-        fIdentFuncTable[I] := Func73;
-      75:
-        fIdentFuncTable[I] := Func75;
-      76:
-        fIdentFuncTable[I] := Func76;
-      78:
-        fIdentFuncTable[I] := Func78;
-      79:
-        fIdentFuncTable[I] := Func79;
-      81:
-        fIdentFuncTable[I] := Func81;
-      84:
-        fIdentFuncTable[I] := Func84;
-      85:
-        fIdentFuncTable[I] := Func85;
-      86:
-        fIdentFuncTable[I] := Func86;
-      87:
-        fIdentFuncTable[I] := Func87;
-      88:
-        fIdentFuncTable[I] := Func88;
-{$IFDEF D8_NEWER} // JThurman 2004-03-03
-      89:
-        fIdentFuncTable[I] := Func89;
-{$ENDIF}
-      91:
-        fIdentFuncTable[I] := Func91;
-      92:
-        fIdentFuncTable[I] := Func92;
-      94:
-        fIdentFuncTable[I] := Func94;
-      95:
-        fIdentFuncTable[I] := Func95;
-      96:
-        fIdentFuncTable[I] := Func96;
-      97:
-        fIdentFuncTable[I] := Func97;
-      98:
-        fIdentFuncTable[I] := Func98;
-      99:
-        fIdentFuncTable[I] := Func99;
-      100:
-        fIdentFuncTable[I] := Func100;
-      101:
-        fIdentFuncTable[I] := Func101;
-      102:
-        fIdentFuncTable[I] := Func102;
-      103:
-        fIdentFuncTable[I] := Func103;
-      104:
-        fIdentFuncTable[I] := Func104;
-      105:
-        fIdentFuncTable[I] := Func105;
-      106:
-        fIdentFuncTable[I] := Func106;
-      107:
-        fIdentFuncTable[I] := Func107;
-      108:
-        fIdentFuncTable[I] := Func108;
-      112:
-        fIdentFuncTable[I] := Func112;
-      117:
-        fIdentFuncTable[I] := Func117;
-      123:
-        fIdentFuncTable[I] := Func123;
-      126:
-        fIdentFuncTable[I] := Func126;
-      127:
-        fIdentFuncTable[I] := Func127;
-      128:
-        fIdentFuncTable[I] := Func128;
-      129:
-        fIdentFuncTable[I] := Func129;
-      130:
-        fIdentFuncTable[I] := Func130;
-      132:
-        fIdentFuncTable[I] := Func132;
-      133:
-        fIdentFuncTable[I] := Func133;
-      136:
-        fIdentFuncTable[I] := Func136;
-      141:
-        fIdentFuncTable[I] := Func141;
-      143:
-        fIdentFuncTable[I] := Func143;
-      166:
-        fIdentFuncTable[I] := Func166;
-      167:
-        fIdentFuncTable[I] := Func167;
-      168:
-        fIdentFuncTable[I] := Func168;
-      191:
-        fIdentFuncTable[I] := Func191;
-    else
-      fIdentFuncTable[I] := AltFunc;
+      {$IFDEF D8_NEWER}
+      9: fIdentFuncTable[I] := Func9;
+      {$ENDIF}
+      15: fIdentFuncTable[I] := Func15;
+	  19: fIdentFuncTable[I] := Func19;
+      20: fIdentFuncTable[I] := Func20;
+      21: fIdentFuncTable[I] := Func21;
+	  23: fIdentFuncTable[I] := Func23;
+      25: fIdentFuncTable[I] := Func25;
+      27: fIdentFuncTable[I] := Func27;
+      28: fIdentFuncTable[I] := Func28;
+      29: fIdentFuncTable[I] := Func29;
+      30: fIdentFuncTable[I] := Func30;
+      32: fIdentFuncTable[I] := Func32;
+      33: fIdentFuncTable[I] := Func33;
+      35: fIdentFuncTable[I] := Func35;
+      36: fIdentFuncTable[I] := Func36;
+      37: fIdentFuncTable[I] := Func37;
+      38: fIdentFuncTable[I] := Func38;
+	  39: fIdentFuncTable[I] := Func39;
+      40: fIdentFuncTable[I] := Func40;
+	  41: fIdentFuncTable[I] := Func41;
+    {$IFDEF D8_NEWER} //JThurman 2004-03-2003
+    42: fIdentFuncTable[I] := Func42;
+    {$ENDIF}
+	  43: fIdentFuncTable[I] := Func43;
+      44: fIdentFuncTable[I] := Func44;
+      45: fIdentFuncTable[I] := Func45;
+      46: fIdentFuncTable[I] := Func46;
+      47: fIdentFuncTable[I] := Func47;
+      49: fIdentFuncTable[I] := Func49;
+      52: fIdentFuncTable[I] := Func52;
+      54: fIdentFuncTable[I] := Func54;
+      55: fIdentFuncTable[I] := Func55;
+      56: fIdentFuncTable[I] := Func56;
+      57: fIdentFuncTable[I] := Func57;
+      58: fIdentFuncTable[I] := Func58;
+	  59: fIdentFuncTable[I] := Func59;
+      60: fIdentFuncTable[I] := Func60;
+      61: fIdentFuncTable[I] := Func61;
+	  62: fIdentFuncTable[I] := Func62;
+      63: fIdentFuncTable[I] := Func63;
+	  64: fIdentFuncTable[I] := Func64;
+      65: fIdentFuncTable[I] := Func65;
+      66: fIdentFuncTable[I] := Func66;
+      69: fIdentFuncTable[I] := Func69;
+      71: fIdentFuncTable[I] := Func71;
+      {$IFDEF D8_NEWER} //JThurman 2004-03-2003
+      72: fIdentFuncTable[I] := Func72;
+      {$ENDIF}
+      73: fIdentFuncTable[I] := Func73;
+      75: fIdentFuncTable[I] := Func75;
+      76: fIdentFuncTable[I] := Func76;
+      78: fIdentFuncTable[I] := Func78;
+      79: fIdentFuncTable[I] := Func79;
+      81: fIdentFuncTable[I] := Func81;
+      84: fIdentFuncTable[I] := Func84;
+	  85: fIdentFuncTable[I] := Func85;
+	  86: fIdentFuncTable[I] := Func86;
+      87: fIdentFuncTable[I] := Func87;
+      88: fIdentFuncTable[I] := Func88;
+      {$IFDEF D8_NEWER} //JThurman 2004-03-03
+      89: fIdentFuncTable[I] := Func89;
+      {$ENDIF}
+      91: fIdentFuncTable[I] := Func91;
+      92: fIdentFuncTable[I] := Func92;
+      94: fIdentFuncTable[I] := Func94;
+      95: fIdentFuncTable[I] := Func95;
+      96: fIdentFuncTable[I] := Func96;
+      97: fIdentFuncTable[I] := Func97;
+      98: fIdentFuncTable[I] := Func98;
+      99: fIdentFuncTable[I] := Func99;
+      100: fIdentFuncTable[I] := Func100;
+	  101: fIdentFuncTable[I] := Func101;
+      102: fIdentFuncTable[I] := Func102;
+      103: fIdentFuncTable[I] := Func103;
+      104: fIdentFuncTable[I] := Func104;
+      105: fIdentFuncTable[I] := Func105;
+	  106: fIdentFuncTable[I] := Func106;
+      107: fIdentFuncTable[I] := Func107;
+      108: fIdentFuncTable[I] := Func108;
+      112: fIdentFuncTable[I] := Func112;
+      117: fIdentFuncTable[I] := Func117;
+      123: fIdentFuncTable[I] := Func123;
+      126: fIdentFuncTable[I] := Func126;
+      127: fIdentFuncTable[I] := Func127;
+      128: fIdentFuncTable[I] := Func128;
+	  129: fIdentFuncTable[I] := Func129;
+      130: fIdentFuncTable[I] := Func130;
+      132: fIdentFuncTable[I] := Func132;
+      133: fIdentFuncTable[I] := Func133;
+	  136: fIdentFuncTable[I] := Func136;
+      141: fIdentFuncTable[I] := Func141;
+      143: fIdentFuncTable[I] := Func143;
+      166: fIdentFuncTable[I] := Func166;
+      167: fIdentFuncTable[I] := Func167;
+      168: fIdentFuncTable[I] := Func168;
+      191: fIdentFuncTable[I] := Func191;
+    else fIdentFuncTable[I] := AltFunc;
     end;
 end;
 
@@ -701,8 +593,8 @@ begin
   Result := 0;
   while IsIdentifiers(fOrigin[Run]) do
   begin
-    inc(Result, HashValue(fOrigin[Run]));
-    // inc(Result, mHashTable[fOrigin[Run]]);
+    Inc(Result, HashValue(fOrigin[Run]));
+    //inc(Result, mHashTable[fOrigin[Run]]);
     inc(Run);
   end;
 end; { KeyHash }
@@ -716,9 +608,9 @@ begin
   begin
     Temp := fOrigin + fTokenPos;
     Result := True;
-    for I := 1 to TokenLen do
+    for i := 1 to TokenLen do
     begin
-      if mHashTable[Temp^] <> mHashTable[aKey[I]] then
+      if mHashTable[Temp^] <> mHashTable[aKey[i]] then
       begin
         Result := False;
         break;
@@ -726,355 +618,281 @@ begin
       inc(Temp);
     end;
   end
-  else
-    Result := False;
+  else Result := False;
 end; { KeyComp }
 
-function TmwBasePasLex.Func9: TptTokenKind;
+function TmwBasePasLex.Func9: tptTokenKind;
 begin
   Result := ptIdentifier;
   if KeyComp('Add') then
-    fExID := ptAdd;
+    FExID := ptAdd;
 end;
 
 function TmwBasePasLex.Func15: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('If') then
-    Result := ptIf;
+  if KeyComp('If') then Result := ptIf;
 end;
 
 function TmwBasePasLex.Func19: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Do') then
-    Result := ptDo
-  else if KeyComp('And') then
-    Result := ptAnd;
+  if KeyComp('Do') then Result := ptDo else
+    if KeyComp('And') then Result := ptAnd;
 end;
 
 function TmwBasePasLex.Func20: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('As') then
-    Result := ptAs;
+  if KeyComp('As') then Result := ptAs;
 end;
 
 function TmwBasePasLex.Func21: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Of') then
-    Result := ptOf
-  else if KeyComp('At') then
-    fExID := ptAt;
+  if KeyComp('Of') then Result := ptOf else
+    if KeyComp('At') then fExID := ptAt;
 end;
 
 function TmwBasePasLex.Func23: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('End') then
-    Result := ptEnd
-  else if KeyComp('In') then
-    Result := ptIn;
+  if KeyComp('End') then Result := ptEnd else
+    if KeyComp('In') then Result := ptIn;
 end;
 
 function TmwBasePasLex.Func25: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Far') then
-    fExID := ptFar;
+  if KeyComp('Far') then fExID := ptFar;
 end;
 
 function TmwBasePasLex.Func27: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Cdecl') then
-    fExID := ptCdecl;
+  if KeyComp('Cdecl') then fExID := ptCdecl;
 end;
 
 function TmwBasePasLex.Func28: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Read') then
-    fExID := ptRead
-  else if KeyComp('Case') then
-    Result := ptCase
-  else if KeyComp('Is') then
-    Result := ptIs;
+  if KeyComp('Read') then fExID := ptRead else
+    if KeyComp('Case') then Result := ptCase else
+      if KeyComp('Is') then Result := ptIs;
 end;
 
 function TmwBasePasLex.Func29: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('On') then
-    fExID := ptOn;
+  if KeyComp('On') then fExID := ptOn;
 end;
 
 function TmwBasePasLex.Func30: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Char') then
-    fExID := ptChar;
+  if KeyComp('Char') then fExID := ptChar;
 end;
 
 function TmwBasePasLex.Func32: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('File') then
-    Result := ptFile
-  else if KeyComp('Label') then
-    Result := ptLabel
-  else if KeyComp('Mod') then
-    Result := ptMod;
+  if KeyComp('File') then Result := ptFile else
+    if KeyComp('Label') then Result := ptLabel else
+      if KeyComp('Mod') then Result := ptMod;
 end;
 
 function TmwBasePasLex.Func33: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Or') then
-    Result := ptOr
-  else if KeyComp('Name') then
-    fExID := ptName
-  else if KeyComp('Asm') then
-    Result := ptAsm;
+  if KeyComp('Or') then Result := ptOr else
+    if KeyComp('Name') then fExID := ptName else
+      if KeyComp('Asm') then Result := ptAsm;
 end;
 
 function TmwBasePasLex.Func35: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Nil') then
-    Result := ptNil
-  else if KeyComp('To') then
-    Result := ptTo
-  else if KeyComp('Div') then
-    Result := ptDiv;
+  if KeyComp('Nil') then Result := ptNil else
+    if KeyComp('To') then Result := ptTo else
+      if KeyComp('Div') then Result := ptDiv;
 end;
 
 function TmwBasePasLex.Func36: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Real') then
-    fExID := ptReal
-  else if KeyComp('Real48') then
-    fExID := ptReal48;
+  if KeyComp('Real') then fExID := ptReal else
+    if KeyComp('Real48') then fExID := ptReal48;
 end;
 
 function TmwBasePasLex.Func37: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Begin') then
-    Result := ptBegin
-  else if KeyComp('Break') then
-    fExID := ptBreak;
+  if KeyComp('Begin') then Result := ptBegin else
+    if KeyComp('Break') then fExID := ptBreak;
 end;
 
 function TmwBasePasLex.Func38: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Near') then
-    fExID := ptNear;
+  if KeyComp('Near') then fExID := ptNear;
 end;
 
 function TmwBasePasLex.Func39: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('For') then
-    Result := ptFor
-  else if KeyComp('Shl') then
-    Result := ptShl;
+  if KeyComp('For') then Result := ptFor else
+    if KeyComp('Shl') then Result := ptShl;
 end;
 
 function TmwBasePasLex.Func40: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Packed') then
-    Result := ptPacked;
+  if KeyComp('Packed') then Result := ptPacked;
 end;
 
 function TmwBasePasLex.Func41: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Var') then
-    Result := ptVar
-  else if KeyComp('Else') then
-    Result := ptElse
-  else if KeyComp('Halt') then
-    fExID := ptHalt;
+  if KeyComp('Var') then Result := ptVar else
+    if KeyComp('Else') then Result := ptElse else
+      if KeyComp('Halt') then fExID := ptHalt;
 end;
 
-{$IFDEF D8_NEWER}
-// JThurman 2004-03-2003
+{$IFDEF D8_NEWER} //JThurman 2004-03-2003
 function TmwBasePasLex.Func42: TptTokenKind;
 begin
   Result := ptIdentifier;
   if KeyComp('Final') then
-    fExID := ptFinal; // TODO: Is this supposed to be an ExID?
+    fExID := ptFinal; //TODO: Is this supposed to be an ExID?
 end;
 {$ENDIF}
 
 function TmwBasePasLex.Func43: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Int64') then
-    fExID := ptInt64
-  else if KeyComp('local') then
-    fExID := ptLocal;
+  if KeyComp('Int64') then fExID := ptInt64
+  else if KeyComp('local') then fExID := ptLocal;
 end;
 
 function TmwBasePasLex.Func44: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Set') then
-    Result := ptSet
-  else if KeyComp('Package') then
-    fExID := ptPackage;
+  if KeyComp('Set') then Result := ptSet else
+    if KeyComp('Package') then fExID := ptPackage;
 end;
 
 function TmwBasePasLex.Func45: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Shr') then
-    Result := ptShr;
+  if KeyComp('Shr') then Result := ptShr;
 end;
 
 function TmwBasePasLex.Func46: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('PChar') then
-    fExID := ptPChar
-{$IFDEF D8_NEWER} // JThurman 2004-03-19
-  else if KeyComp('Sealed') then
-    Result := ptSealed;
-{$ELSE}
-      ;
-{$ENDIF}
+  if KeyComp('PChar') then fExId := ptPChar
+  {$IFDEF D8_NEWER} //JThurman 2004-03-19
+   else
+    if KeyComp('Sealed') then Result := ptSealed;
+  {$ELSE}
+  ;
+  {$ENDIF}
 end;
 
 function TmwBasePasLex.Func47: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Then') then
-    Result := ptThen
-  else if KeyComp('Comp') then
-    fExID := ptComp;
+  if KeyComp('Then') then Result := ptThen else
+    if KeyComp('Comp') then fExID := ptComp;
 end;
 
 function TmwBasePasLex.Func49: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Not') then
-    Result := ptNot;
+  if KeyComp('Not') then Result := ptNot;
 end;
 
 function TmwBasePasLex.Func52: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Byte') then
-    fExID := ptByte
-  else if KeyComp('Raise') then
-    Result := ptRaise
-  else if KeyComp('Pascal') then
-    fExID := ptPascal;
+  if KeyComp('Byte') then fExID := ptByte else
+    if KeyComp('Raise') then Result := ptRaise else
+      if KeyComp('Pascal') then fExID := ptPascal;
 end;
 
 function TmwBasePasLex.Func54: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Class') then
-    Result := ptClass;
+  if KeyComp('Class') then Result := ptClass;
 end;
 
 function TmwBasePasLex.Func55: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Object') then
-    Result := ptObject;
+  if KeyComp('Object') then Result := ptObject;
 end;
 
 function TmwBasePasLex.Func56: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Index') then
-    fExID := ptIndex
-  else if KeyComp('Out') then
-    fExID := ptOut
-  else // bug in Delphi's documentation: OUT is a directive
-    if KeyComp('Abort') then
-      fExID := ptAbort;
+  if KeyComp('Index') then fExID := ptIndex else
+    if KeyComp('Out') then fExID := ptOut else // bug in Delphi's documentation: OUT is a directive
+      if KeyComp('Abort') then fExID := ptAbort;
 end;
 
 function TmwBasePasLex.Func57: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('While') then
-    Result := ptWhile
-  else if KeyComp('Xor') then
-    Result := ptXor
-  else if KeyComp('Goto') then
-    Result := ptGoto;
+  if KeyComp('While') then Result := ptWhile else
+    if KeyComp('Xor') then Result := ptXor else
+      if KeyComp('Goto') then Result := ptGoto;
 end;
 
 function TmwBasePasLex.Func58: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Exit') then
-    fExID := ptExit;
+  if KeyComp('Exit') then fExID := ptExit;
 end;
 
 function TmwBasePasLex.Func59: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Safecall') then
-    fExID := ptSafecall
-  else if KeyComp('Double') then
-    fExID := ptDouble;
+  if KeyComp('Safecall') then fExID := ptSafecall else
+    if KeyComp('Double') then fExID := ptDouble;
 end;
 
 function TmwBasePasLex.Func60: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('With') then
-    Result := ptWith
-  else if KeyComp('Word') then
-    fExID := ptWord;
+  if KeyComp('With') then Result := ptWith else
+    if KeyComp('Word') then fExID := ptWord;
 end;
 
 function TmwBasePasLex.Func61: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Dispid') then
-    fExID := ptDispid;
+  if KeyComp('Dispid') then fExID := ptDispid;
 end;
 
 function TmwBasePasLex.Func62: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Cardinal') then
-    fExID := ptCardinal;
+  if KeyComp('Cardinal') then fExID := ptCardinal;
 end;
 
 function TmwBasePasLex.Func63: TptTokenKind;
 begin
   Result := ptIdentifier;
   case fOrigin[fTokenPos] of
-    'P', 'p':
-      if KeyComp('Public') then
-        fExID := ptPublic;
-    'A', 'a':
-      if KeyComp('Array') then
-        Result := ptArray;
-    'T', 't':
-      if KeyComp('Try') then
-        Result := ptTry;
-    'R', 'r':
-      if KeyComp('Record') then
-        Result := ptRecord;
-    'I', 'i':
-      if KeyComp('Inline') then
-      begin
-        Result := ptInline;
-        fExID := ptInline;
-      end;
+    'P', 'p': if KeyComp('Public') then fExID := ptPublic;
+    'A', 'a': if KeyComp('Array') then Result := ptArray;
+    'T', 't': if KeyComp('Try') then Result := ptTry;
+    'R', 'r': if KeyComp('Record') then Result := ptRecord;
+    'I', 'i': if KeyComp('Inline') then
+     begin
+       Result := ptInline;
+       fExID := ptInline;
+     end;
   end;
 end;
 
@@ -1082,70 +900,52 @@ function TmwBasePasLex.Func64: TptTokenKind;
 begin
   Result := ptIdentifier;
   case fOrigin[fTokenPos] of
-    'B', 'b':
-      if KeyComp('Boolean') then
-        fExID := ptBoolean;
-    'D', 'd':
-      if KeyComp('DWORD') then
-        fExID := ptDWORD;
-    'U', 'u':
-      if KeyComp('Uses') then
-        Result := ptUses
-      else if KeyComp('Unit') then
-        Result := ptUnit;
-{$IFDEF D8_NEWER}
-    'H', 'h':
-      if KeyComp('Helper') then
-        Result := ptHelper;
-{$ENDIF}
+    'B', 'b': if KeyComp('Boolean') then fExID := ptBoolean;
+    'D', 'd': if KeyComp('DWORD') then fExID := ptDWORD;
+    'U', 'u': if KeyComp('Uses') then Result := ptUses
+    else
+      if KeyComp('Unit') then Result := ptUnit;
+    {$IFDEF D8_NEWER}
+    'H', 'h': if KeyComp('Helper') then Result := ptHelper;
+    {$ENDIF}
   end;
 end;
 
 function TmwBasePasLex.Func65: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Repeat') then
-    Result := ptRepeat;
+  if KeyComp('Repeat') then Result := ptRepeat;
 end;
 
 function TmwBasePasLex.Func66: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Single') then
-    fExID := ptSingle
-  else if KeyComp('Type') then
-    Result := ptType
-{$IFDEF D8_NEWER}// JThurman 2004-03-23
-  else if KeyComp('Unsafe') then
-    Result := ptUnsafe
-{$ENDIF}
+  if KeyComp('Single') then fExID := ptSingle else
+    if KeyComp('Type') then Result := ptType
+      {$IFDEF D8_NEWER}//JThurman 2004-03-23
+      else
+      if KeyComp('Unsafe') then Result := ptUnsafe
+      {$ENDIF}
       ;
 end;
 
 function TmwBasePasLex.Func69: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Default') then
-    fExID := ptDefault
-  else if KeyComp('Dynamic') then
-    fExID := ptDynamic
-  else if KeyComp('Message') then
-    fExID := ptMessage;
+  if KeyComp('Default') then fExID := ptDefault else
+    if KeyComp('Dynamic') then fExID := ptDynamic else
+      if KeyComp('Message') then fExID := ptMessage;
 end;
 
 function TmwBasePasLex.Func71: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('WideChar') then
-    fExID := ptWideChar
-  else if KeyComp('Stdcall') then
-    fExID := ptStdcall
-  else if KeyComp('Const') then
-    Result := ptConst;
+  if KeyComp('WideChar') then fExID := ptWideChar else
+    if KeyComp('Stdcall') then fExID := ptStdcall else
+      if KeyComp('Const') then Result := ptConst;
 end;
 
-{$IFDEF D8_NEWER}
-// JThurman 2004-03-2003
+{$IFDEF D8_NEWER} //JThurman 2004-03-2003
 function TmwBasePasLex.Func72: TptTokenKind;
 begin
   Result := ptIdentifier;
@@ -1157,374 +957,306 @@ end;
 function TmwBasePasLex.Func73: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Except') then
-    Result := ptExcept;
+  if KeyComp('Except') then Result := ptExcept;
 end;
 
 function TmwBasePasLex.Func75: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Write') then
-    fExID := ptWrite;
+  if KeyComp('Write') then fExID := ptWrite;
 end;
 
 function TmwBasePasLex.Func76: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Until') then
-    Result := ptUntil;
+  if KeyComp('Until') then Result := ptUntil;
 end;
 
 function TmwBasePasLex.Func78: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Integer') then
-    fExID := ptInteger
-{$IFDEF D8_NEWER}
-  else if KeyComp('Remove') then
-    fExID := ptRemove
-{$ENDIF}
-      ;
+  if KeyComp('Integer') then fExID := ptInteger
+  {$IFDEF D8_NEWER}
+    else if KeyComp('Remove') then
+      FExID := ptRemove
+  {$ENDIF}
+  ;
 end;
 
 function TmwBasePasLex.Func79: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Finally') then
-    Result := ptFinally
-{$IFDEF D12_NEWER}
-  else if KeyComp('Reference') then
-    fExID := ptReference;
-{$ENDIF}
+  if KeyComp('Finally') then Result := ptFinally
+  {$IFDEF D12_NEWER}
+  else if KeyComp('Reference') then fExID := ptReference;
+  {$ENDIF}
+
 end;
 
 function TmwBasePasLex.Func81: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Extended') then
-    fExID := ptExtended
-  else if KeyComp('Stored') then
-    fExID := ptStored
-  else if KeyComp('Interface') then
-    Result := ptInterface
-  else if KeyComp('Deprecated') then
-    fExID := ptDeprecated; // DR 2001-10-20
+  if KeyComp('Extended') then fExID := ptExtended else
+    if KeyComp('Stored') then fExID := ptStored else
+	  if KeyComp('Interface') then Result := ptInterface
+	    else if KeyComp('Deprecated') then fExID := ptDeprecated; // DR 2001-10-20
 end;
 
 function TmwBasePasLex.Func84: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Abstract') then
-    fExID := ptAbstract;
+  if KeyComp('Abstract') then fExID := ptAbstract;
 end;
 
 function TmwBasePasLex.Func85: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Library') then
-    Result := ptLibrary
-  else if KeyComp('Forward') then
-    fExID := ptForward
-  else if KeyComp('Variant') then
-    fExID := ptVariant;
+  if KeyComp('Library') then Result := ptLibrary else
+	if KeyComp('Forward') then fExID := ptForward else
+	  if KeyComp('Variant') then fExID := ptVariant;
 end;
 
 function TmwBasePasLex.Func87: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('String') then
-    Result := ptString;
+  if KeyComp('String') then Result := ptString;
 end;
 
 function TmwBasePasLex.Func88: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Program') then
-    Result := ptProgram;
+  if KeyComp('Program') then Result := ptProgram;
 end;
 
-{$IFDEF D8_NEWER}
-// JThurman 2004-03-03
+{$IFDEF D8_NEWER} //JThurman 2004-03-03
 function TmwBasePasLex.Func89: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Strict') then
-    Result := ptStrict;
+  if KeyComp('Strict') then Result := ptStrict;
 end;
 {$ENDIF}
 
 function TmwBasePasLex.Func91: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Downto') then
-    Result := ptDownto
-  else if KeyComp('Private') then
-    fExID := ptPrivate
-  else if KeyComp('Longint') then
-    fExID := ptLongint;
+  if KeyComp('Downto') then Result := ptDownto else
+    if KeyComp('Private') then fExID := ptPrivate else
+      if KeyComp('Longint') then fExID := ptLongint;
 end;
 
 function TmwBasePasLex.Func92: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Inherited') then
-    Result := ptInherited
-  else if KeyComp('LongBool') then
-    fExID := ptLongBool
-  else if KeyComp('Overload') then
-    fExID := ptOverload;
+  if KeyComp('Inherited') then Result := ptInherited else
+    if KeyComp('LongBool') then fExID := ptLongBool else
+      if KeyComp('Overload') then fExID := ptOverload;
 end;
 
 function TmwBasePasLex.Func94: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Resident') then
-    fExID := ptResident
-  else if KeyComp('Readonly') then
-    fExID := ptReadonly
-  else if KeyComp('Assembler') then
-    fExID := ptAssembler;
+  if KeyComp('Resident') then fExID := ptResident else
+    if KeyComp('Readonly') then fExID := ptReadonly else
+      if KeyComp('Assembler') then fExID := ptAssembler;
 end;
 
 function TmwBasePasLex.Func95: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Contains') then
-    fExID := ptContains
-  else if KeyComp('Absolute') then
-    fExID := ptAbsolute;
+  if KeyComp('Contains') then fExID := ptContains else
+    if KeyComp('Absolute') then fExID := ptAbsolute;
 end;
 
 function TmwBasePasLex.Func96: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('ByteBool') then
-    fExID := ptByteBool
-  else if KeyComp('Override') then
-    fExID := ptOverride
-  else if KeyComp('Published') then
-    fExID := ptPublished;
+  if KeyComp('ByteBool') then fExID := ptByteBool else
+    if KeyComp('Override') then fExID := ptOverride else
+      if KeyComp('Published') then fExID := ptPublished;
 end;
 
 function TmwBasePasLex.Func97: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Threadvar') then
-    Result := ptThreadvar;
+  if KeyComp('Threadvar') then Result := ptThreadvar;
 end;
 
 function TmwBasePasLex.Func98: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Export') then
-    fExID := ptExport
-  else if KeyComp('Nodefault') then
-    fExID := ptNodefault;
+  if KeyComp('Export') then fExID := ptExport else
+    if KeyComp('Nodefault') then fExID := ptNodefault;
 end;
 
 function TmwBasePasLex.Func99: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('External') then
-    fExID := ptExternal;
+  if KeyComp('External') then fExID := ptExternal;
 end;
 
 function TmwBasePasLex.Func100: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Automated') then
-    fExID := ptAutomated
-  else if KeyComp('Smallint') then
-    fExID := ptSmallint;
+  if KeyComp('Automated') then fExID := ptAutomated else
+    if KeyComp('Smallint') then fExID := ptSmallint;
 end;
 
 function TmwBasePasLex.Func101: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Register') then
-    fExID := ptRegister
-  else if KeyComp('Platform') then
-    fExID := ptPlatform // DR 2001-10-20
-  else if KeyComp('Continue') then
-    fExID := ptContinue;
+  if KeyComp('Register') then fExID := ptRegister
+  else if KeyComp('Platform') then fExID := ptPlatform // DR 2001-10-20
+  else if KeyComp('Continue') then fExID := ptContinue;
 end;
 
 function TmwBasePasLex.Func102: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Function') then
-    Result := ptFunction;
+  if KeyComp('Function') then Result := ptFunction;
 end;
 
 function TmwBasePasLex.Func103: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Virtual') then
-    fExID := ptVirtual;
+  if KeyComp('Virtual') then fExID := ptVirtual;
 end;
 
 function TmwBasePasLex.Func104: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('WordBool') then
-    fExID := ptWordBool;
+  if KeyComp('WordBool') then fExID := ptWordBool;
 end;
 
 function TmwBasePasLex.Func105: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Procedure') then
-    Result := ptProcedure;
+  if KeyComp('Procedure') then Result := ptProcedure;
 end;
 
 function TmwBasePasLex.Func106: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Protected') then
-    fExID := ptProtected;
+  if KeyComp('Protected') then fExID := ptProtected;
 end;
 
 function TmwBasePasLex.Func107: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Currency') then
-    fExID := ptCurrency;
+  if KeyComp('Currency') then fExID := ptCurrency;
 end;
 
 function TmwBasePasLex.Func108: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Longword') then
-    fExID := ptLongword;
-{$IFDEF D8_NEWER} // JThurman 2004-03-20
-  if KeyComp('Operator') then
-    fExID := ptOperator;
-{$ENDIF}
+  if KeyComp('Longword') then fExID := ptLongword;
+  {$IFDEF D8_NEWER} //JThurman 2004-03-20
+    if KeyComp('Operator') then fExID := ptOperator;
+  {$ENDIF}
 end;
 
 function TmwBasePasLex.Func112: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Requires') then
-    fExID := ptRequires;
+  if KeyComp('Requires') then fExID := ptRequires;
 end;
 
 function TmwBasePasLex.Func117: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Exports') then
-    Result := ptExports
-  else if KeyComp('OleVariant') then
-    fExID := ptOleVariant;
+  if KeyComp('Exports') then Result := ptExports else
+    if KeyComp('OleVariant') then fExID := ptOleVariant;
 end;
 
 function TmwBasePasLex.Func123: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Shortint') then
-    fExID := ptShortint;
+  if KeyComp('Shortint') then fExID := ptShortint;
 end;
 
 function TmwBasePasLex.Func126: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Implements') then
-    fExID := ptImplements;
+  if KeyComp('Implements') then fExID := ptImplements;
 end;
 
 function TmwBasePasLex.Func127: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Runerror') then
-    fExID := ptRunError;
+  if KeyComp('Runerror') then fExID := ptRunError;
 end;
 
 function TmwBasePasLex.Func128: TptTokenKind;
 begin
-  if KeyComp('WideString') then
-    fExID := ptWideString;
+  if KeyComp('WideString') then fExID := ptWideString;
   Result := ptIdentifier;
 end;
 
 function TmwBasePasLex.Func129: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Dispinterface') then
-    Result := ptDispinterface
+  if KeyComp('Dispinterface') then Result := ptDispinterface
 end;
 
 function TmwBasePasLex.Func130: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('AnsiString') then
-    fExID := ptAnsiString;
+  if KeyComp('AnsiString') then fExID := ptAnsiString;
 end;
 
 function TmwBasePasLex.Func132: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Reintroduce') then
-    fExID := ptReintroduce;
+  if KeyComp('Reintroduce') then fExID := ptReintroduce;
 end;
 
 function TmwBasePasLex.Func133: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Property') then
-    Result := ptProperty;
+  if KeyComp('Property') then Result := ptProperty;
 end;
 
 function TmwBasePasLex.Func136: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Finalization') then
-    Result := ptFinalization;
+  if KeyComp('Finalization') then Result := ptFinalization;
 end;
 
 function TmwBasePasLex.Func141: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Writeonly') then
-    fExID := ptWriteonly;
+  if KeyComp('Writeonly') then fExID := ptWriteonly;
 end;
 
 function TmwBasePasLex.Func143: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Destructor') then
-    Result := ptDestructor;
+  if KeyComp('Destructor') then Result := ptDestructor;
 end;
 
 function TmwBasePasLex.Func166: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Constructor') then
-    Result := ptConstructor
-  else if KeyComp('Implementation') then
-    Result := ptImplementation;
+  if KeyComp('Constructor') then Result := ptConstructor else
+    if KeyComp('Implementation') then Result := ptImplementation;
 end;
 
 function TmwBasePasLex.Func167: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('ShortString') then
-    fExID := ptShortString;
+  if KeyComp('ShortString') then fExID := ptShortString;
 end;
 
 function TmwBasePasLex.Func168: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Initialization') then
-    Result := ptInitialization;
+  if KeyComp('Initialization') then Result := ptInitialization;
 end;
 
 function TmwBasePasLex.Func191: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Resourcestring') then
-    Result := ptResourcestring
-  else if KeyComp('Stringresource') then
-    fExID := ptStringresource;
+  if KeyComp('Resourcestring') then Result := ptResourcestring else
+    if KeyComp('Stringresource') then fExID := ptStringresource;
 end;
 
 function TmwBasePasLex.AltFunc: TptTokenKind;
@@ -1538,9 +1270,8 @@ var
 begin
   HashKey := KeyHash;
   if HashKey < 192 then
-    Result := fIdentFuncTable[HashKey]
-  else
-    Result := ptIdentifier;
+	Result := fIdentFuncTable[HashKey]
+  else Result := ptIdentifier;
 end;
 
 procedure TmwBasePasLex.MakeMethodTables;
@@ -1549,77 +1280,47 @@ var
 begin
   for I := #0 to #255 do
     case I of
-      #0:
-        fProcTable[I] := NullProc;
-      #10:
-        fProcTable[I] := LFProc;
-      #13:
-        fProcTable[I] := CRProc;
-      #1 .. #9, #11, #12, #14 .. #32:
+      #0: fProcTable[I] := NullProc;
+	  #10: fProcTable[I] := LFProc;
+	  #13: fProcTable[I] := CRProc;
+      #1..#9, #11, #12, #14..#32:
         fProcTable[I] := SpaceProc;
-      '#':
-        fProcTable[I] := AsciiCharProc;
-      '$':
-        fProcTable[I] := IntegerProc;
-      #39:
-        fProcTable[I] := StringProc;
-      '0' .. '9':
-        fProcTable[I] := NumberProc;
-      'A' .. 'Z', 'a' .. 'z', '_':
+      '#': fProcTable[I] := AsciiCharProc;
+      '$': fProcTable[I] := IntegerProc;
+      #39: fProcTable[I] := StringProc;
+      '0'..'9': fProcTable[I] := NumberProc;
+      'A'..'Z', 'a'..'z', '_':
         fProcTable[I] := IdentProc;
-      '{':
-        fProcTable[I] := BraceOpenProc;
-      '}':
-        fProcTable[I] := BraceCloseProc;
-      '!', '"', '%', '&', '(' .. '/', ':' .. '@', '[' .. '^', '`', '~':
+      '{': fProcTable[I] := BraceOpenProc;
+      '}': fProcTable[I] := BraceCloseProc;
+      '!', '"', '%', '&', '('..'/', ':'..'@', '['..'^', '`', '~':
         begin
           case I of
-            '(':
-              fProcTable[I] := RoundOpenProc;
-            ')':
-              fProcTable[I] := RoundCloseProc;
-            '*':
-              fProcTable[I] := StarProc;
-            '+':
-              fProcTable[I] := PlusProc;
-            ',':
-              fProcTable[I] := CommaProc;
-            '-':
-              fProcTable[I] := MinusProc;
-            '.':
-              fProcTable[I] := PointProc;
-            '/':
-              fProcTable[I] := SlashProc;
-            ':':
-              fProcTable[I] := ColonProc;
-            ';':
-              fProcTable[I] := SemiColonProc;
-            '<':
-              fProcTable[I] := LowerProc;
-            '=':
-              fProcTable[I] := EqualProc;
-            '>':
-              fProcTable[I] := GreaterProc;
-            '@':
-              fProcTable[I] := AddressOpProc;
-            '[':
-              fProcTable[I] := SquareOpenProc;
-            ']':
-              fProcTable[I] := SquareCloseProc;
-            '^':
-              fProcTable[I] := PointerSymbolProc;
-            '"':
-              fProcTable[I] := StringDQProc; // DR 2002-01-14
-{$IFDEF D8_NEWER} // JThurman 2004-04-06
-            '&':
-              fProcTable[I] := AmpersandOpProc;
-{$ENDIF}
-          else
-            fProcTable[I] := SymbolProc;
+            '(': fProcTable[I] := RoundOpenProc;
+            ')': fProcTable[I] := RoundCloseProc;
+            '*': fProcTable[I] := StarProc;
+			'+': fProcTable[I] := PlusProc;
+            ',': fProcTable[I] := CommaProc;
+            '-': fProcTable[I] := MinusProc;
+            '.': fProcTable[I] := PointProc;
+            '/': fProcTable[I] := SlashProc;
+            ':': fProcTable[I] := ColonProc;
+            ';': fProcTable[I] := SemiColonProc;
+            '<': fProcTable[I] := LowerProc;
+            '=': fProcTable[I] := EqualProc;
+            '>': fProcTable[I] := GreaterProc;
+            '@': fProcTable[I] := AddressOpProc;
+            '[': fProcTable[I] := SquareOpenProc;
+            ']': fProcTable[I] := SquareCloseProc;
+			'^': fProcTable[I] := PointerSymbolProc;
+			'"': fProcTable[I] := StringDQProc; // DR 2002-01-14
+      {$IFDEF D8_NEWER} //JThurman 2004-04-06
+      '&': fProcTable[I] := AmpersandOpProc;
+      {$ENDIF}
+          else fProcTable[I] := SymbolProc;
           end;
         end;
-    else
-      fProcTable[I] := UnknownProc;
+    else fProcTable[I] := UnknownProc;
     end;
 end;
 
@@ -1639,7 +1340,7 @@ end; { Create }
 
 destructor TmwBasePasLex.Destroy;
 begin
-  ClearDefines; // If we don't do this, we get a memory leak
+  ClearDefines; //If we don't do this, we get a memory leak
   FDefines.Free;
   fOrigin := nil;
   inherited Destroy;
@@ -1677,15 +1378,15 @@ end;
 
 procedure TmwBasePasLex.AddressOpProc;
 begin
-  case fOrigin[Run + 1] of
+  case FOrigin[Run + 1] of
     '@':
       begin
-        FTokenID := ptDoubleAddressOp;
+        fTokenID := ptDoubleAddressOp;
         inc(Run, 2);
       end;
   else
     begin
-      FTokenID := ptAddressOp;
+      fTokenID := ptAddressOp;
       inc(Run);
     end;
   end;
@@ -1693,17 +1394,15 @@ end;
 
 procedure TmwBasePasLex.AsciiCharProc;
 begin
-  FTokenID := ptAsciiChar;
+  fTokenID := ptAsciiChar;
   inc(Run);
-  if fOrigin[Run] = '$' then
+  if FOrigin[Run] = '$' then
   begin
     inc(Run);
-    while fOrigin[Run] in ['0' .. '9', 'A' .. 'F', 'a' .. 'f'] do
-      inc(Run);
-  end
-  else
+    while FOrigin[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+  end else
   begin
-    while fOrigin[Run] in ['0' .. '9'] do
+    while FOrigin[Run] in ['0'..'9'] do
       inc(Run);
   end;
 end;
@@ -1711,113 +1410,108 @@ end;
 procedure TmwBasePasLex.BraceCloseProc;
 begin
   inc(Run);
-  FTokenID := ptError;
+  fTokenId := ptError;
   if Assigned(FOnMessage) then
-    FOnMessage(Self, meError, 'Illegal character', PosXY.X, PosXY.Y);
+	FOnMessage(Self, meError, 'Illegal character', PosXY.X, PosXY.Y);
 end;
 
 procedure TmwBasePasLex.BorProc;
 begin
-  FTokenID := ptBorComment;
-  case fOrigin[Run] of
+  fTokenID := ptBorComment;
+  case FOrigin[Run] of
     #0:
       begin
-        NullProc;
+		NullProc;
         if Assigned(FOnMessage) then
           FOnMessage(Self, meError, 'Unexpected file end', PosXY.X, PosXY.Y);
         exit;
       end;
-    { DR 2001-08-02
+{				DR 2001-08-02
 
-      #10:
+    #10:
       begin
-      LFProc;
-      exit;
+        LFProc;
+        exit;
       end;
 
-      #13:
-      begin
-      CRProc;
-      exit;
-      end;
-    }
+	#13:
+	  begin
+		CRProc;
+		exit;
+	  end;
+}
   end;
 
-  while fOrigin[Run] <> #0 do
-    case fOrigin[Run] of
-      '}':
-        begin
-          fCommentState := csNo;
-          inc(Run);
-          break;
-        end;
-      { DR 2001-08-02
-        #10: break;
+  while FOrigin[Run] <> #0 do
+	case FOrigin[Run] of
+	  '}':
+		begin
+		  fCommentState := csNo;
+		  inc(Run);
+		  break;
+		end;
+{				DR 2001-08-02
+	  #10: break;
 
-        #13: break;
-      }
-      #10:
-        begin
-          inc(Run);
-          inc(fLineNumber);
-          fLinePos := Run;
-        end;
-      #13:
-        begin
-          inc(Run);
-          if fOrigin[Run] = #10 then
-            inc(Run);
-          inc(fLineNumber);
-          fLinePos := Run;
-        end;
-    else
-      inc(Run);
-    end;
+	  #13: break;
+}
+	  #10:
+		begin
+			inc(Run);
+			inc(fLineNumber);
+			fLinePos := Run;
+		end;
+	  #13:
+		begin
+			inc(Run);
+			if FOrigin[Run] = #10 then inc( Run );
+			inc(fLineNumber);
+			fLinePos := Run;
+		end;
+	else inc(Run);
+	end;
 end;
 
 procedure TmwBasePasLex.BraceOpenProc;
 var
   Param, Def: string;
 begin
-  case fOrigin[Run + 1] of
-    '$':
-      FTokenID := GetDirectiveKind;
+  case FOrigin[Run + 1] of
+    '$': fTokenID := GetDirectiveKind;
   else
     begin
-      FTokenID := ptBorComment;
+      fTokenID := ptBorComment;
       fCommentState := csBor;
     end;
   end;
   inc(Run);
-  while fOrigin[Run] <> #0 do
-    case fOrigin[Run] of
+  while FOrigin[Run] <> #0 do
+    case FOrigin[Run] of
       '}':
         begin
           fCommentState := csNo;
           inc(Run);
           break;
-        end;
-      #10:
-        begin
-          inc(Run);
-          inc(fLineNumber);
-          fLinePos := Run;
-        end;
-      #13:
-        begin
-          inc(Run);
-          if fOrigin[Run] = #10 then
-            inc(Run);
-          inc(fLineNumber);
-          fLinePos := Run;
-        end;
-      { #10: break;  DR 2001-10-12
+		end;
+	  #10:
+		begin
+			inc(Run);
+			inc(fLineNumber);
+			fLinePos := Run;
+		end;
+	  #13:
+		begin
+			inc(Run);
+			if FOrigin[Run] = #10 then inc( Run );
+			inc(fLineNumber);
+			fLinePos := Run;
+		end;
+{      #10: break;  DR 2001-10-12
 
-        #13: break; }
-    else
-      inc(Run);
+      #13: break;}
+    else inc(Run);
     end;
-  case FTokenID of
+  case fTokenID of
     PtCompDirect:
       begin
         if Assigned(fOnCompDirect) then
@@ -1837,9 +1531,10 @@ begin
           if FTopDefineRec <> nil then
           begin
             if FTopDefineRec^.Defined then
-              inc(FDefineStack)
-            else if FDefineStack > 0 then
-              Dec(FDefineStack);
+              Inc(FDefineStack)
+            else
+              if FDefineStack > 0 then
+                Dec(FDefineStack);
           end;
         end;
         if Assigned(fOnElseDirect) then
@@ -1863,7 +1558,7 @@ begin
       begin
         if FUseDefines then
           EnterDefineBlock(not IsDefined(DirectiveParam));
-        if Assigned(fOnIfNDefDirect) then
+    		if Assigned(fOnIfNDefDirect) then
           fOnIfNDefDirect(Self);
       end;
     PtIfOptDirect:
@@ -1899,7 +1594,7 @@ begin
           if FTopDefineRec <> nil then
           begin
             if FTopDefineRec^.Defined then
-              inc(FDefineStack)
+              Inc(FDefineStack)
             else
             begin
               if FDefineStack > 0 then
@@ -1930,24 +1625,24 @@ begin
       begin
         if FUseDefines then
           RemoveDefine(DirectiveParam);
-        if Assigned(fOnUnDefDirect) then
-          fOnUnDefDirect(Self);
+        if Assigned(fOnUndefDirect) then
+          fOnUndefDirect(Self);
       end;
   end;
 end;
 
 procedure TmwBasePasLex.ColonProc;
 begin
-  case fOrigin[Run + 1] of
+  case FOrigin[Run + 1] of
     '=':
       begin
         inc(Run, 2);
-        FTokenID := ptAssign;
-      end;
+        fTokenID := ptAssign;
+	  end;
   else
     begin
       inc(Run);
-      FTokenID := ptColon;
+      fTokenID := ptColon;
     end;
   end;
 end;
@@ -1955,25 +1650,20 @@ end;
 procedure TmwBasePasLex.CommaProc;
 begin
   inc(Run);
-  FTokenID := ptComma;
+  fTokenID := ptComma;
 end;
 
 procedure TmwBasePasLex.CRProc;
 begin
   case fCommentState of
-    csBor:
-      FTokenID := ptCRLFCo;
-    csAnsi:
-      FTokenID := ptCRLFCo;
-  else
-    FTokenID := ptCRLF;
+    csBor: fTokenID := ptCRLFCo;
+    csAnsi: fTokenID := ptCRLFCo;
+  else fTokenID := ptCRLF;
   end;
 
-  case fOrigin[Run + 1] of
-    #10:
-      inc(Run, 2);
-  else
-    inc(Run);
+  case FOrigin[Run + 1] of
+    #10: inc(Run, 2);
+  else inc(Run);
   end;
   inc(fLineNumber);
   fLinePos := Run;
@@ -1989,13 +1679,13 @@ begin
   StackFrame^.StartCount := FDefineStack;
   FTopDefineRec := StackFrame;
   if not ADefined then
-    inc(FDefineStack);
+    Inc(FDefineStack);
 end;
 
 procedure TmwBasePasLex.EqualProc;
 begin
   inc(Run);
-  FTokenID := ptEqual;
+  fTokenID := ptEqual;
 end;
 
 procedure TmwBasePasLex.ExitDefineBlock;
@@ -2010,20 +1700,19 @@ begin
     Dispose(StackFrame);
   end;
 end;
-
 procedure TmwBasePasLex.GreaterProc;
 begin
-  case fOrigin[Run + 1] of
+  case FOrigin[Run + 1] of
     '=':
       begin
         inc(Run, 2);
-        FTokenID := ptGreaterEqual;
+        fTokenID := ptGreaterEqual;
       end;
   else
     begin
       inc(Run);
-      FTokenID := ptGreater;
-    end;
+      fTokenID := ptGreater;
+	end;
   end;
 end;
 
@@ -2037,14 +1726,14 @@ end;
 
 procedure TmwBasePasLex.IdentProc;
 begin
-  FTokenID := IdentKind;
+  fTokenID := IdentKind;
 end;
 
 procedure TmwBasePasLex.IntegerProc;
 begin
   inc(Run);
-  FTokenID := ptIntegerConst;
-  while fOrigin[Run] in ['0' .. '9', 'A' .. 'F', 'a' .. 'f'] do
+  fTokenID := ptIntegerConst;
+  while FOrigin[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do
     inc(Run);
 end;
 
@@ -2064,12 +1753,9 @@ end;
 procedure TmwBasePasLex.LFProc;
 begin
   case fCommentState of
-    csBor:
-      FTokenID := ptCRLFCo;
-    csAnsi:
-      FTokenID := ptCRLFCo;
-  else
-    FTokenID := ptCRLF;
+	csBor: fTokenID := ptCRLFCo;
+	csAnsi: fTokenID := ptCRLFCo;
+  else fTokenID := ptCRLF;
   end;
   inc(Run);
   inc(fLineNumber);
@@ -2078,21 +1764,21 @@ end;
 
 procedure TmwBasePasLex.LowerProc;
 begin
-  case fOrigin[Run + 1] of
+  case FOrigin[Run + 1] of
     '=':
       begin
         inc(Run, 2);
-        FTokenID := ptLowerEqual;
+        fTokenID := ptLowerEqual;
       end;
     '>':
       begin
         inc(Run, 2);
-        FTokenID := ptNotEqual;
+        fTokenID := ptNotEqual;
       end
   else
     begin
       inc(Run);
-      FTokenID := ptLower;
+      fTokenID := ptLower;
     end;
   end;
 end;
@@ -2100,26 +1786,25 @@ end;
 procedure TmwBasePasLex.MinusProc;
 begin
   inc(Run);
-  FTokenID := ptMinus;
+  fTokenID := ptMinus;
 end;
 
 procedure TmwBasePasLex.NullProc;
 begin
-  FTokenID := ptNull;
+  fTokenID := ptNull;
 end;
 
 procedure TmwBasePasLex.NumberProc;
 begin
   inc(Run);
-  FTokenID := ptIntegerConst;
-  while fOrigin[Run] in ['0' .. '9', '.', 'e', 'E'] do
+  fTokenID := ptIntegerConst;
+  while FOrigin[Run] in ['0'..'9', '.', 'e', 'E'] do
   begin
-    case fOrigin[Run] of
+    case FOrigin[Run] of
       '.':
-        if fOrigin[Run + 1] = '.' then
+        if FOrigin[Run + 1] = '.' then
           break
-        else
-          FTokenID := ptFloat
+        else fTokenID := ptFloat
     end;
     inc(Run);
   end;
@@ -2128,40 +1813,40 @@ end;
 procedure TmwBasePasLex.PlusProc;
 begin
   inc(Run);
-  FTokenID := ptPlus;
+  fTokenID := ptPlus;
 end;
 
 procedure TmwBasePasLex.PointerSymbolProc;
 begin
   inc(Run);
-  FTokenID := ptPointerSymbol;
+  fTokenID := ptPointerSymbol;
 
-  // This is a wierd Pascal construct that rarely appears, but needs to be
-  // supported. ^M is a valid char reference (#13, in this case)
-  if fOrigin[Run] in ['a' .. 'z', 'A' .. 'Z'] then
+  //This is a wierd Pascal construct that rarely appears, but needs to be
+  //supported. ^M is a valid char reference (#13, in this case)
+  if FOrigin[Run] in ['a'..'z','A'..'Z'] then
   begin
     inc(Run);
-    FTokenID := ptAsciiChar;
+    fTokenID := ptAsciiChar;
   end;
 end;
 
 procedure TmwBasePasLex.PointProc;
 begin
-  case fOrigin[Run + 1] of
+  case FOrigin[Run + 1] of
     '.':
       begin
         inc(Run, 2);
-        FTokenID := ptDotDot;
+        fTokenID := ptDotDot;
       end;
     ')':
       begin
         inc(Run, 2);
-        FTokenID := ptSquareClose;
+        fTokenID := ptSquareClose;
       end;
   else
     begin
       inc(Run);
-      FTokenID := ptPoint;
+      fTokenID := ptPoint;
     end;
   end;
 end;
@@ -2178,13 +1863,13 @@ end;
 procedure TmwBasePasLex.RoundCloseProc;
 begin
   inc(Run);
-  FTokenID := ptRoundClose;
+  fTokenID := ptRoundClose;
 end;
 
 procedure TmwBasePasLex.AnsiProc;
 begin
-  FTokenID := ptAnsiComment;
-  case fOrigin[Run] of
+  fTokenID := ptAnsiComment;
+  case FOrigin[Run] of
     #0:
       begin
         NullProc;
@@ -2193,19 +1878,19 @@ begin
         exit;
       end;
 
-    { DR 2001-08-02
-      #10:
+{				DR 2001-08-02
+	#10:
       begin
-      LFProc;
-      exit;
+		LFProc;
+        exit;
       end;
 
-      #13:
+    #13:
       begin
-      CRProc;
-      exit;
+        CRProc;
+        exit;
       end;
-    }
+}
   end;
 
   while fOrigin[Run] <> #0 do
@@ -2217,29 +1902,26 @@ begin
           inc(Run, 2);
           break;
         end
-        else
-          inc(Run);
-      { DR 2001-08-02
-        #10: break;
+        else inc(Run);
+{                DR 2001-08-02
+      #10: break;
 
-        #13: break;
-      }
-      #10:
-        begin
-          inc(Run);
-          inc(fLineNumber);
-          fLinePos := Run;
-        end;
-      #13:
-        begin
-          inc(Run);
-          if fOrigin[Run] = #10 then
-            inc(Run);
-          inc(fLineNumber);
-          fLinePos := Run;
-        end;
-    else
-      inc(Run);
+	  #13: break;
+}
+	  #10:
+		begin
+			inc(Run);
+			inc(fLineNumber);
+			fLinePos := Run;
+		end;
+	  #13:
+		begin
+			inc(Run);
+			if FOrigin[Run] = #10 then inc( Run );
+			inc(fLineNumber);
+			fLinePos := Run;
+		end;
+	else inc(Run);
     end;
 end;
 
@@ -2249,54 +1931,49 @@ begin
   case fOrigin[Run] of
     '*':
       begin
-        FTokenID := ptAnsiComment;
-        if fOrigin[Run + 1] = '$' then
-          FTokenID := GetDirectiveKind
-        else
-          fCommentState := csAnsi;
+        fTokenID := ptAnsiComment;
+        if FOrigin[Run + 1] = '$' then
+          fTokenID := GetDirectiveKind
+        else fCommentState := csAnsi;
         inc(Run);
         while fOrigin[Run] <> #0 do
           case fOrigin[Run] of
             '*':
-              if fOrigin[Run + 1] = ')' then
-              begin
-                fCommentState := csNo;
-                inc(Run, 2);
-                break;
-              end
-              else
-                inc(Run);
-            { DR 2001-08-02
-              #10: break;
-              #13: break;
-            }
-            #10:
-              begin
-                inc(Run);
-                inc(fLineNumber);
-                fLinePos := Run;
-              end;
-            #13:
-              begin
-                inc(Run);
-                if fOrigin[Run] = #10 then
-                  inc(Run);
-                inc(fLineNumber);
-                fLinePos := Run;
-              end;
-          else
-            inc(Run);
+			  if fOrigin[Run + 1] = ')' then
+			  begin
+				fCommentState := csNo;
+				inc(Run, 2);
+				break;
+			  end
+			  else inc(Run);
+{								DR 2001-08-02
+			#10: break;
+			#13: break;
+}
+			  #10:
+				begin
+					inc(Run);
+					inc(fLineNumber);
+					fLinePos := Run;
+				end;
+			  #13:
+				begin
+					inc(Run);
+					if FOrigin[Run] = #10 then inc( Run );
+					inc(fLineNumber);
+					fLinePos := Run;
+				end;
+			else inc(Run);
           end;
       end;
     '.':
       begin
         inc(Run);
-        FTokenID := ptSquareOpen;
+        fTokenID := ptSquareOpen;
       end;
-  else
-    FTokenID := ptRoundOpen;
+  else fTokenID := ptRoundOpen;
   end;
-  case FTokenID of
+  case fTokenID of
     PtCompDirect:
       begin
         if Assigned(fOnCompDirect) then
@@ -2344,8 +2021,8 @@ begin
       end;
     PtUndefDirect:
       begin
-        if Assigned(fOnUnDefDirect) then
-          fOnUnDefDirect(Self);
+        if Assigned(fOnUndefDirect) then
+          fOnUndefDirect(Self);
       end;
   end;
 end;
@@ -2353,21 +2030,20 @@ end;
 procedure TmwBasePasLex.SemiColonProc;
 begin
   inc(Run);
-  FTokenID := ptSemiColon;
+  fTokenID := ptSemiColon;
 end;
 
 procedure TmwBasePasLex.SlashProc;
 begin
-  case fOrigin[Run + 1] of
+  case FOrigin[Run + 1] of
     '/':
       begin
         inc(Run, 2);
-        FTokenID := ptSlashesComment;
-        while fOrigin[Run] <> #0 do
+        fTokenID := ptSlashesComment;
+        while FOrigin[Run] <> #0 do
         begin
-          case fOrigin[Run] of
-            #10, #13:
-              break;
+          case FOrigin[Run] of
+            #10, #13: break;
           end;
           inc(Run);
         end;
@@ -2375,7 +2051,7 @@ begin
   else
     begin
       inc(Run);
-      FTokenID := ptSlash;
+      fTokenID := ptSlash;
     end;
   end;
 end;
@@ -2383,72 +2059,72 @@ end;
 procedure TmwBasePasLex.SpaceProc;
 begin
   inc(Run);
-  FTokenID := ptSpace;
-  while fOrigin[Run] in [#1 .. #9, #11, #12, #14 .. #32] do
+  fTokenID := ptSpace;
+  while FOrigin[Run] in [#1..#9, #11, #12, #14..#32] do
     inc(Run);
 end;
 
 procedure TmwBasePasLex.SquareCloseProc;
 begin
   inc(Run);
-  FTokenID := ptSquareClose;
+  fTokenID := ptSquareClose;
 end;
 
 procedure TmwBasePasLex.SquareOpenProc;
 begin
   inc(Run);
-  FTokenID := ptSquareOpen;
+  fTokenID := ptSquareOpen;
 end;
 
 procedure TmwBasePasLex.StarProc;
 begin
   inc(Run);
-  FTokenID := ptStar;
+  fTokenID := ptStar;
 end;
 
 procedure TmwBasePasLex.StringProc;
 begin
-  FTokenID := ptStringConst;
+  fTokenID := ptStringConst;
   repeat
-    inc(Run);
-    case fOrigin[Run] of
-      #0, #10, #13:
-        begin
-          if Assigned(FOnMessage) then
-            FOnMessage(Self, meError, 'Unterminated string', PosXY.X, PosXY.Y);
-          break;
-        end;
-      #39:
-        begin
-          while (fOrigin[Run] = #39) and (fOrigin[Run + 1] = #39) do
-          begin
-            inc(Run, 2);
-          end;
-        end;
-    end;
-  until fOrigin[Run] = #39;
-  if fOrigin[Run] = #39 then
+	inc(Run);
+	case FOrigin[Run] of
+	  #0, #10, #13:
+		begin
+		  if Assigned(FOnMessage) then
+			FOnMessage(Self, meError, 'Unterminated string', PosXY.X, PosXY.Y);
+		  break;
+		end;
+	  #39:
+		begin
+		  while (FOrigin[Run] = #39) and (FOrigin[Run + 1] = #39) do
+		  begin
+			inc(Run, 2);
+		  end;
+		end;
+	end;
+  until FOrigin[Run] = #39;
+  if FOrigin[Run] = #39 then
   begin
-    inc(Run);
-    if TokenLen = 3 then
-    begin
-      FTokenID := ptAsciiChar;
-    end;
+	inc(Run);
+	if TokenLen = 3 then
+	begin
+	  fTokenID := ptAsciiChar;
+	end;
   end;
 end;
 
 procedure TmwBasePasLex.SymbolProc;
 begin
   inc(Run);
-  FTokenID := ptSymbol;
+  fTokenID := ptSymbol;
 end;
 
 procedure TmwBasePasLex.UnknownProc;
 begin
   inc(Run);
-  FTokenID := ptUnKnown;
+  fTokenID := ptUnknown;
   if Assigned(FOnMessage) then
-    FOnMessage(Self, meError, 'Unknown Character', PosXY.X, PosXY.Y);
+   FOnMessage(Self, meError, 'Unknown Character', PosXY.X, PosXY.Y);
 end;
 
 procedure TmwBasePasLex.Next;
@@ -2457,42 +2133,40 @@ begin
   fTokenPos := Run;
   case fCommentState of
     csNo:
-      begin
-        DoProcTable(fOrigin[Run]);
-        (* {$IFDEF D10_NEWER}
-          if fOrigin[Run] < #256 then
-          fProcTable[fOrigin[Run]]
-          else //non-ASCII unicode char
-          IdentProc;
-          {$ELSE}
-          fProcTable[fOrigin[Run]];
-          {$ENDIF} *)
-      end;
+    begin
+      DoProcTable(fOrigin[Run]);
+     (*{$IFDEF D10_NEWER}
+     if fOrigin[Run] < #256 then
+       fProcTable[fOrigin[Run]]
+     else //non-ASCII unicode char
+       IdentProc;
+     {$ELSE}
+     fProcTable[fOrigin[Run]];
+     {$ENDIF}*)
+    end;
   else
     case fCommentState of
-      csBor:
-        BorProc;
-      csAnsi:
-        AnsiProc;
+      csBor: BorProc;
+      csAnsi: AnsiProc;
     end;
   end;
 end;
 
+
 function TmwBasePasLex.GetIsJunk: Boolean;
 begin
-  Result := IsTokenIDJunk(FTokenID) or (FUseDefines and (FDefineStack > 0) and
-    (TokenID <> ptNull));
-  // Result := fTokenID in [ptAnsiComment, ptBorComment, ptCRLF, ptCRLFCo, ptSlashesComment, ptSpace]; //XM 20001210
+  result := IsTokenIDJunk(FTokenID) or (FUseDefines and (FDefineStack > 0) and (TokenID <> ptNull));
+//  Result := fTokenID in [ptAnsiComment, ptBorComment, ptCRLF, ptCRLFCo, ptSlashesComment, ptSpace]; //XM 20001210
 end;
 
 function TmwBasePasLex.GetIsSpace: Boolean;
 begin
-  Result := FTokenID in [ptCRLF, ptSpace];
+  Result := fTokenID in [ptCRLF, ptSpace];
 end;
 
 function TmwBasePasLex.GetToken: string;
 begin
-  SetString(Result, (fOrigin + fTokenPos), GetTokenLen);
+  SetString(Result, (FOrigin + fTokenPos), GetTokenLen);
 end;
 
 function TmwBasePasLex.GetTokenLen: Integer;
@@ -2503,13 +2177,11 @@ end;
 procedure TmwBasePasLex.NextID(ID: TptTokenKind);
 begin
   repeat
-    case FTokenID of
-      ptNull:
-        break;
-    else
-      Next;
+    case fTokenID of
+      ptNull: break;
+    else Next;
     end;
-  until FTokenID = ID;
+  until fTokenID = ID;
 end;
 
 procedure TmwBasePasLex.NextNoJunk;
@@ -2531,17 +2203,14 @@ var
   RunBack: Integer;
 begin
   Result := True;
-  if fTokenPos = 0 then
-    exit;
+  if fTokenPos = 0 then exit;
   RunBack := fTokenPos;
-  Dec(RunBack);
-  while fOrigin[RunBack] in [#1 .. #9, #11, #12, #14 .. #32] do
-    Dec(RunBack);
-  if RunBack = 0 then
-    exit;
+  dec(RunBack);
+  while fOrigin[RunBack] in [#1..#9, #11, #12, #14..#32] do
+    dec(RunBack);
+  if RunBack = 0 then exit;
   case fOrigin[RunBack] of
-    #10, #13:
-      exit;
+    #10, #13: exit;
   else
     begin
       Result := False;
@@ -2559,20 +2228,20 @@ function TmwBasePasLex.GetCompilerDirective: string;
 var
   DirectLen: Integer;
 begin
-  if TokenID <> PtCompDirect then
+  if TokenID <> ptCompDirect then
     Result := ''
   else
     case fOrigin[fTokenPos] of
       '(':
         begin
           DirectLen := Run - fTokenPos - 4;
-          SetString(Result, (fOrigin + fTokenPos + 2), DirectLen);
+          SetString(Result, (FOrigin + fTokenPos + 2), DirectLen);
           Result := UpperCase(Result);
         end;
       '{':
         begin
           DirectLen := Run - fTokenPos - 2;
-          SetString(Result, (fOrigin + fTokenPos + 1), DirectLen);
+          SetString(Result, (FOrigin + fTokenPos + 1), DirectLen);
           Result := UpperCase(Result);
         end;
     end;
@@ -2583,92 +2252,73 @@ var
   TempPos: Integer;
 begin
   case fOrigin[fTokenPos] of
-    '(':
-      Run := fTokenPos + 3;
-    '{':
-      Run := fTokenPos + 2;
+    '(': Run := FTokenPos + 3;
+    '{': Run := FTokenPos + 2;
   end;
-  FDirectiveParamOrigin := fOrigin + fTokenPos;
+  FDirectiveParamOrigin := FOrigin + FTokenPos;
   TempPos := fTokenPos;
   fTokenPos := Run;
   case KeyHash of
     9:
       if KeyComp('I') then
-        Result := PtIncludeDirect
-      else
-        Result := PtCompDirect;
+        Result := ptIncludeDirect else
+        Result := ptCompDirect;
     15:
       if KeyComp('IF') then
-        Result := PtIfDirect
-      else
-        Result := PtCompDirect;
+        Result := ptIfDirect else
+        Result := ptCompDirect;
     18:
       if KeyComp('R') then
       begin
-        if not(fOrigin[Run] in ['+', '-']) then
-          Result := PtResourceDirect
-        else
-          Result := PtCompDirect;
-      end
-      else
-        Result := PtCompDirect;
+        if not (fOrigin[Run] in ['+', '-']) then
+          Result := ptResourceDirect else Result := ptCompDirect;
+      end else Result := ptCompDirect;
     30:
       if KeyComp('IFDEF') then
-        Result := PtIfDefDirect
-      else
-        Result := PtCompDirect;
+        Result := ptIfDefDirect else
+        Result := ptCompDirect;
     38:
       if KeyComp('ENDIF') then
-        Result := PtEndIfDirect
-      else if KeyComp('IFEND') then
-        Result := PtIfEndDirect
-      else
-        Result := PtCompDirect;
+        Result := ptEndIfDirect else
+      if KeyComp('IFEND') then
+        Result := ptIfEndDirect else
+        Result := ptCompDirect;
     41:
       if KeyComp('ELSE') then
-        Result := PtElseDirect
-      else
-        Result := PtCompDirect;
+        Result := ptElseDirect else
+        Result := ptCompDirect;
     43:
       if KeyComp('DEFINE') then
-        Result := PtDefineDirect
-      else
-        Result := PtCompDirect;
+        Result := ptDefineDirect else
+        Result := ptCompDirect;
     44:
       if KeyComp('IFNDEF') then
-        Result := PtIfNDefDirect
-      else
-        Result := PtCompDirect;
+        Result := ptIfNDefDirect else
+        Result := ptCompDirect;
     50:
       if KeyComp('UNDEF') then
-        Result := PtUndefDirect
-      else
-        Result := PtCompDirect;
+        Result := ptUndefDirect else
+        Result := ptCompDirect;
     56:
       if KeyComp('ELSEIF') then
-        Result := PtElseIfDirect
-      else
-        Result := PtCompDirect;
+        Result := ptElseIfDirect else
+        Result := ptCompDirect;
     66:
       if KeyComp('IFOPT') then
-        Result := PtIfOptDirect
-      else
-        Result := PtCompDirect;
+        Result := ptIfOptDirect else
+        Result := ptCompDirect;
     68:
       if KeyComp('INCLUDE') then
-        Result := PtIncludeDirect
-      else
-        Result := PtCompDirect;
+        Result := ptIncludeDirect else
+        Result := ptCompDirect;
     104:
       if KeyComp('Resource') then
-        Result := PtResourceDirect
-      else
-        Result := PtCompDirect;
-  else
-    Result := PtCompDirect;
+        Result := ptResourceDirect else
+        Result := ptCompDirect;
+  else Result := ptCompDirect;
   end;
   fTokenPos := TempPos;
-  Dec(Run);
+  dec(Run);
 end;
 
 function TmwBasePasLex.GetDirectiveParam: string;
@@ -2677,16 +2327,16 @@ var
   ParamLen: Integer;
 begin
   // !! without this set... there is a warning?
-  EndPos := 0;
+  EndPos:= 0;
   case fOrigin[fTokenPos] of
     '(':
       begin
-        TempRun := fTokenPos + 3;
+        TempRun := FTokenPos + 3;
         EndPos := Run - 2;
       end;
     '{':
       begin
-        TempRun := fTokenPos + 2;
+        TempRun := FTokenPos + 2;
         EndPos := Run - 1;
       end;
   end;
@@ -2698,13 +2348,11 @@ begin
     while IsIdentifiers(fOrigin[TempRun]) do
       inc(TempRun);
     if (fOrigin[TempRun - 1] in ['+', ',', '-']) and (fOrigin[TempRun] = ' ')
-    then
-      inc(TempRun);
+      then inc(TempRun);
   end;
-  if fOrigin[TempRun] = ' ' then
-    inc(TempRun);
+  if fOrigin[TempRun] = ' ' then inc(TempRun);
   ParamLen := EndPos - TempRun;
-  SetString(Result, (fOrigin + TempRun), ParamLen);
+  SetString(Result, (FOrigin + TempRun), ParamLen);
   Result := UpperCase(Result);
 end;
 
@@ -2730,52 +2378,52 @@ end;
 procedure TmwBasePasLex.InitDefines;
 begin
   ClearDefines;
-  // Set up the defines that are defined by the compiler
-{$IFDEF VER130}
+  //Set up the defines that are defined by the compiler
+  {$IFDEF VER130}
   AddDefine('VER130');
-{$ENDIF}
-{$IFDEF VER140}
+  {$ENDIF}
+  {$IFDEF VER140}
   AddDefine('VER140');
-{$ENDIF}
-{$IFDEF VER150}
+  {$ENDIF}
+  {$IFDEF VER150}
   AddDefine('VER150');
-{$ENDIF}
-{$IFDEF VER160}
+  {$ENDIF}
+  {$IFDEF VER160}
   AddDefine('VER160');
-{$ENDIF}
-{$IFDEF VER170}
+  {$ENDIF}
+  {$IFDEF VER170}
   AddDefine('VER170');
-{$ENDIF}
-{$IFDEF VER180}
+  {$ENDIF}
+  {$IFDEF VER180}
   AddDefine('VER180');
-{$ENDIF}
-{$IFDEF VER185}
+  {$ENDIF}
+  {$IFDEF VER185}
   AddDefine('VER185');
-{$ENDIF}
-{$IFDEF VER190}
+  {$ENDIF}
+  {$IFDEF VER190}
   AddDefine('VER190');
-{$ENDIF}
-{$IFDEF VER200}
+  {$ENDIF}
+  {$IFDEF VER200}
   AddDefine('VER200');
-{$ENDIF}
-{$IFDEF WIN32}
+  {$ENDIF}
+  {$IFDEF WIN32}
   AddDefine('WIN32');
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF}
+  {$IFDEF LINUX}
   AddDefine('LINUX');
-{$ENDIF}
-{$IFDEF CPU386}
+  {$ENDIF}
+  {$IFDEF CPU386}
   AddDefine('CPU386');
-{$ENDIF}
-{$IFDEF MSWINDOWS}
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
   AddDefine('MSWINDOWS');
-{$ENDIF}
-{$IFDEF CONDITIONALEXPRESSIONS}
+  {$ENDIF}
+  {$IFDEF CONDITIONALEXPRESSIONS}
   AddDefine('CONDITIONALEXPRESSIONS');
-{$ENDIF}
-{$IFDEF UNICODE}
+  {$ENDIF}
+  {$IFDEF UNICODE}
   AddDefine('UNICODE');
-{$ENDIF}
+  {$ENDIF}
 end;
 
 procedure TmwBasePasLex.InitLine;
@@ -2808,8 +2456,7 @@ begin
   begin
     TempString := Token;
     sEnd := Length(TempString);
-    if TempString[sEnd] <> #39 then
-      inc(sEnd);
+    if TempString[sEnd] <> #39 then inc(sEnd);
     Result := Copy(TempString, 2, sEnd - 2);
     TempString := '';
   end;
@@ -2818,73 +2465,70 @@ end;
 function TmwBasePasLex.GetIsOrdIdent: Boolean;
 begin
   Result := False;
-  if FTokenID = ptIdentifier then
-    Result := fExID in [ptBoolean, ptByte, ptChar, ptDWORD, ptInt64, ptInteger,
-      ptLongint, ptLongword, ptPChar, ptShortint, ptSmallint,
-      ptWideChar, ptWord]
+  if fTokenID = ptIdentifier then
+    Result := fExID in [ptBoolean, ptByte, ptChar, ptDWord, ptInt64, ptInteger,
+      ptLongInt, ptLongWord, ptPChar, ptShortInt, ptSmallInt, ptWideChar, ptWord]
 end;
 
 function TmwBasePasLex.GetIsOrdinalType: Boolean;
 begin
-  Result := GetIsOrdIdent or (FTokenID in [ptAsciiChar, ptIntegerConst]);
+  Result := GetIsOrdIdent or (fTokenID in [ptAsciiChar, ptIntegerConst]);
 end;
 
 function TmwBasePasLex.GetIsRealType: Boolean;
 begin
   Result := False;
-  if FTokenID = ptIdentifier then
-    Result := fExID in [ptComp, ptCurrency, ptDouble, ptExtended, ptReal,
-      ptReal48, ptSingle]
+  if fTokenID = ptIdentifier then
+    Result := fExID in [ptComp, ptCurrency, ptDouble, ptExtended, ptReal, ptReal48, ptSingle]
 end;
 
 function TmwBasePasLex.GetIsStringType: Boolean;
 begin
   Result := False;
-  if FTokenID = ptIdentifier then
+  if fTokenID = ptIdentifier then
     Result := fExID in [ptAnsiString, ptWideString]
-  else if FTokenID = ptString then
-    Result := True
-  else if FTokenID = ptStringConst then
-    Result := True;
+  else
+    if fTokenID = ptString then
+      Result := True
+    else
+      if fTokenID = ptStringConst then Result := True;
 end;
 
 function TmwBasePasLex.GetIsVarantType: Boolean;
 begin
   Result := False;
-  if FTokenID = ptIdentifier then
+  if fTokenID = ptIdentifier then
     Result := fExID in [ptOleVariant, ptVariant]
 end;
 
 function TmwBasePasLex.GetIsAddOperator: Boolean;
 begin
-  Result := FTokenID in [ptMinus, ptOr, ptPlus, ptXor];
+  Result := fTokenID in [ptMinus, ptOr, ptPlus, ptXor];
 end;
 
 function TmwBasePasLex.GetIsMulOperator: Boolean;
 begin
-  Result := FTokenID in [ptAnd, ptAs, ptDiv, ptMod, ptShl, ptShr,
-    ptSlash, ptStar];
+  Result := fTokenID in [ptAnd, ptAs, ptDiv, ptMod, ptShl, ptShr, ptSlash, ptStar];
 end;
 
 function TmwBasePasLex.GetIsRelativeOperator: Boolean;
 begin
-  Result := FTokenID in [ptAs, ptEqual, ptGreater, ptGreaterEqual, ptLower,
-    ptLowerEqual, ptIn, ptIs, ptNotEqual];
+  Result := fTokenID in [ptAs, ptEqual, ptGreater, ptGreaterEqual, ptLower, ptLowerEqual,
+    ptIn, ptIs, ptNotEqual];
 end;
 
 function TmwBasePasLex.GetIsCompilerDirective: Boolean;
 begin
-  Result := FTokenID in [PtCompDirect, PtDefineDirect, PtElseDirect,
-    PtEndIfDirect, PtIfDefDirect, PtIfNDefDirect, PtIfOptDirect,
-    PtIncludeDirect, PtResourceDirect, PtUndefDirect];
+  Result := fTokenID in [ptCompDirect, ptDefineDirect, ptElseDirect,
+    ptEndIfDirect, ptIfDefDirect, ptIfNDefDirect, ptIfOptDirect,
+    ptIncludeDirect, ptResourceDirect, ptUndefDirect];
 end;
 
 function TmwBasePasLex.GetGenID: TptTokenKind;
 begin
-  Result := FTokenID;
-  if FTokenID = ptIdentifier then
-    if fExID <> ptUnKnown then
-      Result := fExID;
+  Result := fTokenID;
+  if fTokenID = ptIdentifier then
+    if fExID <> ptUnknown then Result := fExID;
 end;
 
 { TmwPasLex }
@@ -2942,12 +2586,12 @@ procedure TmwPasLex.InitAhead;
 begin
   fAheadLex.CommentState := CommentState;
   fAheadLex.RunPos := RunPos;
-  fAheadLex.fLineNumber := fLineNumber;
-  fAheadLex.fLinePos := fLinePos;
+  FAheadLex.fLineNumber := FLineNumber;
+  FAheadLex.FLinePos := FLinePos;
 
-  fAheadLex.CloneDefinesFrom(Self);
+  FAheadLex.CloneDefinesFrom(Self);
 
-  // FAheadLex.FTokenPos := FTokenPos;
+  //FAheadLex.FTokenPos := FTokenPos;
   while fAheadLex.IsJunk do
     fAheadLex.Next;
 end;
@@ -2961,7 +2605,7 @@ begin
   Result.Origin := fOrigin;
   Result.RunPos := Run;
   Result.TokenPos := fTokenPos;
-  Result.TokenID := FTokenID;
+  Result.TokenID := fTokenID;
 end;
 
 procedure TmwPasLex.SetStatus(const Value: TmwPasLexStatus);
@@ -2973,7 +2617,7 @@ begin
   fOrigin := Value.Origin;
   Run := Value.RunPos;
   fTokenPos := Value.TokenPos;
-  FTokenID := Value.TokenID;
+  fTokenID := Value.TokenID;
   fAheadLex.Origin := Value.Origin;
 end;
 
@@ -3009,12 +2653,12 @@ end;
 
 procedure TmwBasePasLex.SetOnIfDirect(const Value: TDirectiveEvent);
 begin
-  fOnIfDirect := Value;
+  FOnIfDirect := Value;
 end;
 
 procedure TmwBasePasLex.SetOnIfEndDirect(const Value: TDirectiveEvent);
 begin
-  fOnIfEndDirect := Value;
+  FOnIfEndDirect := Value;
 end;
 
 procedure TmwBasePasLex.SetOnIfNDefDirect(const Value: TDirectiveEvent);
@@ -3045,113 +2689,109 @@ end;
 procedure TmwPasLex.SetOnCompDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnCompDirect := Value;
+  //AheadLex.OnCompDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnDefineDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnDefineDirect := Value;
+  //AheadLex.OnDefineDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnElseDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnElseDirect := Value;
+  //AheadLex.OnElseDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnEndIfDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnEndIfDirect := Value;
+  //AheadLex.OnEndIfDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnIfDefDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnIfDefDirect := Value;
+  //AheadLex.OnIfDefDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnIfNDefDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnIfNDefDirect := Value;
+  //AheadLex.OnIfNDefDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnIfOptDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnIfOptDirect := Value;
+  //AheadLex.OnIfOptDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnIncludeDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnIncludeDirect := Value;
+  //AheadLex.OnIncludeDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnResourceDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnResourceDirect := Value;
+  //AheadLex.OnResourceDirect := Value;
 end;
 
 procedure TmwPasLex.SetOnUnDefDirect(const Value: TDirectiveEvent);
 begin
   inherited;
-  // AheadLex.OnUnDefDirect := Value;
+  //AheadLex.OnUnDefDirect := Value;
 end;
 
 function TmwBasePasLex.Func86: TptTokenKind;
 begin
   Result := ptIdentifier;
-  if KeyComp('Varargs') then
-    fExID := ptVarargs;
+  if KeyComp('Varargs') then fExID := ptVarargs;
 end;
 
 procedure TmwBasePasLex.StringDQProc;
 begin
-  if not fAsmCode then
-  begin
-    SymbolProc;
-    exit;
-  end;
-  FTokenID := ptStringDQConst;
+	if not fAsmCode then
+	begin
+		SymbolProc;
+		Exit;
+	end;
+  fTokenID := ptStringDQConst;
   repeat
-    inc(Run);
-    case fOrigin[Run] of
-      #0, #10, #13:
-        begin
-          if Assigned(FOnMessage) then
-            FOnMessage(Self, meError, 'Unterminated string', PosXY.X, PosXY.Y);
-          break;
-        end;
-      '\':
-        begin
-          inc(Run);
-          if fOrigin[Run] in [#32 .. #255] then
-            inc(Run);
-        end;
-    end;
-  until fOrigin[Run] = '"';
-  if fOrigin[Run] = '"' then
-    inc(Run);
+	inc(Run);
+	case FOrigin[Run] of
+	  #0, #10, #13:
+		begin
+		  if Assigned(FOnMessage) then
+			FOnMessage(Self, meError, 'Unterminated string', PosXY.X, PosXY.Y);
+		  break;
+		end;
+	  '\':
+		begin
+		  Inc( Run );
+		  if FOrigin[Run] in [#32..#255] then Inc( Run );
+		end;
+	end;
+  until FOrigin[Run] = '"';
+  if FOrigin[Run] = '"' then
+	inc(Run);
 end;
 
-{$IFDEF D8_NEWER}
-// JThurman 2004-04-06
+{$IFDEF D8_NEWER} //JThurman 2004-04-06
 procedure TmwBasePasLex.AmpersandOpProc;
 begin
   FTokenID := ptAmpersand;
   inc(Run);
-  while fOrigin[Run] in ['a' .. 'z', 'A' .. 'Z', '0' .. '9'] do
+  while FOrigin[Run] in ['a'..'z', 'A'..'Z','0'..'9'] do
     inc(Run);
   FTokenID := ptIdentifier;
 end;
 {$ENDIF}
 
 initialization
-
-MakeIdentTable;
-
+  MakeIdentTable;
 end.
+

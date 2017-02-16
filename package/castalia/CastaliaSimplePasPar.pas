@@ -426,6 +426,8 @@ type
     procedure ResolutionInterfaceName; virtual;
     procedure ResourceDeclaration; virtual;
     procedure ReturnType; virtual;
+    procedure ReturnTypeLower;virtual;
+    procedure ReturnTypeEnd;virtual;
     procedure SetConstructor; virtual;
     procedure SetElement; virtual;
     procedure SetType; virtual;
@@ -521,7 +523,7 @@ type
     procedure PositionalArgument;
     procedure NamedArgumentList;
     procedure NamedArgument;
-    procedure AttributeArgumentExpression; 
+    procedure AttributeArgumentExpression;
     {$ENDIF}
     property ExID: TptTokenKind read GetExID;
     property GenID: TptTokenKind read GetGenID;
@@ -1240,7 +1242,7 @@ procedure TmwSimplePasPar.MainUsesClause;
 begin
   Expected(ptUses);
   MainUsedUnitStatement;
-  while TokenID = ptComma do
+  while (TokenID = ptComma) { or (TokenID = ptPoint)} do
   begin
     NextToken;
     MainUsedUnitStatement;
@@ -1251,7 +1253,7 @@ end;
 procedure TmwSimplePasPar.MainUsedUnitStatement;
 begin
   MainUsedUnitName;
-  if Lexer.TokenID = ptIn then
+  if (Lexer.TokenID = ptIn) { or (Lexer.TokenID = ptPoint)} then
   begin
     NextToken;
     MainUsedUnitExpression;
@@ -1688,7 +1690,10 @@ begin
     FormalParameterList;
   end;
   Expected(ptColon);
+    if tokenID=ptLower then
+     ReturnTypeLower;  // generics - Amarildo Lacerda
   ReturnType;
+  ReturnTypeEnd;
   if TokenId = ptSemicolon then // DR 2002-01-14
     SEMICOLON;
   if ExID = ptDispId then
@@ -2000,6 +2005,16 @@ begin
       TypeID;
     end;
   end;
+end;
+
+procedure TmwSimplePasPar.ReturnTypeEnd;
+begin
+
+end;
+
+procedure TmwSimplePasPar.ReturnTypeLower;
+begin
+  NextToken;
 end;
 
 procedure TmwSimplePasPar.FormalParameterList;
@@ -2494,7 +2509,7 @@ begin
   Expression;
   Expected(ptThen);
   Statement;
-  //This breaks if you have an if statement immediately preceding the else 
+  //This breaks if you have an if statement immediately preceding the else
   //clause of a case statement
 {  Lexer.InitAhead;
   if (TokenID = ptSemicolon) and (Lexer.AheadTokenID = ptElse) then
@@ -2912,7 +2927,7 @@ begin //mw 12/7/2000
             ptOf, ptOr, ptOut, ptPacked, ptProcedure, ptProgram, ptProperty,
             ptRaise, ptRecord, ptRepeat, ptResourceString, ptSealed, ptSet,
             ptShl, ptShr, ptStatic, ptString, ptThen, ptThreadVar, ptTo, ptTry,
-            ptType, ptUnit, ptUnsafe, ptUntil, ptUses, ptVar, ptWhile, ptWith,
+            ptType, ptUnit, ptUnsafe, ptUntil, {ptUses, }ptVar, ptWhile, ptWith,
             ptXor] then
               NextToken
           else
@@ -4585,8 +4600,8 @@ procedure TmwSimplePasPar.TypeDeclaration;
 begin
   TypeName;
   //For generics
-//  if TokenId = ptLower then
-//    TypeParams;
+  if TokenId = ptLower then
+     TypeParams;
   //end generics
   Expected(ptEqual);
   if TokenID = ptType then
@@ -5520,13 +5535,6 @@ end;
 
 procedure TmwSimplePasPar.InterfaceSection;
 begin
-
-  while not (tokenID in [ptInterface,ptUses,ptNull]) do
-        NextToken;
-  if tokenID= ptInterface then
-     InterfaceType;
-
-
   Expected(ptInterface);
   if TokenID = ptUses then
   begin

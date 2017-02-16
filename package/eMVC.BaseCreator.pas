@@ -125,6 +125,11 @@ end;
 function TBaseCreator.getBaseName: string;
 begin
   Result := self.FBaseName;
+{  if pos('<',Result)>0 then
+    result := copy(result,1,pos('<',result)-1);
+  if ( result+' ')[1]='T' then
+     result := copy(result,2,255);
+}
   Debug('GetBaseName: ' + Result);
 end;
 
