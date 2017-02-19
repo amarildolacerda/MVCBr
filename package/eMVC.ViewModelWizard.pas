@@ -253,7 +253,7 @@ begin
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := '2. ViewModel';
+  result := '2. View';
 end;
 
 function TNewMVCViewModelWizard.GetPage: string;
