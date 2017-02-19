@@ -8,6 +8,8 @@ uses System.Classes, System.SysUtils, MVCBr.Interf, MVCBr.DatabaseModel.Interf,
 
 type
 
+  IDatabaseModel = MVCBr.DatabaseModel.Interf.IDatabaseModel;
+
   // TQueryModelFactory<T: Class> É o construtor de Query
   // Generic:   T:Class É a classe decendente de TDataset ligado ao framework utilizado
   TQueryModelFactory<T: Class> = class(TInterfacedObject, IQueryModel<T>)
@@ -47,8 +49,10 @@ type
   TDatabaseModelFactory<T: class; Q: Class> = class(TDatabaseModelAbstract,
     IDatabaseModel)
   protected
+    FOwner:TComponent;
     FConnection: T;
   public
+    function GetOwned:TComponent;
     constructor create(); override;
     destructor destroy; override;
     // retorna interface base
@@ -213,6 +217,11 @@ end;
 function TDatabaseModelFactory<T, Q>.GetConnection: T;
 begin
   result := FConnection;
+end;
+
+function TDatabaseModelFactory<T, Q>.GetOwned: TComponent;
+begin
+   result := FOwner;
 end;
 
 function TDatabaseModelFactory<T, Q>.NewQuery(const AProcChange: TProc<Q>)

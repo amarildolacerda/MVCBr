@@ -40,7 +40,7 @@ requires
   vclx;
 
 contains
-  eMVC.NewMVCPersistentWizard in 'eMVC.NewMVCPersistentWizard.pas',
+  eMVC.PersistentWizard in 'eMVC.PersistentWizard.pas',
   eMVC.ProjectCreator in 'eMVC.ProjectCreator.pas',
   eMVC.DataModuleCreator in 'eMVC.DataModuleCreator.pas',
   eMVC.BaseCreator in 'eMVC.BaseCreator.pas',
@@ -54,26 +54,26 @@ contains
   eMVC.ControllerCreator in 'eMVC.ControllerCreator.pas',
   eMVC.ViewModelCreator in 'eMVC.ViewModelCreator.pas',
   eMVC.ProjectFileCreator in 'eMVC.ProjectFileCreator.pas',
-  eMVC.AppWizardForm in 'eMVC.AppWizardForm.pas' {FormAppWizard},
-  eMVC.NewProjectWizard in 'eMVC.NewProjectWizard.pas',
-  eMVC.NewSetPersistentModelForm in 'eMVC.NewSetPersistentModelForm.pas' {FormNewSetPersistentModel},
+  eMVC.ProjectWizardForm in 'eMVC.ProjectWizardForm.pas' {FormAppWizard},
+  eMVC.ProjectWizard in 'eMVC.ProjectWizard.pas',
+  eMVC.PersistentModelForm in 'eMVC.PersistentModelForm.pas' {FormNewSetPersistentModel},
   eMVC.Patterns in 'eMVC.Patterns.pas',
   eMVC.OTAUtilities in 'eMVC.OTAUtilities.pas',
-  eMVC.NewMVCSetWizard in 'eMVC.NewMVCSetWizard.pas',
+  eMVC.ViewModelWizard in 'eMVC.ViewModelWizard.pas',
   eMVC.PersistentModelCreator in 'eMVC.PersistentModelCreator.pas',
   eMVC.ProjectGroupCreator in 'eMVC.ProjectGroupCreator.pas',
   eMVC.DatasetModel in 'eMVC.DatasetModel.pas',
   eMVC.PersistentModelConst in 'eMVC.PersistentModelConst.pas',
   eMVC.IncludeCreator in 'eMVC.IncludeCreator.pas',
   eMVC.ModuleModelConst in 'eMVC.ModuleModelConst.pas',
-  eMVC.NewMVCControllerWizard in 'eMVC.NewMVCControllerWizard.pas',
-  eMVC.NewSetControllerForm in 'eMVC.NewSetControllerForm.pas' {FormNewModuleModel},
-  eMVC.NewSetForm in 'eMVC.NewSetForm.pas' {FormNewSet},
-  eMVC.NewMVCModuleWizard in 'eMVC.NewMVCModuleWizard.pas',
+  eMVC.ControllerWizard in 'eMVC.ControllerWizard.pas',
+  eMVC.ControllerForm in 'eMVC.ControllerForm.pas' {FormNewModuleModel},
+  eMVC.ViewModelForm in 'eMVC.ViewModelForm.pas' {FormNewSet},
+  eMVC.ModuleWizard in 'eMVC.ModuleWizard.pas',
   eMVC.ModelCreator in 'eMVC.ModelCreator.pas',
-  eMVC.NewClassModelWizard in 'eMVC.NewClassModelWizard.pas',
+  eMVC.ClassModelWizard in 'eMVC.ClassModelWizard.pas',
   eMVC.ClassModelCreator in 'eMVC.ClassModelCreator.pas',
-  eMVC.NewClassModelForm in 'eMVC.NewClassModelForm.pas' {FormClassModel},
+  eMVC.ClassModelForm in 'eMVC.ClassModelForm.pas' {FormClassModel},
   IntfParser in 'parser\IntfParser.pas',
   TokenClasses in 'parser\TokenClasses.pas',
   TokenInterfaces in 'parser\TokenInterfaces.pas',
@@ -86,3 +86,4 @@ contains
   MVCBr.VCL.PageControl in '..\VCL\MVCBr.VCL.PageControl.pas';
 
 end.
+

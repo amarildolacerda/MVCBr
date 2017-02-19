@@ -150,10 +150,13 @@ begin
         result := classCode;
       cVIEW:
         begin
-          if FIsFMX then
-            result := ViewCodeFMX
-          else
             result := ViewCode;
+          if not FCreateModel then
+            result := ViewCodeNoViewModel;
+
+          if FIsFMX then
+            result := stringReplace(result,'*.FRM','*.FMX',[]);
+
           if SameText(FAncestorIdent, dataModuleAncestorName) then
           begin
             result := dataModuleCode;
@@ -173,10 +176,10 @@ begin
             result := viewmodecodeInterf;
           if SameText(FAncestorIdent, 'PersistentModel') then
             result := ModelCodeBaseInterf;
-          if SameText(FAncestorIdent,dataModuleAncestorName) then
-            Result := dataModuleCodeInterf;
-          if sametext(FAncestorIdent,'Controller') then
-            Result := ControllerCodeInterf;
+          if SameText(FAncestorIdent, dataModuleAncestorName) then
+            result := dataModuleCodeInterf;
+          if SameText(FAncestorIdent, 'Controller') then
+            result := ControllerCodeInterf;
         end;
       CVIEWMODEL:
         begin
@@ -196,13 +199,13 @@ begin
           else if (self.FCreateModel) and (not self.FCreateView) then
             result := ControllerCodeWithoutView
           else if (not self.FCreateModel) and (self.FCreateView) then
-            result := ControllerCodeWithoutModel
+            result := ControllerCodeWithoutViewModel
           else
           begin
             if (not FModelAlone and not FViewAlone) then
               result := ControllerCode2
             else if (not self.FModelAlone and self.FViewAlone) then
-              result := ControllerCodeWithoutModel
+              result := ControllerCodeWithoutViewModel
             else if (self.FModelAlone and not self.FViewAlone) then
               result := ControllerCodeWithoutView
             else
@@ -216,7 +219,17 @@ begin
           result := ProjectCode;
     end;
 
-  result := ClassHeader+#10#13+result  ;
+  result := ClassHeader + #10#13 + result;
+
+  // usa os templates - Primeira passada;
+  for i := 0 to FTemplates.Count - 1 do
+  begin
+    result := stringReplace(result, FTemplates.Names[i],
+      FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
+    Debug('Template: ' + FTemplates.Names[i] + '=' +
+      FTemplates.ValueFromIndex[i]);
+  end;
+
   if self.FCreateModel and not self.FModelAlone then
   begin
     result := stringReplace(result, '%ModelDef', ModelDef,
@@ -284,15 +297,6 @@ begin
 
   if isFMX then
     FTemplates.AddPair('*.dfm', '*.fmx');
-
-  // usa os templates - Primeira passada;
-  for i := 0 to FTemplates.Count - 1 do
-  begin
-    result := stringReplace(result, FTemplates.Names[i],
-      FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
-    Debug('Template: ' + FTemplates.Names[i] + '=' +
-      FTemplates.ValueFromIndex[i]);
-  end;
 
   // usa os templates - segudna passada;
   for i := 0 to FTemplates.Count - 1 do

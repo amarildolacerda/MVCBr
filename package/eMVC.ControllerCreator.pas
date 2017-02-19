@@ -44,6 +44,7 @@ type
   private
     FIsInterf: Boolean;
     procedure SetIsInterf(const Value: Boolean);
+    procedure SetcreateViewModel(const Value: boolean);
   protected
     FCreateModule, FCreateView: Boolean;
     FModelAlone, FViewAlone: Boolean;
@@ -57,6 +58,8 @@ type
     function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
       : IOTAFile; override;
     property IsInterf: Boolean read FIsInterf write SetIsInterf;
+    property createViewModel:boolean read FCreateModule write SetcreateViewModel;
+
   end;
 
 implementation
@@ -104,6 +107,11 @@ begin
 
   fc.Templates.Assign(Templates);
   result := fc;
+end;
+
+procedure TControllerCreator.SetcreateViewModel(const Value: boolean);
+begin
+  FCreateModule := Value;
 end;
 
 procedure TControllerCreator.SetIsInterf(const Value: Boolean);

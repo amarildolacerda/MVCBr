@@ -19,7 +19,6 @@ function ModelUses:string;
 begin
   with TStringList.Create do
     try
-      Add('MVCBr.DatabaseModel');
       Add('MVCBr.PersistentModel');
       Add('MVCBr.NavigateModel');
       Add('MVCBr.ValidateModel');
@@ -37,7 +36,6 @@ function ModelCodeCombo: string;
 begin
   with TStringList.Create do
     try
-      Add('IDatabaseModel=TDatabaseModelFactory');
       Add('IPersistentModel=TPersistentModelFactory');
       Add('INavigatorModel=TNavigatorModelFactory');
       Add('IValidateModel=TValidateModelFactory');
@@ -56,7 +54,6 @@ begin
   with TStringList.Create do
     try
       Add('mtPersistent');
-      Add('mtPersistent');
       Add('mtNavigator');
       Add('mtValidate');
       Add('mtCommon');
@@ -73,7 +70,6 @@ function ModelCodeAncestor: string;
 begin
   with TStringList.Create do
     try
-      Add('DatabaseModel');
       Add('PersistentModel');
       Add('NavigatorModel');
       Add('ValidateModel');
@@ -91,7 +87,6 @@ function ModelInherited:string;
 begin
   with TStringList.Create do
     try
-      Add('IDatabaseModel');
       Add('IPersistentModel');
       Add('INavigatorModel');
       Add('IValidateModel');
