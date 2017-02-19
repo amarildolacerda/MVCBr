@@ -80,6 +80,7 @@ type
 
   end;
 
+
   TControllerFactoryOf = class of TControllerFactory;
 
 implementation
@@ -303,7 +304,8 @@ begin
     try
       for i := 0 to FModels.Count - 1 do
         (FModels.Items[i] as IModel).Update;
-      FView.Update;
+      if assigned(FView) then
+        FView.Update;
     finally
       dec(FRefModelCount);
     end;
@@ -363,5 +365,6 @@ function TControllerFactory.GetView: IView;
 begin
   result := FView;
 end;
+
 
 end.

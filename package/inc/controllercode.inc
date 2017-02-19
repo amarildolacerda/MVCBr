@@ -78,6 +78,7 @@ ControllerCode =
   'begin                                                            ' + #10#13 +
   ' inherited;                                                     ' + #10#13 +
   ' ///  Inicializar as Views...                                   ' + #10#13 +
+  ' View(T%FormIdent.New(self));' +
   ' add(T%FormIdentViewModel.New(self).ID(''{%FormIdent.ViewModel}''));' +
   ' ///  Inicializar os modulos                                          ' + #10#13 +
   ' CreateModules; //< criar os modulos persolnizados              ' + #10#13 +

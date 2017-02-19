@@ -66,6 +66,7 @@ type
     class function New: IApplicationController;
     /// Loop que chama AProc para cada um dos controllers da lista
     procedure ForEach(AProc: TProc<IController>);
+    procedure Inited;
     /// Envia evnet de Update a todos os controllers da lista
     procedure UpdateAll;
     /// envia event de Update a um Controller que contenha a IInterface
@@ -147,6 +148,15 @@ begin
       AProc(FControllers.Items[i] as IController);
 end;
 
+procedure TApplicationController.Inited;
+begin
+  ForEach(
+    procedure(AController: IController)
+    begin
+      AController.Init;
+    end);
+end;
+
 class function TApplicationController.New: IApplicationController;
 begin
   result := TApplicationController.create;
@@ -158,7 +168,7 @@ begin
 end;
 
 procedure TApplicationController.Run(AController: IController;
-  AFunc: TFunc<boolean>);
+AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
 end;
@@ -186,7 +196,7 @@ begin
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;
-  AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
+AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
   rt: boolean;
   reference: TComponent;
@@ -202,7 +212,7 @@ begin
   if rt then
   begin
     if assigned(AController) then
-      AController.init;
+      AController.Init;
     if (AClass <> nil) and (application.MainForm = nil) then
     begin
       application.CreateForm(AClass, reference);
@@ -219,15 +229,15 @@ begin
     if supports(application.MainForm, IView, FMainView) then
     begin
       if assigned(AController) then
-        AController.View(FMainView);
-      //FMainView.ShowView(nil);
-      Application.run;
+        AController.view(FMainView);
+      // FMainView.ShowView(nil);
+      application.Run;
     end;
 
   end;
-{  if assigned(AController) then
+  { if assigned(AController) then
     AController.AfterInit;
-}
+  }
 end;
 
 end.

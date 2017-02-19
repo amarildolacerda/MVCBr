@@ -20,7 +20,9 @@ uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
   MVCBr.View, MVCBr.FormView, AppPageControl.ViewModel.Interf, MVCBr.Controller,
-  VCL.Controls, VCL.ComCtrls, MVCBr.VCL.PageControl;
+  VCL.Controls, VCL.ComCtrls, MVCBr.PageView, Vcl.StdActns, Vcl.ExtActns,
+  AppPageControl.controller.Interf,
+  System.Actions, Vcl.ActnList, Vcl.ToolWin, System.ImageList, Vcl.ImgList;
 
 type
   /// Interface para a VIEW
@@ -34,6 +36,25 @@ type
     IThisAs<TAppPageControlView>, IAppPageControlView,
     IViewAs<IAppPageControlView>)
     PageControl1: TPageControl;
+    ToolBar1: TToolBar;
+    ActionList1: TActionList;
+    EditCut1: TEditCut;
+    EditCopy1: TEditCopy;
+    EditPaste1: TEditPaste;
+    EditSelectAll1: TEditSelectAll;
+    EditUndo1: TEditUndo;
+    EditDelete1: TEditDelete;
+    FileOpen1: TFileOpen;
+    FileSaveAs1: TFileSaveAs;
+    FileExit1: TFileExit;
+    TabPreviousTab1: TPreviousTab;
+    TabNextTab1: TNextTab;
+    WindowClose1: TWindowClose;
+    ToolButton1: TToolButton;
+    Action1: TAction;
+    ImageList1: TImageList;
+    procedure Action1Execute(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     FViewModel: IAppPageControlViewModel;
   protected
@@ -52,6 +73,8 @@ type
 implementation
 
 {$R *.dfm}
+
+uses MVCBr.VCL.PageControl, Editor.Controller.Interf;
 
 function TAppPageControlView.Update: IView;
 begin
@@ -72,11 +95,22 @@ begin
   result.Controller(aController);
 end;
 
+procedure TAppPageControlView.Action1Execute(Sender: TObject);
+begin
+   (FController as IAppPageControlController).addView(IEditorController);
+end;
+
 function TAppPageControlView.Controller(const aController: IController): IView;
 begin
   result := inherited Controller(aController);
   if not assigned(FViewModel) then
     FViewModel := getViewModel as IAppPageControlViewModel;
+end;
+
+procedure TAppPageControlView.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+    CanClose := FViewModel.CanClose;
 end;
 
 function TAppPageControlView.ViewModel(const AViewModel

@@ -46,24 +46,25 @@ type
   TViewFactory = class(TMVCInterfacedObject, IView)
   private
     // FView: IView;
+    FText: string;
     FController: IController;
     FViewModel: IViewModel;
     procedure SetController(const AController: IController);
+    function GetText: String;
+    procedure SetText(Const AText: String);
   protected
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
-    { class Function New(AClass: TViewFactoryClass;
-      const AController: IController): IView;
-    }
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
     function ShowView(): IView; overload; virtual;
-    function GetViewModel:IViewModel;virtual;
-    procedure SetViewModel( const AViewModel:IViewModel);virtual;
+    function GetViewModel: IViewModel; virtual;
+    procedure SetViewModel(const AViewModel: IViewModel); virtual;
 
     function Update: IView; virtual;
     function GetController: IController;
     function ViewModel(const AModel: IViewModel): IView;
+    property Text: string read GetText write SetText;
 
   end;
 
@@ -81,10 +82,16 @@ begin
   result := FController;
 end;
 
+function TViewFactory.GetText: String;
+begin
+  result := FText;
+end;
+
 function TViewFactory.GetViewModel: IViewModel;
 begin
   result := FViewModel;
 end;
+
 
 function TViewFactory.ViewModel(const AModel: IViewModel): IView;
 begin
@@ -106,9 +113,14 @@ begin
   FController := AController;
 end;
 
+procedure TViewFactory.SetText(const AText: String);
+begin
+  FText := AText;
+end;
+
 procedure TViewFactory.SetViewModel(const AViewModel: IViewModel);
 begin
- FViewModel := AViewModel;
+  FViewModel := AViewModel;
 end;
 
 function TViewFactory.ShowView: IView;

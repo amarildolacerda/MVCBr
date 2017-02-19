@@ -82,6 +82,7 @@ contains
   CastaliaSimplePasPar in 'castalia\CastaliaSimplePasPar.pas',
   CastaliaSimplePasParTypes in 'castalia\CastaliaSimplePasParTypes.pas',
   eMVC.Config in 'eMVC.Config.pas' {MVCConfig},
-  eMVC.ObjectConfig in 'eMVC.ObjectConfig.pas';
+  eMVC.ObjectConfig in 'eMVC.ObjectConfig.pas',
+  MVCBr.VCL.PageControl in '..\VCL\MVCBr.VCL.PageControl.pas';
 
 end.

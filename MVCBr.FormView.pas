@@ -49,6 +49,8 @@ type
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
     procedure SetOnClose(const Value: TCloseEvent);
+    function GetText: string;
+    procedure SetText(const Value: string);
   protected
     FOnCloseProc: TProc<IView>;
     FController: IController;
@@ -85,6 +87,10 @@ type
     function GetViewModel: IViewModel; virtual;
     /// Evento para atualizar os dados da VIEW
     function Update: IView; virtual;
+
+
+    property Text:string read GetText write SetText;
+
   published
     property OnClose: TCloseEvent read FOnClose write SetOnClose;
   end;
@@ -139,6 +145,15 @@ begin
   result := FShowModal;
 end;
 
+function TFormFactory.GetText: string;
+begin
+  {$ifdef FMX}
+     result := inherited Text;
+  {$else}
+     result := inherited Caption;
+  {$endif}
+end;
+
 function TFormFactory.GetViewModel: IViewModel;
 begin
   result := nil;
@@ -184,6 +199,15 @@ end;
 procedure TFormFactory.SetShowModal(const AShowModal: boolean);
 begin
   FShowModal := AShowModal;
+end;
+
+procedure TFormFactory.SetText(const Value: string);
+begin
+  {$ifdef FMX}
+     Inherited Text := Value;
+  {$else}
+     Inherited Caption := Value;
+  {$endif}
 end;
 
 procedure TFormFactory.SetViewModel(const AViewModel: IViewModel);

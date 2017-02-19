@@ -5,13 +5,13 @@
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
-{ // Data: 13/02/2017 23:07:44                                  // }
+{ // Data: 17/02/2017 22:07:42                                  // }
 { //************************************************************// }
-unit AppPageControl.Controller.Interf;
+unit WS.Controller.Interf;
 
 ///
 /// <summary>
-/// IAppPageControlController
+/// IWSController
 /// Interaface de acesso ao object factory do controller
 /// </summary>
 ///
@@ -22,10 +22,9 @@ uses
   System.Classes, MVCBr.Interf;
 
 type
-  IAppPageControlController = interface(IController)
-    ['{59E9AD23-BD49-4F01-9ABC-4C3893A97FC8}']
+  IWSController = interface(IController)
+    ['{169FBB86-7D34-4450-8F96-4973B3153413}']
     // incluir especializações aqui
-    procedure AddView(AViewController:TGuid);
   end;
 
 Implementation

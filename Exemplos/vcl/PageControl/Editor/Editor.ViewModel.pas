@@ -5,42 +5,39 @@
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
-{ // Data: 13/02/2017 23:07:44                                  // }
+{ // Data: 19/02/2017 08:49:29                                  // }
 { //************************************************************// }
-Unit AppPageControl.ViewModel;
+Unit Editor.ViewModel;
 
 interface
 
 { .$I ..\inc\mvcbr.inc }
-uses MVCBr.Interf, MVCBr.ViewModel, AppPageControl.ViewModel.Interf;
+uses MVCBr.Interf, MVCBr.ViewModel, Editor.ViewModel.Interf;
 
 Type
   /// Object Factory para o ViewModel
-  TAppPageControlViewModel = class(TViewModelFactory, IAppPageControlViewModel,
-    IViewModelAs<IAppPageControlViewModel>)
-  protected
-    FIsChanged:boolean;
-    procedure AfterConstruction;override;
+  TEditorViewModel = class(TViewModelFactory, IEditorViewModel,
+    IViewModelAs<IEditorViewModel>)
   public
-    function ViewModelAs: IAppPageControlViewModel;
-    class function new(): IAppPageControlViewModel; overload;
+    function ViewModelAs: IEditorViewModel;
+    class function new(): IEditorViewModel; overload;
     class function new(const AController: IController)
-      : IAppPageControlViewModel; overload;
+      : IEditorViewModel; overload;
     procedure AfterInit; override;
 
-    //
-     function CanClose:Boolean;
+    // interno
+    function IsChanged: boolean;
 
   end;
 
 implementation
 
-function TAppPageControlViewModel.ViewModelAs: IAppPageControlViewModel;
+function TEditorViewModel.ViewModelAs: IEditorViewModel;
 begin
   result := self;
 end;
 
-class function TAppPageControlViewModel.new(): IAppPageControlViewModel;
+class function TEditorViewModel.new(): IEditorViewModel;
 begin
   result := new(nil);
 end;
@@ -52,25 +49,19 @@ end;
 /// AController é o controller ao qual o ViewModel esta
 /// ligado
 /// </param>
-function TAppPageControlViewModel.CanClose: Boolean;
+function TEditorViewModel.IsChanged: boolean;
 begin
-   result := not FIsChanged;
+  result := false;
 end;
 
-class function TAppPageControlViewModel.new(const AController: IController)
-  : IAppPageControlViewModel;
+class function TEditorViewModel.new(const AController: IController)
+  : IEditorViewModel;
 begin
-  result := TAppPageControlViewModel.create;
+  result := TEditorViewModel.create;
   result.controller(AController);
 end;
 
-procedure TAppPageControlViewModel.AfterConstruction;
-begin
-  inherited;
-  FIsChanged := false;
-end;
-
-procedure TAppPageControlViewModel.AfterInit;
+procedure TEditorViewModel.AfterInit;
 begin
   // evento disparado apos a definicao do Controller;
 end;

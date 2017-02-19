@@ -73,7 +73,6 @@ unit MVCBr.Interf;
 interface
 
 uses System.Classes, System.SysUtils, System.Generics.Collections,
-  MVCBr.InterfaceHelper,
   System.TypInfo, System.RTTI;
 
 type
@@ -234,7 +233,9 @@ type
     function GetViewModel: IViewModel;
     procedure SetViewModel(const AViewModel: IViewModel);
     function GetID: string;
-
+    function GetText: String;
+    procedure SetText(Const AText: String);
+    property Text: string read GetText write SetText;
   end;
 
   /// IViewAs a ser utilizado para fazer cast nas classes factories publicando
@@ -259,6 +260,7 @@ type
     procedure ForEach(AProc: TProc<IController>);
     procedure UpdateAll;
     procedure Update(const AIID: TGuid);
+    procedure Inited;
   end;
 
   TControllerAbstract = class;
@@ -372,9 +374,9 @@ type
   TMVCRegister = record
     class procedure RegisterInterfaced<TInterface: IInterface>
       (const ANome: string; IID: TGuid; AClass: TInterfacedClass;
-      bSingleton: boolean = true); overload;Static;
-    class procedure RegisterType<TInterface:IInterface; TImplements:Class>(const ANome: string;
-      bSingleton: boolean = true); overload;static;
+      bSingleton: boolean = true); overload; Static;
+    class procedure RegisterType<TInterface: IInterface; TImplements: Class>
+      (const ANome: string; bSingleton: boolean = true); overload; static;
   end;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
@@ -386,22 +388,26 @@ var
 
 implementation
 
-uses MVCBr.IoC {, MVCBr.InterfaceHelper};
+uses {$IFNDEF BPL}
+  MVCBr.InterfaceHelper,
+{$ENDIF}
+  MVCBr.IoC {, MVCBr.InterfaceHelper};
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
-  TMVCRegister.RegisterInterfaced<IInterface>(ANome, IID, AClass, bSingleton);
+  TMVCRegister.RegisterInterfaced<IController>(ANome, IID, AClass, bSingleton);
 end;
 
-class procedure TMVCRegister.RegisterType<TInterface; TImplements>(const ANome: string;
-  bSingleton: boolean = true);
+class procedure TMVCRegister.RegisterType<TInterface; TImplements>
+  (const ANome: string; bSingleton: boolean = true);
 begin
-  TMVCBrIoc(FControllersClass).RegisterType<TInterface, TImplements>(bSingleton, ANome);
+  TMVCBrIoc(FControllersClass).RegisterType<TInterface, TImplements>
+    (bSingleton, ANome);
 end;
 
 class procedure TMVCRegister.RegisterInterfaced<TInterface>(const ANome: string;
-IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
+  IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
   TMVCBrIoc(FControllersClass).RegisterInterfaced<TInterface>(IID, AClass,
     ANome, bSingleton);
@@ -501,7 +507,9 @@ end;
 
 class function TMVCBr.GetGuid(const AInterface: IInterface): TGuid;
 begin
+ {$ifndef BPL}
   result := TInterfaceHelper.GetType(AInterface).Guid
+  {$endif}
 end;
 
 class function TMVCBr.GetGuid<TInterface>: TGuid;
@@ -519,7 +527,7 @@ begin
 end;
 
 class function TMVCBr.GetProperty(AInstance: TObject;
-APropertyNome: string): TValue;
+  APropertyNome: string): TValue;
 var
   ctx: TRttiContext;
   prp: TRttiProperty;
@@ -536,7 +544,9 @@ end;
 
 class function TMVCBr.GetQualifiedName(AII: TGuid): string;
 begin
+ {$ifndef BPL}
   result := TInterfaceHelper.GetQualifiedName(AII);
+ {$endif}
 end;
 
 class function TMVCBr.InvokeCreate(const AGuid: TGuid; AClass: TClass)
@@ -575,7 +585,7 @@ begin
 end;
 
 class function TMVCBr.InvokeMethod<T>(AInstance: TObject; AMethod: string;
-const Args: TArray<TValue>): T;
+  const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
   mtd: TRttiMethod;
@@ -602,7 +612,7 @@ begin
 end;
 
 class procedure TMVCBr.SetProperty(AInstance: TObject; APropertyNome: string;
-AValue: TValue);
+  AValue: TValue);
 var
   ctx: TRttiContext;
   prp: TRttiProperty;
@@ -650,7 +660,7 @@ begin
 end;
 
 function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string;
-const Args: TArray<TValue>): T;
+  const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
@@ -672,7 +682,7 @@ begin
 end;
 
 procedure TMVCFactoryAbstract.SetPropertyValue(ANome: string;
-const Value: TValue);
+  const Value: TValue);
 begin
   TMVCBr.SetProperty(self, ANome, Value);
 end;
@@ -680,7 +690,7 @@ end;
 { TMVCInterfacedList<T> }
 
 procedure TMVCInterfacedList<TInterface>.ForEach(AGuid: TGuid;
-AProc: TProc<TInterface>);
+  AProc: TProc<TInterface>);
 var
   I: Integer;
   intf: TInterface;

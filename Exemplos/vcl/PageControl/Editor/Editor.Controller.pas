@@ -5,7 +5,7 @@
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
-{ // Data: 13/02/2017 23:07:44                                  // }
+{ // Data: 19/02/2017 08:49:28                                  // }
 { //************************************************************// }
 /// <summary>
 /// O controller possui as seguintes características:
@@ -15,7 +15,7 @@
 /// - pode localizar controller externos e instanciá-los
 /// (resolveController<I..>)
 /// </summary>
-unit AppPageControl.Controller;
+unit Editor.Controller;
 
 /// <summary>
 /// Object Factory para implementar o Controller
@@ -26,18 +26,14 @@ interface
 uses
   System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, MVCBr.Interf,
-  MVCBr.PageView, MVCBr.VCL.PageControl,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
-  System.RTTI, AppPageControl.Controller.Interf,
-  Editor.Controller.Interf,
-  AppPageControl.ViewModel, AppPageControl.ViewModel.Interf, AppPageControlView;
+  System.RTTI, Editor.Controller.Interf,
+  Editor.ViewModel, Editor.ViewModel.Interf, EditorView;
 
 type
-  TAppPageControlController = class(TControllerFactory,
-    IAppPageControlController, IThisAs<TAppPageControlController>,
-    IModelAs<IAppPageControlViewModel>)
+  TEditorController = class(TControllerFactory, IEditorController,
+    IThisAs<TEditorController>, IModelAs<IEditorViewModel>)
   protected
-    FPageView: IPageViews;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
   public
@@ -50,53 +46,45 @@ type
     class function New(const AView: IView; const AModel: IModel)
       : IController; overload;
     class function New(const AModel: IModel): IController; overload;
-    function ThisAs: TAppPageControlController;
+    function ThisAs: TEditorController;
     /// Init após criado a instância é chamado para concluir init
     procedure init; override;
     /// ModeAs retornar a própria interface do controller
-    function ModelAs: IAppPageControlViewModel;
-
-    //
-    procedure AddView(AViewController:TGuid);
+    function ModelAs: IEditorViewModel;
   end;
 
 implementation
 
 /// Creator para a classe Controller
-procedure TAppPageControlController.AddView(AViewController: TGuid);
-begin
-   FPageView.AddView(AViewController);
-end;
-
-Constructor TAppPageControlController.Create;
+Constructor TEditorController.Create;
 begin
   inherited;
-  FPageView := TVCLPageViewFactory.New(self);
   /// Inicializar as Views...
-  add(TAppPageControlViewModel.New(self).ID('{AppPageControl.ViewModel}'));
+  view(TEditorView.New(self));
+  add(TEditorViewModel.New(self));
   /// Inicializar os modulos
   CreateModules; // < criar os modulos persolnizados
 end;
 
 /// Finaliza o controller
-Destructor TAppPageControlController.Destroy;
+Destructor TEditorController.Destroy;
 begin
   inherited;
 end;
 
 /// Classe Function basica para criar o controller
-class function TAppPageControlController.New(): IController;
+class function TEditorController.New(): IController;
 begin
   result := New(nil, nil);
 end;
 
 /// Classe para criar o controller com View e Model criado
-class function TAppPageControlController.New(const AView: IView;
-  const AModel: IModel): IController;
+class function TEditorController.New(const AView: IView; const AModel: IModel)
+  : IController;
 var
   vm: IViewModel;
 begin
-  result := TAppPageControlController.Create as IController;
+  result := TEditorController.Create as IController;
   result.View(AView).add(AModel);
   if assigned(AModel) then
     if supports(AModel.This, IViewModel, vm) then
@@ -106,59 +94,51 @@ begin
 end;
 
 /// Classe para inicializar o Controller com um Modulo inicialz.
-class function TAppPageControlController.New(const AModel: IModel): IController;
+class function TEditorController.New(const AModel: IModel): IController;
 begin
   result := New(nil, AModel);
 end;
 
 /// Cast para a interface local do controller
-function TAppPageControlController.ThisAs: TAppPageControlController;
+function TEditorController.ThisAs: TEditorController;
 begin
   result := self;
 end;
 
 /// Cast para o ViewModel local do controller
-function TAppPageControlController.ModelAs: IAppPageControlViewModel;
+function TEditorController.ModelAs: IEditorViewModel;
 begin
   if count >= 0 then
-    supports(GetModelByType(mtViewModel), IAppPageControlViewModel, result);
+    supports(GetModelByType(mtViewModel), IEditorViewModel, result);
 end;
 
 /// Executar algum comando customizavel
-Procedure TAppPageControlController.DoCommand(ACommand: string;
+Procedure TEditorController.DoCommand(ACommand: string;
   const AArgs: Array of TValue);
 begin
   inherited;
 end;
 
 /// Evento INIT chamado apos a inicializacao do controller
-procedure TAppPageControlController.init;
+procedure TEditorController.init;
 var
-  ref: TAppPageControlView;
+  ref: TEditorView;
 begin
   inherited;
   if not assigned(FView) then
   begin
-    Application.CreateForm(TAppPageControlView, ref);
+    Application.CreateForm(TEditorView, ref);
     supports(ref, IView, FView);
 {$IFDEF FMX}
     if Application.MainForm = nil then
       Application.RealCreateForms;
 {$ENDIF}
   end;
-
-  // associa o PageControl ao MainView
-  FPageView.PageContainer := ref.PageControl1;
-
   AfterInit;
-
-  FPageView.AddView( IEditorController   );
-
-
 end;
 
 /// Adicionar os modulos e MODELs personalizados
-Procedure TAppPageControlController.CreateModules;
+Procedure TEditorController.CreateModules;
 begin
   // adicionar os seus MODELs aqui
   // exemplo: add( MeuModel.new(self) );
@@ -167,14 +147,22 @@ end;
 initialization
 
 /// Inicialização automatica do Controller ao iniciar o APP
-// TAppPageControlController.New(TAppPageControlView.New,TAppPageControlViewModel.New)).init();
+// TEditorController.New(TEditorView.New,TEditorViewModel.New)).init();
 /// Registrar Interface e ClassFactory para o MVCBr
-RegisterInterfacedClass(TAppPageControlController.ClassName,
-  IAppPageControlController, TAppPageControlController);
+
+//RegisterInterfacedClass(TEditorController.ClassName, IEditorController,
+//  TEditorController,true);
+
+
+// permitir criar varias instancias do editor;
+RegisterInterfacedClass(TEditorController.ClassName, IEditorController,
+  TEditorController,false  { permite multiplas instancias} );
+
+
 
 finalization
 
 /// Remover o Registro da Interface
-unRegisterInterfacedClass(TAppPageControlController.ClassName);
+unRegisterInterfacedClass(TEditorController.ClassName);
 
 end.

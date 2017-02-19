@@ -5,27 +5,24 @@
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
-{ // Data: 13/02/2017 23:07:44                                  // }
+{ // Data: 19/02/2017 08:49:29                                  // }
 { //************************************************************// }
-unit AppPageControl.Controller.Interf;
-
-///
 /// <summary>
-/// IAppPageControlController
-/// Interaface de acesso ao object factory do controller
+/// O ViewModel esta conectado diretamente com a VIEW
+/// e possui um Controller ao qual esta associado
 /// </summary>
-///
+Unit Editor.ViewModel.Interf;
+
 interface
 
-uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
-  System.Classes, MVCBr.Interf;
+uses MVCBr.Interf, MVCBr.ViewModel;
 
-type
-  IAppPageControlController = interface(IController)
-    ['{59E9AD23-BD49-4F01-9ABC-4C3893A97FC8}']
+Type
+  /// Interaface para o ViewModel
+  IEditorViewModel = interface(IViewModel)
+    ['{C1B537D1-A592-4C49-AB14-3DE3D68737A4}']
     // incluir especializações aqui
-    procedure AddView(AViewController:TGuid);
+    function IsChanged:boolean;
   end;
 
 Implementation
