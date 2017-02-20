@@ -236,6 +236,9 @@ type
     function GetText: String;
     procedure SetText(Const AText: String);
     property Text: string read GetText write SetText;
+    Procedure DoCommand(ACommand: string;
+      const AArgs: array of TValue);
+
   end;
 
   /// IViewAs a ser utilizado para fazer cast nas classes factories publicando

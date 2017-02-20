@@ -56,6 +56,8 @@ type
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
+    Procedure DoCommand(ACommand: string;
+      const AArgs: array of TValue); virtual;
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
     function ShowView(): IView; overload; virtual;
     function GetViewModel: IViewModel; virtual;
@@ -75,6 +77,12 @@ function TViewFactory.Controller(const AController: IController): IView;
 begin
   result := self;
   SetController(AController);
+end;
+
+procedure TViewFactory.DoCommand(ACommand: string;
+  const AArgs: array of TValue);
+begin
+
 end;
 
 function TViewFactory.GetController: IController;

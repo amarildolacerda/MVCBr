@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.RTTI,
-  System.Generics.Collections, eMVC.ObjectConfig,
+  System.Generics.Collections, MVCBr.ObjectConfig,
   eMVC.OTAUtilities,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
 
@@ -72,7 +72,7 @@ end;
 
 procedure TMVCConfig.FormCreate(Sender: TObject);
 begin
-  FConfig := TObjectConfig.New;
+  FConfig := TObjectConfigList.New;
   RegisterControls;
 end;
 
@@ -124,7 +124,7 @@ end;
 procedure TMVCConfig.RegisterControls;
 begin
 
-  FConfig.RegisterControl(CheckBox1); // mvc_createSubFolder
+  FConfig.Add(CheckBox1); // mvc_createSubFolder
 
 end;
 

@@ -1,39 +1,59 @@
-{
-  MVCBr - amarildo lacerda
-}
-unit eMVC.ObjectConfig;
+{ *************************************************************************** }
+{ }
+{ }
+{ Copyright (C) Amarildo Lacerda }
+{ }
+{ https://github.com/amarildolacerda }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
+unit MVCBr.ObjectConfigList;
 
 interface
 
 uses System.Classes, System.SysUtils, System.RTTI,
-  VCL.StdCtrls, System.IniFiles,
+  VCL.StdCtrls, System.IniFiles, MVCBr.Model,
   VCL.Controls, System.Generics.Collections;
 
 type
-  IObjectConfigItem = interface;
+  IObjectConfigListItem = interface;
 
-  IObjectConfig = interface
+  IObjectConfigList = interface
     ['{302562A0-2A11-43F6-A249-4BD42E1133F2}']
     procedure ReadConfig;
     procedure WriteConfig;
     procedure RegisterControl(ASection: string; AText: string;
       AControl: TControl); overload;
-    procedure RegisterControl(AControl: TControl); overload;
+    procedure Add(AControl: TControl); overload;
     procedure SetFileName(const Value: string);
     function GetFileName: string;
     property FileName: string read GetFileName write SetFileName;
     function Count: integer;
-    function GetItems(idx: integer): IObjectConfigItem;
-    procedure SetItems(idx: integer; const Value: IObjectConfigItem);
-    property Items[idx: integer]: IObjectConfigItem read GetItems
+    function GetItems(idx: integer): IObjectConfigListItem;
+    procedure SetItems(idx: integer; const Value: IObjectConfigListItem);
+    property Items[idx: integer]: IObjectConfigListItem read GetItems
       write SetItems;
   end;
 
-  TObjectConfigItem = class;
+  TObjectConfigListItem = class;
 
-  IObjectConfigItem = interface
+  IObjectConfigListItem = interface
     ['{AD786625-5C1A-4486-B000-2F61BB0C0A27}']
-    function This: TObjectConfigItem;
+    function This: TObjectConfigListItem;
     procedure SetSection(const Value: string);
     procedure SetItem(const Value: string);
     procedure SetValue(const Value: TValue);
@@ -45,7 +65,7 @@ type
     property Value: TValue read GetValue write SetValue;
   end;
 
-  TObjectConfigItem = class(TInterfacedObject, IObjectConfigItem)
+  TObjectConfigListItem = class(TInterfacedObject, IObjectConfigListItem)
   private
     FControl: TControl;
     FSection: string;
@@ -58,37 +78,37 @@ type
     function GetSection: string;
   public
     class function new(ASection, AItem: string; AControl: TControl)
-      : IObjectConfigItem;
+      : IObjectConfigListItem;
     property Section: string read GetSection write SetSection;
     property Item: string read GetItem write SetItem;
     property Value: TValue read GetValue write SetValue;
-    function This: TObjectConfigItem;
+    function This: TObjectConfigListItem;
   end;
 
-  TObjectConfig = class(TInterfacedObject, IObjectConfig)
+  TObjectConfigModel = class(TModelFactory, IObjectConfigList)
   private
     FList: TInterfaceList;
     FFileName: string;
-    FProcRead: TProc<IObjectConfigItem>;
-    FProcWrite: TProc<IObjectConfigItem>;
+    FProcRead: TProc<IObjectConfigListItem>;
+    FProcWrite: TProc<IObjectConfigListItem>;
     FIniFile: TIniFile;
-    function GetItems(idx: integer): IObjectConfigItem;
-    procedure SetItems(idx: integer; const Value: IObjectConfigItem);
+    function GetItems(idx: integer): IObjectConfigListItem;
+    procedure SetItems(idx: integer; const Value: IObjectConfigListItem);
     Function GetIniFile: TIniFile;
     procedure SetFileName(const Value: string);
     function GetFileName: string;
   public
     constructor create;
     destructor destroy; override;
-    class function new: IObjectConfig;
+    class function new: IObjectConfigList;
     procedure ReadConfig; virtual;
     procedure WriteConfig; virtual;
     function Count: integer;
-    property Items[idx: integer]: IObjectConfigItem read GetItems
+    property Items[idx: integer]: IObjectConfigListItem read GetItems
       write SetItems;
     procedure RegisterControl(ASection: string; AText: string;
       AControl: TControl); overload; virtual;
-    procedure RegisterControl(AControl: TControl); overload; virtual;
+    procedure Add(AControl: TControl); overload; virtual;
     property FileName: string read GetFileName write SetFileName;
     procedure WriteItem(ASection, AItem: string; AValue: TValue); virtual;
     procedure ReadItem(ASection, AItem: string; out AValue: TValue); virtual;
@@ -104,17 +124,17 @@ type
 
   { TObjectConfig }
 
-function TObjectConfig.Count: integer;
+function TObjectConfigModel.Count: integer;
 begin
   result := FList.Count;
 end;
 
-constructor TObjectConfig.create;
+constructor TObjectConfigModel.create;
 begin
   FList := TInterfaceList.create;
   FFileName := paramStr(0) + '.config';
 
-  FProcRead := procedure(sender: IObjectConfigItem)
+  FProcRead := procedure(sender: IObjectConfigListItem)
     var
       FOut: TValue;
     begin
@@ -123,14 +143,14 @@ begin
       sender.Value := FOut;
     end;
 
-  FProcWrite := procedure(sender: IObjectConfigItem)
+  FProcWrite := procedure(sender: IObjectConfigListItem)
     begin
       WriteItem(sender.Section, sender.Item, sender.Value);
     end;
 
 end;
 
-destructor TObjectConfig.destroy;
+destructor TObjectConfigModel.destroy;
 begin
   FList.DisposeOf;
   if assigned(FIniFile) then
@@ -138,38 +158,38 @@ begin
   inherited;
 end;
 
-function TObjectConfig.GetFileName: string;
+function TObjectConfigModel.GetFileName: string;
 begin
   result := FFileName;
 end;
 
-function TObjectConfig.GetIniFile: TIniFile;
+function TObjectConfigModel.GetIniFile: TIniFile;
 begin
   if not assigned(FIniFile) then
     FIniFile := TIniFile.create(FFileName);
   result := FIniFile;
 end;
 
-function TObjectConfig.GetItems(idx: integer): IObjectConfigItem;
+function TObjectConfigModel.GetItems(idx: integer): IObjectConfigListItem;
 begin
-  result := FList.Items[idx] as IObjectConfigItem;
+  result := FList.Items[idx] as IObjectConfigListItem;
 end;
 
-class function TObjectConfig.new: IObjectConfig;
+class function TObjectConfigModel.new: IObjectConfigList;
 begin
-  result := TObjectConfig.create;
+  result := TObjectConfigModel.create;
 end;
 
-procedure TObjectConfig.ReadConfig;
+procedure TObjectConfigModel.ReadConfig;
 var
   i: integer;
 begin
   if assigned(FProcRead) then
     for i := 0 to FList.Count - 1 do
-      FProcRead(FList.Items[i] as IObjectConfigItem);
+      FProcRead(FList.Items[i] as IObjectConfigListItem);
 end;
 
-procedure TObjectConfig.ReadItem(ASection, AItem: string; out AValue: TValue);
+procedure TObjectConfigModel.ReadItem(ASection, AItem: string; out AValue: TValue);
 begin
   with GetIniFile do
     if AValue.isBoolean then
@@ -180,7 +200,7 @@ begin
       AValue := readString(ASection, AItem, AValue.AsString);
 end;
 
-procedure TObjectConfig.RegisterControl(AControl: TControl);
+procedure TObjectConfigModel.Add(AControl: TControl);
 var
   LItem: string;
 begin
@@ -188,38 +208,38 @@ begin
   RegisterControl('Config', LItem, AControl);
 end;
 
-procedure TObjectConfig.RegisterControl(ASection: string; AText: string;
+procedure TObjectConfigModel.RegisterControl(ASection: string; AText: string;
   AControl: TControl);
 var
-  obj: TObjectConfigItem;
+  obj: TObjectConfigListItem;
 begin
-  obj := TObjectConfigItem.create;
+  obj := TObjectConfigListItem.create;
   obj.Section := ASection;
   obj.Item := AText;
   obj.FControl := AControl;
   FList.add(obj);
 end;
 
-procedure TObjectConfig.SetFileName(const Value: string);
+procedure TObjectConfigModel.SetFileName(const Value: string);
 begin
   FFileName := Value;
 end;
 
-procedure TObjectConfig.SetItems(idx: integer; const Value: IObjectConfigItem);
+procedure TObjectConfigModel.SetItems(idx: integer; const Value: IObjectConfigListItem);
 begin
   FList.Items[idx] := Value;
 end;
 
-procedure TObjectConfig.WriteConfig;
+procedure TObjectConfigModel.WriteConfig;
 var
   i: integer;
 begin
   if assigned(FProcRead) then
     for i := 0 to FList.Count - 1 do
-      FProcWrite(FList.Items[i] as IObjectConfigItem);
+      FProcWrite(FList.Items[i] as IObjectConfigListItem);
 end;
 
-procedure TObjectConfig.WriteItem(ASection, AItem: string; AValue: TValue);
+procedure TObjectConfigModel.WriteItem(ASection, AItem: string; AValue: TValue);
 begin
   with GetIniFile do
     if AValue.isBoolean then
@@ -232,17 +252,17 @@ end;
 
 { TObjectConfigItem }
 
-function TObjectConfigItem.GetItem: string;
+function TObjectConfigListItem.GetItem: string;
 begin
   result := FItem;
 end;
 
-function TObjectConfigItem.GetSection: string;
+function TObjectConfigListItem.GetSection: string;
 begin
   result := FSection;
 end;
 
-function TObjectConfigItem.GetValue: TValue;
+function TObjectConfigListItem.GetValue: TValue;
 begin
   if FControl.InheritsFrom(TEdit) then
     result := TEdit(FControl).text
@@ -253,29 +273,29 @@ begin
 
 end;
 
-class function TObjectConfigItem.new(ASection, AItem: string;
-  AControl: TControl): IObjectConfigItem;
+class function TObjectConfigListItem.new(ASection, AItem: string;
+  AControl: TControl): IObjectConfigListItem;
 var
-  obj: TObjectConfigItem;
+  obj: TObjectConfigListItem;
 begin
-  obj := TObjectConfigItem.create;
+  obj := TObjectConfigListItem.create;
   obj.FControl := AControl;
   obj.FSection := ASection;
   obj.FItem := AItem;
   result := obj;
 end;
 
-procedure TObjectConfigItem.SetItem(const Value: string);
+procedure TObjectConfigListItem.SetItem(const Value: string);
 begin
   FItem := Value;
 end;
 
-procedure TObjectConfigItem.SetSection(const Value: string);
+procedure TObjectConfigListItem.SetSection(const Value: string);
 begin
   FSection := Value;
 end;
 
-procedure TObjectConfigItem.SetValue(const Value: TValue);
+procedure TObjectConfigListItem.SetValue(const Value: TValue);
 begin
   if FControl.InheritsFrom(TEdit) then
     TEdit(FControl).text := Value.asString
@@ -286,7 +306,7 @@ begin
 
 end;
 
-function TObjectConfigItem.This: TObjectConfigItem;
+function TObjectConfigListItem.This: TObjectConfigListItem;
 begin
   result := self;
 end;

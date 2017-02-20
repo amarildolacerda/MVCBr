@@ -32,11 +32,13 @@ type
     procedure DoClose(Sender: TObject; var Action: TCloseAction);
   public
     class function New(AClass: TFormClass;
-      const AShowModal: boolean = true): IView;
+      const AShowModal: boolean = true): IView;overload;
+    class function New( AForm:TForm;const AShowModal:boolean=true):IView;overload;
     property isShowModal: boolean read FisShowModal write SetisShowModal;
     function ShowView(const AProc: TProc<IView>): Integer; override;
     function Form: TForm;
     function ThisAs: TViewFactoryAdapter;
+    function This:TObject;
   end;
 
   /// <summary>
@@ -66,6 +68,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    Procedure DoCommand(ACommand: string;
+      const AArgs: array of TValue); virtual;
     function GetID: string;
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
@@ -191,6 +195,12 @@ begin
     FOnClose(Sender, ACloseAction);
 end;
 
+procedure TFormFactory.DoCommand(ACommand: string;
+  const AArgs: array of TValue);
+begin
+
+end;
+
 procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);
 begin
   TMVCBr.SetProperty(self, ANome, Value);
@@ -272,6 +282,17 @@ begin
   result := FForm;
 end;
 
+class function TViewFactoryAdapter.New(AForm: TForm;
+  const AShowModal: boolean): IView;
+var
+  obj: TViewFactoryAdapter;
+begin
+  obj := TViewFactoryAdapter.Create;
+  obj.FForm := AForm;
+  obj.isShowModal := AShowModal;
+  result := obj;
+end;
+
 class function TViewFactoryAdapter.New(AClass: TFormClass;
   const AShowModal: boolean): IView;
 var
@@ -302,6 +323,11 @@ begin
     FForm.OnClose := DoClose;
     FForm.Show;
   end;
+end;
+
+function TViewFactoryAdapter.This: TObject;
+begin
+   result := self;   // nao alterar... é esperado retornuar um view como retorno
 end;
 
 function TViewFactoryAdapter.ThisAs: TViewFactoryAdapter;

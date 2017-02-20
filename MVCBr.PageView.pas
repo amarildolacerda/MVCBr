@@ -15,7 +15,7 @@ interface
 
 uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, System.SysUtils, MVCBr.Interf, MVCBr.Controller,
-  MVCBr.Component;
+  MVCBr.Component, MVCBr.FormView;
 
 type
   TPageView = class;
@@ -65,7 +65,7 @@ type
   protected
     FClassType: TClass;
   public
-    function GetOwner:TCustomPageViewFactory;
+    function GetOwner: TCustomPageViewFactory;
     function This: TPageView;
     property Text: string read GetText write SetText;
     property Tab: TObject read FTab write SetTab;
@@ -95,8 +95,9 @@ type
       write SetPageContainer;
     procedure Init(APageView: IPageView); virtual;
     procedure Remove(APageView: IPageView); virtual;
-    Procedure DoQueryClose(const APageView:IPageView; var ACanClose:Boolean ); virtual;
-    Procedure DoViewCreate(Sender:TObject);virtual;
+    Procedure DoQueryClose(const APageView: IPageView;
+      var ACanClose: Boolean); virtual;
+    Procedure DoViewCreate(Sender: TObject); virtual;
   public
 
     function NewTab(APageView: IPageView): TObject; virtual;
@@ -104,6 +105,7 @@ type
     function GetPageContainerClass: TComponentClass; virtual;
     function Count: Integer;
     function ActivePage: IPageView; virtual;
+    procedure SetActivePage(Const Tab: TObject); virtual;
     property ActivePageIndex: Integer read FActivePageIndex
       write SetActivePageIndex;
 
@@ -111,11 +113,14 @@ type
     function NewItem(Const ACaption: string): IPageView; virtual;
     function AddView(AView: IView): IPageView; overload; virtual;
     function AddView(Const AController: TGuid): IPageView; overload; virtual;
+    function AddForm(AClass: TFormClass): IPageView; virtual;
     function FindViewByID(Const AID: String): IPageView; virtual;
+    function FindViewByClassName(const AClassName: String): IPageView; virtual;
     function FindView(Const AGuid: TGuid): IPageView; overload; virtual;
     function FindView(Const AView: IView): IPageView; overload; virtual;
     function IndexOf(Const AGuid: TGuid): Integer;
-    property AfterViewCreate:TNotifyEvent read FAfterViewCreate write SetAfterViewCreate;
+    property AfterViewCreate: TNotifyEvent read FAfterViewCreate
+      write SetAfterViewCreate;
   end;
 
 implementation
@@ -170,15 +175,34 @@ function TCustomPageViewFactory.AddView(AView: IView): IPageView;
 begin
   result := NewItem(AView.Text);
   result.This.View := AView;
-
-  DoViewCreate( AView.This  );
-
+  DoViewCreate(AView.This);
   Init(result);
 end;
 
 function TCustomPageViewFactory.ActivePage: IPageView;
 begin
   result := FList.Items[FActivePageIndex] as IPageView;
+end;
+
+function TCustomPageViewFactory.AddForm(AClass: TFormClass): IPageView;
+var
+  ref: TForm;
+  vw: IView;
+begin
+  // checa se o formulario ja esta carregao e reutiliza
+  result := FindViewByClassName(AClass.ClassName);
+  if assigned(result) then
+  begin
+    SetActivePage(result.This.FTab);
+    exit;
+  end;
+  ref := AClass.Create(self);
+  if supports(ref, IView, vw) then
+  begin
+    result := AddView(vw);
+    exit;
+  end;
+  result := AddView(TViewFactoryAdapter.New(ref, false));
 end;
 
 function TCustomPageViewFactory.AddView(const AController: TGuid): IPageView;
@@ -206,18 +230,19 @@ end;
 procedure TCustomPageViewFactory.AfterConstruction;
 begin
   inherited;
-  FList := TMVCInterfacedList<IPageView>.create;
+  FList := TMVCInterfacedList<IPageView>.Create;
 end;
 
-procedure TCustomPageViewFactory.DoQueryClose(const APageView:IPageView; var ACanClose: boolean);
+procedure TCustomPageViewFactory.DoQueryClose(const APageView: IPageView;
+  var ACanClose: Boolean);
 begin
   ACanClose := true;
 end;
 
 procedure TCustomPageViewFactory.DoViewCreate(Sender: TObject);
 begin
-   if assigned(FAfterViewCreate) then
-      FAfterViewCreate(Sender);
+  if assigned(FAfterViewCreate) then
+    FAfterViewCreate(Sender);
 end;
 
 function TCustomPageViewFactory.Count: Integer;
@@ -265,6 +290,29 @@ begin
     end;
 end;
 
+function TCustomPageViewFactory.FindViewByClassName(const AClassName: String)
+  : IPageView;
+var
+  i: Integer;
+  frm: TObject;
+begin
+  result := nil;
+  for i := 0 to Count - 1 do
+  begin
+    if not assigned(Items[i].This.FView) then
+      continue;
+    if Items[i].This.View.This.InheritsFrom(TViewFactoryAdapter) then
+      frm := TViewFactoryAdapter(Items[i].This.View.This).Form
+    else
+      frm := Items[i].This.FView.This;
+    if sametext(frm.ClassName, AClassName) then
+    begin
+      result := Items[i];
+      exit;
+    end;
+  end;
+end;
+
 function TCustomPageViewFactory.FindViewByID(const AID: String): IPageView;
 var
   i: Integer;
@@ -290,19 +338,19 @@ end;
 
 function TCustomPageViewFactory.GetPageContainerClass: TComponentClass;
 begin
-  raise Exception.create('Error: implements in inherited class');
+  raise Exception.Create('Error: implements in inherited class');
 end;
 
 function TCustomPageViewFactory.GetPageTabClass: TComponentClass;
 begin
-  raise Exception.create('Error: implements in inherited class');
+  raise Exception.Create('Error: implements in inherited class');
 end;
 
 function TCustomPageViewFactory.NewItem(const ACaption: string): IPageView;
 var
   obj: TPageView;
 begin
-  obj := TPageView.create;
+  obj := TPageView.Create;
   FList.Add(obj);
   obj.FOwner := self;
   obj.Text := ACaption;
@@ -314,12 +362,17 @@ end;
 
 function TCustomPageViewFactory.NewTab(APageView: IPageView): TObject;
 begin
-  result := GetPageTabClass.create(nil);
+  result := GetPageTabClass.Create(nil);
 end;
 
 procedure TCustomPageViewFactory.Remove(APageView: IPageView);
 begin
   FList.Remove(APageView);
+end;
+
+procedure TCustomPageViewFactory.SetActivePage(const Tab: TObject);
+begin
+   // implementar na class herdada;
 end;
 
 procedure TCustomPageViewFactory.SetActivePageIndex(const Value: Integer);

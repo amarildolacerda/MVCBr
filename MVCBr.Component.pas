@@ -13,7 +13,7 @@ unit MVCBr.Component;
 
 interface
 
-uses MVCBr.Interf, MVCBr.Model, System.Classes, System.SysUtils;
+uses MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController, System.Classes, System.SysUtils;
 
 type
 
@@ -62,8 +62,14 @@ begin
 end;
 
 function TComponentFactory.GetController: IController;
+var vw:IView;
 begin
   result := FAdapter.GetController;
+  if not assigned(result) then
+     if assigned(Owner) then
+       if supports(owner,IView,vw) then
+          result := vw.GetController;
+
 end;
 
 function TComponentFactory.GetID: string;
