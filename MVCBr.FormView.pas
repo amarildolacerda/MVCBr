@@ -152,7 +152,7 @@ end;
 function TFormFactory.GetText: string;
 begin
   {$ifdef FMX}
-     result := inherited Text;
+     result := inherited Caption;
   {$else}
      result := inherited Caption;
   {$endif}
@@ -214,7 +214,7 @@ end;
 procedure TFormFactory.SetText(const Value: string);
 begin
   {$ifdef FMX}
-     Inherited Text := Value;
+     Inherited Caption := Value;
   {$else}
      Inherited Caption := Value;
   {$endif}

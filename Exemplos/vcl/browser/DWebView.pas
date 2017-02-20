@@ -78,6 +78,8 @@ begin
   result.Controller(aController);
 end;
 
+
+///  usando o Controller para isntancia o VIEW  dentro de um TPageControl ///
 procedure TDWebView.Button1Click(Sender: TObject);
 var cnt:IPageView;
 begin

@@ -37,7 +37,8 @@ requires
   designide,
   xmlrtl,
   vclactnband,
-  vclx;
+  vclx,
+  MVCBrCore;
 
 contains
   eMVC.PersistentWizard in 'eMVC.PersistentWizard.pas',

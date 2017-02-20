@@ -27,8 +27,6 @@ object DWebView: TDWebView
     Height = 351
     Align = alClient
     TabOrder = 0
-    ExplicitTop = 41
-    ExplicitHeight = 339
   end
   object Panel1: TPanel
     Left = 0

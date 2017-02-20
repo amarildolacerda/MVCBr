@@ -15,13 +15,13 @@ type
     FOldPageChange: TNotifyEvent;
     FOnQueryClose: TVCLpageViewOnQueryClose;
     FAfterTabCreate: TNotifyEvent;
-    FAfterInited: TNotifyEvent;
+    FAfterCreateComplete: TNotifyEvent;
     procedure Init(APageView: IPageView); override;
     procedure SetPageControlEx(const Value: TPageControl);
     function GetPageControlEx: TPageControl;
     procedure SetOnQueryClose(const Value: TVCLpageViewOnQueryClose);
     procedure SetAfterTabCreate(const Value: TNotifyEvent);
-    procedure SetAfterInited(const Value: TNotifyEvent);
+    procedure SetAfterCreateComplete(const Value: TNotifyEvent);
     procedure DoPageChange(Sender: TObject);
   protected
     Procedure DoQueryClose(const APageView: IPageView;
@@ -41,7 +41,7 @@ type
     property PageControl: TPageControl read GetPageControlEx
       write SetPageControlEx;
     property AfterViewCreate;
-    property AfterInited: TNotifyEvent read FAfterInited write SetAfterInited;
+    property AfterCreateComplete: TNotifyEvent read FAfterCreateComplete write SetAfterCreateComplete;
     property AfterTabCreate: TNotifyEvent read FAfterTabCreate
       write SetAfterTabCreate;
     property OnQueryClose: TVCLpageViewOnQueryClose read FOnQueryClose
@@ -202,9 +202,9 @@ begin
   TPageControl(FPageContainer).ActivePage := TTabSheet(Tab);
 end;
 
-procedure TVCLPageViewManager.SetAfterInited(const Value: TNotifyEvent);
+procedure TVCLPageViewManager.SetAfterCreateComplete(const Value: TNotifyEvent);
 begin
-  FAfterInited := Value;
+  FAfterCreateComplete := Value;
 end;
 
 procedure TVCLPageViewManager.SetAfterTabCreate(const Value: TNotifyEvent);

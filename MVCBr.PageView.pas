@@ -196,12 +196,14 @@ begin
     SetActivePage(result.This.FTab);
     exit;
   end;
+  // instancia novo formulario
   ref := AClass.Create(self);
   if supports(ref, IView, vw) then
   begin
     result := AddView(vw);
     exit;
   end;
+  // usa um stub para embeded de uma formulario como (sem IVIEW)
   result := AddView(TViewFactoryAdapter.New(ref, false));
 end;
 
