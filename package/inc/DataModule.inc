@@ -5,7 +5,7 @@ dataModuleCodeInterf =
 '/// <summary>                                                ' + #10#13 +
 '/// Implementação para a interface:  I%FormIdent '+#10#13+
 '/// </summary>                                                    '+#10#13+
-'Unit %ModelIdent;                                                 '+#10#13+
+'Unit %UnitIdent;                                                 '+#10#13+
 '                                                                  '+#10#13+
 '//%include                                                        '+#10#13+
 'interface                                                         '+#10#13+
@@ -38,7 +38,7 @@ dataModuleCode =
 'interface                                                         '+#10#13+
 '                                                                  '+#10#13+
 'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+#10#13+
-'     %ModelIdent.Interf, MVCBr.ModuleModel,                         '+#10#13+
+'     %UnitIdent.Interf, MVCBr.ModuleModel,                         '+#10#13+
 '     MVCBr.Interf, MVCBr.Model, MVCBr.Controller;                 '+#10#13+
 '                                                                  '+#10#13+
 'Type                                                              '+#10#13+

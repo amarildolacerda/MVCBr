@@ -176,7 +176,7 @@ begin
       begin
         if cbCreateDir.Checked then
         begin
-          path := path + setname + '\';
+          path := path + removePonto(setname) + '\';
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
@@ -187,18 +187,18 @@ begin
         Model := TPersistentModelCreator.create(path, identProject, false);
         Model.IsFMX := cbFMX.Checked;
         //Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%intf',
+        Model.Templates.Add('%intf='+
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('%modelType',
+        Model.Templates.Add('%modelType='+
           GetModelType(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%modelName',
+        Model.Templates.Add('%modelName='+
           GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+        Model.Templates.Add('%class='+ ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
-        Model.Templates.AddPair('%UnitBase',Setname);
+        Model.Templates.Add('//%uses='+ GetModelUses(ComboBox1.ItemIndex) );
+        Model.Templates.Add('%UnitBase='+Setname);
 
-        Model.Templates.AddPair('%interfInherited',
+        Model.Templates.Add('%interfInherited='+
           GetModelInher(ComboBox1.ItemIndex));
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -209,20 +209,20 @@ begin
         Model.IsFMX := cbFMX.Checked;
        // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
-        Model.Templates.AddPair('%intf',
+        Model.Templates.Add('%intf='+
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
 
-        Model.Templates.AddPair('%interfInherited',
+        Model.Templates.Add('%interfInherited='+
           GetModelInher(ComboBox1.ItemIndex));
 
-        Model.Templates.AddPair('%modelType',
+        Model.Templates.Add('%modelType='+
           GetModelType(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%modelName',
+        Model.Templates.Add('%modelName='+
           GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+        Model.Templates.Add('%class='+ ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex) );
-        Model.Templates.AddPair('%UnitBase',Setname);
+        Model.Templates.Add('//%uses='+ GetModelUses(ComboBox1.ItemIndex) );
+        Model.Templates.Add('%UnitBase='+Setname);
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);

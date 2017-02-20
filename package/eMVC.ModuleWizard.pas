@@ -45,7 +45,7 @@ uses
   eMVC.ModelCreator,
   eMVC.DataModuleCreator,
   eMVC.NewSetDataModuleModelForm,
-  //MVCBr.ModuleModel,
+  // MVCBr.ModuleModel,
   DesignIntf,
   ToolsApi;
 
@@ -94,7 +94,7 @@ var
   path: string;
   project: string;
   Model: TDataModuleCreator;
-  identProject:string;
+  identProject: string;
 
   function getProjectName: string;
   var
@@ -173,7 +173,7 @@ begin
     begin
       IsFMX := cbFMX.Checked;
       setname := trim(edtSetname.text);
-      identProject := stringReplace(setName,'.','',[rfReplaceAll]);
+      identProject := stringReplace(setname, '.', '', [rfReplaceAll]);
       if SetNameExists(setname) then
       begin
         eMVC.toolBox.showInfo('Desculpe, o projeto "' + setname +
@@ -183,7 +183,7 @@ begin
       begin
         if cbCreateDir.Checked then
         begin
-          path := path + setname + '\';
+          path := path + removePonto(setname) + '\';
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
@@ -195,22 +195,20 @@ begin
           setname + '.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%intf',
-          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('%modelType',
-          GetModelType(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%modelName',
-          GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+        Model.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
+        Model.Templates.Add('%modelType=' + GetModelType(ComboBox1.ItemIndex));
+        Model.Templates.Add('%modelName=' + GetAncestorX(ComboBox1.ItemIndex));
+        Model.Templates.Add('%class=' + ComboBox1.Items.ValueFromIndex
+          [ComboBox1.ItemIndex]);
+        Model.Templates.Add('//%uses=' + GetModelUses(ComboBox1.ItemIndex));
 
-        Model.Templates.AddPair('%interfInherited',
+        Model.Templates.Add('%interfInherited=' +
           GetModelInher(ComboBox1.ItemIndex));
 
         if IsFMX then
-          Model.Templates.AddPair('*.dfm', '*.fmx');
-        model.Templates.AddPair('%UnitBase',setname);
+          Model.Templates.Add('*.dfm='+ '*.fmx');
+        Model.Templates.Add('%UnitBase='+ setname);
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
@@ -221,20 +219,20 @@ begin
         Model.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
-        Model.Templates.AddPair('%intf',
+        Model.Templates.Add('%intf='+
           ComboBox1.Items.Names[ComboBox1.ItemIndex]);
 
-        Model.Templates.AddPair('%interfInherited',
+        Model.Templates.Add('%interfInherited='+
           GetModelInher(ComboBox1.ItemIndex));
 
-        Model.Templates.AddPair('%modelType',
+        Model.Templates.Add('%modelType='+
           GetModelType(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%modelName',
+        Model.Templates.Add('%modelName='+
           GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+        Model.Templates.Add('%class='+ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        Model.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
-        model.Templates.AddPair('%UnitBase',setname);
+        Model.Templates.Add('//%uses='+ GetModelUses(ComboBox1.ItemIndex));
+        Model.Templates.Add('%UnitBase='+ setname);
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -308,13 +306,13 @@ procedure Register;
 begin
   RegisterPackageWizard(TNewMVCSetDatamoduleModelWizard.create);
 
-{  UnlistPublishedProperty(TModuleFactory, 'Font');
-  UnlistPublishedProperty(TModuleFactory, 'ClientWidth');
-  UnlistPublishedProperty(TModuleFactory, 'ClientHeight');
-  UnlistPublishedProperty(TModuleFactory, 'Color');
-  UnlistPublishedProperty(TModuleFactory, 'PixelsPerInch');
-  UnlistPublishedProperty(TModuleFactory, 'TextHeight');
-}
+  { UnlistPublishedProperty(TModuleFactory, 'Font');
+    UnlistPublishedProperty(TModuleFactory, 'ClientWidth');
+    UnlistPublishedProperty(TModuleFactory, 'ClientHeight');
+    UnlistPublishedProperty(TModuleFactory, 'Color');
+    UnlistPublishedProperty(TModuleFactory, 'PixelsPerInch');
+    UnlistPublishedProperty(TModuleFactory, 'TextHeight');
+  }
 end;
 
 end.

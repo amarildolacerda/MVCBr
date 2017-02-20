@@ -93,8 +93,8 @@ begin
   fc.Templates.Clear;
   fc.Templates.assign(Templates);
 
-  fc.Templates.AddPair('%modelName', Templates.Values['%modelName']);
-  fc.Templates.AddPair('%modelNameInterf',Templates.Values['%modelName']+'.ViewModel.Interf');
+  fc.Templates.Add('%modelName='+ Templates.Values['%modelName']);
+  fc.Templates.Add('%modelNameInterf='+Templates.Values['%modelName']+'.ViewModel.Interf');
 
   result := fc;
 end;

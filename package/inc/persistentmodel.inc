@@ -1,5 +1,5 @@
 
-ModelCodeBaseInterf = 'Unit  %ModelIdent ;                         ' + #10#13 +
+ModelCodeBaseInterf = 'Unit  %UnitIdent ;                         ' + #10#13 +
   '                                                               ' + #10#13 +
   '                                                              ' + #10#13 +
   '{ MVCBr                                                       ' + #10#13 +
@@ -23,7 +23,7 @@ ModelCodeBaseInterf = 'Unit  %ModelIdent ;                         ' + #10#13 +
   'Implementation                                                ' + #10#13 +
   'end.                                                          ' + #10#13;
 
-ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
+ModelCodeBase = 'Unit  %UnitIdent;                         ' + #10#13 +
   '                                                               ' + #10#13 +
   '                                                              ' + #10#13 +
   '{ MVCBr                                                       ' + #10#13 +
@@ -35,7 +35,7 @@ ModelCodeBase = 'Unit  %ModelIdent;                         ' + #10#13 +
   '//%include                                                    ' + #10#13 +
   'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'
   + ' MVCBr.Interf, //%uses,     ' + #10#13 +
-  '   %ModelIdent.Interf, //%Interf,  ' + #10#13 +
+  '   %UnitIdent.Interf, //%Interf,  ' + #10#13 +
   'MVCBr.Controller;                 ' + #10#13 +
   '                                                              ' + #10#13 +
   'Type                                                           ' + #10#13 +

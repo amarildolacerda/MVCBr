@@ -2,8 +2,9 @@
 <html>
 <head>
 <title>MVCBr: MVCBr.View: Classe TViewFactory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="generator" content="PasDoc 0.14.0">
-<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
 <script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
 <link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
@@ -14,10 +15,10 @@
 </head>
 <body>
 <table class="container"><tr><td class="navigation">
-<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">?</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
 <div style="clear: both"></div>
 
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
     $('#tipue_search_input').tipuesearch({
         /* 10 items to display seems standard */
@@ -28,60 +29,165 @@ $(document).ready(function() {
     });
 });
 </script>
-</p></td><td class="content">
+</td><td class="content">
 MVCBr
 <a name="TViewFactory"></a><h1 class="cio">Classe TViewFactory</h1>
-<table class="sections wide_list">
-<tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td>Properties</td></tr></table>
-<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Descrição</a></div><div class="one_section"><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></div><div class="one_section"><a class="section" href="#PasDoc-Fields">Campos</a></div><div class="one_section"><a class="section" href="#PasDoc-Methods">Métodos</a></div><div class="one_section"><a class="section" href="#PasDoc-Properties">?</a></div></div>
+<a name="PasDoc-Description"></a><h2 class="unit">?</h2>
 <p class="unitlink">
 <a  href="MVCBr.View.html">MVCBr.View</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TViewFactory = class(<a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a>, <a class="normal" href="MVCBr.Interf.IView.html">IView</a>)</code></p>
+<code>type TViewFactory = class(<a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a>, IView)</code></p>
 <h2 class="description">Descrição</h2>
-<div class="nodescription">no description available, TMVCInterfacedObject description follows</div><div class="nodescription">no description available, TMVCFactoryAbstract description follows</div><a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
-<ul class="hierarchy"><li class="ancestor">TInterfacedObject</li>
-<li class="ancestor"><a class="normal" href="MVCBr.Interf.TMVCFactoryAbstract.html">TMVCFactoryAbstract</a></li>
+<p>
+ <code>TViewFactory</code> é um Factory abstrato a ser utilizado com finalidades genericas sem ligação direta com um visualizador </p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TMVCFactoryAbstract</li>
 <li class="ancestor"><a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a></li>
 <li class="thisitem">TViewFactory</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.View.TViewFactory.html#FText">FText</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.View.TViewFactory.html#FController">FController</a></b>: IController;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.View.TViewFactory.html#FViewModel">FViewModel</a></b>: IViewModel;</code></td>
+</tr>
+</table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#Controller">Controller</a></b>(const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IView.html">IView</a>; virtual;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.View.TViewFactory.html#SetController">SetController</a></b>(const AController: IController);</code></td>
 </tr>
 <tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#GetText">GetText</a></b>: String;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.View.TViewFactory.html#SetText">SetText</a></b>(Const AText: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#Controller">Controller</a></b>(const AController: IController): IView; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#This">This</a></b>: TObject; virtual;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.View.TViewFactory.html#DoCommand">DoCommand</a></b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
+</tr>
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class Function <b><a  href="MVCBr.View.TViewFactory.html#New">New</a></b>(AClass: <a  href="MVCBr.View.html#TViewFactoryClass">TViewFactoryClass</a>; const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IView.html">IView</a>;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProc: TProc&lt;IView&gt;): Integer; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProc: TProc&lt;<a  href="MVCBr.Interf.IView.html">IView</a>&gt;): Integer; virtual;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(): IView; overload; virtual;</code></td>
 </tr>
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#Update">Update</a></b>: <a  href="MVCBr.Interf.IView.html">IView</a>; virtual;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#GetViewModel">GetViewModel</a></b>: IViewModel; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.View.TViewFactory.html#SetViewModel">SetViewModel</a></b>(const AViewModel: IViewModel); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#Update">Update</a></b>: IView; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#GetController">GetController</a></b>: IController;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ViewModel">ViewModel</a></b>(const AModel: IViewModel): IView;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">?</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.View.TViewFactory.html#Text">Text</a></b>: string read <a  href="MVCBr.View.TViewFactory.html#GetText">GetText</a> write <a  href="MVCBr.View.TViewFactory.html#SetText">SetText</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
-<h3 class="detail">Métodos</h3>
+<h3 class="detail">Campos</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="Controller"></a><code>function <b>Controller</b>(const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IView.html">IView</a>; virtual;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FText"></a><code><b>FText</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+FView: IView;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FController"></a><code><b>FController</b>: IController;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FViewModel"></a><code><b>FViewModel</b>: IViewModel;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetController"></a><code>procedure <b>SetController</b>(const AController: IController);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetText"></a><code>function <b>GetText</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetText"></a><code>procedure <b>SetText</b>(Const AText: String);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Controller"></a><code>function <b>Controller</b>(const AController: IController): IView; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
 <td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -89,24 +195,73 @@ MVCBr
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="New"></a><code>class Function <b>New</b>(AClass: <a  href="MVCBr.View.html#TViewFactoryClass">TViewFactoryClass</a>; const AController: <a  href="MVCBr.Interf.IController.html">IController</a>): <a  href="MVCBr.Interf.IView.html">IView</a>;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="DoCommand"></a><code>Procedure <b>DoCommand</b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProc: TProc&lt;<a  href="MVCBr.Interf.IView.html">IView</a>&gt;): Integer; virtual;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProc: TProc&lt;IView&gt;): Integer; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: <a  href="MVCBr.Interf.IView.html">IView</a>; virtual;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetViewModel"></a><code>function <b>GetViewModel</b>: IViewModel; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetViewModel"></a><code>procedure <b>SetViewModel</b>(const AViewModel: IViewModel); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: IView; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetController"></a><code>function <b>GetController</b>: IController;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="ViewModel"></a><code>function <b>ViewModel</b>(const AModel: IViewModel): IView;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">?</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Text"></a><code>property <b>Text</b>: string read <a  href="MVCBr.View.TViewFactory.html#GetText">GetText</a> write <a  href="MVCBr.View.TViewFactory.html#SetText">SetText</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

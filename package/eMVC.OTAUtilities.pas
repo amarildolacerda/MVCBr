@@ -23,8 +23,14 @@ function EditorIsTypeLibEditor(Editor: IOTAEditor): boolean;
 function EditorIsSourceEditor(Editor: IOTAEditor): boolean;
 function IsModule(Unk: IUnknown): boolean;
 function GetFrameworkType: string;
+function RemovePonto(texto: string): string;
 
 implementation
+
+function RemovePonto(texto: string): string;
+begin
+  result := stringreplace(texto, '.', '', [rfReplaceAll]);
+end;
 
 function GetFrameworkType: string;
 var
@@ -33,7 +39,7 @@ begin
   result := '';
   prj := GetCurrentProject;
   if assigned(prj) then
-     result := prj.FrameworkType;
+    result := prj.FrameworkType;
 end;
 
 procedure debug(s: string);
@@ -48,18 +54,18 @@ var
   I: integer;
   rt: boolean;
 begin
-  Result := nil;
+  result := nil;
   rt := GetCurrentProjectGroup(ProjectGroup);
 
   if rt then
   begin
     if ProjectGroup.ProjectCount > 0 then
-      Result := ProjectGroup.ActiveProject;
+      result := ProjectGroup.ActiveProject;
   end
   else
     with BorlandIDEServices as IOTAModuleServices do
       for I := 0 to ModuleCount - 1 do
-        if Supports(Modules[I], IOTAProject, Result) then
+        if Supports(Modules[I], IOTAProject, result) then
           Break;
 end;
 
@@ -70,7 +76,7 @@ var
   IProjectGroup: IOTAProjectGroup;
   I: integer;
 begin
-  Result := false;
+  result := false;
   ProjectGroup := nil;
   IModuleServices := BorlandIDEServices as IOTAModuleServices;
   for I := 0 to IModuleServices.ModuleCount - 1 do
@@ -82,7 +88,7 @@ begin
       Break;
     end;
   end;
-  Result := assigned(ProjectGroup);
+  result := assigned(ProjectGroup);
 end;
 
 function ModuleIsForm(Module: IOTAModule): boolean;
@@ -90,7 +96,7 @@ var
   I: integer;
   FormEdit: IOTAFormEditor;
 begin
-  Result := false;
+  result := false;
   if assigned(Module) then
   begin
     // Form Module will have a DFM and a PAS file associated with it
@@ -98,13 +104,13 @@ begin
     begin
       I := 0;
       // See if one of the Editors is a FormEditor
-      while (I < Module.GetModuleFileCount) and not Result do
+      while (I < Module.GetModuleFileCount) and not result do
       begin
 {$IFDEF COMPILER_6_UP}
-        Result := Succeeded(Module.ModuleFileEditors[I].QueryInterface
+        result := Succeeded(Module.ModuleFileEditors[I].QueryInterface
           (IOTAFormEditor, FormEdit));
 {$ELSE}
-        Result := Succeeded(Module.GetModuleFileEditor(I)
+        result := Succeeded(Module.GetModuleFileEditor(I)
           .QueryInterface(IOTAFormEditor, FormEdit));
 {$ENDIF}
         Inc(I);
@@ -117,27 +123,27 @@ function ModuleIsProject(Module: IOTAModule): boolean;
 var
   Project: IOTAProject;
 begin
-  Result := false;
+  result := false;
   if assigned(Module) then
-    Result := Succeeded(Module.QueryInterface(IOTAProject, Project))
+    result := Succeeded(Module.QueryInterface(IOTAProject, Project))
 end;
 
 function ModuleIsProjectGroup(Module: IOTAModule): boolean;
 var
   ProjectGroup: IOTAProjectGroup;
 begin
-  Result := false;
+  result := false;
   if assigned(Module) then
-    Result := Succeeded(Module.QueryInterface(IOTAProjectGroup, ProjectGroup))
+    result := Succeeded(Module.QueryInterface(IOTAProjectGroup, ProjectGroup))
 end;
 
 function ModuleIsTypeLib(Module: IOTAModule): boolean;
 var
   TypeLib: IOTATypeLibModule;
 begin
-  Result := false;
+  result := false;
   if assigned(Module) then
-    Result := Succeeded(Module.QueryInterface(IOTATypeLibModule, TypeLib))
+    result := Succeeded(Module.QueryInterface(IOTATypeLibModule, TypeLib))
 end;
 
 function FormEditorFromForm(Module: IOTAModule): IOTAFormEditor;
@@ -145,7 +151,7 @@ var
   I: integer;
   Done: boolean;
 begin
-  Result := nil;
+  result := nil;
   if ModuleIsForm(Module) then
   begin
     I := 0;
@@ -154,10 +160,10 @@ begin
     begin
 {$IFDEF COMPILER_6_UP}
       Done := Succeeded(Module.ModuleFileEditors[I].QueryInterface
-        (IOTAFormEditor, Result));
+        (IOTAFormEditor, result));
 {$ELSE}
       Done := Succeeded(Module.GetModuleFileEditor(I)
-        .QueryInterface(IOTAFormEditor, Result));
+        .QueryInterface(IOTAFormEditor, result));
 {$ENDIF}
       Inc(I);
     end;
@@ -168,45 +174,45 @@ function EditorIsFormEditor(Editor: IOTAEditor): boolean;
 var
   FormEdit: IOTAFormEditor;
 begin
-  Result := false;
+  result := false;
   if assigned(Editor) then
-    Result := Succeeded(Editor.QueryInterface(IOTAFormEditor, FormEdit))
+    result := Succeeded(Editor.QueryInterface(IOTAFormEditor, FormEdit))
 end;
 
 function EditorIsProjectResEditor(Editor: IOTAEditor): boolean;
 var
   ProjRes: IOTAProjectResource;
 begin
-  Result := false;
+  result := false;
   if assigned(Editor) then
-    Result := Succeeded(Editor.QueryInterface(IOTAProjectResource, ProjRes))
+    result := Succeeded(Editor.QueryInterface(IOTAProjectResource, ProjRes))
 end;
 
 function EditorIsTypeLibEditor(Editor: IOTAEditor): boolean;
 var
   TypeLib: IOTATypeLibEditor;
 begin
-  Result := false;
+  result := false;
   if assigned(Editor) then
-    Result := Succeeded(Editor.QueryInterface(IOTATypeLibEditor, TypeLib))
+    result := Succeeded(Editor.QueryInterface(IOTATypeLibEditor, TypeLib))
 end;
 
 function EditorIsSourceEditor(Editor: IOTAEditor): boolean;
 var
   SourceEdit: IOTASourceEditor;
 begin
-  Result := false;
+  result := false;
   if assigned(Editor) then
-    Result := Succeeded(Editor.QueryInterface(IOTASourceEditor, SourceEdit))
+    result := Succeeded(Editor.QueryInterface(IOTASourceEditor, SourceEdit))
 end;
 
 function IsModule(Unk: IUnknown): boolean;
 var
   Module: IOTAModule;
 begin
-  Result := false;
+  result := false;
   if assigned(Unk) then
-    Result := Succeeded(Unk.QueryInterface(IOTAModule, Module))
+    result := Succeeded(Unk.QueryInterface(IOTAModule, Module))
 end;
 
 function SetNameExists(ASetname: string): boolean;
@@ -214,7 +220,7 @@ var
   I: integer;
   s1, s2: string;
 begin
-  Result := false;
+  result := false;
   s1 := lowercase(trim(ASetname)) + '.Controller.pas';
   for I := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
   begin
@@ -222,7 +228,7 @@ begin
       .Modules[I].FileName));
     if s1 = s2 then
     begin
-      Result := true;
+      result := true;
       Break;
     end;
   end;

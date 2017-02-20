@@ -1,5 +1,5 @@
 /*
-  Copyright 1998-2014 PasDoc developers.
+  Copyright 1998-2016 PasDoc developers.
 
   This file is part of "PasDoc".
 
@@ -15,7 +15,7 @@
 
   You should have received a copy of the GNU General Public License
   along with "PasDoc"; if not, write to the Free Software
-  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
 
   ----------------------------------------------------------------------------
 */
@@ -29,7 +29,6 @@ body {
   font-family: Verdana,Arial;
   color: black;
   background-color: white;
-  font-size: 12px;
 }
 
 table.container {
@@ -98,8 +97,13 @@ table.wide_list td { vertical-align:top; padding:4px; }
 table.markerlegend { width:auto; }
 table.markerlegend td.legendmarker { text-align:center; }
 
-table.sections { background:white; }
-table.sections td {background:lightgray; }
+.sections { background:white; }
+.sections .one_section {
+  background:lightgray;
+  display: inline-block;
+  margin: 0.2em;
+  padding: 0.5em 1em;
+}
 
 table.summary td.itemcode { width:100%; }
 table.detail td.itemcode { width:100%; }
@@ -125,6 +129,7 @@ h6.description_section {
      is closely related to content below. In this situation
      (where the font size is just as a normal text), smaller bottom
      margin seems to look good. */
+  margin-top: 1.4em;
   margin-bottom: 0em;
 }
 

@@ -1,0 +1,482 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.PageView: Classe TCustomPageViewFactory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">?</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</td><td class="content">
+MVCBr
+<a name="TCustomPageViewFactory"></a><h1 class="cio">Classe TCustomPageViewFactory</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Descrição</a></div><div class="one_section"><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></div><div class="one_section"><a class="section" href="#PasDoc-Fields">Campos</a></div><div class="one_section"><a class="section" href="#PasDoc-Methods">Métodos</a></div><div class="one_section"><a class="section" href="#PasDoc-Properties">?</a></div></div>
+<a name="PasDoc-Description"></a><h2 class="unit">?</h2>
+<p class="unitlink">
+<a  href="MVCBr.PageView.html">MVCBr.PageView</a></p>
+<h2 class="declaration">Declaração</h2>
+<p class="declaration">
+<code>type TCustomPageViewFactory = class(<a class="normal" href="MVCBr.Component.TComponentFactory.html">TComponentFactory</a>, IModel)</code></p>
+<h2 class="description">Descrição</h2>
+<p>
+Adaptador para associar a lista de View com o TPageControl ativo Cada View é mostrado em uma aba do PageControl</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TComponent</li>
+<li class="ancestor"><a class="normal" href="MVCBr.Component.TComponentFactory.html">TComponentFactory</a></li>
+<li class="thisitem">TCustomPageViewFactory</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a></b>: Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FAfterViewCreate">FAfterViewCreate</a></b>: TNotifyEvent;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FPageContainer">FPageContainer</a></b>: TComponent;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>: TMVCInterfacedList&lt;<a  href="MVCBr.PageView.IPageView.html">IPageView</a>&gt;;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a></b>(idx: Integer): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a></b>(idx: Integer; const Value: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a></b>(const Value: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetAfterViewCreate">SetAfterViewCreate</a></b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetPageContainer">SetPageContainer</a></b>(const Value: TComponent); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainer">GetPageContainer</a></b>: TComponent; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Remove">Remove</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: Boolean); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoViewCreate">DoViewCreate</a></b>(Sender: TObject); virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageTabClass">GetPageTabClass</a></b>: TComponentClass; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainerClass">GetPageContainerClass</a></b>: TComponentClass; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Count">Count</a></b>: Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePage">ActivePage</a></b>: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePage">SetActivePage</a></b>(Const Tab: TObject); virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewItem">NewItem</a></b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddForm">AddForm</a></b>(AClass: TFormClass): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByID">FindViewByID</a></b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByClassName">FindViewByClassName</a></b>(const AClassName: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#IndexOf">IndexOf</a></b>(Const AGuid: TGuid): Integer;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">?</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#PageContainer">PageContainer</a></b>: TComponent read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainer">GetPageContainer</a>
+      write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetPageContainer">SetPageContainer</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePageIndex">ActivePageIndex</a></b>: Integer read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a>
+      write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Items">Items</a></b>[idx:Integer]: <a  href="MVCBr.PageView.IPageView.html">IPageView</a> read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AfterViewCreate">AfterViewCreate</a></b>: TNotifyEvent read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FAfterViewCreate">FAfterViewCreate</a>
+      write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetAfterViewCreate">SetAfterViewCreate</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FActivePageIndex"></a><code><b>FActivePageIndex</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FAfterViewCreate"></a><code><b>FAfterViewCreate</b>: TNotifyEvent;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FPageContainer"></a><code><b>FPageContainer</b>: TComponent;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FList"></a><code><b>FList</b>: TMVCInterfacedList&lt;<a  href="MVCBr.PageView.IPageView.html">IPageView</a>&gt;;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: Integer): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: Integer; const Value: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetActivePageIndex"></a><code>procedure <b>SetActivePageIndex</b>(const Value: Integer);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetAfterViewCreate"></a><code>procedure <b>SetAfterViewCreate</b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetPageContainer"></a><code>procedure <b>SetPageContainer</b>(const Value: TComponent); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetPageContainer"></a><code>function <b>GetPageContainer</b>: TComponent; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: Boolean); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="DoViewCreate"></a><code>Procedure <b>DoViewCreate</b>(Sender: TObject); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetPageTabClass"></a><code>function <b>GetPageTabClass</b>: TComponentClass; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetPageContainerClass"></a><code>function <b>GetPageContainerClass</b>: TComponentClass; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Count"></a><code>function <b>Count</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="ActivePage"></a><code>function <b>ActivePage</b>: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetActivePage"></a><code>procedure <b>SetActivePage</b>(Const Tab: TObject); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="NewItem"></a><code>function <b>NewItem</b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="AddForm"></a><code>function <b>AddForm</b>(AClass: TFormClass): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FindViewByID"></a><code>function <b>FindViewByID</b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FindViewByClassName"></a><code>function <b>FindViewByClassName</b>(const AClassName: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="IndexOf"></a><code>function <b>IndexOf</b>(Const AGuid: TGuid): Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">?</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="PageContainer"></a><code>property <b>PageContainer</b>: TComponent read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainer">GetPageContainer</a>
+      write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetPageContainer">SetPageContainer</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+ligação para o PageControl component</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="ActivePageIndex"></a><code>property <b>ActivePageIndex</b>: Integer read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a>
+      write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:Integer]: <a  href="MVCBr.PageView.IPageView.html">IPageView</a> read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="AfterViewCreate"></a><code>property <b>AfterViewCreate</b>: TNotifyEvent read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FAfterViewCreate">FAfterViewCreate</a>
+      write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetAfterViewCreate">SetAfterViewCreate</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>

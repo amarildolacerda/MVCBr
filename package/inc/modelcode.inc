@@ -1,4 +1,4 @@
-ModelInterf = 'Unit %ModelIdent;              '+#10#13+
+ModelInterf = 'Unit %UnitIdent;              '+#10#13+
   '                                                              ' + #10#13 +
   'interface                                                     ' + #10#13 +
   '                                                              ' + #10#13 +
@@ -14,7 +14,7 @@ ModelInterf = 'Unit %ModelIdent;              '+#10#13+
   'Implementation                                                ' + #10#13 +
   'end.                                                          ' + #10#13 ;
 
-ModelHead = 'unit %ModelIdent;                                   ' + #10#13 +
+ModelHead = 'unit %UnitIdent;                                   ' + #10#13 +
   '                                                              ' + #10#13 +
   '{ MVCBr                                                       ' + #10#13 +
   '  www.tireideletra.com.br                                     ' + #10#13 +

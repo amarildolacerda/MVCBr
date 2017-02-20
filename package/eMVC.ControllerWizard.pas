@@ -45,7 +45,7 @@ uses
   eMVC.ModelCreator,
   eMVC.DataModuleCreator,
   eMVC.NewSetDataModuleModelForm,
-  //MVCBr.ModuleModel,
+  // MVCBr.ModuleModel,
   DesignIntf,
   ToolsApi;
 
@@ -94,7 +94,7 @@ var
   path: string;
   project: string;
   Ctrl: TControllerCreator;
-  identProject:string;
+  identProject: string;
 
   function getProjectName: string;
   var
@@ -129,7 +129,7 @@ begin
     begin
       IsFMX := cbFMX.Checked;
       setname := trim(edtSetname.text);
-      identProject := stringReplace(setName,'.','',[rfReplaceAll]);
+      identProject := stringReplace(setname, '.', '', [rfReplaceAll]);
       if SetNameExists(setname) then
       begin
         eMVC.toolBox.showInfo('Desculpe, o projeto "' + setname +
@@ -139,7 +139,7 @@ begin
       begin
         if cbCreateDir.Checked then
         begin
-          path := path + setname + '\';
+          path := path + RemovePonto(setname) + '\';
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
@@ -148,63 +148,55 @@ begin
 
         debug('Pronto para criar o Modulo');
 
-        Ctrl := TControllerCreator.create(path,
-          setname + '', false,false,false,true,true,false);
+        Ctrl := TControllerCreator.create(path, setname + '', false, false,
+          false, true, true, false);
         Ctrl.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
-        Ctrl.Templates.AddPair('%intf',
-          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
-       // Ctrl.Templates.AddPair('%modelType',
-       //   GetModelType(ComboBox1.ItemIndex));
-       // Ctrl.Templates.AddPair('%modelName',
-       //   GetAncestorX(ComboBox1.ItemIndex));
-        Ctrl.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+        Ctrl.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);
-       // Ctrl.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
+        // Ctrl.Templates.AddPair('%modelType',
+        // GetModelType(ComboBox1.ItemIndex));
+        // Ctrl.Templates.AddPair('%modelName',
+        // GetAncestorX(ComboBox1.ItemIndex));
+        Ctrl.Templates.Add('%class=' + ComboBox1.Items.ValueFromIndex
+          [ComboBox1.ItemIndex]);
+        // Ctrl.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
 
-       // Ctrl.Templates.AddPair('%interfInherited',
-       //   GetModelInher(ComboBox1.ItemIndex));
+        // Ctrl.Templates.AddPair('%interfInherited',
+        // GetModelInher(ComboBox1.ItemIndex));
 
-       // if IsFMX then
-       //   Ctrl.Templates.AddPair('*.dfm', '*.fmx');
-        Ctrl.Templates.AddPair('%UnitBase',setname);
+        // if IsFMX then
+        // Ctrl.Templates.AddPair('*.dfm', '*.fmx');
+        Ctrl.Templates.Add('%UnitBase=' + setname);
         Ctrl.IsInterf := true;
-        Ctrl.Templates.AddPair('%MdlInterf', setname + '.Controller.Interf');
+        Ctrl.Templates.Add('%MdlInterf=' + setname + '.Controller.Interf');
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
-
-
-        Ctrl := TControllerCreator.create(path,
-          setname + '', false,false,false,true,true,false);
+        Ctrl := TControllerCreator.create(path, setname + '', false, false,
+          false, true, true, false);
         Ctrl.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
-        Ctrl.Templates.AddPair('%intf',
-          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
-       // Ctrl.Templates.AddPair('%modelType',
-       //   GetModelType(ComboBox1.ItemIndex));
-       // Ctrl.Templates.AddPair('%modelName',
-       //   GetAncestorX(ComboBox1.ItemIndex));
-        Ctrl.Templates.AddPair('%class', ComboBox1.Items.ValueFromIndex
+        Ctrl.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);
-       // Ctrl.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
+        // Ctrl.Templates.AddPair('%modelType',
+        // GetModelType(ComboBox1.ItemIndex));
+        // Ctrl.Templates.AddPair('%modelName',
+        // GetAncestorX(ComboBox1.ItemIndex));
+        Ctrl.Templates.Add('%class=' + ComboBox1.Items.ValueFromIndex
+          [ComboBox1.ItemIndex]);
+        // Ctrl.Templates.AddPair('//%uses', GetModelUses(ComboBox1.ItemIndex));
 
-       // Ctrl.Templates.AddPair('%interfInherited',
-       //   GetModelInher(ComboBox1.ItemIndex));
+        // Ctrl.Templates.AddPair('%interfInherited',
+        // GetModelInher(ComboBox1.ItemIndex));
 
-       // if IsFMX then
-       //   Ctrl.Templates.AddPair('*.dfm', '*.fmx');
-        Ctrl.Templates.AddPair('%UnitBase',setname);
+        // if IsFMX then
+        // Ctrl.Templates.AddPair('*.dfm', '*.fmx');
+        Ctrl.Templates.Add('%UnitBase='+ setname);
         Ctrl.Templates.values['//viewmodelUses'] := ' ';
 
-
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
-
-
-
-
         debug('Criou o Controller');
-
 
       end; // else
     end; // if
@@ -273,13 +265,13 @@ procedure Register;
 begin
   RegisterPackageWizard(TNewMVCSetControllerWizard.create);
 
-{  UnlistPublishedProperty(TModuleFactory, 'Font');
-  UnlistPublishedProperty(TModuleFactory, 'ClientWidth');
-  UnlistPublishedProperty(TModuleFactory, 'ClientHeight');
-  UnlistPublishedProperty(TModuleFactory, 'Color');
-  UnlistPublishedProperty(TModuleFactory, 'PixelsPerInch');
-  UnlistPublishedProperty(TModuleFactory, 'TextHeight');
-}
+  { UnlistPublishedProperty(TModuleFactory, 'Font');
+    UnlistPublishedProperty(TModuleFactory, 'ClientWidth');
+    UnlistPublishedProperty(TModuleFactory, 'ClientHeight');
+    UnlistPublishedProperty(TModuleFactory, 'Color');
+    UnlistPublishedProperty(TModuleFactory, 'PixelsPerInch');
+    UnlistPublishedProperty(TModuleFactory, 'TextHeight');
+  }
 end;
 
 end.

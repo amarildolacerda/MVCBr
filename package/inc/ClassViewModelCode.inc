@@ -1,4 +1,4 @@
-ClassViewModelInterf = 'Unit %ModelIdent;              ' + #10#13 +
+ClassViewModelInterf = 'Unit %UnitIdent;              ' + #10#13 +
   ' ///   <summary>                                              ' + #10#13 +
   ' ///      Interface para o Model                              ' + #10#13 +
   ' ///   </summary>                                             ' + #10#13 +
@@ -25,7 +25,7 @@ ClassViewModelInterf = 'Unit %ModelIdent;              ' + #10#13 +
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-ClassViewModelHead = 'unit %ModelIdent;                                   ' +
+ClassViewModelHead = 'unit %UnitIdent;                                   ' +
   #10#13 + ' /// <summary>                                                ' +
   #10#13 + ' ///    Object Factory para implementar a interface do Model  ' +
   #10#13 + ' /// </summary>                                               ' +

@@ -9,7 +9,7 @@ ClassHeader=
 '{// Data: %date                                  //}'+ #10#13 +
 '{//************************************************************//}';
 
-ClassCode = 'unit %ModuleIdent;                                 ' + #10#13 +
+ClassCode = 'unit %UnitIdent;                                 ' + #10#13 +
   '                                                    ' + #10#13 +
   ' ///                                                ' + #10#13 +
   ' /// <summary>                                            ' + #10#13 +

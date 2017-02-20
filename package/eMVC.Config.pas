@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
   System.Classes, Vcl.Graphics, System.RTTI,
-  System.Generics.Collections, MVCBr.ObjectConfig,
+  System.Generics.Collections, MVCBr.ObjectConfigList,
   eMVC.OTAUtilities,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
 
@@ -36,7 +36,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
-    FConfig: IObjectConfig;
+    FConfig: IObjectConfigList;
     FCanceled: boolean;
     { Private declarations }
     procedure RegisterControls;
@@ -72,7 +72,7 @@ end;
 
 procedure TMVCConfig.FormCreate(Sender: TObject);
 begin
-  FConfig := TObjectConfigList.New;
+  FConfig := TObjectConfigModel.New;
   RegisterControls;
 end;
 

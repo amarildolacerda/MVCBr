@@ -31,7 +31,8 @@ package MVCBrFMX;
 requires
   rtl,
   MVCBrCore,
-  fmx;
+  fmx,
+  MVCBrVCL;
 
 contains
   MVCBr.FMX.PageView in '..\FMX\MVCBr.FMX.PageView.pas';

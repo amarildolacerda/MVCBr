@@ -5,7 +5,7 @@ ViewHead = '/// <summary>                                                     '
   #10#13 + '///    a troca de informações e comunicação com os Models         '
   + #10#13 +
   '/// </summary>                                                    ' + #10#13
-  + 'unit %ModelIdent;                                ' + #10#13 +
+  + 'unit %UnitIdent;                                ' + #10#13 +
   '                                                          ' + #10#13 +
   'interface                                                 ' + #10#13 +
   'uses                                                      ' + #10#13 +

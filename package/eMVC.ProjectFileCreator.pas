@@ -102,9 +102,9 @@ end;
 procedure TProjectFileCreator.init;
 begin
   // Parameterize the code with the current ProjectName
-  FTemplates.AddPair('%ModuleIdent', FProjectName);
-  FTemplates.AddPair('%Module', 'Main');
-  FTemplates.AddPair('%MdlInterf',FProjectName+'.Interf');
+  FTemplates.Add('%ModuleIdent='+ FProjectName);
+  FTemplates.Add('%Module='+ 'Main');
+  FTemplates.Add('%MdlInterf='+FProjectName+'.Interf');
 
 
 

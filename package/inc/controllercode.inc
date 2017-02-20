@@ -3,7 +3,7 @@ NormalViewCreate = 'view := T%FormIdentView.create(nil)';
 NormalViewDestory = 'freeAndNil(view)';
 
 ControllerCodeInterf =
-  'unit %ModelIdent;                                                ' + #10#13 +
+  'unit %UnitIdent;                                                ' + #10#13 +
   ' ///                                                          ' + #10#13 +
   ' /// <summary>                                                ' + #10#13 +
   ' ///  I%FormIdentController                                   ' + #10#13 +
@@ -42,7 +42,7 @@ ControllerCode =
   'System.SysUtils, {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}' + #10#13
   + 'System.Classes, MVCBr.Interf,                                      ' +
   #10#13 + 'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' +
-  #10#13 + 'System.RTTI, %ModelIdent.interf, %FormIdent.ViewModel, %FormIdent.ViewModel.Interf,'
+  #10#13 + 'System.RTTI, %UnitIdent.interf, %FormIdent.ViewModel, %FormIdent.ViewModel.Interf,'
   + #10#13 + '%FormIdentView;' + #10#13 +
   '                                                                 ' + #10#13 +
   'type                                                             ' + #10#13 +
@@ -189,7 +189,7 @@ ControllerCodeWithoutViewModel =
   'System.SysUtils, {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}' + #10#13
   + 'System.Classes, MVCBr.Interf,                                      ' +
   #10#13 + 'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' +
-  #10#13 + 'System.RTTI, %ModelIdent.interf, ' + #10#13 + '%FormIdentView;' +
+  #10#13 + 'System.RTTI, %UnitIdent.interf, ' + #10#13 + '%FormIdentView;' +
   #10#13 + '                                                         ' + #10#13
   + 'type                                                             ' + #10#13
   + '                                                                 ' + #10#13
@@ -307,7 +307,7 @@ ControllerCodeWithoutViewModel =
 ControllerCodeWithoutView = ControllerCode;
 
 ControllerCodeOnly =
-  'unit %ModelIdent;                                                ' + #10#13 +
+  'unit %UnitIdent;                                                ' + #10#13 +
   '                                                                 ' + #10#13 +
   'interface                                                        ' + #10#13 +
   '//%include                                                       ' + #10#13 +
@@ -316,7 +316,7 @@ ControllerCodeOnly =
   'System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'
   + 'MVCBr.Interf,        ' + #10#13 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #10#13 +
-  '%ModelIdent.interf,                                              ' + #10#13 +
+  '%UnitIdent.interf,                                              ' + #10#13 +
   'System.RTTI;                                                     ' + #10#13 +
   '                                                                 ' + #10#13 +
   'type                                                             ' + #10#13 +

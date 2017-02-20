@@ -171,8 +171,8 @@ begin
         end
         else
           show;
-        if assigned(AfterInited) then
-          AfterInited(APageView.This);
+        if assigned(FAfterCreateComplete ) then
+          FAfterCreateComplete(APageView.This);
       end;
     end;
 end;

@@ -1,0 +1,62 @@
+DiGraph Classes {
+  IObjectConfigList -> IInterface
+  IObjectConfigList [href="MVCBr.ObjectConfigList.IObjectConfigList.html"]
+  IObjectConfigListItem -> IInterface
+  IObjectConfigListItem [href="MVCBr.ObjectConfigList.IObjectConfigListItem.html"]
+  IPageView -> IInterface
+  IPageView [href="MVCBr.PageView.IPageView.html"]
+  IQueryModel -> IInterface
+  IQueryModel [href="MVCBr.DatabaseModel.Interf.IQueryModel.html"]
+  IPageViews -> IModel
+  IPageViews [href="MVCBr.PageView.IPageViews.html"]
+  IDatabaseModel -> IPersistentModel
+  IDatabaseModel [href="MVCBr.DatabaseModel.Interf.IDatabaseModel.html"]
+  IFireDACModel -> IDatabaseModel
+  IFireDACModel [href="MVCBr.FireDACModel.Interf.IFireDACModel.html"]
+  IViewAdpater -> IView
+  IViewAdpater [href="MVCBr.FormView.IViewAdpater.html"]
+  TControllerFactory -> TControllerAbstract
+  TControllerFactory [href="MVCBr.Controller.TControllerFactory.html"]
+  TFormFactory -> TForm
+  TFormFactory [href="MVCBr.FormView.TFormFactory.html"]
+  TModuleFactory -> TForm
+  TModuleFactory [href="MVCBr.ModuleModel.TModuleFactory.html"]
+  TObjectConfigListItem -> TInterfacedObject
+  TObjectConfigListItem [href="MVCBr.ObjectConfigList.TObjectConfigListItem.html"]
+  TQueryModelFactory -> TInterfacedObject
+  TQueryModelFactory [href="MVCBr.DatabaseModel.TQueryModelFactory.html"]
+  TMVCInterfacedObject -> TMVCFactoryAbstract
+  TMVCInterfacedObject [href="MVCBr.Model.TMVCInterfacedObject.html"]
+  TApplicationController -> TMVCInterfacedObject
+  TApplicationController [href="MVCBr.ApplicationController.TApplicationController.html"]
+  TModelFactory -> TMVCInterfacedObject
+  TModelFactory [href="MVCBr.Model.TModelFactory.html"]
+  TNavigatorModelFactory -> TModelFactory
+  TNavigatorModelFactory [href="MVCBr.NavigatorModel.TNavigatorModelFactory.html"]
+  TObjectConfigModel -> TModelFactory
+  TObjectConfigModel [href="MVCBr.ObjectConfigList.TObjectConfigModel.html"]
+  TPersistentModelFactory -> TModelFactory
+  TPersistentModelFactory [href="MVCBr.PersistentModel.TPersistentModelFactory.html"]
+  TDatabaseModelAbstract -> TPersistentModelFactory
+  TDatabaseModelAbstract [href="MVCBr.DatabaseModel.Interf.TDatabaseModelAbstract.html"]
+  TDatabaseModelFactory -> TDatabaseModelAbstract
+  TDatabaseModelFactory [href="MVCBr.DatabaseModel.TDatabaseModelFactory.html"]
+  TFireDACModel -> TDatabaseModelFactory
+  TFireDACModel [href="MVCBr.FireDAC.Model.TFireDACModel.html"]
+  TValidateModelFactory -> TModelFactory
+  TValidateModelFactory [href="MVCBr.ValidateModel.TValidateModelFactory.html"]
+  TViewModelFactory -> TModelFactory
+  TViewModelFactory [href="MVCBr.ViewModel.TViewModelFactory.html"]
+  TViewFactory -> TMVCInterfacedObject
+  TViewFactory [href="MVCBr.View.TViewFactory.html"]
+  TViewFactoryAdapter -> TViewFactory
+  TViewFactoryAdapter [href="MVCBr.FormView.TViewFactoryAdapter.html"]
+  TPageView -> TMVCFactoryAbstract
+  TPageView [href="MVCBr.PageView.TPageView.html"]
+  TPersistent -> TObject
+  TComponent -> TPersistent
+  TComponentFactory -> TComponent
+  TComponentFactory [href="MVCBr.Component.TComponentFactory.html"]
+  TCustomPageViewFactory -> TComponentFactory
+  TCustomPageViewFactory [href="MVCBr.PageView.TCustomPageViewFactory.html"]
+}

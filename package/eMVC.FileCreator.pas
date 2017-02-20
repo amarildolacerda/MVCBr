@@ -105,9 +105,10 @@ begin
   self.FCreateType := ACreateType;
   FTemplates := TStringList.Create;
   FAge := -1; // Flag age as New File
-  FModelIdent := ModelIdent;
-  FFormIdent := FormIdent;
-  FAncestorIdent := AncestorIdent;
+  FTemplates.add('%UnitIdent='+ModelIdent);  // sem remove os pontos
+  FModelIdent := RemovePonto( ModelIdent );  // remove os pontos;
+  FFormIdent := RemovePonto(FormIdent);
+  FAncestorIdent := RemovePonto(AncestorIdent);
   FCreateModel := ACreateModel;
   FCreateView := ACreateView;
   FModelAlone := AModelAlone;
@@ -226,15 +227,13 @@ begin
   begin
     result := stringReplace(result, FTemplates.Names[i],
       FTemplates.ValueFromIndex[i], [rfReplaceAll, rfIgnoreCase]);
-    Debug('Template: ' + FTemplates.Names[i] + '=' +
-      FTemplates.ValueFromIndex[i]);
   end;
 
   if self.FCreateModel and not self.FModelAlone then
   begin
-    result := stringReplace(result, '%ModelDef', ModelDef,
+    result := stringReplace(result, '%ModelDef', RemovePonto( ModelDef ),
       [rfReplaceAll, rfIgnoreCase]);
-    result := stringReplace(result, '%ModelImpl', ModelImpl,
+    result := stringReplace(result, '%ModelImpl', RemovePonto(ModelImpl),
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
@@ -247,9 +246,9 @@ begin
 
   if self.FCreateView and not self.FViewAlone then
   begin
-    result := stringReplace(result, '%ViewDef', ViewDef,
+    result := stringReplace(result, '%ViewDef', RemovePonto(ViewDef),
       [rfReplaceAll, rfIgnoreCase]);
-    result := stringReplace(result, '%ViewImpl', ViewImpl,
+    result := stringReplace(result, '%ViewImpl', RemovePonto(ViewImpl),
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
@@ -296,7 +295,7 @@ begin
     FTemplates.Values['//%include'] := '{.$I ..\inc\mvcbr.inc}';
 
   if isFMX then
-    FTemplates.AddPair('*.dfm', '*.fmx');
+    FTemplates.Add('*.dfm='+ '*.fmx');
 
   // usa os templates - segudna passada;
   for i := 0 to FTemplates.Count - 1 do

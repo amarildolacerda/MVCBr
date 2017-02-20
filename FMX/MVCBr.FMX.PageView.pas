@@ -167,7 +167,7 @@ begin
     begin
       if APageView.This.View.This.InheritsFrom(TViewFactoryAdapter) then
       begin
-        frm := TViewFactoryAdapter(APageView.This.View.This).form;
+        frm := TForm(TViewFactoryAdapter(APageView.This.View.This).form);
         APageView.This.text := frm.Caption;
       end
       else

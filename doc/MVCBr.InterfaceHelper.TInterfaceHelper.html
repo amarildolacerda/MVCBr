@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.InterfaceHelper: ? TInterfaceHelper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">?</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</td><td class="content">
+MVCBr
+<a name="TInterfaceHelper"></a><h1 class="cio">? TInterfaceHelper</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Descrição</a></div><div class="one_section">Hierarquia</div><div class="one_section">Campos</div><div class="one_section"><a class="section" href="#PasDoc-Methods">Métodos</a></div><div class="one_section">?</div></div>
+<a name="PasDoc-Description"></a><h2 class="unit">?</h2>
+<p class="unitlink">
+<a  href="MVCBr.InterfaceHelper.html">MVCBr.InterfaceHelper</a></p>
+<h2 class="declaration">Declaração</h2>
+<p class="declaration">
+<code>type TInterfaceHelper = record</code></p>
+<h2 class="description">Descrição</h2>
+&nbsp;<h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#RefreshCache">RefreshCache</a></b>; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetType">GetType</a></b>(AIntf: IInterface): TRttiInterfaceType; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetType">GetType</a></b>(AGUID: TGUID): TRttiInterfaceType; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetType">GetType</a></b>(AIntfInTValue: TValue): TRttiInterfaceType; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetTypeName">GetTypeName</a></b>(AIntf: IInterface): String; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetTypeName">GetTypeName</a></b>(AGUID: TGUID): String; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetQualifiedName">GetQualifiedName</a></b>(AIntf: IInterface): String; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetQualifiedName">GetQualifiedName</a></b>(AGUID: TGUID): String; overload; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetMethods">GetMethods</a></b>(AIntf: IInterface): TArray&lt;TRttiMethod&gt;; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#GetMethod">GetMethod</a></b>(AIntf: IInterface; const MethodName: String) : TRttiMethod; static;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#InvokeMethod">InvokeMethod</a></b>(AIntf: IInterface; const MethodName: String; const Args: array of TValue): TValue; overload; static;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>class function <b><a  href="MVCBr.InterfaceHelper.TInterfaceHelper.html#InvokeMethod">InvokeMethod</a></b>(AIntfInTValue: TValue; const MethodName: String; const Args: array of TValue): TValue; overload; static;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RefreshCache"></a><code>class procedure <b>RefreshCache</b>; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+refresh cached RTTI in a background thread (eg. when new package is loaded)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetType"></a><code>class function <b>GetType</b>(AIntf: IInterface): TRttiInterfaceType; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+get RTTI from interface</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetType"></a><code>class function <b>GetType</b>(AGUID: TGUID): TRttiInterfaceType; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetType"></a><code>class function <b>GetType</b>(AIntfInTValue: TValue): TRttiInterfaceType; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetTypeName"></a><code>class function <b>GetTypeName</b>(AIntf: IInterface): String; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+get type name from interface</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetTypeName"></a><code>class function <b>GetTypeName</b>(AGUID: TGUID): String; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetQualifiedName"></a><code>class function <b>GetQualifiedName</b>(AIntf: IInterface): String; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetQualifiedName"></a><code>class function <b>GetQualifiedName</b>(AGUID: TGUID): String; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetMethods"></a><code>class function <b>GetMethods</b>(AIntf: IInterface): TArray&lt;TRttiMethod&gt;; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+get methods</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="GetMethod"></a><code>class function <b>GetMethod</b>(AIntf: IInterface; const MethodName: String) : TRttiMethod; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="InvokeMethod"></a><code>class function <b>InvokeMethod</b>(AIntf: IInterface; const MethodName: String; const Args: array of TValue): TValue; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Invoke method</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="InvokeMethod"></a><code>class function <b>InvokeMethod</b>(AIntfInTValue: TValue; const MethodName: String; const Args: array of TValue): TValue; overload; static;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>

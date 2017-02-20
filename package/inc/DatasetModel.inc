@@ -1,4 +1,4 @@
-DatasetModelIntef = 'Unit %ModelIdent '+CR+
+DatasetModelIntef = 'Unit %UnitIdent '+CR+
 '                                                                       '+CR+
 'Interface                                                              '+CR+
 '                                                                       '+CR+
@@ -12,7 +12,7 @@ DatasetModelIntef = 'Unit %ModelIdent '+CR+
 'end.                                                                   ';
 
 
-DatasetModel = 'Unit %ModelIdent '+CR+
+DatasetModel = 'Unit %UnitIdent '+CR+
 '                                                                       '+CR+
 'Interface                                                              '+CR+
 '                                                                       '+CR+

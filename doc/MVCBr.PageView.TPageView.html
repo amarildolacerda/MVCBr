@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.PageView: Classe TPageView</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">?</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</td><td class="content">
+MVCBr
+<a name="TPageView"></a><h1 class="cio">Classe TPageView</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Descrição</a></div><div class="one_section"><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></div><div class="one_section"><a class="section" href="#PasDoc-Fields">Campos</a></div><div class="one_section"><a class="section" href="#PasDoc-Methods">Métodos</a></div><div class="one_section"><a class="section" href="#PasDoc-Properties">?</a></div></div>
+<a name="PasDoc-Description"></a><h2 class="unit">?</h2>
+<p class="unitlink">
+<a  href="MVCBr.PageView.html">MVCBr.PageView</a></p>
+<h2 class="declaration">Declaração</h2>
+<p class="declaration">
+<code>type TPageView = class(TMVCFactoryAbstract, <a class="normal" href="MVCBr.PageView.IPageView.html">IPageView</a>)</code></p>
+<h2 class="description">Descrição</h2>
+<p>
+TPageControllerView - Atributos para o PageView</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TMVCFactoryAbstract</li>
+<li class="thisitem">TPageView</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TPageView.html#FOwner">FOwner</a></b>: <a  href="MVCBr.PageView.TCustomPageViewFactory.html">TCustomPageViewFactory</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TPageView.html#FText">FText</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TPageView.html#FTab">FTab</a></b>: TObject;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TPageView.html#FID">FID</a></b>: String;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TPageView.html#FView">FView</a></b>: IView;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TPageView.html#FClassType">FClassType</a></b>: TClass;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TPageView.html#SetText">SetText</a></b>(const Value: string);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TPageView.html#GetText">GetText</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TPageView.html#SetTab">SetTab</a></b>(const Value: TObject);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TPageView.html#SetID">SetID</a></b>(const Value: String);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TPageView.html#SetView">SetView</a></b>(const Value: IView);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TPageView.html#GetOwner">GetOwner</a></b>: <a  href="MVCBr.PageView.TCustomPageViewFactory.html">TCustomPageViewFactory</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TPageView.html#This">This</a></b>: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TPageView.html#Remove">Remove</a></b>; virtual;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">?</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TPageView.html#Text">Text</a></b>: string read <a  href="MVCBr.PageView.TPageView.html#GetText">GetText</a> write <a  href="MVCBr.PageView.TPageView.html#SetText">SetText</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TPageView.html#Tab">Tab</a></b>: TObject read <a  href="MVCBr.PageView.TPageView.html#FTab">FTab</a> write <a  href="MVCBr.PageView.TPageView.html#SetTab">SetTab</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TPageView.html#ID">ID</a></b>: String read <a  href="MVCBr.PageView.TPageView.html#FID">FID</a> write <a  href="MVCBr.PageView.TPageView.html#SetID">SetID</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TPageView.html#View">View</a></b>: IView read <a  href="MVCBr.PageView.TPageView.html#FView">FView</a> write <a  href="MVCBr.PageView.TPageView.html#SetView">SetView</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FOwner"></a><code><b>FOwner</b>: <a  href="MVCBr.PageView.TCustomPageViewFactory.html">TCustomPageViewFactory</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FText"></a><code><b>FText</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FTab"></a><code><b>FTab</b>: TObject;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FID"></a><code><b>FID</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FView"></a><code><b>FView</b>: IView;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="FClassType"></a><code><b>FClassType</b>: TClass;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetText"></a><code>procedure <b>SetText</b>(const Value: string);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetText"></a><code>function <b>GetText</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetTab"></a><code>procedure <b>SetTab</b>(const Value: TObject);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetID"></a><code>procedure <b>SetID</b>(const Value: String);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="SetView"></a><code>procedure <b>SetView</b>(const Value: IView);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="GetOwner"></a><code>function <b>GetOwner</b>: <a  href="MVCBr.PageView.TCustomPageViewFactory.html">TCustomPageViewFactory</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">?</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Text"></a><code>property <b>Text</b>: string read <a  href="MVCBr.PageView.TPageView.html#GetText">GetText</a> write <a  href="MVCBr.PageView.TPageView.html#SetText">SetText</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="Tab"></a><code>property <b>Tab</b>: TObject read <a  href="MVCBr.PageView.TPageView.html#FTab">FTab</a> write <a  href="MVCBr.PageView.TPageView.html#SetTab">SetTab</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="ID"></a><code>property <b>ID</b>: String read <a  href="MVCBr.PageView.TPageView.html#FID">FID</a> write <a  href="MVCBr.PageView.TPageView.html#SetID">SetID</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="?" title="?"></a></td>
+<td class="itemcode"><a name="View"></a><code>property <b>View</b>: IView read <a  href="MVCBr.PageView.TPageView.html#FView">FView</a> write <a  href="MVCBr.PageView.TPageView.html#SetView">SetView</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>
