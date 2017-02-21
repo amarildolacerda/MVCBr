@@ -37,6 +37,7 @@ uses
   eMVC.FileCreator,
   ToolsApi,
   eMVC.ToolBox,
+  eMVC.OTAUtilities,
   eMVC.BaseCreator;
 
 type
@@ -46,6 +47,7 @@ type
     procedure SetIsInterf(const Value: Boolean);
     procedure SetcreateViewModel(const Value: boolean);
   protected
+    FUnitIdent:String;
     FCreateModule, FCreateView: Boolean;
     FModelAlone, FViewAlone: Boolean;
     FViewIsForm: Boolean; // true:view is a child of TForm
@@ -55,6 +57,7 @@ type
       ACreateView: Boolean = true; AModelAlone: Boolean = true;
       AViewAlone: Boolean = true; ViewIsForm: Boolean = true); reintroduce;
     function GetImplFileName: string; override;
+    function GetUnitIdent:string;
     function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string)
       : IOTAFile; override;
     property IsInterf: Boolean read FIsInterf write SetIsInterf;
@@ -83,9 +86,16 @@ end;
 
 function TControllerCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBasename + '.Controller.pas';
+
+  FUnitIdent := getBasename + '.Controller';
   if IsInterf then
-     result := self.getpath + getBasename + '.Controller.Interf.pas';
+     FUnitIdent := getBasename + '.Controller.Interf';
+  result := self.getpath + FUnitIdent+'.pas';
+
+end;
+
+function TControllerCreator.GetUnitIdent: string;
+begin
 
 end;
 
@@ -106,6 +116,7 @@ begin
   fc.isFMX := self.isFMX;
 
   fc.Templates.Assign(Templates);
+  fc.Templates.Add('%UnitIdent='+FUnitIdent);
   result := fc;
 end;
 

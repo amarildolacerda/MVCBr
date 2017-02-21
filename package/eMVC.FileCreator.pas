@@ -105,10 +105,10 @@ begin
   self.FCreateType := ACreateType;
   FTemplates := TStringList.Create;
   FAge := -1; // Flag age as New File
-  FTemplates.add('%UnitIdent='+ModelIdent);  // sem remove os pontos
-  FModelIdent := RemovePonto( ModelIdent );  // remove os pontos;
-  FFormIdent := RemovePonto(FormIdent);
-  FAncestorIdent := RemovePonto(AncestorIdent);
+  FTemplates.Values['%UnitIdent'] := ModelIdent;  // sem remove os pontos
+  FModelIdent := ( ModelIdent );  // remove os pontos;
+  FFormIdent := (FormIdent);
+  FAncestorIdent := (AncestorIdent);
   FCreateModel := ACreateModel;
   FCreateView := ACreateView;
   FModelAlone := AModelAlone;
@@ -231,9 +231,9 @@ begin
 
   if self.FCreateModel and not self.FModelAlone then
   begin
-    result := stringReplace(result, '%ModelDef', RemovePonto( ModelDef ),
+    result := stringReplace(result, '%ModelDef', ( ModelDef ),
       [rfReplaceAll, rfIgnoreCase]);
-    result := stringReplace(result, '%ModelImpl', RemovePonto(ModelImpl),
+    result := stringReplace(result, '%ModelImpl', (ModelImpl),
       [rfReplaceAll, rfIgnoreCase]);
   end
   else
@@ -246,9 +246,9 @@ begin
 
   if self.FCreateView and not self.FViewAlone then
   begin
-    result := stringReplace(result, '%ViewDef', RemovePonto(ViewDef),
+    result := stringReplace(result, '%ViewDef', (ViewDef),
       [rfReplaceAll, rfIgnoreCase]);
-    result := stringReplace(result, '%ViewImpl', RemovePonto(ViewImpl),
+    result := stringReplace(result, '%ViewImpl', (ViewImpl),
       [rfReplaceAll, rfIgnoreCase]);
   end
   else

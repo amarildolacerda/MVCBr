@@ -3,7 +3,7 @@ viewmodecodeInterf =
 '///   O ViewModel esta conectado diretamente com a VIEW           ' + #10#13 +
 '///   e possui um Controller ao qual esta associado               ' + #10#13 +
 '/// </summary>                                                    ' + #10#13 +
-'Unit %UnitIdent;                    ' + #10#13 +
+'Unit %UnitIdent.ViewModel.Interf;                    ' + #10#13 +
   '                                                               ' + #10#13 +
   'interface                                                      ' + #10#13 +
   '                                                               ' + #10#13 +
@@ -21,11 +21,11 @@ viewmodecodeInterf =
   '                                                               ' + #10#13 +
   'end.                                                           ' + #10#13 ;
 
-viewmodecode = 'Unit %UnitIdent;                            ' + #10#13 +
+viewmodecode = 'Unit %UnitIdent.ViewModel;                            ' + #10#13 +
   '                                                               ' + #10#13 +
   'interface                                                      ' + #10#13 +
   '//%include                                                     ' + #10#13 +
-  'uses MVCBr.Interf, MVCBr.ViewModel, %UnitIdent.Interf;        ' + #10#13 +
+  'uses MVCBr.Interf, MVCBr.ViewModel, %UnitIdent.ViewModel.Interf;' + #10#13 +
   '                                                               ' + #10#13 +
   'Type                                                           ' + #10#13 +
   '                                                               ' + #10#13 +

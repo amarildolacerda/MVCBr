@@ -17,6 +17,7 @@ type
   private
     FIsInterf: Boolean;
     FUnitBase: string;
+    FUnitIdent:String;
     procedure SetIsInterf(const Value: Boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
@@ -50,11 +51,10 @@ end;
 
 function TDataModuleCreator.GetImplFileName: string;
 begin
-  result := self.getpath + FUnitBase + '.pas';
+  FUnitIdent := FUnitBase ;
   if IsInterf then
-    result := self.getpath + FUnitBase + '.Interf.pas';
-
-  debug('TDataModuleCreator.GetImplFileName: ' + result);
+    FUnitIdent := FUnitBase + '.Interf';
+  result := self.getpath + FUnitIdent + '.pas';
 end;
 
 function TDataModuleCreator.GetFormName: string;
@@ -79,6 +79,7 @@ begin
   fc.isFMX := self.isFMX;
   fc.Templates.Assign(self.Templates);
   fc.Templates.Values['%MdlInterf'] := FUnitBase + '.Interf';
+  fc.Templates.Values['%UnitIdent'] := FUnitIdent;
 
   fc.FFuncSource := function: string
     begin

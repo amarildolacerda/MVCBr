@@ -44,7 +44,7 @@ end;
 
 function TViewCreator.GetFormName: string;
 begin
-  result := StringReplace(RemovePonto(GetBaseName) + 'View', '.', '', []);
+  result := StringReplace((GetBaseName) + 'View', '.', '', []);
   debug('Form View: ' + result);
 end;
 

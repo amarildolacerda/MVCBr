@@ -44,6 +44,7 @@ type
   TPersistentModelCreator = class(TBaseCreator)
   private
     FisInterf: boolean;
+    FUnitIdent: string;
     procedure SetisInterf(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
@@ -67,12 +68,15 @@ end;
 
 function TPersistentModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + '.' + Templates.Values
-    ['%modelName'] + '.pas';
+  FUnitIdent := getBaseName + '.' + Templates.Values['%modelName'];
   if isInterf then
-  result := self.getpath + getBaseName + '.' + Templates.Values
-    ['%modelName'] + '.Interf.pas';
-  debug('TPersistentModelCreator.GetImplFileName:'+ result);
+    result := getBaseName + '.' + Templates.Values['%modelName'] + '.Interf';
+
+  result := self.getpath + FUnitIdent+ '.pas';
+
+  Templates.Values['%UnitIdent'] := FUnitIdent;
+
+    debug('TPersistentModelCreator.GetImplFileName:' + result);
 
 end;
 
@@ -93,8 +97,9 @@ begin
   fc.Templates.Clear;
   fc.Templates.assign(Templates);
 
-  fc.Templates.Add('%modelName='+ Templates.Values['%modelName']);
-  fc.Templates.Add('%modelNameInterf='+Templates.Values['%modelName']+'.ViewModel.Interf');
+  fc.Templates.Add('%modelName=' + Templates.Values['%modelName']);
+  fc.Templates.Add('%modelNameInterf=' + Templates.Values['%modelName'] +
+    '.ViewModel.Interf');
 
   result := fc;
 end;

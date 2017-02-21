@@ -49,6 +49,7 @@ type
     FisInterf: boolean;
     FisViewModel: boolean;
     FisController: boolean;
+    FUnitIdent:string;
     procedure SetisInterf(const Value: boolean);
     procedure SetisViewModel(const Value: boolean);
     function ModelBase: String;
@@ -87,10 +88,13 @@ end;
 
 function TClassModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + ModelBase + '.pas';
+
+
+  FUnitIdent := getBaseName + ModelBase ;
   if isInterf then
-    result := self.getpath + getBaseName + ModelBase + '.Interf.pas';
-  debug('TModelCreator.GetImplFileName: ' + result);
+    FUnitIdent := getBaseName + ModelBase + '.Interf';
+
+  result := self.getpath + FUnitIdent + '.pas';
 
   if isViewModel then
     SetAncestorName('ViewModel')
@@ -136,7 +140,7 @@ begin
   end;
   fc.Templates.assign(Templates);
   fc.Templates.Values['%MdlInterf'] := getBaseName + ModelBase + '.Interf';
-
+  fc.Templates.Values['%UnitIdent'] := FUnitIdent;
   result := fc;
 end;
 

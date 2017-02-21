@@ -139,7 +139,7 @@ begin
       begin
         if cbCreateDir.Checked then
         begin
-          path := path + RemovePonto(setname) + '\';
+          path := path + (setname) + '\';
           if not directoryExists(path) then
             ForceDirectories(path);
         end;

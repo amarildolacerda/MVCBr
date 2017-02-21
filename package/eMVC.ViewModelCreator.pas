@@ -88,8 +88,10 @@ begin
       cVIEWMODEL);
   fc.isFMX := self.isFMX;
   fc.Templates.Assign(self.Templates);
-  fc.Templates.Values['%MdlInterf'] := getBaseName + '.ViewModel.Interf';
-  Debug('TViewModelCreator.NewImplSource: '+fc.Templates.Values['%MdlInterf']);
+  fc.Templates.Add('%MdlInterf=' + getBaseName + '.ViewModel.Interf');
+  fc.Templates.Add('%UnitIdent=' + getBaseName);
+  debug('TViewModelCreator.NewImplSource: ' + fc.Templates.Values
+    ['%MdlInterf']);
   result := fc;
 end;
 
