@@ -44,6 +44,7 @@ type
   TModelCreator = class(TBaseCreator)
   private
     FisInterf: boolean;
+    FUnitIdent: string;
     procedure SetisInterf(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
@@ -67,10 +68,11 @@ end;
 
 function TModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + '.Model.pas';
+  FUnitIdent := getBaseName + '.Model';
   if isInterf then
-    result := self.getpath + getBaseName + '.Model.Interf.pas';
-  debug('TModelCreator.GetImplFileName: ' + result);
+    FUnitIdent := getBaseName + '.Model.Interf';
+
+  result := self.getpath + FUnitIdent+'.pas';
 
 end;
 
@@ -79,7 +81,6 @@ function TModelCreator.NewImplSource(const ModuleIdent, FormIdent,
 var
   fc: TFileCreator;
 begin
-
   debug('TModelCreator.NewImplSource: ');
   if isInterf then
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
@@ -89,7 +90,7 @@ begin
 
   fc.Templates.assign(Templates);
   fc.Templates.Values['%MdlInterf'] := getBaseName + '.Model.Interf';
-
+  fc.Templates.Values['%UnitIdent'] := FUnitIdent;
   result := fc;
 end;
 

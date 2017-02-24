@@ -45,9 +45,8 @@ uses
   ToolsApi;
 
 type
-  TClassModelWizard = class(TNotifierObject, IOTAWizard,
-    IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
-    IOTAMenuWizard{$ENDIF})
+  TClassModelWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
+    IOTAProjectWizard{$IFDEF MENUDEBUG}, IOTAMenuWizard{$ENDIF})
   private
     FIsFMX: boolean;
     FClassesLists: string;
@@ -87,8 +86,8 @@ begin
 end;
 {$ENDIF}
 
-procedure TClassModelWizard.FillMethods(sClass: string;
-  ListaMethds: TStrings; Prop: TStrings);
+procedure TClassModelWizard.FillMethods(sClass: string; ListaMethds: TStrings;
+  Prop: TStrings);
 var
   str: TStringList;
   s: string;
@@ -230,16 +229,16 @@ var
   begin
     debug('Pronto para criar o Controller');
     Model := TClassModelCreator.create(path, setName, false);
-    Model.templates.Add('//InterfImplem='+ FInterfImplem);
-    Model.templates.Add('//InterfCode='+ FCodeInterf);
-    Model.templates.Add('%UnitBase='+ setName);
+    Model.templates.add('//InterfImplem=' + FInterfImplem);
+    Model.templates.add('//InterfCode=' + FCodeInterf);
+    Model.templates.add('%UnitBase=' + setName);
 
-    Model.templates.Add('%ClassConector='+ cbClassNameText);
+    Model.templates.add('%ClassConector=' + cbClassNameText);
     s := ExtractNameBased(cbClassNameText) + 'Base';
-    Model.templates.Add('%ClassModel='+ s);
+    Model.templates.add('%ClassModel=' + s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    Model.templates.Add('%ClassUnit='+ s);
+    Model.templates.add('%ClassUnit=' + s);
     Model.isController := true;
 
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -247,16 +246,16 @@ var
     debug('Criou o Model');
 
     Model := TClassModelCreator.create(path, setName, false);
-    Model.templates.Add('//InterfImplem='+ FInterfImplem);
-    Model.templates.Add('//InterfCode='+ FCodeInterf);
-    Model.templates.Add('%UnitBase='+ setName);
+    Model.templates.add('//InterfImplem=' + FInterfImplem);
+    Model.templates.add('//InterfCode=' + FCodeInterf);
+    Model.templates.add('%UnitBase=' + setName);
 
-    Model.templates.Add('%ClassConector='+ cbClassNameText);
+    Model.templates.add('%ClassConector=' + cbClassNameText);
     s := ExtractNameBased(cbClassNameText) + 'Base';
-    Model.templates.Add('%ClassModel='+ s);
+    Model.templates.add('%ClassModel=' + s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    Model.templates.Add('%ClassUnit='+ s);
+    Model.templates.add('%ClassUnit=' + s);
     Model.isController := true;
 
     Model.isInterf := true;
@@ -271,32 +270,32 @@ var
   begin
     debug('Pronto para criar o Modulo');
     Model := TClassModelCreator.create(path, setName, false);
-    Model.templates.Add('//InterfImplem='+ FInterfImplem);
-    Model.templates.Add('//InterfCode='+ FCodeInterf);
-    Model.templates.Add('%UnitBase='+ setName);
+    Model.templates.add('//InterfImplem=' + FInterfImplem);
+    Model.templates.add('//InterfCode=' + FCodeInterf);
+    Model.templates.add('%UnitBase=' + setName);
 
-    Model.templates.Add('%ClassConector='+ cbClassNameText);
+    Model.templates.add('%ClassConector=' + cbClassNameText);
     s := ExtractNameBased(cbClassNameText) + 'Base';
-    Model.templates.Add('%ClassModel='+ s);
+    Model.templates.add('%ClassModel=' + s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    Model.templates.Add('%ClassUnit='+ s);
+    Model.templates.add('%ClassUnit=' + s);
 
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
     debug('Criou o Model');
 
     Model := TClassModelCreator.create(path, setName, false);
-    Model.templates.Add('//InterfImplem='+ FInterfImplem);
-    Model.templates.Add('//InterfCode='+ FCodeInterf);
-    Model.templates.Add('%UnitBase='+ setName);
+    Model.templates.add('//InterfImplem=' + FInterfImplem);
+    Model.templates.add('//InterfCode=' + FCodeInterf);
+    Model.templates.add('%UnitBase=' + setName);
 
-    Model.templates.Add('%ClassConector='+ cbClassNameText);
+    Model.templates.add('%ClassConector=' + cbClassNameText);
     s := ExtractNameBased(cbClassNameText) + 'Base';
-    Model.templates.Add('%ClassModel='+ s);
+    Model.templates.add('%ClassModel=' + s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    Model.templates.Add('%ClassUnit='+ s);
+    Model.templates.add('%ClassUnit=' + s);
 
     Model.isInterf := true;
     (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -313,17 +312,17 @@ var
     ViewModel := TClassModelCreator.create(path, setName, false);
     ViewModel.isViewModel := true;
     ViewModel.SetAncestorName('ViewModel');
-    ViewModel.templates.Add('//InterfImplem='+ FInterfImplem);
-    ViewModel.templates.Add('//InterfCode='+ FCodeInterf);
+    ViewModel.templates.add('//InterfImplem=' + FInterfImplem);
+    ViewModel.templates.add('//InterfCode=' + FCodeInterf);
 
-    ViewModel.templates.Add('%UnitBase='+ setName);
+    ViewModel.templates.add('%UnitBase=' + setName);
 
-    ViewModel.templates.Add('%ClassConector='+ cbClassNameText);
+    ViewModel.templates.add('%ClassConector=' + cbClassNameText);
     s := ExtractNameBased(cbClassNameText) + 'Base';
-    ViewModel.templates.Add('%ClassModel='+ s);
+    ViewModel.templates.add('%ClassModel=' + s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    ViewModel.templates.Add('%ClassUnit='+ s);
+    ViewModel.templates.add('%ClassUnit=' + s);
 
     (BorlandIDEServices as IOTAModuleServices).CreateModule(ViewModel);
 
@@ -332,16 +331,16 @@ var
     ViewModel := TClassModelCreator.create(path, setName, false);
     ViewModel.isViewModel := true;
     ViewModel.SetAncestorName('ViewModel');
-    ViewModel.templates.Add('//InterfImplem='+ FInterfImplem);
-    ViewModel.templates.Add('//InterfCode='+ FCodeInterf);
-    ViewModel.templates.Add('%UnitBase='+ setName);
+    ViewModel.templates.add('//InterfImplem=' + FInterfImplem);
+    ViewModel.templates.add('//InterfCode=' + FCodeInterf);
+    ViewModel.templates.add('%UnitBase=' + setName);
 
-    ViewModel.templates.Add('%ClassConector='+ cbClassNameText);
+    ViewModel.templates.add('%ClassConector=' + cbClassNameText);
     s := ExtractNameBased(cbClassNameText) + 'Base';
-    ViewModel.templates.Add('%ClassModel='+ s);
+    ViewModel.templates.add('%ClassModel=' + s);
     s := ExtractFileName(edUnitText);
     s := copy(s, 1, pos(ExtractFileExt(s), s) - 1);
-    ViewModel.templates.Add('%ClassUnit='+ s);
+    ViewModel.templates.add('%ClassUnit=' + s);
 
     ViewModel.isInterf := true;
     (BorlandIDEServices as IOTAModuleServices).CreateModule(ViewModel);

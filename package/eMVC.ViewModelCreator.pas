@@ -44,6 +44,7 @@ type
   TViewModelCreator = class(TBaseCreator)
   private
     FisInterf: boolean;
+    FUnitIdent: string;
     procedure SetisInterf(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
@@ -67,11 +68,11 @@ end;
 
 function TViewModelCreator.GetImplFileName: string;
 begin
-  result := self.getpath + getBaseName + '.ViewModel.pas';
+  FUnitIdent := getBaseName + '.ViewModel';
   if isInterf then
-    result := self.getpath + getBaseName + '.ViewModel.Interf.pas';
+    FUnitIdent := getBaseName + '.ViewModel.Interf';
+  result := self.GetPath + FUnitIdent + '.pas';
   debug('TViewModelCreator.GetImplFileName: ' + result);
-
 end;
 
 function TViewModelCreator.NewImplSource(const ModuleIdent, FormIdent,
@@ -89,7 +90,7 @@ begin
   fc.isFMX := self.isFMX;
   fc.Templates.Assign(self.Templates);
   fc.Templates.Add('%MdlInterf=' + getBaseName + '.ViewModel.Interf');
-  fc.Templates.Add('%UnitIdent=' + getBaseName);
+  fc.Templates.Add('%UnitIdent=' + FUnitIdent);
   debug('TViewModelCreator.NewImplSource: ' + fc.Templates.Values
     ['%MdlInterf']);
   result := fc;

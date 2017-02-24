@@ -1,5 +1,5 @@
 
-ModelCodeBaseInterf = 'Unit  %UnitIdent ;                         ' + #10#13 +
+ModelCodeBaseInterf = 'Unit %UnitIdent;                         ' + #10#13 +
   '                                                               ' + #10#13 +
   '                                                              ' + #10#13 +
   '{ MVCBr                                                       ' + #10#13 +

@@ -56,7 +56,7 @@ uses FMX.Layouts;
 
 procedure register;
 begin
-  RegisterComponents('FMX MVCBr', [TFMXPageViewManager]);
+  RegisterComponents('MVCBr', [TFMXPageViewManager]);
 end;
 
 { TVCLPageViewFactory }
@@ -99,10 +99,10 @@ end;
 type
   TTabItemView = class(TTabItem)
   private
-    FViewer:TLayout;
+    FViewer: TLayout;
   public
     PageView: IPageView;
-    constructor create(AOwner:TComponent);override;
+    constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     procedure CanClose(var ACanClose: boolean);
   end;
@@ -124,13 +124,18 @@ begin
         if assigned(form) then
           if assigned(form.OnCloseQuery) then
             form.OnCloseQuery(self, ACanClose);
+        if ACanClose then
+          with PageView.This.View.GetController do
+          begin
+            RevokeInstance;
+          end;
       end;
 end;
 
 constructor TTabItemView.create(AOwner: TComponent);
 begin
   inherited;
-  FViewer := TLayout.Create(self);
+  FViewer := TLayout.create(self);
   FViewer.Parent := self;
   FViewer.Align := TAlignLayout.Client;
 end;
@@ -159,8 +164,8 @@ end;
 procedure TFMXPageViewManager.Init(APageView: IPageView);
 var
   frm: TForm;
-  tl:TLayout;
-  o:TComponent;
+  tl: TLayout;
+  o: TComponent;
 begin
   if assigned(APageView) then
     if assigned(APageView.This.View) then
@@ -175,8 +180,8 @@ begin
       with frm do
       begin
         frm.Parent := TTabItemView(APageView.This.Tab).FViewer;
-        //TTabItemView(APageView.This.Tab).FViewer.AddObject(frm);
-        while frm.ChildrenCount>0 do
+        // TTabItemView(APageView.This.Tab).FViewer.AddObject(frm);
+        while frm.ChildrenCount > 0 do
           frm.Children[0].Parent := TTabItemView(APageView.This.Tab).FViewer;
         BorderStyle := TFmxFormBorderStyle.None;
         TTabItem(APageView.This.Tab).text := APageView.This.text;
@@ -184,10 +189,10 @@ begin
         begin
           TFormFactory(APageView.This.View.This).isShowModal := false;
           APageView.This.View.ShowView(nil);
-          //show;
+          // show;
         end
         else
-          {show};
+          { show };
         if assigned(AfterCreateComplete) then
           AfterCreateComplete(APageView.This);
       end;
@@ -196,7 +201,7 @@ end;
 
 class function TFMXPageViewManager.New(AController: IController): IPageViews;
 begin
-  result := TFMXPageViewManager.Create(nil);
+  result := TFMXPageViewManager.create(nil);
   result.Controller(AController);
 end;
 
@@ -204,7 +209,7 @@ function TFMXPageViewManager.NewTab(APageView: IPageView): TObject;
 var
   Tab: TTabItemView;
 begin
-  Tab := GetPageTabClass.Create(FPageContainer) as TTabItemView;
+  Tab := GetPageTabClass.create(FPageContainer) as TTabItemView;
   Tab.Parent := TTabControl(FPageContainer);
   Tab.PageView := APageView;
   TTabControl(FPageContainer).ActiveTab := Tab;

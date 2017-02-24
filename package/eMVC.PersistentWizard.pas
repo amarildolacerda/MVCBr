@@ -200,6 +200,7 @@ begin
 
         Model.Templates.Add('%interfInherited='+
           GetModelInher(ComboBox1.ItemIndex));
+        Model.isInterf := false;
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
@@ -222,7 +223,7 @@ begin
         Model.Templates.Add('%class='+ ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
         Model.Templates.Add('//%uses='+ GetModelUses(ComboBox1.ItemIndex) );
-        Model.Templates.Add('%UnitBase='+Setname);
+        Model.Templates.Add('%UnitBase='+Setname+'.interf');
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);

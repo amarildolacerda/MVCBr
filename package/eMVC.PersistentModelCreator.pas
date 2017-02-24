@@ -70,11 +70,10 @@ function TPersistentModelCreator.GetImplFileName: string;
 begin
   FUnitIdent := getBaseName + '.' + Templates.Values['%modelName'];
   if isInterf then
-    result := getBaseName + '.' + Templates.Values['%modelName'] + '.Interf';
+    FUnitIdent := getBaseName + '.' + Templates.Values['%modelName'] + '.Interf';
 
   result := self.getpath + FUnitIdent+ '.pas';
 
-  Templates.Values['%UnitIdent'] := FUnitIdent;
 
     debug('TPersistentModelCreator.GetImplFileName:' + result);
 
@@ -99,7 +98,8 @@ begin
 
   fc.Templates.Add('%modelName=' + Templates.Values['%modelName']);
   fc.Templates.Add('%modelNameInterf=' + Templates.Values['%modelName'] +
-    '.ViewModel.Interf');
+    '.Model.Interf');
+  fc.Templates.Values['%UnitIdent'] := FUnitIdent;
 
   result := fc;
 end;

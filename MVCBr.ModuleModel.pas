@@ -43,7 +43,7 @@ implementation
 
 procedure TModuleFactory.AfterInit;
 begin
-  // chamado apos;;
+  // chamado apos INIT;
 end;
 
 function TModuleFactory.Controller(const AController: IController): IModel;

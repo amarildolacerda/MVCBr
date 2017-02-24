@@ -48,6 +48,7 @@ type
     procedure Load; virtual;
     procedure SetID(const AID: string);
     procedure AfterConstruction; override;
+    procedure RevokeInstance;overload;
 
   public
     constructor Create; override;
@@ -249,6 +250,13 @@ begin
     FLoaded := true;
     FRefModelCount := 0;
   end;
+end;
+
+procedure TControllerFactory.RevokeInstance;
+var intf:IInterface;
+begin
+  intf := self;
+  inherited revokeInstance(intf);
 end;
 
 procedure TControllerFactory.SetID(const AID: string);

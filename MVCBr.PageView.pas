@@ -368,8 +368,14 @@ begin
 end;
 
 procedure TCustomPageViewFactory.Remove(APageView: IPageView);
+var i:integer;
 begin
-  FList.Remove(APageView);
+  for I := 0 to count-1 do
+    if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
+    begin
+       FList.Delete(i);
+       exit;
+    end;
 end;
 
 procedure TCustomPageViewFactory.SetActivePage(const Tab: TObject);

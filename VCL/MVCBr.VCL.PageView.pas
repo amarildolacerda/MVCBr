@@ -54,7 +54,7 @@ implementation
 
 procedure register;
 begin
-  RegisterComponents('VCL MVCBr', [TVCLPageViewManager]);
+  RegisterComponents('MVCBr', [TVCLPageViewManager]);
 end;
 
 { TVCLPageViewFactory }
@@ -119,6 +119,12 @@ begin
         if assigned(form) then
           if assigned(form.OnCloseQuery) then
             form.OnCloseQuery(self, ACanClose);
+        if ACanClose then
+          with PageView.This.View.GetController do
+          begin
+            RevokeInstance;
+          end;
+
       end;
 end;
 
@@ -152,7 +158,7 @@ begin
     begin
       if APageView.This.View.This.InheritsFrom(TViewFactoryAdapter) then
       begin
-        frm := TViewFactoryAdapter(APageView.This.View.This).form;
+        frm := TForm(TViewFactoryAdapter(APageView.This.View.This).form);
         APageView.This.text := frm.Caption;
       end
       else

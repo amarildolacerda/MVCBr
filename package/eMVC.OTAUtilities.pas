@@ -24,8 +24,22 @@ function EditorIsSourceEditor(Editor: IOTAEditor): boolean;
 function IsModule(Unk: IUnknown): boolean;
 function GetFrameworkType: string;
 function RemovePonto(texto: string): string;
+function GetUnitSubFolder(var IdentProject: string): string;
 
 implementation
+
+function GetUnitSubFolder(var IdentProject: string): string;
+var
+  n: integer;
+begin
+  result := '';
+  n := pos('\', IdentProject);
+  if n > 0 then
+  begin
+    result := '\'+copy(IdentProject, 1, n);
+    IdentProject := copy(IdentProject, n + 1, 255);
+  end;
+end;
 
 function RemovePonto(texto: string): string;
 begin

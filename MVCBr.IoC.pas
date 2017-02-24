@@ -134,9 +134,7 @@ type
     class function CreateInstance(const AClass: TClass): IInterface;
   end;
 
-function GetInterfaceIID(const I: IInterface; var IID: TGUID): boolean;
-
-
+function GetInterfaceIID(const I: IInterface; var IID: TGuid): boolean;
 
 implementation
 
@@ -487,15 +485,21 @@ var
   LName: string;
   rogo: TIoCRegistration<IUnknown>;
   achei: string;
+  AOrigem, ALocal: TObject;
 begin
   achei := '';
+  AOrigem := AInstance as TObject;
   for LName in FContainerInfo.keys do
   begin
     rogo := TIoCRegistration<IUnknown>(FContainerInfo.items[LName]);
-    if rogo.Instance = AInstance then
+    if assigned(rogo) and assigned(rogo.Instance) and (rogo.IsSingleton) then
     begin
-      rogo.Instance := nil;
-      Break;
+      ALocal := rogo.Instance as TObject;
+      if AOrigem.ClassName = ALocal.ClassName then
+      begin
+        rogo.Instance := nil;
+        Break;
+      end;
     end;
   end;
 end;
@@ -537,7 +541,6 @@ begin
   end;
 end;
 
-
 function GetInterfaceEntry2(const I: IInterface): PInterfaceEntry;
 var
   Instance: TObject;
@@ -546,20 +549,20 @@ var
   CurrentClass: TClass;
 begin
   Instance := I as TObject;
-  if Assigned(Instance) then
+  if assigned(Instance) then
   begin
     CurrentClass := Instance.ClassType;
-    while Assigned(CurrentClass) do
+    while assigned(CurrentClass) do
     begin
       InterfaceTable := CurrentClass.GetInterfaceTable;
-      if Assigned(InterfaceTable) then
-        for j := 0 to InterfaceTable.EntryCount-1 do
+      if assigned(InterfaceTable) then
+        for j := 0 to InterfaceTable.EntryCount - 1 do
         begin
-          Result := @InterfaceTable.Entries[j];
-          if Result.IOffset <> 0 then
+          result := @InterfaceTable.Entries[j];
+          if result.IOffset <> 0 then
           begin
-            if Pointer(NativeInt(Instance) + Result^.IOffset) = Pointer(I) then
-              Exit;
+            if Pointer(NativeInt(Instance) + result^.IOffset) = Pointer(I) then
+              exit;
           end;
           // TODO: implement checking interface implemented via implements delegation
           // see System.TObject.GetInterface/System.InvokeImplGetter
@@ -567,18 +570,17 @@ begin
       CurrentClass := CurrentClass.ClassParent
     end;
   end;
-  Result := nil;
+  result := nil;
 end;
 
-function GetInterfaceIID(const I: IInterface; var IID: TGUID): boolean;
+function GetInterfaceIID(const I: IInterface; var IID: TGuid): boolean;
 var
   InterfaceEntry: PInterfaceEntry;
 begin
   InterfaceEntry := GetInterfaceEntry2(I);
-  Result := Assigned(InterfaceEntry);
-  if Result then
+  result := assigned(InterfaceEntry);
+  if result then
     IID := InterfaceEntry.IID;
 end;
-
 
 end.

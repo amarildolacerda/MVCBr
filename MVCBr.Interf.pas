@@ -319,6 +319,7 @@ type
     procedure ForEach(AProc: TProc<IModel>);
     function ResolveController(const AName: string): IController; overload;
     function ResolveController(const AIID: TGuid): IController; overload;
+    procedure RevokeInstance;
     function This: TControllerAbstract;
     function Start: IController;
   end;
