@@ -1,0 +1,49 @@
+{
+  "@odata.context": "http://localhost:8886/OData/OData.svc",
+  "__comment": "Services list all resource available to OData.Service",
+  "OData.Services": [
+    {
+      "resource": "produtos",
+      "collection": "ctprod",
+      "keyID": "codigo",
+      "relations": [
+        {
+          "resource": "grupos",
+          "sourceKey": "grupo",
+          "targetKey": "grupo"
+        },
+        {
+          "resource": "fornecedores",
+          "sourceKey": "fornecedor",
+          "targetKey": "codigo"
+        }
+      ]
+    },
+    {
+      "resource": "grupos",
+      "collection": "ctgrupo",
+      "keyID": "grupo",
+      "fields": "grupo,nome",
+      "relations": [
+        {
+          "resource": "produtos",
+          "sourceKey": "grupo",
+          "targetKey": "grupo"
+        }
+      ]
+    },
+    {
+      "resource": "fornecedores",
+      "collection": "sigcad",
+      "keyID": "codigo"
+    },
+    {
+      "resource": "clientes",
+      "collection": "sigcad",
+      "keyID": "codigo"
+    }
+
+  ]
+
+
+}
