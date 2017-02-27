@@ -20,7 +20,7 @@ How it works
 
     function TODataFiredacQueryRS.QueryClass: TDatasetClass;
     begin
-      result := TFDQuery;
+      result := TFDQueryAutoConnect;   // maybe some class inherited from TFDQuery that known manager connections by default
     end;
 
    ..... /// some place need init "ODataBase" type
