@@ -5,8 +5,7 @@ How it works
 2. create one project
 3. add to project unit: MVC.OData.Base.pas
 4. into start procedure need to define some stufs:
-
-   type
+<pre>type
      TODataFiredacQueryRS = class(TODataFiredacQuery)
      public
       function QueryClass: TDatasetClass; override;
@@ -25,7 +24,7 @@ How it works
 
    ..... /// some place need init "ODataBase" type
     ODataBase := TODataFiredacQueryRS;   // declared in unit oData.ProxyBase;
-    
+    </pre>
 5. need to  create OData.Services file: oData.ServerModel.json
    sample:
    <----------------------------start><pre>
