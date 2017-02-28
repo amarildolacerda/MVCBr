@@ -4,7 +4,7 @@ How it works
 1. install DelphiMVCFramework
 2. create one project
 3. add to project unit: MVC.OData.Base.pas
-4. into start procedure need to define some stufs:
+4. into start procedure need to define some stuffs:
 <pre>type
      TODataFiredacQueryRS = class(TODataFiredacQuery)
      public
