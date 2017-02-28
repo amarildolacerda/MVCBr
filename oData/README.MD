@@ -26,7 +26,7 @@ How it works
    ..... /// some place need init "ODataBase" type
     ODataBase := TODataFiredacQueryRS;   // declared in unit oData.ProxyBase;
     
-5. need create OData.Services in file: oData.ServerModel.json
+5. need to  create OData.Services file: oData.ServerModel.json
    sample:
    <----------------------------start><pre>
 {
