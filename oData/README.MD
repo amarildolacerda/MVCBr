@@ -1,17 +1,3 @@
-
-Skip to content
-Personal Open source Business Explore Pricing
-This repository
-Search
-Sign in or Sign up
- Watch 4  Star 3  Fork 4 amarildolacerda/MVCBr
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Pulse  Graphs
-Branch: master Find file Copy pathMVCBr/oData/read.me
-e31a387  21 hours ago
-@amarildolacerda amarildolacerda Update read.me
-1 contributor
-RawBlameHistory    
-110 lines (98 sloc)  2.85 KB
 How it works
 
 
@@ -42,7 +28,7 @@ How it works
     
 5. need create OData.Services in file: oData.ServerModel.json
    sample:
-   <----------------------------start>
+   <----------------------------start><pre>
 {
   "@odata.context": "http://localhost:8886/OData/OData.svc",
   "__comment": "Services list all resource available to OData.Service",
@@ -115,7 +101,7 @@ How it works
   ]
 
 
-}      
+}      </pre>
 <------------------------------------------------finished>
 
 6.  if all stuffs work you can call from browser:
