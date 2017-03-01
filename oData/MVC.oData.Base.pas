@@ -2,42 +2,58 @@ unit MVC.oData.Base;
 
 interface
 
-uses System.Classes, System.SysUtils, MVCFramework, MVCFramework.Commons,
+uses System.Classes, System.SysUtils,
+  MVCFramework, MVCFramework.Commons,
   Data.Db, oData.Interf, oData.Dialect,
   System.JSON;
 
 type
 
   [MVCPath('/OData')]
+  [MVCDoc('Implements OData protocol')]
   TODataController = class(TMVCController)
   public
     function CreateJson(CTX: TWebContext; const AValue: string): TJsonObject;
+    //[MVCDoc('Finalize JSON response')]
     procedure EndsJson(var AJson: TJsonObject);
+    //[MVCDoc('Overload Render')]
     procedure RenderA(AJson: TJsonObject);
   private
+    //[MVCDoc('General parse OData URI')]
     procedure GetQueryBase(CTX: TWebContext);
   public
 
     [MVCHTTPMethod([httpGET])]
     [MVCPath('')]
+    [MVCDoc('Get Resources list')]
     procedure ResourceList(CTX: TWebContext);
 
     [MVCHTTPMethod([httpGET])]
     [MVCPath('/$metadata')]
+    [MVCDoc('Get config metadata file')]
     procedure MetadataCollection(CTX: TWebContext);
 
     [MVCHTTPMethod([httpGET])]
     [MVCPath('/reset')]
+    [MVCDoc('Reset/reload metadata file')]
     procedure ResetCollection(CTX: TWebContext);
-
 
     [MVCHTTPMethod([httpGET])]
     [MVCPath('/OData.svc/($collection)')]
-    procedure QueryCollection(CTX: TWebContext);
+    [MVCDoc('Default method to query OData')]
+    procedure QueryCollection1(CTX: TWebContext);
 
     [MVCHTTPMethod([httpGET])]
-    [MVCPath('/OData.svc/($master)/($detail')]
-    procedure QueryMasterDetailCollection(CTX: TWebContext);
+    [MVCPath('/OData.svc/($collection1)/($collection2)')]
+    procedure QueryCollection2(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpGET])]
+    [MVCPath('/OData.svc/($collection1)/($collection2)/($collection3)')]
+    procedure QueryCollection3(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpGET])]
+    [MVCPath('/OData.svc/($collection1)/($collection2)/($collection3)/($collection4)')]
+    procedure QueryCollection4(CTX: TWebContext);
 
     procedure OnBeforeAction(Context: TWebContext; const AActionName: string;
       var Handled: Boolean); override;
@@ -50,7 +66,7 @@ type
 
 implementation
 
-uses ObjectsMappers, WS.Controller, oData.ProxyBase, oData.SQL, oData.Model,
+uses ObjectsMappers, WS.Controller, oData.ProxyBase, oData.SQL, oData.ServiceModel,
   System.DateUtils;
 
 { TODataController }
@@ -59,6 +75,7 @@ function TODataController.CreateJson(CTX: TWebContext; const AValue: string)
   : TJsonObject;
 begin
   CTX.Response.SetCustomHeader('OData-Version', '4.0');
+  CTX.Response.ContentType := 'application/json;odata.metadata=minimal';
   result := TJsonObject.create as TJsonObject;
   result.addPair('@odata.context', AValue);
   result.addPair('StartsAt', DateToISO8601(now));
@@ -86,8 +103,9 @@ end;
 
 procedure TODataController.ResetCollection(CTX: TWebContext);
 begin
-    ODataServices.reload;
-    render('ok');
+  ODataServices.reload;
+  CTX.Response.StatusCode := 201;
+  render('ok');
 end;
 
 procedure TODataController.ResourceList(CTX: TWebContext);
@@ -113,7 +131,7 @@ begin
 
 end;
 
-procedure TODataController.QueryCollection(CTX: TWebContext);
+procedure TODataController.QueryCollection1(CTX: TWebContext);
 begin
   GetQueryBase(CTX);
 end;
@@ -125,6 +143,7 @@ var
   JSON: TJsonObject;
   arr: TJsonArray;
   n: integer;
+  erro: TJsonObject;
 begin
   FOData := ODataBase.create();
   FOData.DecodeODataURL(CTX);
@@ -136,25 +155,47 @@ begin
     Mapper.DataSetToJSONArray(FDataset, arr, False);
     if assigned(arr) then
     begin
-      JSON.addPair('results', arr);
-      JSON.addPair('__collection', FOData.Collection);
+      JSON.addPair('value', arr);
+//      JSON.addPair('__collection', FOData.Collection);
     end;
     if FOData.inLineRecordCount < 0 then
       FOData.inLineRecordCount := FDataset.RecordCount;
-    JSON.addPair('__count', FOData.inLineRecordCount.ToString);
+    JSON.addPair('@odata.count', FOData.inLineRecordCount.ToString);
     if FOData.GetParse.oData.Top > 0 then
-      JSON.addPair('__top', FOData.GetParse.oData.Top.ToString);
+      JSON.addPair('@odata.top', FOData.GetParse.oData.Top.ToString);
     if FOData.GetParse.oData.Skip > 0 then
-      JSON.addPair('__skip', FOData.GetParse.oData.Skip.ToString);
+      JSON.addPair('@odata.skip', FOData.GetParse.oData.Skip.ToString);
 
     RenderA(JSON);
-  finally
+  except
+    on e: exception do
+    begin
+      freeAndNil(FDataset);
+      freeAndNil(JSON);
+      JSON := TJsonObject.create;
+      JSON.addPair('code', '501');
+      JSON.addPair('message', e.message);
+      erro := TJsonObject.create;
+      erro.addPair('error', JSON);
+      CTX.Response.StatusCode := 501;
+      render(erro, true);
+    end;
   end;
 end;
 
-procedure TODataController.QueryMasterDetailCollection(CTX: TWebContext);
+procedure TODataController.QueryCollection2(CTX: TWebContext);
 begin
-   GetQueryBase(CTX);
+  GetQueryBase(CTX);
+end;
+
+procedure TODataController.QueryCollection3(CTX: TWebContext);
+begin
+  GetQueryBase(CTX);
+end;
+
+procedure TODataController.QueryCollection4(CTX: TWebContext);
+begin
+  GetQueryBase(CTX);
 end;
 
 procedure TODataController.RenderA(AJson: TJsonObject);

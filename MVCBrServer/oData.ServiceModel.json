@@ -6,16 +6,20 @@
       "resource": "produtos",
       "collection": "ctprod",
       "keyID": "codigo",
+      "maxpagesize":100,
+      "fields":"produtos.codigo,produtos.nome,produtos.unidade,produtos.precovenda",
       "relations": [
         {
           "resource": "grupos",
           "sourceKey": "grupo",
-          "targetKey": "grupo"
+          "targetKey": "grupo",
+          "join":"left join ctgrupo as grupos on (produtos.grupo=ctgrupo.grupo)"
         },
         {
           "resource": "fornecedores",
           "sourceKey": "fornecedor",
-          "targetKey": "codigo"
+          "targetKey": "codigo",
+          "join":"join sigcad as fornecedores on (sigcad.codigo=produtos.fornecedor)"
         }
       ]
     },
@@ -23,24 +27,53 @@
       "resource": "grupos",
       "collection": "ctgrupo",
       "keyID": "grupo",
-      "fields": "grupo,nome",
+      "fields": "grupos.grupo,grupos.nome",
+      "maxpagesize":100,
       "relations": [
         {
           "resource": "produtos",
           "sourceKey": "grupo",
-          "targetKey": "grupo"
+          "targetKey": "grupo",
+          "join":"join ctprod as produtos on (grupos.grupo=produtos.grupo)"
         }
       ]
     },
     {
       "resource": "fornecedores",
       "collection": "sigcad",
+      "maxpagesize":100,
+      "fields":"fornecedores.codigo,fornecedores.nome,fornecedore.cidade,fornecedore.estado",
       "keyID": "codigo"
     },
     {
       "resource": "clientes",
       "collection": "sigcad",
-      "keyID": "codigo"
+      "keyID": "codigo",
+      "maxpagesize":100,
+      "fields":"clientes.codigo,clientes.nome,clientes.ender,clientes.cidade,clientes.estado"
+      "relations": [
+          {
+             "resource":"vendas",
+             "join":"join sigcaut2 as vendas on (vendas.clifor=clientes.codigo)"
+          } ,
+          {
+             "resource":"pedidos",
+             "join":"join sigcaut1 as pedidos on (pedidos.clifor=clientes.codigo)"
+          }
+      ]
+    },
+    {
+       "resource":"vendas",
+       "collection":"sigcaut2",
+       "maxpagesize":100,
+       "keyID":"dcto",
+       "fields":"vendas.dcto,vendas.data,vendas.filial,vendas.codigo,vendas.nome,vendas.qtde,vendas.preco,vendas.valor"
+    },
+    {
+       "resource":"pedidos",
+       "collection":"sigcaut1",
+       "maxpagesize":100,
+      "keyID":"dcto"
     }
 
   ]

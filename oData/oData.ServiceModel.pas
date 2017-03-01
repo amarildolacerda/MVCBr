@@ -1,4 +1,4 @@
-unit oData.Model;
+unit oData.ServiceModel;
 
 interface
 
@@ -57,6 +57,7 @@ type
     function fields: string;
     function keyID: string;
     function relations: IJsonODataServiceRelations;
+    function maxpagesize: integer;
     function relation(AName: string): IJsonODataServiceRelation;
   end;
 
@@ -68,6 +69,7 @@ type
     function collection: string;
     function fields: string;
     function keyID: string;
+    function maxpagesize: integer;
     function relations: IJsonODataServiceRelations;
     function relation(AName: string): IJsonODataServiceRelation;
   end;
@@ -111,6 +113,7 @@ var
 
 implementation
 
+uses Dialogs;
 { TODataServices }
 
 constructor TODataServices.create;
@@ -179,19 +182,21 @@ begin
       begin
         addPair('suports.$filter', 'yes');
         addPair('suports.$select', 'yes');
-        addPair('suports.groupby','yes');
-        addPair('suports.$orderby','yes');
+        addPair('suports.groupby', 'yes');
+        addPair('suports.$orderby', 'yes');
         addPair('suports.$format', 'json');
         addPair('suports.$top', 'yes');
         addPair('suports.$skip', 'yes');
         addPair('suports.$inlinecount', 'yes');
         addPair('suports.$skiptoken', 'no');
+        addPair('odata.ServiceFile',AJson);
       end;
 
     finally
       str.Free;
     end;
   except
+    showMessage('Cant load services (' + AJson + ')');
     raise Exception.create('Cant load services (' + AJson + ')');
   end;
 end;
@@ -204,7 +209,7 @@ end;
 
 procedure TODataServices.reload;
 begin
-   LoadFromJsonFile(FFileJson);
+  LoadFromJsonFile(FFileJson);
 end;
 
 function TODataServices.resource(AName: string): IJsonODastaServiceResource;
@@ -281,8 +286,14 @@ begin
   JSON.TryGetValue<string>('keyID', result);
 end;
 
-class function TJsonODastaServiceResource.New(
-  AJson: TJsonValue): IJsonODastaServiceResource;
+function TJsonODastaServiceResource.maxpagesize: integer;
+begin
+  if not JSON.TryGetValue<integer>('maxpagesize', result) then
+    result := 0;
+end;
+
+class function TJsonODastaServiceResource.New(AJson: TJsonValue)
+  : IJsonODastaServiceResource;
 var
   j: TJsonODastaServiceResource;
 begin
@@ -292,27 +303,28 @@ begin
 
 end;
 
-function TJsonODastaServiceResource.relation(AName: string): IJsonODataServiceRelation;
+function TJsonODastaServiceResource.relation(AName: string)
+  : IJsonODataServiceRelation;
 var
   r: IJsonODataServiceRelations;
   rst: TJsonValue;
-  it:TJsonValue;
-  ja:TJsonArray;
-  s:String;
+  it: TJsonValue;
+  ja: TJsonArray;
+  s: String;
 begin
   result := nil;
   r := relations;
   if assigned(r) then
   begin
     ja := r.JSON as TJsonArray;
-    for it in ja  do
+    for it in ja do
     begin
-       it.TryGetValue<string>('resource',s);
-       if s = AName then
-       begin
-         result := TJsonODataServiceRelation.New(it);
-         exit;
-       end;
+      it.TryGetValue<string>('resource', s);
+      if s = AName then
+      begin
+        result := TJsonODataServiceRelation.New(it);
+        exit;
+      end;
     end;
   end;
 end;
@@ -320,11 +332,11 @@ end;
 function TJsonODastaServiceResource.relations: IJsonODataServiceRelations;
 var
   jo: TJsonValue;
-  jv:TJsonValue;
+  jv: TJsonValue;
 begin
   result := nil;
   jv := JSON.GetValue<TJsonValue>('relations');
-  jo := TJsonObject.ParseJSONValue( jv.ToJSON  ) ;
+  jo := TJsonObject.ParseJSONValue(jv.ToJSON);
   if assigned(jo) then
   begin
     result := TJsonODataServiceRelations.New(jo);
@@ -343,7 +355,8 @@ begin
   JSON.TryGetValue<string>('join', result);
 end;
 
-class function TJsonODataServiceRelation.New(AJson: TJsonValue): IJsonODataServiceRelation;
+class function TJsonODataServiceRelation.New(AJson: TJsonValue)
+  : IJsonODataServiceRelation;
 var
   j: TJsonODataServiceRelation;
 begin

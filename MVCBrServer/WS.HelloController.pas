@@ -30,10 +30,14 @@ uses
 
 procedure TWSHelloController.Index;
 begin
-  //use Context property to access to the HTTP request and response
-  //ContentType := 'text/html';
-  render('<http><body>Hello MVCBr <br>Para teste:  <a href="/hello/MVCBr">/hello/[nome]</a><br>'+
-  '<a href="/system/describeserver.info">describeserver.info</a>'+
+  render('<http><body>'+
+   'MVCBr - OData Server<hr />'+
+   'Hello teste:  <a href="/hello/MVCBr">/hello/[nome]</a><br>'+
+  '<a href="/system/describeserver.info">describeserver.info</a><br>'+
+  '<a href="/OData">OData Services</a><br>'+
+  '<a href="/OData/$metadata">OData $metadata</a><br>'+
+  '<a href="http://www.odata.org">Especificação by OData.Org</a>'+
+   '<hr />Powered by: DelphiMVCFramework with OData/MVCBr'+
   '</body></http>');
 end;
 

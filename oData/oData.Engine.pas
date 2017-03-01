@@ -36,6 +36,7 @@ type
 
   TODataDecode = class(TInterfacedObject, IODataDecode)
   private
+    FLock:TObject;
     FSelect: string;
     FFilter: string;
     FOrderBy: string;
@@ -76,7 +77,8 @@ type
   protected
     FChild: IODataDecode;
     function This: TObject; virtual;
-    // procedure SetResourceParams(const Value: TDictionary<>);
+    function Lock:IODataDecode;
+    procedure Unlock;
   public
     FParse: IODataParse;
     function GetParse: IODataParse;
@@ -127,6 +129,12 @@ begin
   result := assigned(FChild);
 end;
 
+function TODataDecode.Lock: IODataDecode;
+begin
+   system.TMonitor.Enter(FLock);
+   result := self;
+end;
+
 function TODataDecode.newChild: IODataDecode;
 begin
   if not hasChild then
@@ -137,6 +145,7 @@ end;
 constructor TODataDecode.create(AParse:IODataParse);
 begin
   inherited create;
+  FLock:=TObject.create;
   FParse := AParse;
   FBaseURL := '/';
   FResourceParams := TODataDictionay.create;
@@ -193,8 +202,14 @@ begin
 
 end;
 
+procedure TODataDecode.Unlock;
+begin
+   System.TMonitor.Exit(FLock);
+end;
+
 destructor TODataDecode.destroy;
 begin
+  FLock.Free;
   inherited;
 end;
 

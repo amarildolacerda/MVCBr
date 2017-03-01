@@ -2,7 +2,7 @@ unit oData.Dialect;
 
 interface
 
-uses System.Classes, System.SysUtils, oData.Model, oData.Interf;
+uses System.Classes, System.SysUtils, oData.ServiceModel, oData.Interf;
 
 Type
 
@@ -19,7 +19,7 @@ Type
       : IJsonODastaServiceResource; virtual;
     function Relation(AResource: string; ARelation: String)
       : IJsonObject; virtual;
-    function GetWhereFromParams(alias,keys: string): string; virtual;
+    function GetWhereFromParams(AOData:IODataDecode;alias,keys: string): string; virtual;
   end;
 
   TODataDialectClass = class of TODataDialect;

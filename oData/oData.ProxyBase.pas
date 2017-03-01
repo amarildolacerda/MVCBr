@@ -41,7 +41,7 @@ var
 implementation
 
 { TODataBase }
-uses oData.Model;
+uses oData.ServiceModel;
 
 function TODataBase.Collection: string;
 begin

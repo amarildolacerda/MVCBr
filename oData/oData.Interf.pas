@@ -11,6 +11,8 @@ Type
 
   IODataDecode = interface
     ['{E9DA95A9-534F-495E-9293-2657D4330D4C}']
+    function Lock:IODataDecode;
+    procedure UnLock;
     function GetParse:IODataParse;
     function This: TObject;
     procedure SetSelect(const Value: string);
