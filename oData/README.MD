@@ -1,0 +1,110 @@
+How it works
+
+
+1. install DelphiMVCFramework
+2. create one project
+3. add to project unit: MVC.OData.Base.pas
+4. into start procedure need to define some stuffs:
+<pre>type
+     TODataFiredacQueryRS = class(TODataFiredacQuery)
+     public
+      function QueryClass: TDatasetClass; override;
+      function DialectClass: TODataDialectClass; override;
+    end;
+    
+    function TODataFiredacQueryRS.DialectClass: TODataDialectClass;
+    begin
+      result := TODataDialectFirebird;
+    end;
+
+    function TODataFiredacQueryRS.QueryClass: TDatasetClass;
+    begin
+      result := TFDQueryAutoConnect;   // maybe some class inherited from TFDQuery that known manager connections by default
+    end;
+
+   ..... /// some place need init "ODataBase" type
+    ODataBase := TODataFiredacQueryRS;   // declared in unit oData.ProxyBase;
+    </pre>
+5. need to  create OData.Services file: oData.ServerModel.json
+   sample:
+   <----------------------------start><pre>
+{
+  "@odata.context": "http://localhost:8886/OData/OData.svc",
+  "__comment": "Services list all resource available to OData.Service",
+  "OData.Services": [
+    {
+      "resource": "produtos",
+      "collection": "ctprod",
+      "keyID": "codigo",
+      "relations": [
+        {
+          "resource": "grupos",
+          "sourceKey": "grupo",
+          "targetKey": "grupo",
+          "join":"left join ctgrupo on (ctprod.grupo=ctgrupo.grupo)"
+        },
+        {
+          "resource": "fornecedores",
+          "sourceKey": "fornecedor",
+          "targetKey": "codigo",
+          "join":"join sigcad on (sigcad.codigo=ctprod.fornecedor)"
+        }
+      ]
+    },
+    {
+      "resource": "grupos",
+      "collection": "ctgrupo",
+      "keyID": "grupo",
+      "fields": "grupo,nome",
+      "relations": [
+        {
+          "resource": "produtos",
+          "sourceKey": "grupo",
+          "targetKey": "grupo",
+          "join":"join ctprod on (ctgrupo.grupo=ctprod.grupo)"
+        }
+      ]
+    },
+    {
+      "resource": "fornecedores",
+      "collection": "sigcad",
+      "keyID": "codigo"
+    },
+    {
+      "resource": "clientes",
+      "collection": "sigcad",
+      "keyID": "codigo",
+      "fields":"codigo,nome,ender,cidade,estado"
+      "relations": [
+          {
+             "resource":"vendas",
+             "join":"join sigcaut2 on (sigcaut2.clifor=sigcad.codigo)"
+          } ,
+          {
+             "resource":"pedidos",
+             "join":"join sigcaut1 on (sigcaut1.clifor=sigcad.codigo)"
+          }
+      ]
+    },
+    {
+       "resource":"vendas",
+       "collection":"sigcaut2",
+       "keyID":"dcto"
+    },
+    {
+       "resource":"pedidos",
+       "collection":"sigcaut1",
+       "keyID":"dcto"
+    }
+
+  ]
+
+
+}      </pre>
+<------------------------------------------------finished>
+
+6.  if all stuffs work you can call from browser:
+    http://localhost:8080/OData   -> to see resources
+    http://localhost:8080/OData/OData.srv/products......  (some services)
+Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc. Terms Privacy Security Status Help
