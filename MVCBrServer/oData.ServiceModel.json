@@ -42,7 +42,7 @@
       "resource": "fornecedores",
       "collection": "sigcad",
       "maxpagesize":100,
-      "fields":"fornecedores.codigo,fornecedores.nome,fornecedore.cidade,fornecedore.estado",
+      "fields":"fornecedores.codigo,fornecedores.nome,fornecedores.cidade,fornecedores.estado",
       "keyID": "codigo"
     },
     {
