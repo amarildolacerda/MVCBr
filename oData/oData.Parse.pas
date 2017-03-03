@@ -11,22 +11,24 @@ type
     ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
     ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand, ptInLineCount,
     ptGroupBy, ptOperNe { not equal } , ptOperLt { less than } ,
-    ptOperGe { greater or equal } , ptOperGt { greater than } ,
-    ptOperAnd { and } , ptOperOr { or } , ptOperNot { not } ,
-    ptOperAdd { add } , ptOperSub { subtract } , ptOperMul { multiply } ,
-    ptOperDiv { divide } , ptOperMod { find remainder } ,
-    ptFuncFloor { floor } , ptFuncCeiling { ceiling } ,
-    ptFuncLength { length } , ptFuncTrim { trim } , ptFuncToUpper { toupper } ,
-    ptFuncSubstringOf { substringof } , ptFuncToLower { tolower } ,
-    ptFuncEndsWith { endswith } , ptFuncStartsWith { startswith } ,
-    ptFuncYear { year } , ptFuncMonth { month } , ptFuncDay { day } ,
-    ptFuncHour { hour } , ptFuncMinute { minute } , ptFuncSecond { second } ,
+    ptOperLe { less equal } , ptOperGe { greater or equal } ,
+    ptOperGt { greater than } , ptOperAnd { and } , ptOperOr { or } ,
+    ptOperNot { not } , ptOperAdd { add } , ptOperSub { subtract } ,
+    ptOperMul { multiply } , ptOperDiv { divide } ,
+    ptOperMod { find remainder } , ptFuncFloor { floor } ,
+    ptFuncCeiling { ceiling } , ptFuncLength { length } , ptFuncTrim { trim } ,
+    ptFuncToUpper { toupper } , ptFuncSubstringOf { substringof } ,
+    ptFuncToLower { tolower } , ptFuncEndsWith { endswith } ,
+    ptFuncStartsWith { startswith } , ptFuncYear { year } ,
+    ptFuncMonth { month } , ptFuncDay { day } , ptFuncHour { hour } ,
+    ptFuncMinute { minute } , ptFuncSecond { second } ,
     ptOrderByDesc { desc } );
 
   {
     - add,sub,mul,div,mod -> can use only in $filter   not  $select
 
   }
+  TSetTokenKind = set of TTokenKind;
 
   TODataParse = class(TInterfacedObject, IODataParse)
   private
@@ -38,8 +40,10 @@ type
     FCurrentOData: IODataDecode;
 
     function isToken(tken: string): boolean;
-    procedure NextToken(AClear: boolean = false; AUntil: TTokenKind = ptNone);
+    procedure NextToken(AClear: boolean = false;
+      AUntil: TSetTokenKind = [ptNone]);
     function TestNextToken: string;
+    function toToken(txt: string): TTokenKind; virtual;
     function IsNullToken(AChr: Char): boolean;
     function isTokenType(tk: TTokenKind): boolean;
     function IsNull: boolean;
@@ -47,8 +51,11 @@ type
     procedure ParseCollectionParams;
     procedure ParseCollections;
     procedure ParseParams;
+    procedure ParseExpand(const ATexto: string);
+    procedure NextExpand;
     procedure SetOData(const Value: TODataDecode);
     function GetOData: IODataDecode;
+    function GetNextToken: string;
   public
     constructor create;
     destructor destroy; override;
@@ -60,6 +67,7 @@ type
     procedure Parse(URL: string); virtual;
     procedure DoCollectionInsert(ACurrent: IODataDecode); virtual;
     function Select: string; virtual;
+    class function OperatorToString(txt: String): string;
   end;
 
 implementation
@@ -146,8 +154,101 @@ begin
   result := AChr = chr(0);
 end;
 
+procedure TODataParse.NextExpand;
+var
+  LLevel: integer;
+  procedure ExpandParams(oData: IODataDecode);
+  var
+    s: string;
+    p: integer;
+  begin
+    p := 0;
+    repeat
+      NextToken(true);
+      if isTokenType(ptClose) then
+        break;
+      if IsNull then
+        exit;
+      s := GetToken;
+      if (toToken(TestNextToken) = ptClose) and (p = 0) then
+      begin
+        inc(p);
+        oData.ResourceParams.AddPair('__P' + intToStr(p), s);
+      end;
+
+      if (toToken(s) = ptFilter) then
+      begin
+        NextToken(true);
+        NextToken(true, [ptClose, ptComma]);
+        s := GetToken;
+        oData.Filter := s;
+        continue;
+      end;
+
+      if (toToken(s) = ptSelect) then
+      begin
+        NextToken(true);
+        NextToken(true, [ptClose, ptOperAnd]);
+        s := GetToken;
+        oData.Select := s;
+        continue;
+      end;
+
+    until false;
+  end;
+
+var
+  s: string;
+  procedure NextExpandItem(rst:IODataDecode);
+  begin
+    NextToken(true);
+    s := GetToken;
+    if s = '' then
+      exit;
+
+    if toToken(s) = ptComma then
+      dec(LLevel) // virgula... novo item de mesmo nivel
+    else if toToken(s) = ptSlash then
+      inc(LLevel); // se for uma barra, crim um sub-item
+
+    if toToken(s) in [ptComma, ptSlash] then
+    begin
+      NextToken(true);
+      s := GetToken;
+    end;
+
+    if s <> '' then
+    begin
+      if (LLevel <= 0) or (not assigned(rst)) then
+      begin
+        rst := oData.newExpand(s);
+        LLevel := 0;
+      end
+      else
+      begin
+        rst := rst.newExpand(s);
+      end;
+    end;
+
+    if isTokenType(ptNull) then
+      exit;
+    NextToken;
+    if isTokenType(ptOpen) then
+      ExpandParams(rst);
+    if IsNull then
+      exit;
+    inc(LLevel);  
+    NextExpandItem(rst);
+  end;
+
+begin
+  LLevel := 0;
+  NextExpandItem(nil);
+
+end;
+
 procedure TODataParse.NextToken(AClear: boolean = false;
-  AUntil: TTokenKind = ptNone);
+  AUntil: TSetTokenKind = [ptNone]);
 var
   tk, tkj: TTokenKind;
   tmp: string;
@@ -159,18 +260,18 @@ begin
     if IsNullToken(FUrl[FParseCol]) then
       exit;
 
-    if (AUntil <> ptNone) then
+    if (AUntil <> [ptNone]) then
       if FTokenKindArray.TryGetValue(FUrl[FParseCol], tkj) then
       begin
-        if tkj = AUntil then
+        if tkj in AUntil then
           break;
       end;
 
     b := true;
-    if (AUntil <> ptNone) then
+    if (AUntil <> [ptNone]) then
     begin
       FTokenKindArray.TryGetValue(tmp, tkj);
-      if tkj = AUntil then
+      if tkj in AUntil then
         break
       else
       begin
@@ -181,14 +282,14 @@ begin
       end;
     end;
 
-    if (FUrl[FParseCol] <> ' ') or (AUntil <> ptNone) then
+    if (FUrl[FParseCol] <> ' ') or (AUntil <> [ptNone]) then
     begin
       token := token + FUrl[FParseCol];
       tmp := tmp + FUrl[FParseCol];
     end;
     inc(FParseCol);
 
-    if (AUntil = ptNone) then
+    if (AUntil = [ptNone]) then
       if FTokenKindArray.TryGetValue(FUrl[FParseCol], tkj) then
         if tkj in [ptSpace, ptOpen, ptClose, ptComma, ptEqual, ptParamsAnd,
           ptParams] then
@@ -223,6 +324,16 @@ begin
 
 end;
 
+class function TODataParse.OperatorToString(txt: String): string;
+begin
+  result := stringReplace(txt, ' lt ', ' < ', [rfReplaceAll]);
+  result := stringReplace(result, ' ne ', ' <> ', [rfReplaceAll]);
+  result := stringReplace(result, ' gt ', ' > ', [rfReplaceAll]);
+  result := stringReplace(result, ' ge ', ' >= ', [rfReplaceAll]);
+  result := stringReplace(result, ' le ', ' <= ', [rfReplaceAll]);
+  result := stringReplace(result, ' eq ', ' = ', [rfReplaceAll]);
+end;
+
 procedure TODataParse.ParseCollections;
 begin
   GetToken; // clear;
@@ -247,6 +358,23 @@ begin
   ParseCollections;
 end;
 
+procedure TODataParse.ParseExpand(const ATexto: string);
+var
+  LOldUrl: string;
+  LOldCol: integer;
+begin
+  LOldUrl := FUrl;
+  LOldCol := FParseCol;
+  try
+    FUrl := ATexto + chr(0);
+    FParseCol := 1;
+    NextExpand;
+  finally
+    FUrl := LOldUrl;
+    FParseCol := LOldCol;
+  end;
+end;
+
 procedure TODataParse.ParseParams;
 var
   s, k: string;
@@ -257,7 +385,7 @@ begin
   NextToken(true);
   if isTokenType(ptEqual) then
   begin
-    NextToken(true, ptParamsAnd);
+    NextToken(true, [ptParamsAnd]);
     k := GetToken;
     if FTokenKindArray.TryGetValue(s, tk) then
     begin
@@ -312,12 +440,33 @@ begin
   ParseCollections;
   if isTokenType(ptParams) then
     ParseParams;
+
+  if FOData.Expand <> '' then
+    ParseExpand(FOData.Expand);
+
+end;
+
+function TODataParse.GetNextToken: string;
+var
+  old: integer;
+  oldtoken: string;
+begin
+  old := FParseCol;
+  oldtoken := token;
+  try
+    NextToken(true);
+    result := token;
+  finally
+    FParseCol := old;
+    token := oldtoken;
+  end;
 end;
 
 procedure TODataParse.ParseCollectionParams;
 var
   s: String;
   i: integer;
+  nome, AOperator: string;
 begin
   whileIn([ptSpace]);
   NextToken;
@@ -331,10 +480,22 @@ begin
       GetToken; // clear;
       whileIn([ptSpace]);
       NextToken;
+      nome := '__P' + intToStr(i);
+      AOperator := '=';
       if isTokenType(ptClose) then
         break;
+      if toToken(GetNextToken) in [ptEqual, ptOperNe, ptOperLt, ptOperGe,
+        ptOperGt, ptOperLe] then
+      begin
+        nome := GetToken;
+        NextToken;
+        AOperator := OperatorToString(' ' + GetToken + ' '); // clear;
+        NextToken;
+      end;
+
       s := GetToken;
-      FCurrentOData.ResourceParams.AddPair('P' + IntToStr(i), s);
+      FCurrentOData.ResourceParams.AddPair(nome, s);
+      FCurrentOData.ResourceParams.AddOperator(AOperator);
       whileIn([ptSpace, ptComma]);
       if isTokenType(ptComma) then
         continue;
@@ -349,6 +510,7 @@ var
   i: integer;
 begin
   result := token;
+
   i := FParseCol;
   repeat
     if IsNullToken(FUrl[i]) then
@@ -356,6 +518,11 @@ begin
     result := result + FUrl[i];
     inc(i);
   until isToken(result);
+end;
+
+function TODataParse.toToken(txt: string): TTokenKind;
+begin
+  FTokenKindArray.TryGetValue(txt, result);
 end;
 
 procedure TODataParse.whileIn(AArry: array of TTokenKind);
@@ -397,6 +564,17 @@ FTokenKindArray.Add(' ', ptSpace);
 FTokenKindArray.Add('?', ptParams);
 FTokenKindArray.Add('&', ptParamsAnd);
 FTokenKindArray.Add('=', ptEqual);
+FTokenKindArray.Add('<=', ptOperLe);
+FTokenKindArray.Add('<', ptOperLt);
+FTokenKindArray.Add('<>', ptOperNe);
+FTokenKindArray.Add('>', ptOperGt);
+FTokenKindArray.Add('>=', ptOperGe);
+FTokenKindArray.Add('eq', ptEqual);
+FTokenKindArray.Add('le', ptOperLe);
+FTokenKindArray.Add('lt', ptOperLt);
+FTokenKindArray.Add('ne', ptOperNe);
+FTokenKindArray.Add('gt', ptOperGt);
+FTokenKindArray.Add('ge', ptOperGe);
 FTokenKindArray.Add('$filter', ptFilter);
 FTokenKindArray.Add('$select', ptSelect);
 FTokenKindArray.Add('$orderby', ptOrderBy);

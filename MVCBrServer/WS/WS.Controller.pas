@@ -28,6 +28,7 @@ uses
   ReqMulti,
   Web.WebReq,
   Web.WebBroker,
+  Web.HTTPApp,
   IdHTTPWebBrokerBridge,
   System.RTTI;
 
@@ -54,9 +55,42 @@ type
 
 function RegisterWSController(const AClass: TMVCControllerClass): integer;
 procedure LoadWSControllers(FMVC: TMVCEngine);
+function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
 implementation
 
+function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
+begin
+
+  result := TMVCEngine.Create(ASender,
+    procedure(Config: TMVCConfig)
+    begin
+      // enable static files
+      Config[TMVCConfigKey.DocumentRoot] :=
+        ExtractFilePath(GetModuleName(HInstance)) + '\www';
+      // session timeout (0 means session cookie)
+      Config[TMVCConfigKey.SessionTimeout] := '0';
+      // default content-type
+      Config[TMVCConfigKey.DefaultContentType] :=
+        TMVCConstants.DEFAULT_CONTENT_TYPE;
+      // default content charset
+      Config[TMVCConfigKey.DefaultContentCharset] :=
+        TMVCConstants.DEFAULT_CONTENT_CHARSET;
+      // unhandled actions are permitted?
+      Config[TMVCConfigKey.AllowUnhandledAction] := 'true'; // 'false';
+      // default view file extension
+      Config[TMVCConfigKey.DefaultViewFileExtension] := 'html';
+      // view path
+      Config[TMVCConfigKey.ViewPath] := 'templates';
+      // Enable STOMP messaging controller
+      Config[TMVCConfigKey.Messaging] := 'false';
+      // Enable Server Signature in response
+      Config[TMVCConfigKey.ExposeServerSignature] := 'true';
+      // Define a default URL for requests that don't map to a route or a file (useful for client side web app)
+      Config[TMVCConfigKey.FallbackResource] := 'index.html';
+    end);
+
+end;
 
 Constructor TWSController.Create;
 begin
@@ -99,7 +133,7 @@ begin
 end;
 
 Procedure TWSController.DoCommand(ACommand: string;
-  const AArgs: Array of TValue);
+const AArgs: Array of TValue);
 begin
   inherited;
 end;

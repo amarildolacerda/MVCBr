@@ -13,15 +13,17 @@ type
   TODataSQL = class(TODataBase)
   private
   protected
-    function EncodeFilterSql(AFilter: string): string;virtual;
+    function EncodeFilterSql(AFilter: string): string; virtual;
   public
     function QueryClass: TDatasetClass; virtual;
     function Select: string; virtual;
-    function CreateQuery(FParse: IODataParse; AInLineCount:boolean=false): string; virtual;
-    function Collection:string;override;
+    function CreateQuery(FParse: IODataParse; AInLineCount: boolean = false)
+      : string; virtual;
+    function Collection: string; override;
 
     procedure DecodeODataURL(CTX: TObject); override;
     function GetDataset: TObject; override;
+
 
   end;
 
@@ -34,10 +36,11 @@ begin
   result := FODataParse.oData.Resource;
 end;
 
-
-function TODataSQL.CreateQuery(FParse: IODataParse; AInLineCount:boolean=false): string;
+function TODataSQL.CreateQuery(FParse: IODataParse;
+  AInLineCount: boolean = false): string;
 begin
-    result := AdapterAPI.createQuery( FParse.oData, EncodeFilterSql(fParse.oData.Filter),AInLineCount);
+  result := AdapterAPI.CreateQuery(FParse.oData,
+    EncodeFilterSql(FParse.oData.Filter), AInLineCount);
 end;
 
 procedure TODataSQL.DecodeODataURL(CTX: TObject);
@@ -52,20 +55,14 @@ begin
     begin
       url := url + '?' + FCTX.Request.RawWebRequest.Query;
     end;
-    FODataParse.parse( TIdURI.URLDecode( url ));
+    FODataParse.parse(TIdURI.URLDecode(url));
   finally
   end;
 end;
 
-
 function TODataSQL.EncodeFilterSql(AFilter: string): string;
 begin
-  result := stringReplace(AFilter, ' lt ', ' < ', [rfReplaceAll]);
-  result := stringReplace(result, ' ne ', ' <> ', [rfReplaceAll]);
-  result := stringReplace(result, ' gt ', ' > ', [rfReplaceAll]);
-  result := stringReplace(result, ' ge ', ' >= ', [rfReplaceAll]);
-  result := stringReplace(result, ' le ', ' <= ', [rfReplaceAll]);
-  result := stringReplace(result, ' eq ', ' = ', [rfReplaceAll]);
+  result := TODataParse.OperatorToString(AFilter);
 end;
 
 function TODataSQL.GetDataset: TObject;
@@ -84,7 +81,6 @@ begin
   if result = '' then
     result := '*';
 end;
-
 
 { TODataSQLDialec }
 

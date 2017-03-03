@@ -18,6 +18,8 @@ type
     FInLineRecordCount: integer;
     function This: TObject;
     function GetDataset: TObject; virtual;
+    procedure CreateExpandCollections(AQuery: TObject); virtual;
+
     function Collection: string; virtual;
     function GetInLineRecordCount: integer;
     procedure SetInLineRecordCount(const Value: integer);
@@ -52,6 +54,11 @@ constructor TODataBase.create();
 begin
   inherited create;
   FAdapterAPI := DialectClass.create;
+
+end;
+
+procedure TODataBase.CreateExpandCollections(AQuery: TObject);
+begin
 
 end;
 

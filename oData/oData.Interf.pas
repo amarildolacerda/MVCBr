@@ -44,7 +44,12 @@ Type
     function GetLevel(FLevel: integer;AAutoCreate:Boolean): IODataDecode;
     function hasChild: boolean;
     function Child: IODataDecode;
+    function newChild: IODataDecode;
 
+    function hasExpand:boolean;
+    function ExpandItem(const idx:integer):IODataDecode;
+    function newExpand( const ACollection:string):IODataDecode;
+    function ExpandCount:integer;
 
     // define a list of fields
     property &Select: string read GetSelect write SetSelect;
@@ -70,10 +75,13 @@ Type
 
   IODataDecodeParams = interface
     ['{F03C7F83-F379-4D27-AFC5-C6D85FC56DE0}']
-    procedure AddPair(AKey: string; AValue: string);
+    procedure AddPair(AKey: string;AValue: string);
+    procedure AddOperator(const AOperator:string);
     procedure Clear;
     function Count: integer;
     function ContainKey(AKey: string): boolean;
+    function KeyOfIndex(const idx:integer):string;
+    function OperatorOfIndex(const idx:integer):string;
     function ValueOfIndex(const idx: integer): string;
   end;
 
@@ -96,6 +104,7 @@ Type
     procedure DecodeODataURL(CTX: TObject);
     function This: TObject;
     function GetDataset: TObject;
+    procedure CreateExpandCollections(AQuery: TObject);
     function Collection: string;
     function GetInLineRecordCount: integer;
     procedure SetInLineRecordCount(const Value: integer);

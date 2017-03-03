@@ -16,12 +16,19 @@ type
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
     function GetDataset: TObject; override;
+    procedure CreateExpandCollections(AQuery: TObject); override;
 
   end;
 
 implementation
 
 { TODataFiredacQuery }
+
+procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
+begin
+  inherited;
+
+end;
 
 destructor TODataFiredacQuery.destroy;
 begin
@@ -48,6 +55,11 @@ begin
     end;
 
     FQuery.SQL.Text := CreateQuery(FODataParse);
+
+    // criar NextedDataset -   $expand  command
+    if (FODataParse.oData.Expand <> '') and
+      (not(FODataParse.oData.InLineCount = 'allpages')) then
+      CreateExpandCollections(FQuery);
 
     FQuery.Open;
   except

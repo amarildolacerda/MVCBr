@@ -36,7 +36,7 @@ type
 
   TODataDecode = class(TInterfacedObject, IODataDecode)
   private
-    FLock:TObject;
+    FLock: TObject;
     FSelect: string;
     FFilter: string;
     FOrderBy: string;
@@ -76,23 +76,31 @@ type
     function GetGroupBy: string;
   protected
     FChild: IODataDecode;
+    FExpandItem: TDictionary<string, IODataDecode>;
     function This: TObject; virtual;
-    function Lock:IODataDecode;
+    function Lock: IODataDecode;
     procedure Unlock;
   public
     FParse: IODataParse;
     function GetParse: IODataParse;
 
-    constructor create(AParse:IODataParse); virtual;
+    constructor create(AParse: IODataParse); virtual;
     destructor destroy; override;
     function hasChild: boolean;
     function Child: IODataDecode;
     function newChild: IODataDecode;
+
+    function hasExpand: boolean;
+    function ExpandItem(const idx:integer): IODataDecode;
+    function ExpandCount:integer;
+    function newExpand(const ACollection: string): IODataDecode;
+
     // define collection do request
     property BaseURL: string read FBaseURL write SetBaseURL;
     property Resource: string read GetResource write SetResource;
     property ResourceParams: IODataDecodeParams read GetResourceParams;
-    function GetLevel(FLevel: integer;AAutoCreate:Boolean=true): IODataDecode;
+    function GetLevel(FLevel: integer; AAutoCreate: boolean = true)
+      : IODataDecode;
 
     // write SetResourceParams;
     // define a list of fields
@@ -110,7 +118,7 @@ type
     property &Top: integer read GetTop write SetTop;
     property &SkipToken: string read GetSkipToken write SetSkipToken;
     property &InLineCount: string read GetInLineCount write SetInLineCount;
-    property &GroupBy:string read GetGroupBy write SetGroupBy;
+    property &GroupBy: string read GetGroupBy write SetGroupBy;
     function ToString: string; virtual;
 
   end;
@@ -129,10 +137,15 @@ begin
   result := assigned(FChild);
 end;
 
+function TODataDecode.hasExpand: boolean;
+begin
+  result := FExpandItem.Count > 0;
+end;
+
 function TODataDecode.Lock: IODataDecode;
 begin
-   system.TMonitor.Enter(FLock);
-   result := self;
+  System.TMonitor.Enter(FLock);
+  result := self;
 end;
 
 function TODataDecode.newChild: IODataDecode;
@@ -142,13 +155,21 @@ begin
   result := FChild;
 end;
 
-constructor TODataDecode.create(AParse:IODataParse);
+function TODataDecode.newExpand(const ACollection: string): IODataDecode;
+begin
+  result := TODataDecode.create(FParse);
+  result.Resource := ACollection;
+  FExpandItem.add(ACollection, result);
+end;
+
+constructor TODataDecode.create(AParse: IODataParse);
 begin
   inherited create;
-  FLock:=TObject.create;
+  FLock := TObject.create;
   FParse := AParse;
   FBaseURL := '/';
   FResourceParams := TODataDictionay.create;
+  FExpandItem := TDictionary<string, IODataDecode>.create;
 end;
 
 function TODataDecode.ToString: string;
@@ -204,13 +225,24 @@ end;
 
 procedure TODataDecode.Unlock;
 begin
-   System.TMonitor.Exit(FLock);
+  System.TMonitor.Exit(FLock);
 end;
 
 destructor TODataDecode.destroy;
 begin
   FLock.Free;
+  FExpandItem.Free;
   inherited;
+end;
+
+function TODataDecode.ExpandCount: integer;
+begin
+  result := FExpandItem.Count;
+end;
+
+function TODataDecode.ExpandItem(const idx:integer): IODataDecode;
+begin
+  result := FExpandItem.Values.ToArray[idx];
 end;
 
 function TODataDecode.GetExpand: string;
@@ -230,7 +262,7 @@ end;
 
 function TODataDecode.GetGroupBy: string;
 begin
-   result := FGroupBy;
+  result := FGroupBy;
 end;
 
 function TODataDecode.GetInLineCount: string;
@@ -238,7 +270,8 @@ begin
   result := FInLineCount;
 end;
 
-function TODataDecode.GetLevel(FLevel: integer; AAutoCreate:Boolean=true): IODataDecode;
+function TODataDecode.GetLevel(FLevel: integer; AAutoCreate: boolean = true)
+  : IODataDecode;
 var
   i: integer;
   cur: TODataDecode;

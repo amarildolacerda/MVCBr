@@ -42,6 +42,8 @@ end;
 function TODataDialect.GetWhereFromParams(AOData:IODataDecode;alias:string; keys: string): string;
 var
   s: string;
+  key:string;
+  reqKey:string;
   i: integer;
   str: TStringList;
 begin
@@ -58,7 +60,12 @@ begin
       if result <>'' then
          result := result + ' and ';
       if i<str.count then
-         result := result +alias+'.'+str[i]+' = '+s;
+         key := str[i];
+      reqKey := AOData.ResourceParams.KeyOfIndex(i);
+      if copy(reqKey,1,3)<>'__P' then
+         key := reqKey;
+      if i<str.count then
+         result := result +alias+'.'+key+AOData.ResourceParams.OperatorOfIndex(i)+s;
     end;
   finally
     str.Free;

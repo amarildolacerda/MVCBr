@@ -175,8 +175,16 @@ begin
     FreeAndNil(FJson);
     str := TStringList.create;
     try
-      str.LoadFromFile(AJson);
-      FJson := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
+      if fileExists(AJson) then
+      begin
+        str.LoadFromFile(AJson);
+        FJson := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
+      end
+      else
+      begin
+        FJson := TJsonObject.create;
+        FJson.addPair('erro', 'Cand find oData Service <' + AJson + '>');
+      end;
 
       with FJson do
       begin
@@ -189,14 +197,14 @@ begin
         addPair('suports.$skip', 'yes');
         addPair('suports.$inlinecount', 'yes');
         addPair('suports.$skiptoken', 'no');
-        addPair('odata.ServiceFile',AJson);
+        addPair('odata.ServiceFile', AJson);
       end;
 
     finally
       str.Free;
     end;
   except
-    showMessage('Cant load services (' + AJson + ')');
+    //showMessage('Cant load services (' + AJson + ')');
     raise Exception.create('Cant load services (' + AJson + ')');
   end;
 end;
@@ -441,7 +449,10 @@ end;
 initialization
 
 ODataServices := TODataServices.create;
+try
 ODataServices.LoadFromJsonFile(ExtractFilePath(ParamStr(0)) +
   'oData.ServiceModel.json');
+except
+end;
 
 end.
