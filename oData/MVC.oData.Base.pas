@@ -65,8 +65,13 @@ type
 
     [MVCHTTPMethod([httpDELETE])]
     [MVCPath('/OData.svc/($collection)')]
-    [MVCDoc('Default method to delete OData')]
+    [MVCDoc('Default method to DELETE OData')]
     procedure DeleteCollection1(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpPOST])]
+    [MVCPath('/OData.svc/($collection)')]
+    [MVCDoc('Default method to INSERT OData')]
+    procedure POSTCollection1(CTX: TWebContext);
 
     procedure OnBeforeAction(Context: TWebContext; const AActionName: string;
       var Handled: Boolean); override;
@@ -176,6 +181,39 @@ begin
 
 end;
 
+procedure TODataController.POSTCollection1(CTX: TWebContext);
+var
+  FOData: IODataBase;
+  FDataset: TDataset;
+  JSON: TJsonObject;
+  arr: TJsonArray;
+  n: integer;
+  r: string;
+  erro: TJsonObject;
+begin
+  try
+    CTX.Response.StatusCode := 500;
+    FOData := ODataBase.create();
+    FOData.DecodeODataURL(CTX);
+    JSON := CreateJson(CTX, CTX.Request.PathInfo);
+    n := FOData.ExecutePost(CTX.Request.Body, JSON);
+
+    JSON.addPair('@odata.count', n.ToString);
+
+    if n > 0 then
+      CTX.Response.StatusCode := 200
+    else
+      CTX.Response.StatusCode := 304;
+
+    RenderA(JSON);
+
+  except
+    on e: Exception do
+      RenderError(e.message);
+  end;
+
+end;
+
 procedure TODataController.QueryCollection1(CTX: TWebContext);
 begin
   GetQueryBase(CTX);
@@ -252,14 +290,16 @@ begin
   n := pos('{', ATexto);
   if n > 0 then
   begin
-    js := TJsonObject.ParseJSONValue(copy(ATexto, n + 1, length(ATexto))) as TJsonObject;
+    js := TJsonObject.ParseJSONValue(copy(ATexto, n + 1, length(ATexto)))
+      as TJsonObject;
     if assigned(js) then
     begin
       render(js);
       exit;
     end;
   end;
-  js := TJsonObject.ParseJSONValue(TODataError.create(500, ATexto)) as TJsonObject;
+  js := TJsonObject.ParseJSONValue(TODataError.create(500, ATexto))
+    as TJsonObject;
   render(js);
 end;
 

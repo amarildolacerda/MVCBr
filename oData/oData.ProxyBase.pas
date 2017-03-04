@@ -9,6 +9,7 @@ unit oData.ProxyBase;
 interface
 
 uses System.Classes, System.SysUtils, Data.DB, MVCFramework,
+  System.JSON,
   oData.Interf, oData.engine, oData.Parse, oData.Dialect;
 
 type
@@ -26,6 +27,7 @@ type
 
     function GetDataset: TObject; virtual;
     function ExecuteDelete(ABody:string):Integer;virtual;
+    function ExecutePost(ABody:string; var JSON:TJsonObject):Integer;virtual;
 
     procedure CreateExpandCollections(AQuery: TObject); virtual;
 
@@ -83,6 +85,11 @@ end;
 
 
 function TODataBase.ExecuteDelete(ABody:string): Integer;
+begin
+   result := 0;
+end;
+
+function TODataBase.ExecutePost(ABody: string;var JSON:TJSONObject): Integer;
 begin
    result := 0;
 end;

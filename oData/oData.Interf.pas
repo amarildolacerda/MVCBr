@@ -8,7 +8,7 @@ unit oData.Interf;
 
 interface
 
-uses System.Classes, System.SysUtils;
+uses System.Classes, System.SysUtils, System.JSON;
 
 Type
 
@@ -98,7 +98,7 @@ Type
     function createQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: boolean = false): string;
     function createDeleteQuery(oData: IODataDecode; AJson:string): string;
-
+    function CreatePostQuery(oData: IODataDecode; AJson:string):String;
   end;
 
   IODataParse = interface
@@ -116,6 +116,7 @@ Type
 
     function GetDataset: TObject;
     function ExecuteDelete(ABody:string):Integer;
+    function ExecutePost(ABody:string;var JSON:TJSONObject):Integer;
 
     procedure CreateExpandCollections(AQuery: TObject);
     function Collection: string;

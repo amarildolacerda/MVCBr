@@ -26,6 +26,8 @@ type
     function CreateQuery(FParse: IODataParse; AInLineCount: boolean = false)
       : string; virtual;
     function CreateDeleteQuery(FParse: IODataparse; AJson:string): string;virtual;
+    function CreatePOSTQuery(FParse: IODataparse; AJson:string): string;virtual;
+
     function Collection: string; override;
 
     procedure DecodeODataURL(CTX: TObject); override;
@@ -49,6 +51,11 @@ end;
 function TODataSQL.CreateDeleteQuery(FParse: IODataparse; AJson:string): string;
 begin
    result := AdapterAPI.createDeleteQuery(FParse.oData,AJson);
+end;
+
+function TODataSQL.CreatePOSTQuery(FParse: IODataparse; AJson: string): string;
+begin
+   result := AdapterAPI.createPOSTQuery(FParse.oData,AJson);
 end;
 
 function TODataSQL.CreateQuery(FParse: IODataParse;

@@ -22,6 +22,9 @@ Type
       : string; virtual;
     function createQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
+    function CreatePostQuery(oData: IODataDecode; AJson: string)
+      : String; virtual;
+
     procedure CreateGroupBy(var Result: string; FGroupBy: string); virtual;
     procedure CreateOrderBy(oData: IODataDecode; const AInLineCount: Boolean;
       var Result: string); virtual;
@@ -45,6 +48,7 @@ Type
     function GetWhereFromJson(const AJson: String): String; virtual;
     function GetWhereFromParams(AOData: IODataDecode; alias, keys: string)
       : string; virtual;
+    function GetInsertFromJson(AJson: string): string; virtual;
   end;
 
   TODataDialectClass = class of TODataDialect;
@@ -65,6 +69,40 @@ end;
 
 { TODataDialect }
 
+function TODataDialect.GetInsertFromJson(AJson: string): string;
+var
+  js: IJsonObject;
+  p: TJsonPair;
+  cols, params: string;
+begin
+  Result := '';
+  js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(AJson)
+    as TJSONObject, false);
+  if (not assigned(js)) and (AJson <> '') then
+    raise Exception.Create(TODataError.Create(400,
+      'JSON inválido para gerar INSERT'));
+  cols := '';
+  params := '';
+  for p in js.JSONObject do
+  begin
+    if cols <> '' then
+    begin
+      cols := cols + ',';
+      params := params + ',';
+    end;
+
+    cols := cols + p.JsonString.Value;
+
+    case TInterfacedJsonObject.GetJsonType(p) of
+      jtNumber:
+        params := params + p.JsonValue.Value;
+    else
+      params := params + '''' + p.JsonValue.Value + '''';
+    end;
+  end;
+  Result := '(' + cols + ') values(' + params + ')';
+end;
+
 function TODataDialect.GetResource(AResource: string)
   : IJsonODastaServiceResource;
 begin
@@ -73,7 +111,6 @@ begin
     raise Exception.Create('Serviço não disponível para o resource: ' +
       AResource);
 end;
-
 
 function TODataDialect.GetWhereFromJson(const AJson: String): String;
 var
@@ -158,6 +195,25 @@ procedure TODataDialect.CreateGroupBy(var Result: string; FGroupBy: string);
 begin
   if FGroupBy <> '' then
     Result := Result + ' group by ' + FGroupBy;
+end;
+
+function TODataDialect.CreatePostQuery(oData: IODataDecode;
+  AJson: string): String;
+var
+  AResource: IJsonODastaServiceResource;
+  FIns: string;
+begin
+  if AJson = '' then
+    raise Exception.Create(TODataError.Create(500,
+      'Não enviou dados a serem inseridos'));
+  AResource := GetResource(oData.resource);
+  Result := 'insert into ' + AResource.Collection;
+  FIns := GetInsertFromJson(AJson);
+  if FIns = '' then
+    raise Exception.Create(TODataError.Create(500,
+      'Não é um conjunto JSON válido'));
+
+  Result := Result + ' ' + FIns;
 end;
 
 procedure TODataDialect.CreateOrderBy(oData: IODataDecode;

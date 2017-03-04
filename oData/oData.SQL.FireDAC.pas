@@ -9,7 +9,8 @@ unit oData.SQL.FireDAC;
 interface
 
 uses
-  System.Classes, System.SysUtils, Data.Db, oData.SQL, FireDAC.Comp.Client;
+  System.Classes, System.SysUtils, Data.Db, oData.SQL, System.JSON,
+  FireDAC.Comp.Client;
 
 type
   TODataFiredacQuery = class(TODataSQL)
@@ -23,6 +24,8 @@ type
     property Connection: TFDConnection read FConnection write SetConnection;
     function GetDataset: TObject; override;
     function ExecuteDelete(ABody: string): Integer; override;
+    function ExecutePost(ABody: string; var JSON: TJSONObject)
+      : Integer; override;
 
     procedure CreateExpandCollections(AQuery: TObject); override;
 
@@ -30,7 +33,7 @@ type
 
 implementation
 
-uses oData.JSON, oData.engine, System.JSON;
+uses oData.JSON, oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -53,11 +56,11 @@ var
   ji: TJsonValue;
 begin
   inherited;
-  isArray:=false;
+  isArray := false;
   AJson := ABody;
   if ABody <> '' then
   begin
-    js := TInterfacedJsonObject.New(TJsonObject.ParseJSONValue(ABody), false);
+    js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
     isArray := js.JSON is TJsonArray;
   end;
 
@@ -78,6 +81,62 @@ begin
     else
     begin
       FQuery.SQL.Text := CreateDeleteQuery(FODataParse, AJson);
+      FQuery.ExecSQL;
+      result := result + FQuery.RowsAffected;
+    end;
+  except
+    on e: exception do
+    begin
+      result := 0;
+      raise exception.Create(TODataError.Create(501, e.Message));
+    end;
+  end;
+end;
+
+{
+
+  if n > 0 then
+  begin
+  r := '"@odata.id":"OData/OData.svc/' + FOData.Collection+'('+   ('teresa')",
+  // "@odata.editLink":"serviceRoot/People('teresa')",
+  end;
+
+
+}
+function TODataFiredacQuery.ExecutePost(ABody: string;
+  var JSON: TJSONObject): Integer;
+var
+  AJson: string;
+  js: IJsonObject;
+  isArray: boolean;
+  ji: TJsonValue;
+begin
+  inherited;
+  isArray := false;
+  AJson := ABody;
+  if ABody <> '' then
+  begin
+    js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
+    isArray := js.JSON is TJsonArray;
+  end;
+
+  result := 0;
+  freeAndNil(FQuery);
+  FQuery := QueryClass.Create(nil) as TFdQuery;
+  try
+    if isArray then
+    begin
+      for ji in js.AsArray do
+      begin
+        FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji.ToJSON);
+        FQuery.ExecSQL;
+        result := result + FQuery.RowsAffected;
+      end;
+
+    end
+    else
+    begin
+      FQuery.SQL.Text := CreatePOSTQuery(FODataParse, AJson);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
