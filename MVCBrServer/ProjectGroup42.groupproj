@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{33BFE1F7-111D-454C-85A5-9AAC8906B497}</ProjectGuid>
+        <ProjectGuid>{748F1761-8024-4AAD-83E7-988D3C6BA1F2}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="MVCBrServer.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project25.dproj">
+        <Projects Include="Test\MVCBrServerTests.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +26,23 @@
     <Target Name="MVCBrServer:Make">
         <MSBuild Projects="MVCBrServer.dproj" Targets="Make"/>
     </Target>
-    <Target Name="Project25">
-        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project25.dproj"/>
+    <Target Name="MVCBrServerTests">
+        <MSBuild Projects="Test\MVCBrServerTests.dproj"/>
     </Target>
-    <Target Name="Project25:Clean">
-        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project25.dproj" Targets="Clean"/>
+    <Target Name="MVCBrServerTests:Clean">
+        <MSBuild Projects="Test\MVCBrServerTests.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="Project25:Make">
-        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project25.dproj" Targets="Make"/>
+    <Target Name="MVCBrServerTests:Make">
+        <MSBuild Projects="Test\MVCBrServerTests.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrServer;Project25"/>
+        <CallTarget Targets="MVCBrServer;MVCBrServerTests"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrServer:Clean;Project25:Clean"/>
+        <CallTarget Targets="MVCBrServer:Clean;MVCBrServerTests:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrServer:Make;Project25:Make"/>
+        <CallTarget Targets="MVCBrServer:Make;MVCBrServerTests:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

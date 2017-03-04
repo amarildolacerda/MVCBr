@@ -1,3 +1,9 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit oData.Interf;
 
 interface
@@ -77,11 +83,13 @@ Type
     ['{F03C7F83-F379-4D27-AFC5-C6D85FC56DE0}']
     procedure AddPair(AKey: string;AValue: string);
     procedure AddOperator(const AOperator:string);
+    procedure AddOperatorLink(const AOperatorLink:string);
     procedure Clear;
     function Count: integer;
     function ContainKey(AKey: string): boolean;
     function KeyOfIndex(const idx:integer):string;
     function OperatorOfIndex(const idx:integer):string;
+    function OperatorLinkOfIndex(const idx: integer): string;
     function ValueOfIndex(const idx: integer): string;
   end;
 
@@ -89,6 +97,8 @@ Type
     ['{812DB60E-64D7-4290-99DB-F625EC52C6DA}']
     function createQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: boolean = false): string;
+    function createDeleteQuery(oData: IODataDecode; AJson:string): string;
+
   end;
 
   IODataParse = interface
@@ -103,7 +113,10 @@ Type
     ['{61D854AF-4773-4DD2-9648-AD93A4134F13}']
     procedure DecodeODataURL(CTX: TObject);
     function This: TObject;
+
     function GetDataset: TObject;
+    function ExecuteDelete(ABody:string):Integer;
+
     procedure CreateExpandCollections(AQuery: TObject);
     function Collection: string;
     function GetInLineRecordCount: integer;

@@ -1,3 +1,9 @@
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit MVC.oData.Base;
 
 interface
@@ -14,12 +20,13 @@ type
   TODataController = class(TMVCController)
   public
     function CreateJson(CTX: TWebContext; const AValue: string): TJsonObject;
-    //[MVCDoc('Finalize JSON response')]
+    // [MVCDoc('Finalize JSON response')]
     procedure EndsJson(var AJson: TJsonObject);
-    //[MVCDoc('Overload Render')]
+    // [MVCDoc('Overload Render')]
     procedure RenderA(AJson: TJsonObject);
+    procedure RenderError(ATexto: String);
   private
-    //[MVCDoc('General parse OData URI')]
+    // [MVCDoc('General parse OData URI')]
     procedure GetQueryBase(CTX: TWebContext);
   public
 
@@ -52,8 +59,14 @@ type
     procedure QueryCollection3(CTX: TWebContext);
 
     [MVCHTTPMethod([httpGET])]
-    [MVCPath('/OData.svc/($collection1)/($collection2)/($collection3)/($collection4)')]
+    [MVCPath('/OData.svc/($collection1)/($collection2)/($collection3)/($collection4)')
+      ]
     procedure QueryCollection4(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpDELETE])]
+    [MVCPath('/OData.svc/($collection)')]
+    [MVCDoc('Default method to delete OData')]
+    procedure DeleteCollection1(CTX: TWebContext);
 
     procedure OnBeforeAction(Context: TWebContext; const AActionName: string;
       var Handled: Boolean); override;
@@ -66,7 +79,8 @@ type
 
 implementation
 
-uses ObjectsMappers, WS.Controller, oData.ProxyBase, oData.SQL, oData.ServiceModel,
+uses ObjectsMappers, WS.Controller, oData.ProxyBase, oData.SQL,
+  oData.ServiceModel, oData.Engine,
   System.DateUtils;
 
 { TODataController }
@@ -79,6 +93,37 @@ begin
   result := TJsonObject.create as TJsonObject;
   result.addPair('@odata.context', AValue);
   result.addPair('StartsAt', DateToISO8601(now));
+end;
+
+procedure TODataController.DeleteCollection1(CTX: TWebContext);
+var
+  FOData: IODataBase;
+  FDataset: TDataset;
+  JSON: TJsonObject;
+  arr: TJsonArray;
+  n: integer;
+  erro: TJsonObject;
+begin
+  try
+    CTX.Response.StatusCode := 500;
+    FOData := ODataBase.create();
+    FOData.DecodeODataURL(CTX);
+    JSON := CreateJson(CTX, CTX.Request.PathInfo);
+    n := FOData.ExecuteDelete(CTX.Request.Body);
+    JSON.addPair('@odata.count', n.ToString);
+
+    if n > 0 then
+      CTX.Response.StatusCode := 200
+    else
+      CTX.Response.StatusCode := 304;
+
+    RenderA(JSON);
+
+  except
+    on e: Exception do
+      RenderError(e.message);
+  end;
+
 end;
 
 procedure TODataController.EndsJson(var AJson: TJsonObject);
@@ -145,18 +190,18 @@ var
   n: integer;
   erro: TJsonObject;
 begin
-  FOData := ODataBase.create();
-  FOData.DecodeODataURL(CTX);
-  JSON := CreateJson(CTX, CTX.Request.PathInfo);
-  FDataset := TDataset(FOData.getDataSet);
   try
+    FOData := ODataBase.create();
+    FOData.DecodeODataURL(CTX);
+    JSON := CreateJson(CTX, CTX.Request.PathInfo);
+    FDataset := TDataset(FOData.getDataSet);
     FDataset.first;
     arr := TJsonArray.create;
     Mapper.DataSetToJSONArray(FDataset, arr, False);
     if assigned(arr) then
     begin
       JSON.addPair('value', arr);
-//      JSON.addPair('__collection', FOData.Collection);
+      // JSON.addPair('__collection', FOData.Collection);
     end;
     if FOData.inLineRecordCount < 0 then
       FOData.inLineRecordCount := FDataset.RecordCount;
@@ -168,17 +213,12 @@ begin
 
     RenderA(JSON);
   except
-    on e: exception do
+    on e: Exception do
     begin
       freeAndNil(FDataset);
       freeAndNil(JSON);
-      JSON := TJsonObject.create;
-      JSON.addPair('code', '501');
-      JSON.addPair('message', e.message);
-      erro := TJsonObject.create;
-      erro.addPair('error', JSON);
       CTX.Response.StatusCode := 501;
-      render(erro, true);
+      RenderError(e.message);
     end;
   end;
 end;
@@ -202,6 +242,25 @@ procedure TODataController.RenderA(AJson: TJsonObject);
 begin
   EndsJson(AJson);
   render(AJson);
+end;
+
+procedure TODataController.RenderError(ATexto: String);
+var
+  n: integer;
+  js: TJsonObject;
+begin
+  n := pos('{', ATexto);
+  if n > 0 then
+  begin
+    js := TJsonObject.ParseJSONValue(copy(ATexto, n + 1, length(ATexto))) as TJsonObject;
+    if assigned(js) then
+    begin
+      render(js);
+      exit;
+    end;
+  end;
+  js := TJsonObject.ParseJSONValue(TODataError.create(500, ATexto)) as TJsonObject;
+  render(js);
 end;
 
 initialization

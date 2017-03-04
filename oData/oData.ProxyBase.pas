@@ -1,3 +1,9 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit oData.ProxyBase;
 
 interface
@@ -17,7 +23,10 @@ type
     FODataParse: IODataParse;
     FInLineRecordCount: integer;
     function This: TObject;
+
     function GetDataset: TObject; virtual;
+    function ExecuteDelete(ABody:string):Integer;virtual;
+
     procedure CreateExpandCollections(AQuery: TObject); virtual;
 
     function Collection: string; virtual;
@@ -70,6 +79,12 @@ end;
 function TODataBase.DialectClass: TODataDialectClass;
 begin
   result := TODataDialect;
+end;
+
+
+function TODataBase.ExecuteDelete(ABody:string): Integer;
+begin
+   result := 0;
 end;
 
 function TODataBase.GetCollection(AName: string): string;

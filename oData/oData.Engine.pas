@@ -1,3 +1,9 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit oData.Engine;
 
 interface
@@ -32,6 +38,11 @@ type
     function year(const AValue: string): TODataOperators;
     function month(const AValue: string): TODataOperators;
     function day(const AValue: string): TODataOperators;
+  end;
+
+  TODataError = record
+  public
+    class function create(cod: integer; mess: string): string; static;
   end;
 
   TODataDecode = class(TInterfacedObject, IODataDecode)
@@ -91,8 +102,8 @@ type
     function newChild: IODataDecode;
 
     function hasExpand: boolean;
-    function ExpandItem(const idx:integer): IODataDecode;
-    function ExpandCount:integer;
+    function ExpandItem(const idx: integer): IODataDecode;
+    function ExpandCount: integer;
     function newExpand(const ACollection: string): IODataDecode;
 
     // define collection do request
@@ -125,6 +136,7 @@ type
 
 implementation
 
+uses System.JSON;
 { TODataDecode }
 
 function TODataDecode.Child: IODataDecode;
@@ -240,7 +252,7 @@ begin
   result := FExpandItem.Count;
 end;
 
-function TODataDecode.ExpandItem(const idx:integer): IODataDecode;
+function TODataDecode.ExpandItem(const idx: integer): IODataDecode;
 begin
   result := FExpandItem.Values.ToArray[idx];
 end;
@@ -514,6 +526,30 @@ end;
 function TODataOperators.notequal(const AValue: string): TODataOperators;
 begin
   result.Value := Value + ' ne ' + (AValue);
+end;
+
+{ TODataError }
+
+class function TODataError.create(cod: integer; mess: string): string;
+var
+  js: TJsonObject;
+  j: TJsonObject;
+  jm: TJsonObject;
+begin
+  js := TJsonObject.create As TJsonObject;
+  try
+    j := TJsonObject.create;
+    j.AddPair('code', cod.ToString);
+    jm := TJsonObject.create As TJsonObject;
+    jm.AddPair('lang', 'pt_br');
+    jm.AddPair('value', mess);
+    j.AddPair('message', jm);
+    js.AddPair('error', j);
+
+    result := js.ToJSON;
+  finally
+    js.Free;
+  end;
 end;
 
 end.

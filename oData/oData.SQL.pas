@@ -1,3 +1,9 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit oData.SQL;
 
 interface
@@ -19,10 +25,14 @@ type
     function Select: string; virtual;
     function CreateQuery(FParse: IODataParse; AInLineCount: boolean = false)
       : string; virtual;
+    function CreateDeleteQuery(FParse: IODataparse; AJson:string): string;virtual;
     function Collection: string; override;
 
     procedure DecodeODataURL(CTX: TObject); override;
+
+
     function GetDataset: TObject; override;
+    function ExecuteDelete(ABody:string):Integer;override;
 
 
   end;
@@ -34,6 +44,11 @@ implementation
 function TODataSQL.Collection: string;
 begin
   result := FODataParse.oData.Resource;
+end;
+
+function TODataSQL.CreateDeleteQuery(FParse: IODataparse; AJson:string): string;
+begin
+   result := AdapterAPI.createDeleteQuery(FParse.oData,AJson);
 end;
 
 function TODataSQL.CreateQuery(FParse: IODataParse;
@@ -55,7 +70,7 @@ begin
     begin
       url := url + '?' + FCTX.Request.RawWebRequest.Query;
     end;
-    FODataParse.parse(TIdURI.URLDecode(url));
+    FODataParse.parse(url);
   finally
   end;
 end;
@@ -63,6 +78,12 @@ end;
 function TODataSQL.EncodeFilterSql(AFilter: string): string;
 begin
   result := TODataParse.OperatorToString(AFilter);
+end;
+
+
+function TODataSQL.ExecuteDelete(ABody:string): Integer;
+begin
+  result := 0;
 end;
 
 function TODataSQL.GetDataset: TObject;

@@ -1,3 +1,9 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit oData.Parse;
 
 interface
@@ -7,8 +13,8 @@ uses System.Classes, System.SysUtils, System.Generics.collections,
 
 type
 
-  TTokenKind = (ptNone, ptIdentifier, ptNull, ptSpace, ptComma, ptSlash,
-    ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
+  TTokenKind = (ptNone, ptIdentifier, ptNull, ptQuotation, ptSpace, ptComma,
+    ptSlash, ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
     ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand, ptInLineCount,
     ptGroupBy, ptOperNe { not equal } , ptOperLt { less than } ,
     ptOperLe { less equal } , ptOperGe { greater or equal } ,
@@ -199,7 +205,7 @@ var
 
 var
   s: string;
-  procedure NextExpandItem(rst:IODataDecode);
+  procedure NextExpandItem(rst: IODataDecode);
   begin
     NextToken(true);
     s := GetToken;
@@ -237,7 +243,7 @@ var
       ExpandParams(rst);
     if IsNull then
       exit;
-    inc(LLevel);  
+    inc(LLevel);
     NextExpandItem(rst);
   end;
 
@@ -467,13 +473,26 @@ var
   s: String;
   i: integer;
   nome, AOperator: string;
+  AOperatorLink: string;
+  isQuotation: boolean;
+  LLevel: integer;
+  LLevelClose: integer;
+LABEL Loop1;
 begin
   whileIn([ptSpace]);
   NextToken;
+
   i := 0;
+  LLevel := 0;
+  LLevelClose := 0;
+
+Loop1:
   if isTokenType(ptOpen) then
   begin
+    inc(LLevelClose);
     repeat
+      AOperatorLink := '';
+      isQuotation := false;
       if IsNull then
         break;
       inc(i);
@@ -482,8 +501,39 @@ begin
       NextToken;
       nome := '__P' + intToStr(i);
       AOperator := '=';
+
+      if toToken(token) = ptQuotation then
+      begin
+        isQuotation := true;
+        NextToken(true,[ptQuotation]);
+      end;
+
+      if FCurrentOData.ResourceParams.count > 0 then
+      begin
+
+        if toToken(token) in [ptComma,ptOperAnd, ptOperOr] then
+        begin
+          if toToken(token) in [ptComma] then
+            AOperatorLink := ' and '
+          else
+          begin
+            NextToken;
+            AOperatorLink := ' ' + GetToken + ' ';
+          end;
+          NextToken;
+        end;
+      end;
+
+      if isTokenType(ptOpen) then
+        goto Loop1;
+
       if isTokenType(ptClose) then
-        break;
+      begin
+        dec(LLevelClose);
+        if LLevelClose <= 0 then
+          break
+      end;
+
       if toToken(GetNextToken) in [ptEqual, ptOperNe, ptOperLt, ptOperGe,
         ptOperGt, ptOperLe] then
       begin
@@ -491,12 +541,23 @@ begin
         NextToken;
         AOperator := OperatorToString(' ' + GetToken + ' '); // clear;
         NextToken;
+        if isTokenType(ptQuotation) then
+        begin
+          isQuotation := true;
+          NextToken(true, [ptQuotation]);
+        end;
       end;
 
+      inc(LLevel);
+
       s := GetToken;
+      if isQuotation then
+        s := QuotedStr(s);
+
       FCurrentOData.ResourceParams.AddPair(nome, s);
+      FCurrentOData.ResourceParams.AddOperatorLink(AOperatorLink);
       FCurrentOData.ResourceParams.AddOperator(AOperator);
-      whileIn([ptSpace, ptComma]);
+      whileIn([ptSpace, ptComma, ptQuotation]);
       if isTokenType(ptComma) then
         continue;
     until isTokenType(ptClose);
@@ -584,6 +645,9 @@ FTokenKindArray.Add('$skiptoken', ptSkipToken);
 FTokenKindArray.Add('$inlinecount', ptInLineCount);
 FTokenKindArray.Add('$expand', ptExpand);
 FTokenKindArray.Add('groupby', ptGroupBy);
+FTokenKindArray.Add('''', ptQuotation);
+FTokenKindArray.Add('and', ptOperAnd);
+FTokenKindArray.Add('or', ptOperOr);
 
 finalization
 

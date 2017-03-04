@@ -1,25 +1,17 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit oData.ServiceModel;
 
 interface
 
-Uses System.Classes, System.SysUtils, System.JSON, System.Generics.Collections;
+Uses System.Classes, System.SysUtils, System.JSON, oData.JSON,
+  System.Generics.Collections;
 
 type
-
-  IJsonObject = interface
-    ['{C4AB29A2-0F6B-4430-BBB1-F9EA6A460B88}']
-    function JSON: TJsonValue;
-    function AsArray: TJsonArray;
-  end;
-
-  TInterfacedJsonObject = class(TInterfacedObject, IJsonObject)
-  protected
-    FJson: TJsonValue;
-  public
-    class function New(AJson: TJsonValue): IJsonObject;
-    function JSON: TJsonValue;
-    function AsArray: TJsonArray;
-  end;
 
   IJsonODataServiceRelation = interface(IJsonObject)
     ['{9AFBD592-E0FE-488F-96E8-44B7551E528C}']
@@ -204,7 +196,7 @@ begin
       str.Free;
     end;
   except
-    //showMessage('Cant load services (' + AJson + ')');
+    // showMessage('Cant load services (' + AJson + ')');
     raise Exception.create('Cant load services (' + AJson + ')');
   end;
 end;
@@ -425,33 +417,12 @@ begin
     end;
 end;
 
-{ TInterfacedJsonObject }
-
-function TInterfacedJsonObject.AsArray: TJsonArray;
-begin
-  JSON.TryGetValue<TJsonArray>(result);
-end;
-
-function TInterfacedJsonObject.JSON: TJsonValue;
-begin
-  result := FJson;
-end;
-
-class function TInterfacedJsonObject.New(AJson: TJsonValue): IJsonObject;
-var
-  jo: TInterfacedJsonObject;
-begin
-  jo := TInterfacedJsonObject.create;
-  jo.FJson := AJson;
-  result := jo;
-end;
-
 initialization
 
 ODataServices := TODataServices.create;
 try
-ODataServices.LoadFromJsonFile(ExtractFilePath(ParamStr(0)) +
-  'oData.ServiceModel.json');
+  ODataServices.LoadFromJsonFile(ExtractFilePath(ParamStr(0)) +
+    'oData.ServiceModel.json');
 except
 end;
 

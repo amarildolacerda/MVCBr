@@ -3,6 +3,11 @@ program MVCBrServer;
 {$APPTYPE CONSOLE}
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   System.SysUtils,
   MVCFramework.Logger,
   MVCFramework.Commons,
@@ -14,7 +19,7 @@ uses
   IniFiles,
   IdHTTPWebBrokerBridge,
   MVCBr.ApplicationController,
-  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule} ,
+  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
@@ -30,7 +35,13 @@ uses
   oData.ProxyBase in '..\oData\oData.ProxyBase.pas',
   oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas',
   oData.SQL in '..\oData\oData.SQL.pas',
-  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule};
+  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
+  oData.Dialect.MySQL in '..\oData\oData.Dialect.MySQL.pas',
+  WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
+  WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas',
+  WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
+  MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
+  oData.JSON in '..\oData\oData.JSON.pas';
 
 {$R *.res}
 

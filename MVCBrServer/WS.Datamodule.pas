@@ -1,3 +1,9 @@
+{//************************************************************//}
+{//         Projeto MVCBr                                      //}
+{//         tireideletra.com.br  / amarildo lacerda            //}
+{//************************************************************//}
+{// Data: 03/03/2017                                           //}
+{//************************************************************//}
 unit WS.Datamodule;
 
 interface
@@ -28,6 +34,8 @@ type
   public
     constructor create(AOwner: TComponent); override;
   end;
+
+
 
 var
   WSDatamodule: TWSDatamodule;

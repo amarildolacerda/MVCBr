@@ -1,3 +1,9 @@
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit oData.SQL.FireDAC;
 
 interface
@@ -16,12 +22,15 @@ type
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
     function GetDataset: TObject; override;
+    function ExecuteDelete(ABody: string): Integer; override;
+
     procedure CreateExpandCollections(AQuery: TObject); override;
 
   end;
 
 implementation
 
+uses oData.JSON, oData.engine, System.JSON;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -34,6 +43,51 @@ destructor TODataFiredacQuery.destroy;
 begin
   freeAndNil(FQuery);
   inherited;
+end;
+
+function TODataFiredacQuery.ExecuteDelete(ABody: string): Integer;
+var
+  AJson: string;
+  js: IJsonObject;
+  isArray: boolean;
+  ji: TJsonValue;
+begin
+  inherited;
+  isArray:=false;
+  AJson := ABody;
+  if ABody <> '' then
+  begin
+    js := TInterfacedJsonObject.New(TJsonObject.ParseJSONValue(ABody), false);
+    isArray := js.JSON is TJsonArray;
+  end;
+
+  result := 0;
+  freeAndNil(FQuery);
+  FQuery := QueryClass.Create(nil) as TFdQuery;
+  try
+    if isArray then
+    begin
+      for ji in js.AsArray do
+      begin
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji.ToJSON);
+        FQuery.ExecSQL;
+        result := result + FQuery.RowsAffected;
+      end;
+
+    end
+    else
+    begin
+      FQuery.SQL.Text := CreateDeleteQuery(FODataParse, AJson);
+      FQuery.ExecSQL;
+      result := result + FQuery.RowsAffected;
+    end;
+  except
+    on e: exception do
+    begin
+      result := 0;
+      raise exception.Create(TODataError.Create(501, e.Message));
+    end;
+  end;
 end;
 
 function TODataFiredacQuery.GetDataset: TObject;
@@ -63,8 +117,9 @@ begin
 
     FQuery.Open;
   except
-    on e: Exception do
-      raise Exception.Create(e.message + '<' + FQuery.SQL.Text + '>');
+    on e: exception do
+      raise exception.Create(TODataError.Create(500,
+        e.Message + '<' + FQuery.SQL.Text + '>'));
   end;
 end;
 
