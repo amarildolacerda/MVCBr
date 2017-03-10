@@ -41,7 +41,8 @@ uses
   WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas',
   WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
-  oData.JSON in '..\oData\oData.JSON.pas';
+  oData.JSON in '..\oData\oData.JSON.pas',
+  MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas';
 
 {$R *.res}
 

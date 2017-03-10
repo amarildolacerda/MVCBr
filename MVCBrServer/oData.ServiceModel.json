@@ -8,6 +8,7 @@
       "keyID": "codigo",
       "maxpagesize":100,
       "fields":"produtos.codigo,produtos.nome,produtos.unidade,produtos.precovenda",
+      "method":"GET,PATCH",
       "relations": [
         {
           "resource": "grupos",
@@ -49,6 +50,8 @@
       "resource": "clientes",
       "collection": "sigcad",
       "keyID": "codigo",
+      "method": "GET,POST,PATCH",
+      "searchFields":"nome,cidade,estado",
       "maxpagesize":100,
       "fields":"clientes.codigo,clientes.nome,clientes.ender,clientes.cidade,clientes.estado"
       "relations": [

@@ -59,6 +59,8 @@ function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
 implementation
 
+uses MVCAsyncMiddleware;
+
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 begin
 
@@ -165,6 +167,7 @@ begin
     finally
       FList.UnlockList;
     end;
+  FMVC.AddMiddleware(TMVCAsyncCallBackMiddleware.create);
 end;
 
 function RegisterWSController(const AClass: TMVCControllerClass): integer;

@@ -61,6 +61,7 @@ type
     FResourceParams: IODataDecodeParams;
     FBaseURL: string;
     FGroupBy: string;
+    FSearch: string;
     procedure SetSelect(const Value: string);
     procedure SetFilter(const Value: string);
     procedure SetOrderBy(const Value: string);
@@ -85,6 +86,8 @@ type
     procedure SetBaseURL(const Value: string);
     procedure SetGroupBy(const Value: string);
     function GetGroupBy: string;
+    procedure SetSearch(const Value: string);
+    function GetSearch: string;
   protected
     FChild: IODataDecode;
     FExpandItem: TDictionary<string, IODataDecode>;
@@ -118,6 +121,8 @@ type
     property &Select: string read GetSelect write SetSelect;
     // define filter (aka where)
     property &Filter: string read GetFilter write SetFilter;
+    property &Search:string read GetSearch write SetSearch;
+
     // define orderby
     property &OrderBy: string read GetOrderBy write SetOrderBy;
     // expands relation collections
@@ -323,6 +328,11 @@ begin
   result := FResourceParams;
 end;
 
+function TODataDecode.GetSearch: string;
+begin
+  result := FSearch;
+end;
+
 function TODataDecode.GetSelect: string;
 begin
   result := FSelect;
@@ -388,6 +398,11 @@ end;
   FResourceParams := Value;
   end;
 }
+procedure TODataDecode.SetSearch(const Value: string);
+begin
+  FSearch := Value;
+end;
+
 procedure TODataDecode.SetSelect(const Value: string);
 begin
   FSelect := Value;

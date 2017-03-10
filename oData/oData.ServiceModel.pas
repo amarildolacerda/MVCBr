@@ -9,9 +9,12 @@ unit oData.ServiceModel;
 interface
 
 Uses System.Classes, System.SysUtils, System.JSON, oData.JSON,
+  oData.Interf,
   System.Generics.Collections;
 
 type
+
+
 
   IJsonODataServiceRelation = interface(IJsonObject)
     ['{9AFBD592-E0FE-488F-96E8-44B7551E528C}']
@@ -48,6 +51,8 @@ type
     function collection: string;
     function fields: string;
     function keyID: string;
+    function method:string;
+    function searchFields:string;
     function relations: IJsonODataServiceRelations;
     function maxpagesize: integer;
     function relation(AName: string): IJsonODataServiceRelation;
@@ -61,6 +66,8 @@ type
     function collection: string;
     function fields: string;
     function keyID: string;
+    function method:string;
+    function searchFields:string;
     function maxpagesize: integer;
     function relations: IJsonODataServiceRelations;
     function relation(AName: string): IJsonODataServiceRelation;
@@ -292,6 +299,11 @@ begin
     result := 0;
 end;
 
+function TJsonODastaServiceResource.method: string;
+begin
+  JSON.TryGetValue<string>('method', result);
+end;
+
 class function TJsonODastaServiceResource.New(AJson: TJsonValue)
   : IJsonODastaServiceResource;
 var
@@ -346,6 +358,11 @@ end;
 function TJsonODastaServiceResource.resource: string;
 begin
   JSON.TryGetValue<string>('resource', result);
+end;
+
+function TJsonODastaServiceResource.searchFields: string;
+begin
+  JSON.TryGetValue<string>('searchFields',result);
 end;
 
 { TJsonODataServiceRelation }

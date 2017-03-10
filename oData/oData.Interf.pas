@@ -44,6 +44,8 @@ Type
     procedure SetGroupBy(const Value: string);
     function GetGroupBy: string;
     function GetResourceParams: IODataDecodeParams;
+    procedure SetSearch(const Value: string);
+    function GetSearch: string;
 
     property Resource: string read GetResource write SetResource;
     property ResourceParams: IODataDecodeParams read GetResourceParams;
@@ -61,6 +63,8 @@ Type
     property &Select: string read GetSelect write SetSelect;
     // define filter (aka where)
     property &Filter: string read GetFilter write SetFilter;
+    property &Search:string read GetSearch write SetSearch;
+
     // define orderby
     property &OrderBy: string read GetOrderBy write SetOrderBy;
     property &GroupBy:string read GetGroupBy write SetGroupBy;
@@ -72,7 +76,7 @@ Type
     property &Skip: integer read GetSkip write SetSkip;
     property &Top: integer read GetTop write SetTop;
     property &SkipToken: string read GetSkipToken write SetSkipToken;
-    property &InLineCount: string read GetInLineCount write SetInLineCount;
+    property &Count: string read GetInLineCount write SetInLineCount;
 
 
     function ToString: string;
@@ -95,10 +99,12 @@ Type
 
   IODataDialect = interface
     ['{812DB60E-64D7-4290-99DB-F625EC52C6DA}']
+    function GetResource:IInterface;
     function createQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: boolean = false): string;
-    function createDeleteQuery(oData: IODataDecode; AJson:string): string;
-    function CreatePostQuery(oData: IODataDecode; AJson:string):String;
+    function createDeleteQuery(oData: IODataDecode; AJsonBody:TJsonValue): string;
+    function CreatePostQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
+    function createPATCHQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
   end;
 
   IODataParse = interface
@@ -114,9 +120,10 @@ Type
     procedure DecodeODataURL(CTX: TObject);
     function This: TObject;
 
-    function GetDataset: TObject;
-    function ExecuteDelete(ABody:string):Integer;
+    function GetDataset(var JSONResponse: TJSONObject): TObject;
+    function ExecuteDelete(ABody:string; var JSONResponse: TJSONObject):Integer;
     function ExecutePost(ABody:string;var JSON:TJSONObject):Integer;
+    function ExecutePATCH(ABody:string;var JSON:TJSONObject):Integer;
 
     procedure CreateExpandCollections(AQuery: TObject);
     function Collection: string;

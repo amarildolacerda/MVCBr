@@ -24,7 +24,7 @@ type
     procedure EndsJson(var AJson: TJsonObject);
     // [MVCDoc('Overload Render')]
     procedure RenderA(AJson: TJsonObject);
-    procedure RenderError(ATexto: String);
+    procedure RenderError(CTX: TWebContext;ATexto: String);
   private
     // [MVCDoc('General parse OData URI')]
     procedure GetQueryBase(CTX: TWebContext);
@@ -73,6 +73,16 @@ type
     [MVCDoc('Default method to INSERT OData')]
     procedure POSTCollection1(CTX: TWebContext);
 
+    [MVCHTTPMethod([httpPATCH])]
+    [MVCPath('/OData.svc/($collection)')]
+    [MVCDoc('Default method to PATCH OData')]
+    procedure PATCHCollection1(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpPUT])]
+    [MVCPath('/OData.svc/($collection)')]
+    [MVCDoc('Default method to PATCH OData')]
+    procedure PUTCollection1(CTX: TWebContext);
+
     procedure OnBeforeAction(Context: TWebContext; const AActionName: string;
       var Handled: Boolean); override;
     procedure OnAfterAction(Context: TWebContext;
@@ -104,7 +114,7 @@ procedure TODataController.DeleteCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSON: TJsonObject;
+  JSONResponse: TJsonObject;
   arr: TJsonArray;
   n: integer;
   erro: TJsonObject;
@@ -113,20 +123,20 @@ begin
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
-    JSON := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecuteDelete(CTX.Request.Body);
-    JSON.addPair('@odata.count', n.ToString);
+    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
+    n := FOData.ExecuteDelete(CTX.Request.Body,JSONResponse);
+    JSONResponse.addPair('@odata.count', n.ToString);
 
     if n > 0 then
       CTX.Response.StatusCode := 200
     else
       CTX.Response.StatusCode := 304;
 
-    RenderA(JSON);
+    RenderA(JSONResponse);
 
   except
     on e: Exception do
-      RenderError(e.message);
+      RenderError(CTX,e.message);
   end;
 
 end;
@@ -181,11 +191,11 @@ begin
 
 end;
 
-procedure TODataController.POSTCollection1(CTX: TWebContext);
+procedure TODataController.PATCHCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSON: TJsonObject;
+  JSONResponse: TJsonObject;
   arr: TJsonArray;
   n: integer;
   r: string;
@@ -195,21 +205,87 @@ begin
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
-    JSON := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecutePost(CTX.Request.Body, JSON);
+    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
+    n := FOData.ExecutePATCH(CTX.Request.Body, JSONResponse);
 
-    JSON.addPair('@odata.count', n.ToString);
+    JSONResponse.addPair('@odata.count', n.ToString);
 
     if n > 0 then
-      CTX.Response.StatusCode := 200
+      CTX.Response.StatusCode := 201
     else
       CTX.Response.StatusCode := 304;
 
-    RenderA(JSON);
+    RenderA(JSONResponse);
 
   except
     on e: Exception do
-      RenderError(e.message);
+      RenderError(CTX,e.message);
+  end;
+
+end;
+
+procedure TODataController.POSTCollection1(CTX: TWebContext);
+var
+  FOData: IODataBase;
+  FDataset: TDataset;
+  JSONResponse: TJsonObject;
+  arr: TJsonArray;
+  n: integer;
+  r: string;
+  erro: TJsonObject;
+begin
+  try
+    CTX.Response.StatusCode := 500;
+    FOData := ODataBase.create();
+    FOData.DecodeODataURL(CTX);
+    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
+    n := FOData.ExecutePost(CTX.Request.Body, JSONResponse);
+
+    JSONResponse.addPair('@odata.count', n.ToString);
+
+    if n > 0 then
+      CTX.Response.StatusCode := 201
+    else
+      CTX.Response.StatusCode := 304;
+
+    RenderA(JSONResponse);
+
+  except
+    on e: Exception do
+      RenderError(CTX,e.message);
+  end;
+
+end;
+
+procedure TODataController.PUTCollection1(CTX: TWebContext);
+var
+  FOData: IODataBase;
+  FDataset: TDataset;
+  JSONResponse: TJsonObject;
+  arr: TJsonArray;
+  n: integer;
+  r: string;
+  erro: TJsonObject;
+begin
+  try
+    CTX.Response.StatusCode := 500;
+    FOData := ODataBase.create();
+    FOData.DecodeODataURL(CTX);
+    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
+    n := FOData.ExecutePATCH(CTX.Request.Body, JSONResponse);
+
+    JSONResponse.addPair('@odata.count', n.ToString);
+
+    if n > 0 then
+      CTX.Response.StatusCode := 201
+    else
+      CTX.Response.StatusCode := 304;
+
+    RenderA(JSONResponse);
+
+  except
+    on e: Exception do
+      RenderError(CTX,e.message);
   end;
 
 end;
@@ -223,7 +299,7 @@ procedure TODataController.GetQueryBase(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSON: TJsonObject;
+  JSONResponse: TJsonObject;
   arr: TJsonArray;
   n: integer;
   erro: TJsonObject;
@@ -231,32 +307,32 @@ begin
   try
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
-    JSON := CreateJson(CTX, CTX.Request.PathInfo);
-    FDataset := TDataset(FOData.getDataSet);
+    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
+    FDataset := TDataset(FOData.getDataSet(JSONResponse));
     FDataset.first;
     arr := TJsonArray.create;
     Mapper.DataSetToJSONArray(FDataset, arr, False);
     if assigned(arr) then
     begin
-      JSON.addPair('value', arr);
+      JSONResponse.addPair('value', arr);
       // JSON.addPair('__collection', FOData.Collection);
     end;
     if FOData.inLineRecordCount < 0 then
       FOData.inLineRecordCount := FDataset.RecordCount;
-    JSON.addPair('@odata.count', FOData.inLineRecordCount.ToString);
+    JSONResponse.addPair('@odata.count', FOData.inLineRecordCount.ToString);
     if FOData.GetParse.oData.Top > 0 then
-      JSON.addPair('@odata.top', FOData.GetParse.oData.Top.ToString);
+      JSONResponse.addPair('@odata.top', FOData.GetParse.oData.Top.ToString);
     if FOData.GetParse.oData.Skip > 0 then
-      JSON.addPair('@odata.skip', FOData.GetParse.oData.Skip.ToString);
+      JSONResponse.addPair('@odata.skip', FOData.GetParse.oData.Skip.ToString);
 
-    RenderA(JSON);
+    RenderA(JSONResponse);
   except
     on e: Exception do
     begin
       freeAndNil(FDataset);
-      freeAndNil(JSON);
+      freeAndNil(JSONResponse);
       CTX.Response.StatusCode := 501;
-      RenderError(e.message);
+      RenderError(CTX,e.message);
     end;
   end;
 end;
@@ -282,18 +358,23 @@ begin
   render(AJson);
 end;
 
-procedure TODataController.RenderError(ATexto: String);
+procedure TODataController.RenderError(CTX: TWebContext;ATexto: String);
 var
   n: integer;
   js: TJsonObject;
 begin
-  n := pos('{', ATexto);
-  if n > 0 then
+  if ATexto.StartsWith('{') then
   begin
-    js := TJsonObject.ParseJSONValue(copy(ATexto, n + 1, length(ATexto)))
+    js := TJsonObject.ParseJSONValue(ATexto)
       as TJsonObject;
     if assigned(js) then
     begin
+     try
+      js.GetValue('error').TryGetValue<integer>('code',n);
+      if n>0 then
+         CTX.Response.StatusCode  := n;
+     except
+     end;
       render(js);
       exit;
     end;

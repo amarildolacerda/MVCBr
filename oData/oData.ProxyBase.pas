@@ -25,9 +25,10 @@ type
     FInLineRecordCount: integer;
     function This: TObject;
 
-    function GetDataset: TObject; virtual;
-    function ExecuteDelete(ABody:string):Integer;virtual;
+    function GetDataset(var JSONResponse: TJSONObject): TObject; virtual;
+    function ExecuteDelete(ABody:string; var JSONResponse: TJSONObject):Integer;virtual;
     function ExecutePost(ABody:string; var JSON:TJsonObject):Integer;virtual;
+    function ExecutePATCH(ABody:string;var JSON:TJSONObject):Integer;virtual;
 
     procedure CreateExpandCollections(AQuery: TObject); virtual;
 
@@ -84,9 +85,14 @@ begin
 end;
 
 
-function TODataBase.ExecuteDelete(ABody:string): Integer;
+function TODataBase.ExecuteDelete(ABody:string; var JSONResponse: TJSONObject): Integer;
 begin
    result := 0;
+end;
+
+function TODataBase.ExecutePATCH(ABody: string; var JSON: TJSONObject): Integer;
+begin
+  result := 0;
 end;
 
 function TODataBase.ExecutePost(ABody: string;var JSON:TJSONObject): Integer;
@@ -99,7 +105,7 @@ begin
   result := ODataServices.resource(AName).Collection;
 end;
 
-function TODataBase.GetDataset: TObject;
+function TODataBase.GetDataset(var JSONResponse: TJSONObject): TObject;
 begin
   result := nil;
 end;

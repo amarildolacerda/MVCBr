@@ -22,9 +22,12 @@ type
     destructor destroy; override;
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
-    function GetDataset: TObject; override;
-    function ExecuteDelete(ABody: string): Integer; override;
-    function ExecutePost(ABody: string; var JSON: TJSONObject)
+    function GetDataset(var JSONResponse: TJSONObject): TObject; override;
+    function ExecuteDelete(ABody: string; var JSONResponse: TJSONObject)
+      : Integer; override;
+    function ExecutePost(ABody: string; var JSONResponse: TJSONObject)
+      : Integer; override;
+    function ExecutePATCH(ABody: string; var JSONResponse: TJSONObject)
       : Integer; override;
 
     procedure CreateExpandCollections(AQuery: TObject); override;
@@ -33,7 +36,7 @@ type
 
 implementation
 
-uses oData.JSON, oData.engine;
+uses idURI, oData.JSON, oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -48,7 +51,8 @@ begin
   inherited;
 end;
 
-function TODataFiredacQuery.ExecuteDelete(ABody: string): Integer;
+function TODataFiredacQuery.ExecuteDelete(ABody: string;
+  var JSONResponse: TJSONObject): Integer;
 var
   AJson: string;
   js: IJsonObject;
@@ -72,7 +76,7 @@ begin
     begin
       for ji in js.AsArray do
       begin
-        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji.ToJSON);
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji);
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -80,7 +84,7 @@ begin
     end
     else
     begin
-      FQuery.SQL.Text := CreateDeleteQuery(FODataParse, AJson);
+      FQuery.SQL.Text := CreateDeleteQuery(FODataParse, js.JsonValue);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -88,7 +92,10 @@ begin
     on e: exception do
     begin
       result := 0;
-      raise exception.Create(TODataError.Create(501, e.Message));
+      if e.Message.StartsWith('{') then
+        raise
+      else
+        raise exception.Create(TODataError.Create(501, e.Message));
     end;
   end;
 end;
@@ -103,8 +110,8 @@ end;
 
 
 }
-function TODataFiredacQuery.ExecutePost(ABody: string;
-  var JSON: TJSONObject): Integer;
+function TODataFiredacQuery.ExecutePATCH(ABody: string;
+  var JSONResponse: TJSONObject): Integer;
 var
   AJson: string;
   js: IJsonObject;
@@ -128,7 +135,7 @@ begin
     begin
       for ji in js.AsArray do
       begin
-        FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji.ToJSON);
+        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji);
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -136,7 +143,7 @@ begin
     end
     else
     begin
-      FQuery.SQL.Text := CreatePOSTQuery(FODataParse, AJson);
+      FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -144,12 +151,64 @@ begin
     on e: exception do
     begin
       result := 0;
-      raise exception.Create(TODataError.Create(501, e.Message));
+      if e.Message.StartsWith('{') then
+        raise
+      else
+        raise exception.Create(TODataError.Create(501, e.Message));
     end;
   end;
 end;
 
-function TODataFiredacQuery.GetDataset: TObject;
+function TODataFiredacQuery.ExecutePost(ABody: string;
+  var JSONResponse: TJSONObject): Integer;
+var
+  AJson: string;
+  js: IJsonObject;
+  isArray: boolean;
+  ji: TJsonValue;
+begin
+  inherited;
+  isArray := false;
+  AJson := ABody;
+  if ABody <> '' then
+  begin
+    js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
+    isArray := js.JSON is TJsonArray;
+  end;
+
+  result := 0;
+  freeAndNil(FQuery);
+  FQuery := QueryClass.Create(nil) as TFdQuery;
+  try
+    if isArray then
+    begin
+      for ji in js.AsArray do
+      begin
+        FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji);
+        FQuery.ExecSQL;
+        result := result + FQuery.RowsAffected;
+      end;
+
+    end
+    else
+    begin
+      FQuery.SQL.Text := CreatePOSTQuery(FODataParse, js.JsonValue);
+      FQuery.ExecSQL;
+      result := result + FQuery.RowsAffected;
+    end;
+  except
+    on e: exception do
+    begin
+      result := 0;
+      if e.Message.StartsWith('{') then
+        raise
+      else
+        raise exception.Create(TODataError.Create(501, e.Message));
+    end;
+  end;
+end;
+
+function TODataFiredacQuery.GetDataset(var JSONResponse: TJSONObject): TObject;
 begin
   InLineRecordCount := -1;
   freeAndNil(FQuery);
@@ -158,7 +217,7 @@ begin
   result := FQuery;
 
   try
-    if (FODataParse.oData.InLineCount = 'allpages') and
+    if (FODataParse.oData.count = 'true') and
       ((FODataParse.oData.Skip > 0) or (FODataParse.oData.Top > 0)) then
     begin
       FQuery.SQL.Text := CreateQuery(FODataParse, true);
@@ -169,16 +228,24 @@ begin
 
     FQuery.SQL.Text := CreateQuery(FODataParse);
 
+    if FODataParse.oData.Search <> '' then
+    begin
+      FQuery.Filter := createSearchFields(FODataParse,FODataParse.oData.Search,   FResource.searchFields );
+      FQuery.Filtered := FQuery.Filter<>'';
+    end;
+
     // criar NextedDataset -   $expand  command
     if (FODataParse.oData.Expand <> '') and
-      (not(FODataParse.oData.InLineCount = 'allpages')) then
+      (not(FODataParse.oData.count = 'true')) then
       CreateExpandCollections(FQuery);
 
     FQuery.Open;
   except
     on e: exception do
-      raise exception.Create(TODataError.Create(500,
-        e.Message + '<' + FQuery.SQL.Text + '>'));
+      if e.Message.StartsWith('{') then
+        raise
+      else
+        raise exception.Create(TODataError.Create(501, e.Message));
   end;
 end;
 

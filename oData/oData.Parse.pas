@@ -1,9 +1,9 @@
-{//************************************************************//}
-{//         Projeto MVCBr                                      //}
-{//         tireideletra.com.br  / amarildo lacerda            //}
-{//************************************************************//}
-{// Data: 03/03/2017                                           //}
-{//************************************************************//}
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit oData.Parse;
 
 interface
@@ -15,8 +15,9 @@ type
 
   TTokenKind = (ptNone, ptIdentifier, ptNull, ptQuotation, ptSpace, ptComma,
     ptSlash, ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
+    ptSearch,
     ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand, ptInLineCount,
-    ptGroupBy, ptOperNe { not equal } , ptOperLt { less than } ,
+    ptCount, ptGroupBy, ptOperNe { not equal } , ptOperLt { less than } ,
     ptOperLe { less equal } , ptOperGe { greater or equal } ,
     ptOperGt { greater than } , ptOperAnd { and } , ptOperOr { or } ,
     ptOperNot { not } , ptOperAdd { add } , ptOperSub { subtract } ,
@@ -338,6 +339,10 @@ begin
   result := stringReplace(result, ' ge ', ' >= ', [rfReplaceAll]);
   result := stringReplace(result, ' le ', ' <= ', [rfReplaceAll]);
   result := stringReplace(result, ' eq ', ' = ', [rfReplaceAll]);
+  result := stringReplace(result, ' mul ', ' * ', [rfReplaceAll]);
+  result := stringReplace(result, ' div ', ' / ', [rfReplaceAll]);
+  result := stringReplace(result, ' sub ', ' - ', [rfReplaceAll]);
+  result := stringReplace(result, ' add ', ' + ', [rfReplaceAll]);
 end;
 
 procedure TODataParse.ParseCollections;
@@ -402,6 +407,8 @@ begin
           oData.Select := k;
         ptFilter:
           oData.Filter := k;
+        ptSearch:
+          oData.Search := k;
         ptOrderBy:
           oData.OrderBy := k;
         ptTop:
@@ -411,7 +418,11 @@ begin
         ptSkipToken:
           oData.SkipToken := k;
         ptInLineCount:
-          oData.InLineCount := k;
+          if sametext(k, 'allpages') then
+            oData.count := 'true';
+        ptCount:
+          if sametext(k, 'true') then
+            oData.count := 'true'; // compatibilidade versão V2 com V4
         ptExpand:
           oData.Expand := k;
       end;
@@ -505,13 +516,13 @@ Loop1:
       if toToken(token) = ptQuotation then
       begin
         isQuotation := true;
-        NextToken(true,[ptQuotation]);
+        NextToken(true, [ptQuotation]);
       end;
 
       if FCurrentOData.ResourceParams.count > 0 then
       begin
 
-        if toToken(token) in [ptComma,ptOperAnd, ptOperOr] then
+        if toToken(token) in [ptComma, ptOperAnd, ptOperOr] then
         begin
           if toToken(token) in [ptComma] then
             AOperatorLink := ' and '
@@ -637,12 +648,14 @@ FTokenKindArray.Add('ne', ptOperNe);
 FTokenKindArray.Add('gt', ptOperGt);
 FTokenKindArray.Add('ge', ptOperGe);
 FTokenKindArray.Add('$filter', ptFilter);
+FTokenKindArray.Add('$search', ptSearch);
 FTokenKindArray.Add('$select', ptSelect);
 FTokenKindArray.Add('$orderby', ptOrderBy);
 FTokenKindArray.Add('$top', ptTop);
 FTokenKindArray.Add('$skip', ptSkip);
 FTokenKindArray.Add('$skiptoken', ptSkipToken);
 FTokenKindArray.Add('$inlinecount', ptInLineCount);
+FTokenKindArray.Add('$count', ptCount);
 FTokenKindArray.Add('$expand', ptExpand);
 FTokenKindArray.Add('groupby', ptGroupBy);
 FTokenKindArray.Add('''', ptQuotation);

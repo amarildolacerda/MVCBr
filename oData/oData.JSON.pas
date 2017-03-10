@@ -17,6 +17,7 @@ type
     function JSON: TJsonValue;
     function AsArray: TJsonArray;
     function JSONObject: TJSONObject;
+    function JsonValue:TJsonValue;
   end;
 
 
@@ -33,6 +34,8 @@ type
     function JSONObject: TJSONObject;
     function JSON: TJsonValue;
     function AsArray: TJsonArray;
+    function JsonValue:TJsonValue;
+
     class function GetJsonType(AJsonValue: TJsonValue): TJsonType;overload; static;
     class function GetJsonType(AJsonValue: TJsonPair): TJsonType;overload; static;
   end;
@@ -103,6 +106,11 @@ end;
 function TInterfacedJsonObject.JSONObject: TJSONObject;
 begin
   Result := FJson as TJSONObject;
+end;
+
+function TInterfacedJsonObject.JsonValue: TJsonValue;
+begin
+   result:= FJson;
 end;
 
 class function TInterfacedJsonObject.New(AJson: TJsonValue;
