@@ -44,6 +44,7 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 //uses FireDAC.Adpt;
+uses System.SyncObjs;
 
 {$R *.dfm}
 
@@ -52,11 +53,17 @@ begin
 
 end;
 
+
 { TFDQueryAuto }
+var LQueryCount:Integer=0;
 constructor TFDQueryAuto.create(AOwner: TComponent);
 begin
   inherited;
   ConnectionName := 'MVCBr_Firebird';
+  TInterlocked.Add(LQueryCount,0);
+
+  name := '__query__'+LQueryCount.ToString;
+  Connection := FDManager.AcquireConnection(ConnectionName,name);
 end;
 
 end.

@@ -59,7 +59,7 @@ function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
 implementation
 
-uses MVCAsyncMiddleware;
+uses MVCAsyncMiddleware, MVCgzipMiddleware;
 
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 begin
@@ -167,6 +167,7 @@ begin
     finally
       FList.UnlockList;
     end;
+  FMVC.AddMiddleware(TMVCgzipCallBackMiddleware.create);
   FMVC.AddMiddleware(TMVCAsyncCallBackMiddleware.create);
 end;
 

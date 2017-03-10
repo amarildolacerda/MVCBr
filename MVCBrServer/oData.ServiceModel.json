@@ -29,6 +29,7 @@
       "collection": "ctgrupo",
       "keyID": "grupo",
       "fields": "grupos.grupo,grupos.nome",
+      "method":"GET,PATCH,DELETE,PUT,POST",
       "maxpagesize":100,
       "relations": [
         {

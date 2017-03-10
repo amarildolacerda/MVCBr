@@ -1,8 +1,8 @@
 {
-   Amarildo Lacerda - 09/03/2017
-   MVCBr
+  Amarildo Lacerda - 09/03/2017
+  MVCBr
 
-   #compartilhandoconhecimento #wba10anos
+  #compartilhandoconhecimento #wba10anos
 
 }
 unit MVCAsyncMiddleware;
@@ -43,7 +43,8 @@ type
   end;
 
 var
-  MVCCallBack_FieldName: string = '__callback'; // can change to fit owner callback name
+  MVCCallBack_FieldName: string = '__callback';
+  // can change to fit owner callback name
 
 implementation
 

@@ -9,8 +9,14 @@ unit oData.Dialect;
 interface
 
 uses System.Classes, System.SysUtils, oData.ServiceModel,
-  System.JSON,
+  System.JSON, System.Generics.Collections,
   oData.JSON, oData.Interf;
+
+const
+  cODataRowState = 'rowstate';
+  cODataModified = 'modified';
+  cODataDeleted = 'deleted';
+  cODataInserted = 'inserted';
 
 Type
 
@@ -19,8 +25,9 @@ Type
   protected
     FResource: IJsonODastaServiceResource;
     FCollection: string;
+    FResourceName: string;
     FOData: IODataDecode;
-    function GetResource:IInterface;overload;
+    function GetResource: IInterface; overload;
     function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue)
       : string; virtual;
     function createQuery(oData: IODataDecode; AFilter: string;
@@ -46,8 +53,8 @@ Type
     procedure &or(var Result: string); virtual;
   public
     function Collection: string; virtual;
-    function GetResource(AResource: string)
-      : IJsonODastaServiceResource; overload;virtual;
+    function GetResource(AResource: string): IJsonODastaServiceResource;
+      overload; virtual;
     function Relation(AResource: string; ARelation: String)
       : IJsonObject; virtual;
     function GetWhereFromJson(const AJson: TJsonValue): String; virtual;
@@ -58,6 +65,15 @@ Type
   end;
 
   TODataDialectClass = class of TODataDialect;
+
+  TODataIgnoreColumns = class(TStringList)
+  public
+    procedure AddItem(AResource: string; AColumnName: string);
+    function IndexOfItem(AResource: string; AColumnName: string): integer;
+  end;
+
+var
+  ODataIgnoreColumns: TODataIgnoreColumns;
 
 implementation
 
@@ -90,6 +106,8 @@ begin
   params := '';
   for p in js.JSONObject do
   begin
+    if (p.JsonString.Value = cODataRowState) or (ODataIgnoreColumns.IndexOfItem(FResourceName,p.JsonString.Value)>=0) then
+      continue;
     if cols <> '' then
     begin
       cols := cols + ',';
@@ -110,16 +128,17 @@ end;
 
 function TODataDialect.GetResource: IInterface;
 begin
-   result := FResource;
+  Result := FResource;
 end;
 
 function TODataDialect.GetResource(AResource: string)
   : IJsonODastaServiceResource;
 begin
-   Result := ODataServices.resource(AResource);
+  Result := ODataServices.resource(AResource);
   if not assigned(Result) then
     raise Exception.Create('Serviço não disponível para o resource: ' +
       AResource);
+  FResourceName := AResource;
 end;
 
 function TODataDialect.GetUpdateFromJson(AJson: TJsonValue): string;
@@ -130,12 +149,14 @@ var
 begin
   Result := '';
   js := TInterfacedJsonObject.New(AJson as TJSONObject, false);
-  if (not assigned(AJson))  then
+  if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar UPDATE'));
   cols := '';
   for p in js.JSONObject do
   begin
+    if (p.JsonString.Value = cODataRowState) or (ODataIgnoreColumns.IndexOfItem(FResourceName,p.JsonString.Value)>=0) then
+      continue;
     if cols <> '' then
     begin
       cols := cols + ',';
@@ -157,12 +178,16 @@ var
   p: TJsonPair;
 begin
   Result := '';
+  if AJson=nil then exit;
+
   js := TInterfacedJsonObject.New(AJson as TJSONObject, false);
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar Where'));
   for p in js.JSONObject do
   begin
+    if (p.JsonString.Value = cODataRowState) or (ODataIgnoreColumns.IndexOfItem(FResourceName,p.JsonString.Value)>=0) then
+      continue;
     if Result <> '' then
       Result := Result + ' and ';
     case TInterfacedJsonObject.GetJsonType(p) of
@@ -438,7 +463,7 @@ begin
   Result := 'delete from ' + AResource.Collection;
   FWhere := oData.Filter;
 
-  if not assigned(AJson) then
+  if assigned(AJson) then
   begin
     FWhere2 := GetWhereFromJson(AJson);
     if FWhere2 <> '' then
@@ -615,5 +640,26 @@ begin
   // mysql/firebird
   Result := ' Limit ';
 end;
+
+{ TODataIgnoreColumns }
+
+procedure TODataIgnoreColumns.AddItem(AResource, AColumnName: string);
+begin
+  add(AResource + '.' + AColumnName);
+end;
+
+function TODataIgnoreColumns.IndexOfItem(AResource,
+  AColumnName: string): integer;
+begin
+  Result := IndexOf(AResource + '.' + AColumnName);
+end;
+
+initialization
+
+ODataIgnoreColumns := TODataIgnoreColumns.create;
+
+finalization
+
+ODataIgnoreColumns.Free;
 
 end.

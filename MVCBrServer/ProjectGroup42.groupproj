@@ -1,12 +1,12 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{748F1761-8024-4AAD-83E7-988D3C6BA1F2}</ProjectGuid>
+        <ProjectGuid>{CB6BDF31-91E2-4E37-8520-46C8DB7663F5}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="MVCBrServer.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="Test\MVCBrServerTests.dproj">
+        <Projects Include="..\..\RestServer\RestServerService.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -26,23 +26,23 @@
     <Target Name="MVCBrServer:Make">
         <MSBuild Projects="MVCBrServer.dproj" Targets="Make"/>
     </Target>
-    <Target Name="MVCBrServerTests">
-        <MSBuild Projects="Test\MVCBrServerTests.dproj"/>
+    <Target Name="RestServerService">
+        <MSBuild Projects="..\..\RestServer\RestServerService.dproj"/>
     </Target>
-    <Target Name="MVCBrServerTests:Clean">
-        <MSBuild Projects="Test\MVCBrServerTests.dproj" Targets="Clean"/>
+    <Target Name="RestServerService:Clean">
+        <MSBuild Projects="..\..\RestServer\RestServerService.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="MVCBrServerTests:Make">
-        <MSBuild Projects="Test\MVCBrServerTests.dproj" Targets="Make"/>
+    <Target Name="RestServerService:Make">
+        <MSBuild Projects="..\..\RestServer\RestServerService.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrServer;MVCBrServerTests"/>
+        <CallTarget Targets="MVCBrServer;RestServerService"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrServer:Clean;MVCBrServerTests:Clean"/>
+        <CallTarget Targets="MVCBrServer:Clean;RestServerService:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrServer:Make;MVCBrServerTests:Make"/>
+        <CallTarget Targets="MVCBrServer:Make;RestServerService:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

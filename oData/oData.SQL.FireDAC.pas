@@ -71,6 +71,7 @@ begin
   result := 0;
   freeAndNil(FQuery);
   FQuery := QueryClass.Create(nil) as TFdQuery;
+  FQuery.Connection.StartTransaction;
   try
     if isArray then
     begin
@@ -84,13 +85,18 @@ begin
     end
     else
     begin
-      FQuery.SQL.Text := CreateDeleteQuery(FODataParse, js.JsonValue);
+      if js = nil then
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, nil)
+      else
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, js.JsonValue);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
+    FQuery.Connection.Commit;
   except
     on e: exception do
     begin
+      FQuery.Connection.Rollback;
       result := 0;
       if e.Message.StartsWith('{') then
         raise
@@ -114,6 +120,7 @@ function TODataFiredacQuery.ExecutePATCH(ABody: string;
   var JSONResponse: TJSONObject): Integer;
 var
   AJson: string;
+  jo: TJsonValue;
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
@@ -123,13 +130,18 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
-    isArray := js.JSON is TJsonArray;
+    jo := TJSONObject.ParseJSONValue(ABody);
+    if assigned(jo) then
+    begin
+      js := TInterfacedJsonObject.New(jo, false);
+      isArray := js.JSON is TJsonArray;
+    end;
   end;
 
   result := 0;
   freeAndNil(FQuery);
   FQuery := QueryClass.Create(nil) as TFdQuery;
+  FQuery.Connection.StartTransaction;
   try
     if isArray then
     begin
@@ -147,9 +159,11 @@ begin
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
+    FQuery.Connection.Commit;
   except
     on e: exception do
     begin
+      FQuery.Connection.Rollback;
       result := 0;
       if e.Message.StartsWith('{') then
         raise
@@ -179,7 +193,9 @@ begin
   result := 0;
   freeAndNil(FQuery);
   FQuery := QueryClass.Create(nil) as TFdQuery;
+  FQuery.Connection.StartTransaction;
   try
+
     if isArray then
     begin
       for ji in js.AsArray do
@@ -196,9 +212,11 @@ begin
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
+    FQuery.Connection.Commit;
   except
     on e: exception do
     begin
+      FQuery.Connection.Rollback;
       result := 0;
       if e.Message.StartsWith('{') then
         raise
@@ -230,8 +248,9 @@ begin
 
     if FODataParse.oData.Search <> '' then
     begin
-      FQuery.Filter := createSearchFields(FODataParse,FODataParse.oData.Search,   FResource.searchFields );
-      FQuery.Filtered := FQuery.Filter<>'';
+      FQuery.Filter := createSearchFields(FODataParse, FODataParse.oData.Search,
+        FResource.searchFields);
+      FQuery.Filtered := FQuery.Filter <> '';
     end;
 
     // criar NextedDataset -   $expand  command

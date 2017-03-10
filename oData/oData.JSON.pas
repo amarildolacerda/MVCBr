@@ -50,6 +50,7 @@ class function TInterfacedJsonObject.GetJsonType(AJsonValue: TJsonValue): TJsonT
 var
   LJsonString: TJSONString;
 begin
+
   if AJsonValue is TJSONObject then
     Result := jtObject
   else if AJsonValue is TJsonArray then
