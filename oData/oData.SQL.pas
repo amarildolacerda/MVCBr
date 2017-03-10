@@ -67,15 +67,20 @@ function TODataSQL.CreatePATCHQuery(FParse: IODataParse;
 var
   LJson: IJsonObject;
   LRowState: string;
+const
+   cRowState = 'rowstate';
+   cModified = 'modified';
+   cDeleted = 'deleted';
+   cInserted = 'inserted';
 begin
   LJson := TInterfacedJsonObject.New(AJsonBody);
-  if LJson.JsonObject.TryGetValue<string>('RowState', LRowState) then
+  if LJson.JsonObject.TryGetValue<string>(cRowState, LRowState) then
   begin
-    if sametext(LRowState, 'Modified') then
+    if LRowState = cModified then
       result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody)
-    else if sametext(LRowState, 'Deleted') then
+    else if LRowState = cDeleted then
       result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody)
-    else if sametext(LRowState, 'Inserted') then
+    else if LRowState = cInserted then
       result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody)
     else
       raise Exception.Create(tODataError.Create(500, 'RowState inválido'));
