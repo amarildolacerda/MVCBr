@@ -27,6 +27,8 @@ type
     Procedure DoQueryClose(const APageView: IPageView;
       var ACanClose: boolean); override;
     procedure SetActivePage(Const Tab: TObject); override;
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
+
 
   public
     class function New(AController: IController): IPageViews;
@@ -200,6 +202,13 @@ begin
   result := Tab;
   if assigned(FAfterTabCreate) then
     FAfterTabCreate(Tab);
+end;
+
+procedure TVCLPageViewManager.Notification(AComponent: TComponent;
+  AOperation: TOperation);
+begin
+  inherited;
+
 end;
 
 procedure TVCLPageViewManager.SetActivePage(const Tab: TObject);

@@ -333,6 +333,9 @@ end;
 
 class function TODataParse.OperatorToString(txt: String): string;
 begin
+  result := '';
+  if txt='' then exit;
+  
   result := stringReplace(txt, ' lt ', ' < ', [rfReplaceAll]);
   result := stringReplace(result, ' ne ', ' <> ', [rfReplaceAll]);
   result := stringReplace(result, ' gt ', ' > ', [rfReplaceAll]);

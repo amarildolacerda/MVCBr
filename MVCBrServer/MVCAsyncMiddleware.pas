@@ -42,8 +42,13 @@ type
       const aActionName: string; const Handled: Boolean);
   end;
 
+  TMVCContinueBool = Boolean;
+
 var
   MVCCallBack_FieldName: string = '__callback';
+  MVCBeforeControllerAction: TFunc<TWebContext, TMVCContinueBool>;
+  MVCBeforeControllerRouting: TFunc<TWebContext, TMVCContinueBool>;
+  MVCAfterControllerAction: TFunc<TWebContext, TMVCContinueBool>;
   // can change to fit owner callback name
 
 implementation
@@ -65,18 +70,29 @@ begin
     Context.Response.RawWebResponse.ContentLength :=
       length(Context.Response.RawWebResponse.Content);
   end;
+  if assigned(MVCAfterControllerAction) then
+  begin
+    MVCAfterControllerAction(Context);
+  end;
 end;
 
 procedure TMVCAsyncCallBackMiddleware.OnBeforeControllerAction
   (Context: TWebContext; const AControllerQualifiedClassName,
   aActionName: string; var Handled: Boolean);
 begin
-
+  if assigned(MVCBeforeControllerAction) then
+  begin
+    Handled := not MVCBeforeControllerAction(Context);
+  end;
 end;
 
 procedure TMVCAsyncCallBackMiddleware.OnBeforeRouting(Context: TWebContext;
   var Handled: Boolean);
 begin
+  if assigned(MVCBeforeControllerRouting) then
+  begin
+    Handled := not MVCBeforeControllerRouting(Context);
+  end;
 
 end;
 

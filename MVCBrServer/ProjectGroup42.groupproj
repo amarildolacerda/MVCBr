@@ -9,6 +9,21 @@
         <Projects Include="..\..\RestServer\RestServerService.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project27.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\package\MVCBrVCL.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\package\MVCBrFireDAC.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\package\MVCBrOData.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\acbr2015\Pacotes\Delphi\ACBrSerial\ACBr_Serial.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -35,14 +50,59 @@
     <Target Name="RestServerService:Make">
         <MSBuild Projects="..\..\RestServer\RestServerService.dproj" Targets="Make"/>
     </Target>
+    <Target Name="Project27">
+        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project27.dproj"/>
+    </Target>
+    <Target Name="Project27:Clean">
+        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project27.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="Project27:Make">
+        <MSBuild Projects="C:\Users\amari\Documents\Embarcadero\Studio\Projects\Project27.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrVCL">
+        <MSBuild Projects="..\package\MVCBrVCL.dproj"/>
+    </Target>
+    <Target Name="MVCBrVCL:Clean">
+        <MSBuild Projects="..\package\MVCBrVCL.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrVCL:Make">
+        <MSBuild Projects="..\package\MVCBrVCL.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrFireDAC">
+        <MSBuild Projects="..\package\MVCBrFireDAC.dproj"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Clean">
+        <MSBuild Projects="..\package\MVCBrFireDAC.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Make">
+        <MSBuild Projects="..\package\MVCBrFireDAC.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrOData">
+        <MSBuild Projects="..\package\MVCBrOData.dproj"/>
+    </Target>
+    <Target Name="MVCBrOData:Clean">
+        <MSBuild Projects="..\package\MVCBrOData.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrOData:Make">
+        <MSBuild Projects="..\package\MVCBrOData.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ACBr_Serial">
+        <MSBuild Projects="..\..\acbr2015\Pacotes\Delphi\ACBrSerial\ACBr_Serial.dproj"/>
+    </Target>
+    <Target Name="ACBr_Serial:Clean">
+        <MSBuild Projects="..\..\acbr2015\Pacotes\Delphi\ACBrSerial\ACBr_Serial.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ACBr_Serial:Make">
+        <MSBuild Projects="..\..\acbr2015\Pacotes\Delphi\ACBrSerial\ACBr_Serial.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrServer;RestServerService"/>
+        <CallTarget Targets="MVCBrServer;RestServerService;Project27;MVCBrVCL;MVCBrFireDAC;MVCBrOData;ACBr_Serial"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrServer:Clean;RestServerService:Clean"/>
+        <CallTarget Targets="MVCBrServer:Clean;RestServerService:Clean;Project27:Clean;MVCBrVCL:Clean;MVCBrFireDAC:Clean;MVCBrOData:Clean;ACBr_Serial:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrServer:Make;RestServerService:Make"/>
+        <CallTarget Targets="MVCBrServer:Make;RestServerService:Make;Project27:Make;MVCBrVCL:Make;MVCBrFireDAC:Make;MVCBrOData:Make;ACBr_Serial:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

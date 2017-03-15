@@ -9,7 +9,7 @@ unit oData.Engine;
 interface
 
 uses System.Classes, System.SysUtils, System.Generics.Collections,
-  oData.Collections,
+  oData.Collections, IdURI,
   oData.Interf;
 
 type
@@ -269,7 +269,7 @@ end;
 
 function TODataDecode.GetFilter: string;
 begin
-  result := FFilter;
+  result := TIdURI.URLDecode( FFilter );
 end;
 
 function TODataDecode.GetFormat: string;
@@ -279,7 +279,7 @@ end;
 
 function TODataDecode.GetGroupBy: string;
 begin
-  result := FGroupBy;
+  result := TIdURI.URLDecode(FGroupBy);
 end;
 
 function TODataDecode.GetInLineCount: string;
@@ -310,7 +310,7 @@ end;
 
 function TODataDecode.GetOrderBy: string;
 begin
-  result := FOrderBy;
+  result := TIdURI.URLDecode(FOrderBy);
 end;
 
 function TODataDecode.GetParse: IODataParse;
@@ -330,12 +330,12 @@ end;
 
 function TODataDecode.GetSearch: string;
 begin
-  result := FSearch;
+  result := TIdURI.URLDecode(FSearch);
 end;
 
 function TODataDecode.GetSelect: string;
 begin
-  result := FSelect;
+  result := TIdURI.URLDecode(FSelect);
 end;
 
 function TODataDecode.GetSkip: integer;

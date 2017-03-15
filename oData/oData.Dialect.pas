@@ -30,7 +30,7 @@ Type
     function GetResource: IInterface; overload;
     function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue)
       : string; virtual;
-    function createQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
     function CreatePostQuery(oData: IODataDecode; AJson: TJsonValue)
       : String; virtual;
@@ -496,7 +496,7 @@ begin
 
 end;
 
-function TODataDialect.createQuery(oData: IODataDecode; AFilter: string;
+function TODataDialect.createGETQuery(oData: IODataDecode; AFilter: string;
   const AInLineCount: Boolean): string;
 var
   FWhere, FCollectionFinal, FKeys, FFields: string;
@@ -549,6 +549,10 @@ begin
       oData.resource;
     /// monta o select  primeira tabela
     Result := Result + TopCmdAfterFromStmt(ATop, ASkip);
+
+    if FResource.join<>'' then
+      result := result+ ' '+FResource.join;
+
 
     // relations
     child := oData;

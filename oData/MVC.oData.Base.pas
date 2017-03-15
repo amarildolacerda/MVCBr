@@ -24,7 +24,7 @@ type
     procedure EndsJson(var AJson: TJsonObject);
     // [MVCDoc('Overload Render')]
     procedure RenderA(AJson: TJsonObject);
-    procedure RenderError(CTX: TWebContext;ATexto: String);
+    procedure RenderError(CTX: TWebContext; ATexto: String);
   private
     // [MVCDoc('General parse OData URI')]
     procedure GetQueryBase(CTX: TWebContext);
@@ -83,6 +83,11 @@ type
     [MVCDoc('Default method to PATCH OData')]
     procedure PUTCollection1(CTX: TWebContext);
 
+    [MVCHTTPMethod([httpOPTIONS])]
+    [MVCPath('/OData.svc/($collection)')]
+    [MVCDoc('Default method to OPTIONS OData')]
+    procedure OPTIONSCollection1(CTX: TWebContext);
+
     procedure OnBeforeAction(Context: TWebContext; const AActionName: string;
       var Handled: Boolean); override;
     procedure OnAfterAction(Context: TWebContext;
@@ -124,7 +129,7 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecuteDelete(CTX.Request.Body,JSONResponse);
+    n := FOData.ExecuteDELETE(CTX.Request.Body, JSONResponse);
     JSONResponse.addPair('@odata.count', n.ToString);
 
     if n > 0 then
@@ -136,7 +141,7 @@ begin
 
   except
     on e: Exception do
-      RenderError(CTX,e.message);
+      RenderError(CTX, e.message);
   end;
 
 end;
@@ -191,6 +196,30 @@ begin
 
 end;
 
+procedure TODataController.OPTIONSCollection1(CTX: TWebContext);
+var
+  FOData: IODataBase;
+  JSONResponse: TJsonObject;
+  LAllow: string;
+begin
+  try
+    CTX.Response.StatusCode := 200;
+    FOData := ODataBase.create();
+    FOData.DecodeODataURL(CTX);
+    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
+    FOData.ExecuteOPTIONS(JSONResponse);
+    if JSONResponse.TryGetValue<string>('allow', LAllow) then
+    begin
+      CTX.Response.CustomHeaders.Add('Allow=' + LAllow);
+    end;
+    RenderA(JSONResponse);
+  except
+    on e: Exception do
+      RenderError(CTX, e.message);
+
+  end;
+end;
+
 procedure TODataController.PATCHCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
@@ -219,7 +248,7 @@ begin
 
   except
     on e: Exception do
-      RenderError(CTX,e.message);
+      RenderError(CTX, e.message);
   end;
 
 end;
@@ -239,7 +268,7 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecutePost(CTX.Request.Body, JSONResponse);
+    n := FOData.ExecutePOST(CTX.Request.Body, JSONResponse);
 
     JSONResponse.addPair('@odata.count', n.ToString);
 
@@ -252,7 +281,7 @@ begin
 
   except
     on e: Exception do
-      RenderError(CTX,e.message);
+      RenderError(CTX, e.message);
   end;
 
 end;
@@ -285,7 +314,7 @@ begin
 
   except
     on e: Exception do
-      RenderError(CTX,e.message);
+      RenderError(CTX, e.message);
   end;
 
 end;
@@ -303,36 +332,55 @@ var
   arr: TJsonArray;
   n: integer;
   erro: TJsonObject;
+  // jo: TJsonValue;
 begin
   try
-    FOData := ODataBase.create();
-    FOData.DecodeODataURL(CTX);
-    JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    FDataset := TDataset(FOData.getDataSet(JSONResponse));
-    FDataset.first;
-    arr := TJsonArray.create;
-    Mapper.DataSetToJSONArray(FDataset, arr, False);
-    if assigned(arr) then
-    begin
-      JSONResponse.addPair('value', arr);
-      // JSON.addPair('__collection', FOData.Collection);
-    end;
-    if FOData.inLineRecordCount < 0 then
-      FOData.inLineRecordCount := FDataset.RecordCount;
-    JSONResponse.addPair('@odata.count', FOData.inLineRecordCount.ToString);
-    if FOData.GetParse.oData.Top > 0 then
-      JSONResponse.addPair('@odata.top', FOData.GetParse.oData.Top.ToString);
-    if FOData.GetParse.oData.Skip > 0 then
-      JSONResponse.addPair('@odata.skip', FOData.GetParse.oData.Skip.ToString);
+    // jo := nil;
+    try
+      (* try
+        if CTX.Request.Body <> '' then
+        jo := TJsonObject.ParseJSONValue(CTX.Request.Body);
+        except
+        end;
+        //if not assigned(jo) then
+        //  jo := TJsonObject.create;
+      *)
+      FOData := ODataBase.create();
+      FOData.DecodeODataURL(CTX);
+      JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
 
-    RenderA(JSONResponse);
+      // for n := 0 to ctx.Request.QueryStringParams.Count-1 do
+      // jo. AddPair(ctx.Request.QueryStringParams.Names[n],CTX.Request.QueryStringParams.ValueFromIndex[n]);
+
+      FDataset := TDataset(FOData.ExecuteGET(nil, JSONResponse));
+      FDataset.first;
+      arr := TJsonArray.create;
+      Mapper.DataSetToJSONArray(FDataset, arr, False);
+      if assigned(arr) then
+      begin
+        JSONResponse.addPair('value', arr);
+        // JSON.addPair('__collection', FOData.Collection);
+      end;
+      if FOData.inLineRecordCount < 0 then
+        FOData.inLineRecordCount := FDataset.RecordCount;
+      JSONResponse.addPair('@odata.count', FOData.inLineRecordCount.ToString);
+      if FOData.GetParse.oData.Top > 0 then
+        JSONResponse.addPair('@odata.top', FOData.GetParse.oData.Top.ToString);
+      if FOData.GetParse.oData.Skip > 0 then
+        JSONResponse.addPair('@odata.skip',
+          FOData.GetParse.oData.Skip.ToString);
+
+      RenderA(JSONResponse);
+    finally
+      // freeAndNil(jo);
+    end;
   except
     on e: Exception do
     begin
       freeAndNil(FDataset);
       freeAndNil(JSONResponse);
       CTX.Response.StatusCode := 501;
-      RenderError(CTX,e.message);
+      RenderError(CTX, e.message);
     end;
   end;
 end;
@@ -358,23 +406,22 @@ begin
   render(AJson);
 end;
 
-procedure TODataController.RenderError(CTX: TWebContext;ATexto: String);
+procedure TODataController.RenderError(CTX: TWebContext; ATexto: String);
 var
   n: integer;
   js: TJsonObject;
 begin
   if ATexto.StartsWith('{') then
   begin
-    js := TJsonObject.ParseJSONValue(ATexto)
-      as TJsonObject;
+    js := TJsonObject.ParseJSONValue(ATexto) as TJsonObject;
     if assigned(js) then
     begin
-     try
-      js.GetValue('error').TryGetValue<integer>('code',n);
-      if n>0 then
-         CTX.Response.StatusCode  := n;
-     except
-     end;
+      try
+        js.GetValue('error').TryGetValue<integer>('code', n);
+        if n > 0 then
+          CTX.Response.StatusCode := n;
+      except
+      end;
       render(js);
       exit;
     end;

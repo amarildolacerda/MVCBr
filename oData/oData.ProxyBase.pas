@@ -25,10 +25,11 @@ type
     FInLineRecordCount: integer;
     function This: TObject;
 
-    function GetDataset(var JSONResponse: TJSONObject): TObject; virtual;
-    function ExecuteDelete(ABody:string; var JSONResponse: TJSONObject):Integer;virtual;
-    function ExecutePost(ABody:string; var JSON:TJsonObject):Integer;virtual;
+    function ExecuteGET(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject; virtual;
+    function ExecuteDELETE(ABody:string; var JSONResponse: TJSONObject):Integer;virtual;
+    function ExecutePOST(ABody:string; var JSON:TJsonObject):Integer;virtual;
     function ExecutePATCH(ABody:string;var JSON:TJSONObject):Integer;virtual;
+    function ExecuteOPTIONS(var JSON:TJSONObject):Integer;virtual;
 
     procedure CreateExpandCollections(AQuery: TObject); virtual;
 
@@ -85,7 +86,7 @@ begin
 end;
 
 
-function TODataBase.ExecuteDelete(ABody:string; var JSONResponse: TJSONObject): Integer;
+function TODataBase.ExecuteDELETE(ABody:string; var JSONResponse: TJSONObject): Integer;
 begin
    result := 0;
 end;
@@ -95,7 +96,7 @@ begin
   result := 0;
 end;
 
-function TODataBase.ExecutePost(ABody: string;var JSON:TJSONObject): Integer;
+function TODataBase.ExecutePOST(ABody: string;var JSON:TJSONObject): Integer;
 begin
    result := 0;
 end;
@@ -105,14 +106,26 @@ begin
   result := ODataServices.resource(AName).Collection;
 end;
 
-function TODataBase.GetDataset(var JSONResponse: TJSONObject): TObject;
+function TODataBase.ExecuteGET(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject;
 begin
   result := nil;
 end;
 
+function TODataBase.ExecuteOPTIONS(var JSON: TJSONObject): Integer;
+var s:string;
+    LResource:IJsonODastaServiceResource;
+begin
+   AdapterAPI.createGETQuery(FODataParse.oData,'',false);
+  LResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
+  s := LResource.method;
+  if s='' then
+     s := 'GET';
+  JSON.AddPair('allow',s);
+end;
+
 function TODataBase.getInLineCount: integer;
 begin
-
+  result := 0;
 end;
 
 function TODataBase.GetInLineRecordCount: integer;

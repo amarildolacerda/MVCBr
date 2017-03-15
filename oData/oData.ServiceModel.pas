@@ -1,9 +1,9 @@
-{//************************************************************//}
-{//         Projeto MVCBr                                      //}
-{//         tireideletra.com.br  / amarildo lacerda            //}
-{//************************************************************//}
-{// Data: 03/03/2017                                           //}
-{//************************************************************//}
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit oData.ServiceModel;
 
 interface
@@ -13,8 +13,6 @@ Uses System.Classes, System.SysUtils, System.JSON, oData.JSON,
   System.Generics.Collections;
 
 type
-
-
 
   IJsonODataServiceRelation = interface(IJsonObject)
     ['{9AFBD592-E0FE-488F-96E8-44B7551E528C}']
@@ -49,13 +47,14 @@ type
     ['{F78C1EEF-24B4-49CD-BA33-0BEB7F7F98F9}']
     function resource: string;
     function collection: string;
-    function fields: string;
+    function &fields: string;
     function keyID: string;
-    function method:string;
-    function searchFields:string;
+    function method: string;
+    function searchFields: string;
     function relations: IJsonODataServiceRelations;
     function maxpagesize: integer;
     function relation(AName: string): IJsonODataServiceRelation;
+    function &join: string;
   end;
 
   TJsonODastaServiceResource = class(TInterfacedJsonObject,
@@ -66,11 +65,13 @@ type
     function collection: string;
     function fields: string;
     function keyID: string;
-    function method:string;
-    function searchFields:string;
+    function method: string;
+    function searchFields: string;
     function maxpagesize: integer;
     function relations: IJsonODataServiceRelations;
     function relation(AName: string): IJsonODataServiceRelation;
+    function &join: string;
+
   end;
 
   IODataServices = interface
@@ -288,6 +289,11 @@ begin
   JSON.TryGetValue<string>('fields', result);
 end;
 
+function TJsonODastaServiceResource.join: string;
+begin
+  JSON.TryGetValue<string>('join', result);
+end;
+
 function TJsonODastaServiceResource.keyID: string;
 begin
   JSON.TryGetValue<string>('keyID', result);
@@ -362,7 +368,7 @@ end;
 
 function TJsonODastaServiceResource.searchFields: string;
 begin
-  JSON.TryGetValue<string>('searchFields',result);
+  JSON.TryGetValue<string>('searchFields', result);
 end;
 
 { TJsonODataServiceRelation }

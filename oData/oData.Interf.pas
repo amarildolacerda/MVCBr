@@ -100,7 +100,7 @@ Type
   IODataDialect = interface
     ['{812DB60E-64D7-4290-99DB-F625EC52C6DA}']
     function GetResource:IInterface;
-    function createQuery(AValue: IODataDecode; AFilter: string;
+    function createGETQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: boolean = false): string;
     function createDeleteQuery(oData: IODataDecode; AJsonBody:TJsonValue): string;
     function CreatePostQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
@@ -120,10 +120,11 @@ Type
     procedure DecodeODataURL(CTX: TObject);
     function This: TObject;
 
-    function GetDataset(var JSONResponse: TJSONObject): TObject;
-    function ExecuteDelete(ABody:string; var JSONResponse: TJSONObject):Integer;
-    function ExecutePost(ABody:string;var JSON:TJSONObject):Integer;
+    function ExecuteGET(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject;
+    function ExecuteDELETE(ABody:string; var JSONResponse: TJSONObject):Integer;
+    function ExecutePOST(ABody:string;var JSON:TJSONObject):Integer;
     function ExecutePATCH(ABody:string;var JSON:TJSONObject):Integer;
+    function ExecuteOPTIONS(var JSON:TJSONObject):Integer;
 
     procedure CreateExpandCollections(AQuery: TObject);
     function Collection: string;

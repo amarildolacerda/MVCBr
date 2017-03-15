@@ -1,15 +1,9 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{9E18B2A9-D9C9-4208-8275-3308BB12E783}</ProjectGuid>
+        <ProjectGuid>{A3ADDD52-4BCA-4E5B-9CBD-E9CDD21E1310}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="MVCBr.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="ClasseStub\NewMVCApp.dproj">
-            <Dependencies/>
-        </Projects>
-        <Projects Include="Test\MVCBrTests.dproj">
+        <Projects Include="MVCBrFireDAC.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -20,41 +14,23 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="MVCBr">
-        <MSBuild Projects="MVCBr.dproj"/>
+    <Target Name="MVCBrFireDAC">
+        <MSBuild Projects="MVCBrFireDAC.dproj"/>
     </Target>
-    <Target Name="MVCBr:Clean">
-        <MSBuild Projects="MVCBr.dproj" Targets="Clean"/>
+    <Target Name="MVCBrFireDAC:Clean">
+        <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Clean"/>
     </Target>
-    <Target Name="MVCBr:Make">
-        <MSBuild Projects="MVCBr.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="NewMVCApp">
-        <MSBuild Projects="ClasseStub\NewMVCApp.dproj"/>
-    </Target>
-    <Target Name="NewMVCApp:Clean">
-        <MSBuild Projects="ClasseStub\NewMVCApp.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="NewMVCApp:Make">
-        <MSBuild Projects="ClasseStub\NewMVCApp.dproj" Targets="Make"/>
-    </Target>
-    <Target Name="MVCBrTests">
-        <MSBuild Projects="Test\MVCBrTests.dproj"/>
-    </Target>
-    <Target Name="MVCBrTests:Clean">
-        <MSBuild Projects="Test\MVCBrTests.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="MVCBrTests:Make">
-        <MSBuild Projects="Test\MVCBrTests.dproj" Targets="Make"/>
+    <Target Name="MVCBrFireDAC:Make">
+        <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBr;NewMVCApp;MVCBrTests"/>
+        <CallTarget Targets="MVCBrFireDAC"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBr:Clean;NewMVCApp:Clean;MVCBrTests:Clean"/>
+        <CallTarget Targets="MVCBrFireDAC:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBr:Make;NewMVCApp:Make;MVCBrTests:Make"/>
+        <CallTarget Targets="MVCBrFireDAC:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

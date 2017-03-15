@@ -22,10 +22,11 @@ type
     destructor destroy; override;
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
-    function GetDataset(var JSONResponse: TJSONObject): TObject; override;
-    function ExecuteDelete(ABody: string; var JSONResponse: TJSONObject)
+    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJSONObject)
+      : TObject; override;
+    function ExecuteDELETE(ABody: string; var JSONResponse: TJSONObject)
       : Integer; override;
-    function ExecutePost(ABody: string; var JSONResponse: TJSONObject)
+    function ExecutePOST(ABody: string; var JSONResponse: TJSONObject)
       : Integer; override;
     function ExecutePATCH(ABody: string; var JSONResponse: TJSONObject)
       : Integer; override;
@@ -36,7 +37,7 @@ type
 
 implementation
 
-uses idURI, oData.JSON, oData.engine;
+uses System.Rtti, idURI, oData.JSON, oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -51,7 +52,7 @@ begin
   inherited;
 end;
 
-function TODataFiredacQuery.ExecuteDelete(ABody: string;
+function TODataFiredacQuery.ExecuteDELETE(ABody: string;
   var JSONResponse: TJSONObject): Integer;
 var
   AJson: string;
@@ -173,7 +174,7 @@ begin
   end;
 end;
 
-function TODataFiredacQuery.ExecutePost(ABody: string;
+function TODataFiredacQuery.ExecutePOST(ABody: string;
   var JSONResponse: TJSONObject): Integer;
 var
   AJson: string;
@@ -226,7 +227,12 @@ begin
   end;
 end;
 
-function TODataFiredacQuery.GetDataset(var JSONResponse: TJSONObject): TObject;
+function TODataFiredacQuery.ExecuteGET(AJsonBody: TJsonValue;
+  var JSONResponse: TJSONObject): TObject;
+var
+  i: Integer;
+  v: TValue;
+  n: Integer;
 begin
   InLineRecordCount := -1;
   freeAndNil(FQuery);
@@ -238,13 +244,13 @@ begin
     if (FODataParse.oData.count = 'true') and
       ((FODataParse.oData.Skip > 0) or (FODataParse.oData.Top > 0)) then
     begin
-      FQuery.SQL.Text := CreateQuery(FODataParse, true);
+      FQuery.SQL.Text := CreateGETQuery(FODataParse, true);
       FQuery.Open;
       InLineRecordCount := FQuery.FieldByName('N__Count').AsInteger;
       FQuery.Close;
     end;
 
-    FQuery.SQL.Text := CreateQuery(FODataParse);
+    FQuery.SQL.Text := CreateGETQuery(FODataParse);
 
     if FODataParse.oData.Search <> '' then
     begin
@@ -257,6 +263,14 @@ begin
     if (FODataParse.oData.Expand <> '') and
       (not(FODataParse.oData.count = 'true')) then
       CreateExpandCollections(FQuery);
+
+    // preenche os parametros....
+    if AJsonBody <> nil then
+      for i := 0 to FQuery.ParamCount - 1 do
+      begin
+        if AJsonBody.TryGetValue<TValue>(FQuery.Params[i].Name, v) then
+          FQuery.Params[i].Value := v.AsVariant
+      end;
 
     FQuery.Open;
   except

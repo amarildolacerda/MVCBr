@@ -14,7 +14,7 @@ type
   TODataDialectMySQL = class(TODataDialect)
   private
   public
-    function createQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; override;
   end;
 
@@ -22,7 +22,7 @@ implementation
 
 { TODataDialectMySQL }
 
-function TODataDialectMySQL.createQuery(oData: IODataDecode; AFilter: string;
+function TODataDialectMySQL.createGETQuery(oData: IODataDecode; AFilter: string;
   const AInLineCount: Boolean): string;
 begin
   result := inherited;

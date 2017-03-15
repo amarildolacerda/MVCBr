@@ -18,7 +18,7 @@ type
     function TopCmdStmt: string; override;
     function SkipCmdStmt: string; override;
   public
-    function createQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; override;
   end;
 
@@ -30,7 +30,7 @@ uses oData.ServiceModel;
 
 
 
-function TODataDialectFirebird.createQuery(oData: IODataDecode; AFilter: string;
+function TODataDialectFirebird.createGETQuery(oData: IODataDecode; AFilter: string;
   const AInLineCount: Boolean): string;
 begin
    result := inherited;

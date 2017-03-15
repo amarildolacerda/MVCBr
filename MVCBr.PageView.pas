@@ -98,6 +98,8 @@ type
     Procedure DoQueryClose(const APageView: IPageView;
       var ACanClose: Boolean); virtual;
     Procedure DoViewCreate(Sender: TObject); virtual;
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
   public
 
     function NewTab(APageView: IPageView): TObject; virtual;
@@ -367,20 +369,30 @@ begin
   result := GetPageTabClass.Create(nil);
 end;
 
-procedure TCustomPageViewFactory.Remove(APageView: IPageView);
-var i:integer;
+procedure TCustomPageViewFactory.Notification(AComponent: TComponent;
+  AOperation: TOperation);
 begin
-  for I := 0 to count-1 do
+  inherited;
+  if AOperation = TOperation.opRemove then
+    if AComponent = FPageContainer then
+      FPageContainer := nil;
+end;
+
+procedure TCustomPageViewFactory.Remove(APageView: IPageView);
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
     if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
     begin
-       FList.Delete(i);
-       exit;
+      FList.Delete(i);
+      exit;
     end;
 end;
 
 procedure TCustomPageViewFactory.SetActivePage(const Tab: TObject);
 begin
-   // implementar na class herdada;
+  // implementar na class herdada;
 end;
 
 procedure TCustomPageViewFactory.SetActivePageIndex(const Value: Integer);

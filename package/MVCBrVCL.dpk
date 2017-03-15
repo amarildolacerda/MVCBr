@@ -31,9 +31,23 @@ package MVCBrVCL;
 
 requires
   rtl,
-  MVCBrCore;
+  MVCBrCore,
+  DesignIDE,
+  dbrtl,
+  CustomIPTransport,
+  IndyIPCommon,
+  IndySystem,
+  IndyProtocols,
+  IndyCore,
+  IndyIPClient,
+  bindengine,
+  bindcomp,
+  FireDAC;
 
 contains
+  MVCBr.DesignEditors.Helper in '..\VCL\MVCBr.DesignEditors.Helper.pas',
+  MVCBr.IdHTTPRestClient in '..\VCL\MVCBr.IdHTTPRestClient.pas',
+  MVCBr.IdHTTPRestClientReg in '..\VCL\MVCBr.IdHTTPRestClientReg.pas',
   MVCBr.VCL.PageView in '..\VCL\MVCBr.VCL.PageView.pas';
 
 end.

@@ -92,6 +92,8 @@ begin
       Config[TMVCConfigKey.FallbackResource] := 'index.html';
     end);
 
+  LoadWSControllers(result);
+
 end;
 
 Constructor TWSController.Create;
@@ -167,8 +169,8 @@ begin
     finally
       FList.UnlockList;
     end;
-  FMVC.AddMiddleware(TMVCgzipCallBackMiddleware.create);
-  FMVC.AddMiddleware(TMVCAsyncCallBackMiddleware.create);
+  FMVC.AddMiddleware(TMVCgzipCallBackMiddleware.Create);
+  FMVC.AddMiddleware(TMVCAsyncCallBackMiddleware.Create);
 end;
 
 function RegisterWSController(const AClass: TMVCControllerClass): integer;
@@ -185,12 +187,9 @@ end;
 initialization
 
 FList := TThreadList<TMVCControllerClass>.Create;
-// TWSController.New(TWSView.New,TWSViewModel.New)).init();
-// RegisterInterfacedClass(TWSController.ClassName, IWSController, TWSController);
 
 finalization
 
 FList.Free;
-// unRegisterInterfacedClass(TWSController.ClassName);
 
 end.
