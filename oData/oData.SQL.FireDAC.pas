@@ -273,6 +273,7 @@ begin
       end;
 
     FQuery.Open;
+    CreateEntitiesSchema(FQuery, JSONResponse);
   except
     on e: exception do
       if e.Message.StartsWith('{') then

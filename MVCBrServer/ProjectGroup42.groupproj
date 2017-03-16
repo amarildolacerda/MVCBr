@@ -24,6 +24,9 @@
         <Projects Include="..\..\acbr2015\Pacotes\Delphi\ACBrSerial\ACBr_Serial.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\..\Test\AppTesterXE.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -95,14 +98,23 @@
     <Target Name="ACBr_Serial:Make">
         <MSBuild Projects="..\..\acbr2015\Pacotes\Delphi\ACBrSerial\ACBr_Serial.dproj" Targets="Make"/>
     </Target>
+    <Target Name="AppTesterXE">
+        <MSBuild Projects="..\..\Test\AppTesterXE.dproj"/>
+    </Target>
+    <Target Name="AppTesterXE:Clean">
+        <MSBuild Projects="..\..\Test\AppTesterXE.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="AppTesterXE:Make">
+        <MSBuild Projects="..\..\Test\AppTesterXE.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrServer;RestServerService;Project27;MVCBrVCL;MVCBrFireDAC;MVCBrOData;ACBr_Serial"/>
+        <CallTarget Targets="MVCBrServer;RestServerService;Project27;MVCBrVCL;MVCBrFireDAC;MVCBrOData;ACBr_Serial;AppTesterXE"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrServer:Clean;RestServerService:Clean;Project27:Clean;MVCBrVCL:Clean;MVCBrFireDAC:Clean;MVCBrOData:Clean;ACBr_Serial:Clean"/>
+        <CallTarget Targets="MVCBrServer:Clean;RestServerService:Clean;Project27:Clean;MVCBrVCL:Clean;MVCBrFireDAC:Clean;MVCBrOData:Clean;ACBr_Serial:Clean;AppTesterXE:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrServer:Make;RestServerService:Make;Project27:Make;MVCBrVCL:Make;MVCBrFireDAC:Make;MVCBrOData:Make;ACBr_Serial:Make"/>
+        <CallTarget Targets="MVCBrServer:Make;RestServerService:Make;Project27:Make;MVCBrVCL:Make;MVCBrFireDAC:Make;MVCBrOData:Make;ACBr_Serial:Make;AppTesterXE:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

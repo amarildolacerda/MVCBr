@@ -56,8 +56,10 @@ type
 
 implementation
 
-uses // FireDac.Comp.Client, FireDac.Comp.Dataset, {Data.FireDACJSONReflect,}
-  System.DateUtils, System.Rtti {,REST.Response.Adapter};
+uses
+  System.JSON.Helper,
+  System.DateUtils,
+  System.Rtti {,REST.Response.Adapter};
 
 { TIdHTTPDataSetAdapter }
 
@@ -80,32 +82,29 @@ begin
   FillDatasetFromJSONValue(FRootElement, FDataset, FJsonValue, ResponseType);
 end;
 
-type
-  TJsonTypes = (jtInteger, jtNumber, jtString, jtBoolean, jtDatetime);
-
 class procedure TODataDatasetAdapter.CreateFieldsFromJsonRow(FDataset: TDataset;
   AJSON: TJsonObject);
 var
   jv: TJsonPair;
   LFieldName: string;
   v: TValue;
-  jtype: TJsonTypes;
+  jtype: TJsonType;
 begin
   for jv in AJSON do
   begin
     LFieldName := jv.JsonString.Value;
-    jtype := jtString;
+    jtype := TJsonObject.GetJsonType(TJsonObject.Create(jv));
     case jtype of
-      jtInteger:
-        FDataset.FieldDefs.Add(LFieldName, ftInteger);
       jtNumber:
         FDataset.FieldDefs.Add(LFieldName, ftFloat);
-      jtBoolean:
+      jtTrue, jtFalse:
         FDataset.FieldDefs.Add(LFieldName, ftBoolean);
-      jtDatetime:
+      jtDatetime, jtDate:
         FDataset.FieldDefs.Add(LFieldName, ftDateTime);
-    else
-      FDataset.FieldDefs.Add(LFieldName, ftString, 255);
+      jtString:
+        FDataset.FieldDefs.Add(LFieldName, ftString, 255);
+      jtUnknown,jtBytes:
+        FDataset.FieldDefs.Add(LFieldName,ftBlob);
     end;
   end;
 end;
@@ -114,7 +113,7 @@ class procedure TODataDatasetAdapter.CreateFieldsFromJson(FDataset: TDataset;
   AJSONArray: TJsonValue);
 var
   LJSONValue: TJsonValue;
-  ja: TJsonArray;
+  ja: TJSONArray;
   jo: TJsonObject;
 begin
   AJSONArray.TryGetValue(ja);
@@ -132,7 +131,7 @@ end;
 
 class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
   AJSON: TJsonValue);
-  procedure AddJSONDataRow(const AJSONValue: TJsonValue);
+  procedure AddJSONDataRow(const AJsonValue: TJsonValue);
   var
     LValue: variant;
     LJSONValue: TJsonValue;
@@ -148,7 +147,7 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
       begin
         LField := FDataset.Fields[i];
         LPath := lowercase(LField.FieldName);
-        if not AJSONValue.TryGetValue<TJsonValue>(LPath, LJSONValue) then
+        if not AJsonValue.TryGetValue<TJsonValue>(LPath, LJSONValue) then
           LJSONValue := nil;
         if (LJSONValue = nil) then
           LValue := System.Variants.Null
@@ -160,7 +159,7 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
           LValue := System.Variants.Null
         else if (LJSONValue IS TJsonObject) then
           LValue := LJSONValue.ToString
-        else if (LJSONValue IS TJsonArray) then
+        else if (LJSONValue IS TJSONArray) then
           LValue := LJSONValue.ToString
         else if LJSONValue IS TJSONString then
         begin
@@ -194,10 +193,10 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
   var
     LJSONValue: TJsonValue;
   begin
-    if AJSON is TJsonArray then
+    if AJSON is TJSONArray then
     begin
       // Multiple rows
-      for LJSONValue in TJsonArray(AJSON) do
+      for LJSONValue in TJSONArray(AJSON) do
         AddJSONDataRow(LJSONValue);
     end
     else
@@ -301,7 +300,7 @@ var
   ji: TJsonPair;
   achei: boolean;
   jo: TJsonObject;
-  jv: TJsonArray;
+  jv: TJSONArray;
 
 {$IFDEF REST}
   procedure LoadWithReflect(Const AJSON: TJsonObject; achou: Integer);
@@ -309,7 +308,7 @@ var
     LDataSets: TFDJSONDatasets;
     memDs: TFDMemTable;
   begin
-    LDataSets := TFDJSONDatasets.create;
+    LDataSets := TFDJSONDatasets.Create;
     TFDJSONInterceptor.JSONObjectToDataSets(AJSON, LDataSets);
 
     if ADataset.InheritsFrom(TFDMemTable) then
@@ -320,7 +319,7 @@ var
     else
     begin
       // cria um MemTable de passagem
-      memDs := TFDMemTable.create(nil);
+      memDs := TFDMemTable.Create(nil);
       try
         TFDMemTable(memDs).AppendData
           (TFDJSONDataSetsReader.GetListValue(LDataSets, achou));

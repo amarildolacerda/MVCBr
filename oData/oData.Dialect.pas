@@ -23,6 +23,7 @@ Type
   TODataDialect = class(TInterfacedObject, IODataDialect)
   private
   protected
+    FKeyID:string;
     FResource: IJsonODastaServiceResource;
     FCollection: string;
     FResourceName: string;
@@ -518,7 +519,7 @@ begin
       if pos('GET', FResource.method) = 0 then
         raise Exception.Create(TODataError.Create(403,
           'Método solicitado não autorizado'));
-
+    FKeyID := FResource.keyID;
     /// busca no metadata os parametros
     FGroupBy := oData.GroupBy;
     /// pega groupby do metadata

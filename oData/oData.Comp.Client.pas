@@ -98,8 +98,8 @@ Type
     destructor destroy; override;
     function ToString: string;
     function addResource(AResource: string): TODataResourceItem;
-    function execute: boolean;
-    function execute(AProc: TProc): boolean;
+    function execute: boolean;overload;
+    function execute(AProc: TProc): boolean;overload;
   published
     property URI: string read FURI;
     property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
