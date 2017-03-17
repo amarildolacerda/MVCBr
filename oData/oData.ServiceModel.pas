@@ -49,6 +49,9 @@ type
     function collection: string;
     function &fields: string;
     function keyID: string;
+    function GetPrimaryKey:string;
+    procedure SetPrimaryKey(const AKeys:string);
+    property primaryKey:string read getPrimaryKey write SetPrimaryKey;
     function method: string;
     function searchFields: string;
     function relations: IJsonODataServiceRelations;
@@ -59,6 +62,10 @@ type
 
   TJsonODastaServiceResource = class(TInterfacedJsonObject,
     IJsonODastaServiceResource)
+  private
+    FPrimaryKey:string;
+    procedure SetprimaryKey(const Value: string);
+    function getPrimaryKey: string;
   public
     class function New(AJson: TJsonValue): IJsonODastaServiceResource;
     function resource: string;
@@ -71,6 +78,7 @@ type
     function relations: IJsonODataServiceRelations;
     function relation(AName: string): IJsonODataServiceRelation;
     function &join: string;
+    property primaryKey:string read getPrimaryKey write SetPrimaryKey;
 
   end;
 
@@ -105,7 +113,6 @@ type
     function ResourceList: TJsonArray;
     function GetRoot: TJsonArray;
     procedure reload;
-
   end;
 
 var
@@ -179,6 +186,8 @@ begin
       begin
         str.LoadFromFile(AJson);
         FJson := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
+        if not assigned(FJson) then
+           raise Exception.Create('Metadata inválido, revisar o JSON do metadata');
       end
       else
       begin
@@ -204,8 +213,11 @@ begin
       str.Free;
     end;
   except
+   on e:exception do
+   begin
     // showMessage('Cant load services (' + AJson + ')');
-    raise Exception.create('Cant load services (' + AJson + ')');
+    raise Exception.create('Cant load services (' + AJson + ') /*'+e.message+'*/');
+   end;
   end;
 end;
 
@@ -289,6 +301,11 @@ begin
   JSON.TryGetValue<string>('fields', result);
 end;
 
+function TJsonODastaServiceResource.getPrimaryKey: string;
+begin
+   result := FPrimaryKey;
+end;
+
 function TJsonODastaServiceResource.join: string;
 begin
   JSON.TryGetValue<string>('join', result);
@@ -320,6 +337,7 @@ begin
   result := j;
 
 end;
+
 
 function TJsonODastaServiceResource.relation(AName: string)
   : IJsonODataServiceRelation;
@@ -369,6 +387,11 @@ end;
 function TJsonODastaServiceResource.searchFields: string;
 begin
   JSON.TryGetValue<string>('searchFields', result);
+end;
+
+procedure TJsonODastaServiceResource.SetprimaryKey(const Value: string);
+begin
+  FprimaryKey := Value;
 end;
 
 { TJsonODataServiceRelation }

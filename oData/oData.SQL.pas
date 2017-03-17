@@ -22,6 +22,9 @@ type
     FResource: IJsonODastaServiceResource;
     function EncodeFilterSql(AFilter: string): string; virtual;
   public
+    function GetConnection(ADataset: TDataset): TObject; virtual;
+    function GetPrimaryKey(AConnection: TObject; ACollection: string)
+      : string; virtual;
     procedure CreateEntitiesSchema(ADataset: TDataset;
       var JSONResponse: TJsonObject); virtual;
     function QueryClass: TDatasetClass; virtual;
@@ -30,11 +33,11 @@ type
       : string; virtual;
     function CreateSearchFields(FParse: IODataParse; const ASearch: String;
       const fields: string): String; virtual;
-    function CreateDeleteQuery(FParse: IODataParse; AJsonBody: TJsonValue)
-      : string; virtual;
+    function CreateDeleteQuery(FParse: IODataParse;
+  AJsonBody: TJsonValue;AKeys:string): string; virtual;
     function CreatePOSTQuery(FParse: IODataParse; AJsonBody: TJsonValue)
       : string; virtual;
-    function CreatePATCHQuery(FParse: IODataParse; AJsonBody: TJsonValue)
+    function CreatePATCHQuery(FParse: IODataParse; AJsonBody: TJsonValue;AKeys:string)
       : string; virtual;
     function Collection: string; override;
 
@@ -59,9 +62,9 @@ begin
 end;
 
 function TODataSQL.CreateDeleteQuery(FParse: IODataParse;
-  AJsonBody: TJsonValue): string;
+  AJsonBody: TJsonValue;AKeys:string): string;
 begin
-  result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody);
+  result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody,AKeys);
   FResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
 end;
 
@@ -75,15 +78,23 @@ var
   AName: String;
   sl: TStringList;
   s: string;
+  sKey: string;
 begin
-
-  if FResource.keyID <> '' then
+  sKey := FResource.primaryKey;
+  if sKey = '' then
+  begin // carrega somente na primeira vez
+    sKey := GetPrimaryKey(GetConnection(ADataset), FResource.Collection);
+    FResource.primaryKey := sKey;
+  end;
+  if sKey = '' then // se a tabela nao primary key... usar o metadata
+    sKey := FResource.keyID;
+  if sKey <> '' then
   begin
     ja := TJsonArray.create;
     sl := TStringList.create;
     try
       sl.Delimiter := ',';
-      sl.Text := FResource.keyID;
+      sl.DelimitedText := sKey;
       for s in sl do
       begin
         ja.add(s);
@@ -97,7 +108,7 @@ begin
   jv := TJsonObject.create;
   for fld in ADataset.fields do
   begin
-    AName := fld.FieldName;
+    AName := fld.FieldName.ToLower;
     ja := TJsonArray.create();
     case fld.DataType of
       ftInteger:
@@ -107,6 +118,10 @@ begin
       ftSmallint, ftShortint, ftWord:
         begin
           ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Int16')));
+        end;
+      ftLargeint:
+        begin
+          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Int64')));
         end;
       ftCurrency, ftBCD, ftFMTBcd:
         begin
@@ -161,10 +176,11 @@ begin
         end;
 
     end;
+
     if fld.Required then
-      ja.AddElement(TJsonObject.create(TJsonPair.create('Nullable', 'false')))
-    else
-      ja.AddElement(TJsonObject.create(TJsonPair.create('Nullable', 'true')));
+      ja.AddElement(TJsonObject.create(TJsonPair.create('Nullable', 'false')));
+    //else  // nao precisa mandar se é TRUE.
+    //  ja.AddElement(TJsonObject.create(TJsonPair.create('Nullable', 'true')));
 
     jv.AddPair(TJsonPair.create(AName, ja));
   end;
@@ -172,8 +188,8 @@ begin
   JSONResponse.AddPair(jp);
 end;
 
-function TODataSQL.CreatePATCHQuery(FParse: IODataParse;
-  AJsonBody: TJsonValue): string;
+function TODataSQL.CreatePATCHQuery(FParse: IODataParse; AJsonBody: TJsonValue;AKeys:string)
+      : string;
 var
   LJson: IJsonObject;
   LRowState: string;
@@ -182,16 +198,16 @@ begin
   if LJson.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
   begin
     if LRowState = cODataModified then
-      result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody)
+      result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody,AKeys)
     else if LRowState = cODataDeleted then
-      result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody)
+      result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody,AKeys)
     else if LRowState = cODataInserted then
       result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody)
     else
       raise Exception.create(tODataError.create(500, 'RowState inválido'));
   end
   else
-    result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody);
+    result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody,AKeys);
   FResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
 end;
 
@@ -270,6 +286,17 @@ function TODataSQL.ExecuteGET(AJsonBody: TJsonValue;
   var JSONResponse: TJsonObject): TObject;
 begin
   result := nil;
+end;
+
+function TODataSQL.GetConnection(ADataset: TDataset): TObject;
+begin
+  result := nil;
+end;
+
+function TODataSQL.GetPrimaryKey(AConnection: TObject;
+  ACollection: string): string;
+begin
+  result := '';
 end;
 
 function TODataSQL.QueryClass: TDatasetClass;

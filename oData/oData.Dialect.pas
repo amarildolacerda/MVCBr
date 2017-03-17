@@ -29,13 +29,13 @@ Type
     FResourceName: string;
     FOData: IODataDecode;
     function GetResource: IInterface; overload;
-    function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue)
+    function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
       : string; virtual;
     function createGETQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
     function CreatePostQuery(oData: IODataDecode; AJson: TJsonValue)
       : String; virtual;
-    function createPATCHQuery(oData: IODataDecode; AJson: TJsonValue)
+    function createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
       : String; virtual;
 
     procedure CreateGroupBy(var Result: string; FGroupBy: string); virtual;
@@ -299,8 +299,8 @@ begin
   end;
 end;
 
-function TODataDialect.createPATCHQuery(oData: IODataDecode;
-  AJson: TJsonValue): String;
+function TODataDialect.createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
+      : String;
 var
   AResource: IJsonODastaServiceResource;
   FUpdate: string;
@@ -448,8 +448,8 @@ begin
   end;
 end;
 
-function TODataDialect.createDeleteQuery(oData: IODataDecode;
-  AJson: TJsonValue): string;
+function TODataDialect.createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
+      : string;
 var
   AResource: IJsonODastaServiceResource;
   child: IODataDecode;

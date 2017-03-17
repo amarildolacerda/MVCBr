@@ -102,9 +102,9 @@ Type
     function GetResource:IInterface;
     function createGETQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: boolean = false): string;
-    function createDeleteQuery(oData: IODataDecode; AJsonBody:TJsonValue): string;
+    function createDeleteQuery(oData: IODataDecode; AJsonBody:TJsonValue;AKeys:string): string;
     function CreatePostQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
-    function createPATCHQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
+    function createPATCHQuery(oData: IODataDecode; AJsonBody:TJsonValue;AKeys:string):String;
   end;
 
   IODataParse = interface

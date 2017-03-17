@@ -26,7 +26,7 @@ unit System.Json.Helper;
 
 interface
 
-{$I Delphi.inc }
+{.$I Delphi.inc }
 {$IFDEF UNICODE}
 {$DEFINE XE}
 {$ENDIF}

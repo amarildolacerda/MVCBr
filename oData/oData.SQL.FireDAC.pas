@@ -20,6 +20,10 @@ type
     procedure SetConnection(const Value: TFDConnection);
   public
     destructor destroy; override;
+    function GetPrimaryKey(AConnection: TObject; ACollection: string)
+      : string; override;
+    function GetConnection(ADataset: TDataset): TObject; override;
+
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
     function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJSONObject)
@@ -78,7 +82,8 @@ begin
     begin
       for ji in js.AsArray do
       begin
-        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji);
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji,
+          GetPrimaryKey(FQuery.Connection, FResource.collection));
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -87,9 +92,11 @@ begin
     else
     begin
       if js = nil then
-        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, nil)
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, nil,
+          GetPrimaryKey(FQuery.Connection, FResource.collection))
       else
-        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, js.JsonValue);
+        FQuery.SQL.Text := CreateDeleteQuery(FODataParse, js.JsonValue,
+          GetPrimaryKey(FQuery.Connection, FResource.collection));
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -148,7 +155,8 @@ begin
     begin
       for ji in js.AsArray do
       begin
-        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji);
+        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji,
+          GetPrimaryKey(FQuery.Connection, FResource.collection));
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -156,7 +164,8 @@ begin
     end
     else
     begin
-      FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue);
+      FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue,
+        GetPrimaryKey(FQuery.Connection, FResource.collection));
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -227,6 +236,46 @@ begin
   end;
 end;
 
+function TODataFiredacQuery.GetConnection(ADataset: TDataset): TObject;
+begin
+  result := TFdQuery(ADataset).Connection;
+end;
+
+function TODataFiredacQuery.GetPrimaryKey(AConnection: TObject;
+  ACollection: string): string;
+var
+  qry: TFdQuery;
+  str: TStringList;
+begin
+  result := '';
+  if ACollection = '' then
+  begin
+    exit;
+  end;
+  str := TStringList.Create;
+  try
+    if assigned(AConnection) then
+    begin
+      TFDConnection(AConnection).GetKeyFieldNames('', '', ACollection, '', str);
+      str.Delimiter := ',';
+      result := StringReplace(str.DelimitedText, '"', '', [rfReplaceAll]).ToLower;
+    end
+    else
+    begin
+      qry := QueryClass.Create(nil) as TFdQuery;
+      try
+        if assigned(qry.Connection) then
+          qry.Connection.GetKeyFieldNames('', '', ACollection, '', str);
+      finally
+        qry.Free;
+      end;
+    end;
+  finally
+    str.Free;
+  end;
+
+end;
+
 function TODataFiredacQuery.ExecuteGET(AJsonBody: TJsonValue;
   var JSONResponse: TJSONObject): TObject;
 var
@@ -274,6 +323,7 @@ begin
 
     FQuery.Open;
     CreateEntitiesSchema(FQuery, JSONResponse);
+
   except
     on e: exception do
       if e.Message.StartsWith('{') then

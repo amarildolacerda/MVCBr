@@ -1,0 +1,391 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.ODataDatasetAdapter: Classe TODataDatasetAdapter</title>
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script>
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</p></td><td class="content">
+MVCBr
+<a name="TODataDatasetAdapter"></a><h1 class="cio">Classe TODataDatasetAdapter</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="MVCBr.ODataDatasetAdapter.html">MVCBr.ODataDatasetAdapter</a></p>
+<h2 class="declaration">Declaração</h2>
+<p class="declaration">
+<code>type TODataDatasetAdapter = class(TComponent)</code></p>
+<h2 class="description">Descrição</h2>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TComponent</li>
+<li class="thisitem">TODataDatasetAdapter</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FJsonValue">FJsonValue</a></b>: TJsonValue;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FActive">FActive</a></b>: boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FDataset">FDataset</a></b>: TDataset;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a></b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FRootElement">FRootElement</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a></b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a></b>: TODataBuilder;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetDataset">SetDataset</a></b>(const Value: TDataset);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetActive">SetActive</a></b>(const Value: boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a></b>(const Value: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetRootElement">SetRootElement</a></b>(const Value: string);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#GetActive">GetActive</a></b>: boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Notification">Notification</a></b>(AComponent: TComponent; AOperation: TOperation); override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a></b>(const Value: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a></b>(const Value: TODataBuilder);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Execute">Execute</a></b>: boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FillDatasetFromJSONValue">FillDatasetFromJSONValue</a></b>(ARootElement: string; ADataset: TDataset; AJSON: TJsonValue; AResponseType: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#DatasetFromJsonObject">DatasetFromJsonObject</a></b>(FDataset: TDataset; AJSON: TJsonValue);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateDatasetFromJson">CreateDatasetFromJson</a></b>(AJSON: string);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateFieldsFromJson">CreateFieldsFromJson</a></b>(FDataset: TDataset; AJSONArray: TJsonValue); static;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateFieldsFromJsonRow">CreateFieldsFromJsonRow</a></b>(FDataset: TDataset; AJSON: TJsonObject); static;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Builder">Builder</a></b>: TODataBuilder read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Active">Active</a></b>: boolean read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#GetActive">GetActive</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetActive">SetActive</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Dataset">Dataset</a></b>: TDataset read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FDataset">FDataset</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetDataset">SetDataset</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseJSON">ResponseJSON</a></b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a>
+      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#RootElement">RootElement</a></b>: string read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FRootElement">FRootElement</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetRootElement">SetRootElement</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseType">ResponseType</a></b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a>
+      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a> default pureJSON;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FJsonValue"></a><code><b>FJsonValue</b>: TJsonValue;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FActive"></a><code><b>FActive</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FDataset"></a><code><b>FDataset</b>: TDataset;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FResponseJSON"></a><code><b>FResponseJSON</b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FRootElement"></a><code><b>FRootElement</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FResponseType"></a><code><b>FResponseType</b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FBuilder"></a><code><b>FBuilder</b>: TODataBuilder;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetDataset"></a><code>procedure <b>SetDataset</b>(const Value: TDataset);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetActive"></a><code>procedure <b>SetActive</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetResponseJSON"></a><code>procedure <b>SetResponseJSON</b>(const Value: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetRootElement"></a><code>procedure <b>SetRootElement</b>(const Value: string);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetActive"></a><code>function <b>GetActive</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="Notification"></a><code>procedure <b>Notification</b>(AComponent: TComponent; AOperation: TOperation); override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetResponseType"></a><code>procedure <b>SetResponseType</b>(const Value: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetBuilder"></a><code>procedure <b>SetBuilder</b>(const Value: TODataBuilder);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FillDatasetFromJSONValue"></a><code>class procedure <b>FillDatasetFromJSONValue</b>(ARootElement: string; ADataset: TDataset; AJSON: TJsonValue; AResponseType: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DatasetFromJsonObject"></a><code>class procedure <b>DatasetFromJsonObject</b>(FDataset: TDataset; AJSON: TJsonValue);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="CreateDatasetFromJson"></a><code>procedure <b>CreateDatasetFromJson</b>(AJSON: string);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="CreateFieldsFromJson"></a><code>class procedure <b>CreateFieldsFromJson</b>(FDataset: TDataset; AJSONArray: TJsonValue); static;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="CreateFieldsFromJsonRow"></a><code>class procedure <b>CreateFieldsFromJsonRow</b>(FDataset: TDataset; AJSON: TJsonObject); static;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Builder"></a><code>property <b>Builder</b>: TODataBuilder read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Active"></a><code>property <b>Active</b>: boolean read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#GetActive">GetActive</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetActive">SetActive</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="Dataset"></a><code>property <b>Dataset</b>: TDataset read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FDataset">FDataset</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetDataset">SetDataset</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ResponseJSON"></a><code>property <b>ResponseJSON</b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a>
+      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="RootElement"></a><code>property <b>RootElement</b>: string read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FRootElement">FRootElement</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetRootElement">SetRootElement</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ResponseType"></a><code>property <b>ResponseType</b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a>
+      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a> default pureJSON;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>

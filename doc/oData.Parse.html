@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: oData.Parse</title>
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script>
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</p></td><td class="content">
+MVCBr
+<h1 class="unit">Unit oData.Parse</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td>Funções e Procedimentos</td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
+<p>
+//************************************************************//</p>
+<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>System.Classes</li><li>System.SysUtils</li><li>System.Generics.collections</li><li>oData.Engine</li><li>oData.Interf</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Nome</th>
+<th class="itemdesc">Descrição</th>
+</tr>
+<tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="oData.Parse.TODataParse.html"><code>TODataParse</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="oData.Parse.html#TTokenKind">TTokenKind</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="oData.Parse.html#TSetTokenKind">TSetTokenKind</a></b> = set of <a  href="oData.Parse.html#TTokenKind">TTokenKind</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Tipos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TTokenKind"></a><code><b>TTokenKind</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;<h6 class="description_section">Values</h6>
+<ul>
+<li>
+ptNone: &nbsp;</li>
+<li>
+ptIdentifier: &nbsp;</li>
+<li>
+ptNull: &nbsp;</li>
+<li>
+ptQuotation: &nbsp;</li>
+<li>
+ptSpace: &nbsp;</li>
+<li>
+ptComma: &nbsp;</li>
+<li>
+ptSlash: &nbsp;</li>
+<li>
+ptOData: &nbsp;</li>
+<li>
+ptOpen: &nbsp;</li>
+<li>
+ptClose: &nbsp;</li>
+<li>
+ptParams: &nbsp;</li>
+<li>
+ptParamsAnd: &nbsp;</li>
+<li>
+ptEqual: &nbsp;</li>
+<li>
+ptFilter: &nbsp;</li>
+<li>
+ptSearch: &nbsp;</li>
+<li>
+ptSelect: &nbsp;</li>
+<li>
+ptOrderBy: &nbsp;</li>
+<li>
+ptTop: &nbsp;</li>
+<li>
+ptSkip: &nbsp;</li>
+<li>
+ptSkipToken: &nbsp;</li>
+<li>
+ptExpand: &nbsp;</li>
+<li>
+ptInLineCount: &nbsp;</li>
+<li>
+ptCount: &nbsp;</li>
+<li>
+ptGroupBy: &nbsp;</li>
+<li>
+ptOperNe: &nbsp;</li>
+<li>
+ptOperLt: not equal</li>
+<li>
+ptOperLe: less than</li>
+<li>
+ptOperGe: less equal</li>
+<li>
+ptOperGt: greater or equal</li>
+<li>
+ptOperAnd: greater than</li>
+<li>
+ptOperOr: and</li>
+<li>
+ptOperNot: or</li>
+<li>
+ptOperAdd: not</li>
+<li>
+ptOperSub: add</li>
+<li>
+ptOperMul: subtract</li>
+<li>
+ptOperDiv: multiply</li>
+<li>
+ptOperMod: divide</li>
+<li>
+ptFuncFloor: find remainder</li>
+<li>
+ptFuncCeiling: floor</li>
+<li>
+ptFuncLength: ceiling</li>
+<li>
+ptFuncTrim: length</li>
+<li>
+ptFuncToUpper: trim</li>
+<li>
+ptFuncSubstringOf: toupper</li>
+<li>
+ptFuncToLower: substringof</li>
+<li>
+ptFuncEndsWith: tolower</li>
+<li>
+ptFuncStartsWith: endswith</li>
+<li>
+ptFuncYear: startswith</li>
+<li>
+ptFuncMonth: year</li>
+<li>
+ptFuncDay: month</li>
+<li>
+ptFuncHour: day</li>
+<li>
+ptFuncMinute: hour</li>
+<li>
+ptFuncSecond: minute</li>
+<li>
+ptOrderByDesc: second</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TSetTokenKind"></a><code><b>TSetTokenKind</b> = set of <a  href="oData.Parse.html#TTokenKind">TTokenKind</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+- add,sub,mul,div,mod -&gt; can use only in $filter not $select</p>
+</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>

@@ -4,80 +4,74 @@
   "OData.Services": [
     {
       "resource": "produtos",
-      "collection": "ctprod",
+      "collection": "produtos",
       "keyID": "codigo",
       "maxpagesize":100,
-      "fields":"produtos.codigo,produtos.nome,produtos.unidade,produtos.precovenda",
-      "method":"GET,PATCH",
+      "fields":"*",
+      "method":"GET,PATCH,POST,PUT",
       "relations": [
         {
           "resource": "grupos",
           "sourceKey": "grupo",
-          "targetKey": "grupo",
-          "join":"left join ctgrupo as grupos on (produtos.grupo=ctgrupo.grupo)"
-        },
-        {
-          "resource": "fornecedores",
-          "sourceKey": "fornecedor",
           "targetKey": "codigo",
-          "join":"join sigcad as fornecedores on (sigcad.codigo=produtos.fornecedor)"
+          "join":"left join grupos on (produtos.grupo=grupos.grupo)"
         }
       ]
     },
     {
       "resource": "grupos",
-      "collection": "ctgrupo",
-      "keyID": "grupo",
-      "fields": "grupos.grupo,grupos.nome",
+      "collection": "grupos",
+      "keyID": "codigo",
+      "fields": "*",
       "method":"GET,PATCH,DELETE,PUT,POST",
       "maxpagesize":100,
       "relations": [
         {
           "resource": "produtos",
-          "sourceKey": "grupo",
+          "sourceKey": "codigo",
           "targetKey": "grupo",
-          "join":"join ctprod as produtos on (grupos.grupo=produtos.grupo)"
+          "join":"join produtos on (grupos.codigo=produtos.grupo)"
         }
       ]
     },
     {
       "resource": "fornecedores",
-      "collection": "sigcad",
+      "collection": "fornecedores",
       "maxpagesize":100,
-      "fields":"fornecedores.codigo,fornecedores.nome,fornecedores.cidade,fornecedores.estado",
+      "fields":"*",
       "keyID": "codigo"
     },
     {
       "resource": "clientes",
-      "collection": "sigcad",
+      "collection": "clientes",
       "keyID": "codigo",
-      "method": "GET,POST,PATCH",
-      "searchFields":"nome,cidade,estado",
+      "method": "GET,POST,PATCH,POST,PUT,DELETE",
+      "searchFields":"nome",
       "maxpagesize":100,
-      "fields":"clientes.codigo,clientes.nome,clientes.ender,clientes.cidade,clientes.estado"
+      "fields":"*"
       "relations": [
           {
              "resource":"vendas",
-             "join":"join sigcaut2 as vendas on (vendas.clifor=clientes.codigo)"
+             "join":"join vendas on (vendas.cliente=clientes.codigo)"
           } ,
           {
-             "resource":"pedidos",
-             "join":"join sigcaut1 as pedidos on (pedidos.clifor=clientes.codigo)"
+             "resource":"vendas_item",
+             "join":"join vendas a  on (clientes.codigo=a.cliente) join vendas_item b on (b.documento=a.documento)"
           }
       ]
     },
     {
        "resource":"vendas",
-       "collection":"sigcaut2",
+       "collection":"vendas",
        "maxpagesize":100,
-       "keyID":"dcto",
-       "fields":"vendas.dcto,vendas.data,vendas.filial,vendas.codigo,vendas.nome,vendas.qtde,vendas.preco,vendas.valor"
+       "keyID":"documento",
+       "fields":"*"
     },
     {
-       "resource":"pedidos",
-       "collection":"sigcaut1",
+       "resource":"vendas_item",
+       "collection":"vendas_item",
        "maxpagesize":100,
-      "keyID":"dcto"
+      "keyID":"documento"
     }
 
   ]

@@ -15,9 +15,14 @@ object WSDatamodule: TWSDatamodule
   object FDConnection1: TFDConnection
     ConnectionName = 'MVBr_Firebird'
     Params.Strings = (
-      'ConnectionDef=MVCBr_Firebird')
+      'Database=mvcbr'
+      'User_Name=sysdba'
+      'Password=masterkey'
+      'Port=3050'
+      'Server=localhost'
+      'DriverID=FB')
     LoginPrompt = False
-    Left = 136
+    Left = 168
     Top = 32
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
@@ -31,7 +36,11 @@ object WSDatamodule: TWSDatamodule
     Top = 176
   end
   object FDSchemaAdapter1: TFDSchemaAdapter
-    Left = 200
-    Top = 192
+    Left = 184
+    Top = 168
+  end
+  object FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink
+    Left = 120
+    Top = 256
   end
 end
