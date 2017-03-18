@@ -99,12 +99,14 @@ Type
 
   IODataDialect = interface
     ['{812DB60E-64D7-4290-99DB-F625EC52C6DA}']
-    function GetResource:IInterface;
+    function GetResource:IInterface;overload;
     function createGETQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: boolean = false): string;
     function createDeleteQuery(oData: IODataDecode; AJsonBody:TJsonValue;AKeys:string): string;
     function CreatePostQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
     function createPATCHQuery(oData: IODataDecode; AJsonBody:TJsonValue;AKeys:string):String;
+    function GetResource(AResource: string): IInterface;overload;
+
   end;
 
   IODataParse = interface

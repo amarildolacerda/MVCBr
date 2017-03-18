@@ -6,15 +6,15 @@
       "resource": "produtos",
       "collection": "produtos",
       "keyID": "codigo",
-      "maxpagesize":100,
-      "fields":"*",
-      "method":"GET,PATCH,POST,PUT",
+      "maxpagesize": 100,
+      "fields": "*",
+      "method": "GET,PATCH,POST,PUT",
       "relations": [
         {
           "resource": "grupos",
           "sourceKey": "grupo",
           "targetKey": "codigo",
-          "join":"left join grupos on (produtos.grupo=grupos.grupo)"
+          "join": "left join grupos on (produtos.grupo=grupos.grupo)"
         }
       ]
     },
@@ -23,55 +23,57 @@
       "collection": "grupos",
       "keyID": "codigo",
       "fields": "*",
-      "method":"GET,PATCH,DELETE,PUT,POST",
-      "maxpagesize":100,
+      "method": "GET,PATCH,DELETE,PUT,POST",
+      "maxpagesize": 100,
       "relations": [
         {
           "resource": "produtos",
           "sourceKey": "codigo",
           "targetKey": "grupo",
-          "join":"join produtos on (grupos.codigo=produtos.grupo)"
+          "join": "join produtos on (grupos.codigo=produtos.grupo)"
         }
       ]
     },
     {
       "resource": "fornecedores",
       "collection": "fornecedores",
-      "maxpagesize":100,
-      "fields":"*",
+      "maxpagesize": 100,
+      "fields": "*",
       "keyID": "codigo"
     },
     {
       "resource": "clientes",
       "collection": "clientes",
       "keyID": "codigo",
-      "method": "GET,POST,PATCH,POST,PUT,DELETE",
-      "searchFields":"nome",
-      "maxpagesize":100,
-      "fields":"*"
+      "method": "GET,POST,PATCH,UT,DELETE",
+      "searchFields": "nome",
+      "maxpagesize": 100,
+      "fields": "*"
       "relations": [
-          {
-             "resource":"vendas",
-             "join":"join vendas on (vendas.cliente=clientes.codigo)"
-          } ,
-          {
-             "resource":"vendas_item",
-             "join":"join vendas a  on (clientes.codigo=a.cliente) join vendas_item b on (b.documento=a.documento)"
-          }
+        {
+          "resource": "vendas",
+          "join": "join vendas on (vendas.cliente=clientes.codigo)"
+        },
+        {
+          "resource": "vendas_item",
+          "join": "join vendas a  on (clientes.codigo=a.cliente) join vendas_item b on (b.documento=a.documento)"
+        }
       ]
     },
     {
-       "resource":"vendas",
-       "collection":"vendas",
-       "maxpagesize":100,
-       "keyID":"documento",
-       "fields":"*"
+      "resource": "vendas",
+      "collection": "vendas",
+      "maxpagesize": 100,
+      "keyID": "documento",
+      "fields": "*",
+      "method": "GET,POST,PATCH,PUT,DELETE"
     },
     {
-       "resource":"vendas_item",
-       "collection":"vendas_item",
-       "maxpagesize":100,
-      "keyID":"documento"
+      "resource": "vendas_item",
+      "collection": "vendas_item",
+      "maxpagesize": 100,
+      "keyID": "documento"
+      "method": "GET,POST,PATCH,PUT,DELETE"
     }
 
   ]

@@ -10,6 +10,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, Data.Db, oData.SQL, System.JSON,
+  MVCBr.Interf,
   FireDAC.Comp.Client;
 
 type
@@ -41,7 +42,7 @@ type
 
 implementation
 
-uses System.Rtti, idURI, oData.JSON, oData.engine;
+uses System.Rtti, idURI, oData.ServiceModel, oData.JSON, oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -70,11 +71,18 @@ begin
   if ABody <> '' then
   begin
     js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
+    if (not assigned(js)) or (not assigned(js.JSON)) then
+      raise Exception.Create
+        ('JSON string inválido, revisar o body da mensagem');
     isArray := js.JSON is TJsonArray;
   end;
 
   result := 0;
   freeAndNil(FQuery);
+
+  FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
+    as IJsonODastaServiceResource;
+
   FQuery := QueryClass.Create(nil) as TFdQuery;
   FQuery.Connection.StartTransaction;
   try
@@ -102,14 +110,14 @@ begin
     end;
     FQuery.Connection.Commit;
   except
-    on e: exception do
+    on e: Exception do
     begin
       FQuery.Connection.Rollback;
       result := 0;
       if e.Message.StartsWith('{') then
         raise
       else
-        raise exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, e.Message));
     end;
   end;
 end;
@@ -142,9 +150,15 @@ begin
     if assigned(jo) then
     begin
       js := TInterfacedJsonObject.New(jo, false);
+      if (not assigned(js)) or (not assigned(js.JSON)) then
+        raise Exception.Create
+          ('JSON string inválido, revisar o body da mensagem');
       isArray := js.JSON is TJsonArray;
     end;
   end;
+
+  FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
+    as IJsonODastaServiceResource;
 
   result := 0;
   freeAndNil(FQuery);
@@ -155,6 +169,9 @@ begin
     begin
       for ji in js.AsArray do
       begin
+        if not assigned(FResource) then
+          FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
+            as IJsonODastaServiceResource;
         FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji,
           GetPrimaryKey(FQuery.Connection, FResource.collection));
         FQuery.ExecSQL;
@@ -171,14 +188,14 @@ begin
     end;
     FQuery.Connection.Commit;
   except
-    on e: exception do
+    on e: Exception do
     begin
       FQuery.Connection.Rollback;
       result := 0;
       if e.Message.StartsWith('{') then
         raise
       else
-        raise exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, e.Message));
     end;
   end;
 end;
@@ -197,8 +214,14 @@ begin
   if ABody <> '' then
   begin
     js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
+    if (not assigned(js)) or (not assigned(js.JSON)) then
+      raise Exception.Create
+        ('JSON string inválido, revisar o body da mensagem');
     isArray := js.JSON is TJsonArray;
   end;
+
+  FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
+    as IJsonODastaServiceResource;
 
   result := 0;
   freeAndNil(FQuery);
@@ -224,14 +247,14 @@ begin
     end;
     FQuery.Connection.Commit;
   except
-    on e: exception do
+    on e: Exception do
     begin
       FQuery.Connection.Rollback;
       result := 0;
       if e.Message.StartsWith('{') then
         raise
       else
-        raise exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, e.Message));
     end;
   end;
 end;
@@ -258,7 +281,8 @@ begin
     begin
       TFDConnection(AConnection).GetKeyFieldNames('', '', ACollection, '', str);
       str.Delimiter := ',';
-      result := StringReplace(str.DelimitedText, '"', '', [rfReplaceAll]).ToLower;
+      result := StringReplace(str.DelimitedText, '"', '',
+        [rfReplaceAll]).ToLower;
     end
     else
     begin
@@ -325,11 +349,11 @@ begin
     CreateEntitiesSchema(FQuery, JSONResponse);
 
   except
-    on e: exception do
+    on e: Exception do
       if e.Message.StartsWith('{') then
         raise
       else
-        raise exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, e.Message));
   end;
 end;
 

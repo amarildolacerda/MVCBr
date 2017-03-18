@@ -23,20 +23,20 @@ Type
   TODataDialect = class(TInterfacedObject, IODataDialect)
   private
   protected
-    FKeyID:string;
+    FKeyID: string;
     FResource: IJsonODastaServiceResource;
     FCollection: string;
     FResourceName: string;
     FOData: IODataDecode;
     function GetResource: IInterface; overload;
-    function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
-      : string; virtual;
+    function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;
+      AKeys: string): string; virtual;
     function createGETQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
     function CreatePostQuery(oData: IODataDecode; AJson: TJsonValue)
       : String; virtual;
-    function createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
-      : String; virtual;
+    function createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;
+      AKeys: string): String; virtual;
 
     procedure CreateGroupBy(var Result: string; FGroupBy: string); virtual;
     procedure CreateOrderBy(oData: IODataDecode; const AInLineCount: Boolean;
@@ -54,8 +54,7 @@ Type
     procedure &or(var Result: string); virtual;
   public
     function Collection: string; virtual;
-    function GetResource(AResource: string): IJsonODastaServiceResource;
-      overload; virtual;
+    function GetResource(AResource: string): IInterface; overload; virtual;
     function Relation(AResource: string; ARelation: String)
       : IJsonObject; virtual;
     function GetWhereFromJson(const AJson: TJsonValue): String; virtual;
@@ -107,7 +106,9 @@ begin
   params := '';
   for p in js.JSONObject do
   begin
-    if (p.JsonString.Value = cODataRowState) or (ODataIgnoreColumns.IndexOfItem(FResourceName,p.JsonString.Value)>=0) then
+    if (p.JsonString.Value = cODataRowState) or
+      (ODataIgnoreColumns.IndexOfItem(FResourceName, p.JsonString.Value) >= 0)
+    then
       continue;
     if cols <> '' then
     begin
@@ -132,8 +133,7 @@ begin
   Result := FResource;
 end;
 
-function TODataDialect.GetResource(AResource: string)
-  : IJsonODastaServiceResource;
+function TODataDialect.GetResource(AResource: string): IInterface;
 begin
   Result := ODataServices.resource(AResource);
   if not assigned(Result) then
@@ -156,7 +156,9 @@ begin
   cols := '';
   for p in js.JSONObject do
   begin
-    if (p.JsonString.Value = cODataRowState) or (ODataIgnoreColumns.IndexOfItem(FResourceName,p.JsonString.Value)>=0) then
+    if (p.JsonString.Value = cODataRowState) or
+      (ODataIgnoreColumns.IndexOfItem(FResourceName, p.JsonString.Value) >= 0)
+    then
       continue;
     if cols <> '' then
     begin
@@ -179,7 +181,8 @@ var
   p: TJsonPair;
 begin
   Result := '';
-  if AJson=nil then exit;
+  if AJson = nil then
+    exit;
 
   js := TInterfacedJsonObject.New(AJson as TJSONObject, false);
   if (not assigned(AJson)) then
@@ -187,7 +190,9 @@ begin
       'JSON inválido para gerar Where'));
   for p in js.JSONObject do
   begin
-    if (p.JsonString.Value = cODataRowState) or (ODataIgnoreColumns.IndexOfItem(FResourceName,p.JsonString.Value)>=0) then
+    if (p.JsonString.Value = cODataRowState) or
+      (ODataIgnoreColumns.IndexOfItem(FResourceName, p.JsonString.Value) >= 0)
+    then
       continue;
     if Result <> '' then
       Result := Result + ' and ';
@@ -271,7 +276,7 @@ begin
   if not assigned(AJson) then
     raise Exception.Create(TODataError.Create(500,
       'Não enviou dados a serem inseridos'));
-  AResource := GetResource(oData.resource);
+  AResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
   if pos('POST', AResource.method) = 0 then
     raise Exception.Create(TODataError.Create(403,
@@ -299,22 +304,23 @@ begin
   end;
 end;
 
-function TODataDialect.createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
-      : String;
+function TODataDialect.createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;
+  AKeys: string): String;
 var
   AResource: IJsonODastaServiceResource;
   FUpdate: string;
   FWhere, FWhere2: string;
   child: IODataDecode;
-  FKeys: string;
+  FKeys, sKeys: string;
   AValue: TJsonValue;
   js: IJsonObject;
   jv: TJsonValue;
+  str: TStringList;
 begin
   if not assigned(AJson) then
     raise Exception.Create(TODataError.Create(500,
       'Não enviou dados a serem inseridos'));
-  AResource := GetResource(oData.resource);
+  AResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
   if (pos('PUT', AResource.method) = 0) and (pos('PATCH', AResource.method) = 0)
   then
@@ -345,21 +351,34 @@ begin
   end;
 
   FWhere2 := '';
-  if (FWhere = '') and (AResource.keyID <> '') then
+  FKeys := AKeys;
+  if (FWhere = '') and (FKeys <> '') then
   begin
-    js := TInterfacedJsonObject.New(AJson, false);
-    if assigned(AJson) then
-    begin
-      jv := js.JSONObject.GetValue(AResource.keyID);
-      if assigned(jv) then
+    str := TStringList.Create;
+    try
+      str.Delimiter := ',';
+      str.DelimitedText := FKeys;
+      for sKeys in str do
       begin
-        case TInterfacedJsonObject.GetJsonType(jv) of
-          jtNumber:
-            FWhere2 := FWhere + AResource.keyID + '=' + jv.Value;
-        else
-          FWhere2 := FWhere + AResource.keyID + '=' + QuotedStr(jv.Value);
+        js := TInterfacedJsonObject.New(AJson, false);
+        if assigned(AJson) then
+        begin
+          jv := js.JSONObject.GetValue(sKeys);
+          if assigned(jv) then
+          begin
+            if FWhere2 <> '' then
+              FWhere2 := FWhere2 + ' and ';
+            case TInterfacedJsonObject.GetJsonType(jv) of
+              jtNumber:
+                FWhere2 := FWhere2 + sKeys + '=' + jv.Value;
+            else
+              FWhere2 := FWhere2 + sKeys + '=' + QuotedStr(jv.Value);
+            end;
+          end;
         end;
       end;
+    finally
+      str.Free;
     end;
   end;
 
@@ -412,7 +431,8 @@ begin
       if assigned(ARelation) then
       begin
         /// achou um relation
-        ARelationResource := GetResource(child.resource);
+        ARelationResource := GetResource(child.resource)
+          as IJsonODastaServiceResource;
         /// busca os dados de resource para o relation solicitado (master)
         sourceKey := ARelation.sourceKey;
         targetKey := ARelation.targetKey;
@@ -448,14 +468,14 @@ begin
   end;
 end;
 
-function TODataDialect.createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;AKeys:string)
-      : string;
+function TODataDialect.createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;
+  AKeys: string): string;
 var
   AResource: IJsonODastaServiceResource;
   child: IODataDecode;
   FWhere, FWhere2, FKeys: string;
 begin
-  AResource := GetResource(oData.resource);
+  AResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
   if pos('DELETE', AResource.method) = 0 then
     raise Exception.Create(TODataError.Create(403,
@@ -479,7 +499,6 @@ begin
   child := oData;
 
   if child.ResourceParams.Count > 0 then
-  /// checa se tem parameteros   ex:   grupos('07')
   begin
     FKeys := GetWhereFromParams(child, '', AResource.keyID);
     /// gera a where para o parametro
@@ -487,8 +506,8 @@ begin
       FWhere := '(' + FWhere + ') and (' + FKeys + ')'
     else
       FWhere := FKeys;
-
   end;
+
   if FWhere = '' then
     raise Exception.Create(TODataError.Create(403,
       'Não permitidido excluir todas as linhas'));
@@ -513,7 +532,7 @@ begin
   try
     Result := 'select ';
     FWhere := '';
-    FResource := GetResource(oData.resource);
+    FResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
     if FResource.method <> '' then
       if pos('GET', FResource.method) = 0 then
@@ -551,9 +570,8 @@ begin
     /// monta o select  primeira tabela
     Result := Result + TopCmdAfterFromStmt(ATop, ASkip);
 
-    if FResource.join<>'' then
-      result := result+ ' '+FResource.join;
-
+    if FResource.join <> '' then
+      Result := Result + ' ' + FResource.join;
 
     // relations
     child := oData;
@@ -612,7 +630,7 @@ var
   rs: IJsonODastaServiceResource;
 begin
   try
-    rs := GetResource(AResource);
+    rs := GetResource(AResource) as IJsonODastaServiceResource;
     Result := TInterfacedJsonObject.New(rs.Relation(ARelation).JSON);
     if not assigned(Result) then
       raise Exception.Create('Serviços não disponível para o resource detalhe: '
@@ -661,7 +679,7 @@ end;
 
 initialization
 
-ODataIgnoreColumns := TODataIgnoreColumns.create;
+ODataIgnoreColumns := TODataIgnoreColumns.Create;
 
 finalization
 

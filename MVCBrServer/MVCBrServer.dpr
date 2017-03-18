@@ -18,8 +18,6 @@ uses
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
-  oData.Client.Builder in '..\oData\oData.Client.Builder.pas',
-  oData.Client in '..\oData\oData.Client.pas',
   oData.Collections in '..\oData\oData.Collections.pas',
   oData.Dialect.Firebird in '..\oData\oData.Dialect.Firebird.pas',
   oData.Dialect in '..\oData\oData.Dialect.pas',
