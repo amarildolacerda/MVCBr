@@ -10,10 +10,11 @@ unit oData.Comp.Client;
 
 interface
 
-uses System.Classes, System.RTTI, System.SysUtils, System.Generics.Collections,
+uses System.Classes, System.RTTI,
+  System.SysUtils,
+  System.Generics.Collections,
   Data.DB, System.JSON,
-  MVCBr.idHTTPRestClient,
-  oData.Client.Builder;
+  MVCBr.idHTTPRestClient;
 
 Type
 

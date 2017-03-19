@@ -85,7 +85,7 @@ implementation
 uses
   System.JSON.Helper, ObjectsMappers,
   System.DateUtils,
-  System.Rtti {,REST.Response.Adapter};
+  System.Rtti ;
 
 { TIdHTTPDataSetAdapter }
 

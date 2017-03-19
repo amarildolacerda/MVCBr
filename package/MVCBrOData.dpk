@@ -24,16 +24,24 @@ package MVCBrOData;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
+{$DEFINE BPL}
 {$ENDIF IMPLICITBUILDING}
-{$IMPLICITBUILD ON}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
+  DesignIDE,
+  dbrtl,
+  soaprtl,
+  DbxCommonDriver,
   IndySystem,
   IndyProtocols,
   IndyCore,
-  DesignIDE,
-  dbrtl,
+  RESTComponents,
+  FireDAC,
+  FireDACCommonDriver,
+  FireDACCommon,
   MVCBrVCL;
 
 contains

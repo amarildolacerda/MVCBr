@@ -24,26 +24,24 @@ package MVCBrFireDAC;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
+{$DEFINE BPL}
 {$ENDIF IMPLICITBUILDING}
-{$IMPLICITBUILD ON}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
 
 requires
   rtl,
   DesignIDE,
-  dbrtl,
-  DbxCommonDriver,
-  CustomIPTransport,
   IndySystem,
   IndyProtocols,
   IndyCore,
-  bindengine,
-  bindcomp,
-  RESTComponents,
   FireDAC,
   FireDACCommonDriver,
   FireDACCommon,
-  DataSnapFireDAC,
-  MVCBrVCL;
+  MVCBrVCL,
+  DbxCommonDriver,
+  RESTComponents,
+  DataSnapFireDAC;
 
 contains
   MVCBr.FireDACReg in '..\VCL\MVCBr.FireDACReg.pas',
