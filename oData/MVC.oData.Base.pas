@@ -235,17 +235,19 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecutePATCH(CTX.Request.Body, JSONResponse);
+    try
+      r := CTX.Request.Body;
+      n := FOData.ExecutePATCH(r, JSONResponse);
+      JSONResponse.addPair('@odata.count', n.ToString);
 
-    JSONResponse.addPair('@odata.count', n.ToString);
+      if n > 0 then
+        CTX.Response.StatusCode := 201
+      else
+        CTX.Response.StatusCode := 304;
 
-    if n > 0 then
-      CTX.Response.StatusCode := 201
-    else
-      CTX.Response.StatusCode := 304;
-
-    RenderA(JSONResponse);
-
+       RenderA(JSONResponse);
+    finally
+    end;
   except
     on e: Exception do
       RenderError(CTX, e.message);
@@ -306,7 +308,7 @@ begin
     JSONResponse.addPair('@odata.count', n.ToString);
 
     if n > 0 then
-      CTX.Response.StatusCode := 201
+      CTX.Response.StatusCode := 200
     else
       CTX.Response.StatusCode := 304;
 
@@ -332,25 +334,12 @@ var
   arr: TJsonArray;
   n: integer;
   erro: TJsonObject;
-  // jo: TJsonValue;
 begin
   try
-    // jo := nil;
     try
-      (* try
-        if CTX.Request.Body <> '' then
-        jo := TJsonObject.ParseJSONValue(CTX.Request.Body);
-        except
-        end;
-        //if not assigned(jo) then
-        //  jo := TJsonObject.create;
-      *)
       FOData := ODataBase.create();
       FOData.DecodeODataURL(CTX);
       JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-
-      // for n := 0 to ctx.Request.QueryStringParams.Count-1 do
-      // jo. AddPair(ctx.Request.QueryStringParams.Names[n],CTX.Request.QueryStringParams.ValueFromIndex[n]);
 
       FDataset := TDataset(FOData.ExecuteGET(nil, JSONResponse));
       FDataset.first;
@@ -359,7 +348,6 @@ begin
       if assigned(arr) then
       begin
         JSONResponse.addPair('value', arr);
-        // JSON.addPair('__collection', FOData.Collection);
       end;
       if FOData.inLineRecordCount < 0 then
         FOData.inLineRecordCount := FDataset.RecordCount;
@@ -372,7 +360,6 @@ begin
 
       RenderA(JSONResponse);
     finally
-      // freeAndNil(jo);
     end;
   except
     on e: Exception do

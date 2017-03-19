@@ -77,7 +77,7 @@ var
 
 implementation
 
-uses oData.parse, oData.Engine;
+uses System.JSON.Helper, oData.parse, oData.Engine;
 
 function iff(b: Boolean; t, f: string): string;
 begin
@@ -110,6 +110,11 @@ begin
       (ODataIgnoreColumns.IndexOfItem(FResourceName, p.JsonString.Value) >= 0)
     then
       continue;
+
+    if TInterfacedJsonObject.GetJsonType(p)=jtNull then
+       continue;
+
+
     if cols <> '' then
     begin
       cols := cols + ',';
@@ -160,6 +165,10 @@ begin
       (ODataIgnoreColumns.IndexOfItem(FResourceName, p.JsonString.Value) >= 0)
     then
       continue;
+
+    if TInterfacedJsonObject.GetJsonType(p) = jtNull then
+       continue;
+
     if cols <> '' then
     begin
       cols := cols + ',';

@@ -11,7 +11,7 @@ unit oData.Comp.Client;
 interface
 
 uses System.Classes, System.RTTI, System.SysUtils, System.Generics.Collections,
-  Data.DB,
+  Data.DB, System.JSON,
   MVCBr.idHTTPRestClient,
   oData.Client.Builder;
 
@@ -81,6 +81,7 @@ Type
     FExpand: string;
     FRestClient: TIdHTTPRestClient;
     FURI: string;
+    FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
     procedure SetSelect(const Value: string);
     procedure SetFilter(const Value: string);
     procedure SetTop(const Value: integer);
@@ -93,13 +94,18 @@ Type
     procedure SetExpand(const Value: string);
     procedure AddSqlResource(var Result: string; AResource: TODataResourceItem);
     procedure SetRestClient(const Value: TIdHTTPRestClient);
+    procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
+    procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
+    procedure WriteOnBeforeApplyUpdate(const Value: TNotifyEvent);
   public
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     function ToString: string;
     function addResource(AResource: string): TODataResourceItem;
-    function execute: boolean;overload;
-    function execute(AProc: TProc): boolean;overload;
+    function execute: boolean; overload;
+    function execute(AProc: TProc): boolean; overload;
+    function ApplyUpdates(AChanges: TJsonArray;
+      AMethod: TIdHTTPRestMethod = rmPATCH): boolean;
   published
     property URI: string read FURI;
     property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
@@ -114,6 +120,10 @@ Type
     property &SkipRows: integer read FSkip write SetSkip;
     property &Count: boolean read FCount write SetCount;
     property &Expand: string read FExpand write SetExpand;
+    property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate
+      write WriteOnBeforeApplyUpdate;
+    property OnAfterApplyUpdates: TNotifyEvent read FOnAfterApplyUpdate
+      write SetOnAfterApplyUpdate;
   end;
 
 implementation
@@ -159,6 +169,42 @@ begin
     Result := Result + '(' + p + ')';
 end;
 
+function TODataBuilder.ApplyUpdates(AChanges: TJsonArray;
+  AMethod: TIdHTTPRestMethod = rmPATCH): boolean;
+var
+  rest: TIdHTTPRestClient;
+begin
+  Result := false;
+  if AChanges.count=0 then exit;
+  
+  rest := TIdHTTPRestClient.create(self);
+  try
+    if Assigned(FRestClient) then
+    begin
+      rest.IdHTTP.Request.CustomHeaders.AddStrings
+        (FRestClient.IdHTTP.Request.CustomHeaders);
+      rest.AcceptCharset := FRestClient.AcceptCharset;
+      rest.AcceptEncoding := FRestClient.AcceptEncoding;
+      rest.Accept := FRestClient.Accept;
+    end;
+    rest.Method := AMethod;
+    rest.Body.Add(AChanges.ToString);
+    rest.BaseURL := self.BaseURL;
+    rest.Resource := '/'+TODataResourceItem(FResource.items[0]).Resource;
+    rest.ResourcePreffix := self.FServicePreffix + self.FService;
+    if Assigned(FOnBeforeApplyUpdate) then
+      FOnBeforeApplyUpdate(self);
+    Result := rest.execute(
+      procedure
+      begin
+        if Assigned(FOnAfterApplyUpdate) then
+          FOnAfterApplyUpdate(self);
+      end);
+  finally
+    rest.Free;
+  end;
+end;
+
 constructor TODataBuilder.create(AOwner: TComponent);
 begin
   inherited;
@@ -181,7 +227,7 @@ end;
 function TODataBuilder.execute(AProc: TProc): boolean;
 begin
   ToString;
-  if assigned(FRestClient) then
+  if Assigned(FRestClient) then
     Result := FRestClient.execute(AProc);
 
 end;
@@ -209,6 +255,16 @@ end;
 procedure TODataBuilder.SetFilter(const Value: string);
 begin
   FFilter := Value;
+end;
+
+procedure TODataBuilder.SetOnAfterApplyUpdate(const Value: TNotifyEvent);
+begin
+  FOnAfterApplyUpdate := Value;
+end;
+
+procedure TODataBuilder.SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
+begin
+  FOnBeforeApplyUpdate := Value;
 end;
 
 procedure TODataBuilder.SetResource(const Value: TODataResourceItems);
@@ -284,13 +340,18 @@ begin
   FURI := Result;
   Result := FBaseURL + FServicePreffix + FService + Result;
 
-  if assigned(FRestClient) then
+  if Assigned(FRestClient) then
   begin
     FRestClient.BaseURL := self.BaseURL;
     FRestClient.Resource := self.FURI;
     FRestClient.ResourcePreffix := self.ServicePreffix + self.Service;
   end;
 
+end;
+
+procedure TODataBuilder.WriteOnBeforeApplyUpdate(const Value: TNotifyEvent);
+begin
+  FOnBeforeApplyUpdate := Value;
 end;
 
 { TODataResouceParams }
@@ -329,7 +390,7 @@ end;
 
 destructor TODataResourceItem.destroy;
 begin
-  FResourceParams.free;
+  FResourceParams.Free;
   inherited;
 end;
 

@@ -8,7 +8,7 @@
       "keyID": "codigo",
       "maxpagesize": 100,
       "fields": "*",
-      "method": "GET,PATCH,POST,PUT",
+      "method": "GET,PATCH,POST,PUT,DELETE",
       "relations": [
         {
           "resource": "grupos",

@@ -4,7 +4,7 @@ interface
 
 uses System.Classes, System.SysUtils,
   System.Generics.Collections, Data.DB,
-  IdHTTP;
+  IdGlobal, IdHTTP;
 
 type
 
@@ -32,6 +32,7 @@ type
     procedure SetResourcePreffix(const Value: string);
     procedure SetTimeout(const Value: integer);
     procedure SetBody(const Value: TStrings);
+    function GetIdHTTP: TIdCustomHTTP;
   protected
     function CreateURI: string;
     procedure Loaded; override;
@@ -41,7 +42,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor destroy; override;
     Property Content: String read FContent;
-    Property IdHTTP: TIdCustomHTTP read FIdHTTP;
+    Property IdHTTP: TIdCustomHTTP read GetIdHTTP;
   published
     Property Body: TStrings read FBody write SetBody;
     Property BaseURL: string read FBaseURL write SetBaseURL;
@@ -78,9 +79,9 @@ begin
   if (csDesigning in ComponentState) and (FAccept = '') then
   begin
     FAcceptCharset := 'UTF-8';
-    FAccept := 'application/json, text/plain, text/html';
+    FAccept := 'application/json; odata.metadata=minimal'; // , text/plain, text/html';
     FAcceptEncoding := 'gzip';
-    FTimeout := 30000;
+    FTimeout := 360000;
   end;
 end;
 
@@ -100,42 +101,48 @@ begin
   result := Execute(nil);
 end;
 
+function TIdHTTPRestClient.GetIdHTTP: TIdCustomHTTP;
+begin
+  result := FIdHTTP;
+end;
+
 function TIdHTTPRestClient.Execute(AProc: TProc): boolean;
 var
-  streamSource: TMemoryStream;
-  streamResponse: TMemoryStream;
+  streamSource: TStringStream;
 begin
   result := false;
-  streamSource := TMemoryStream.Create;
-  streamResponse := TMemoryStream.Create;
+  streamSource := TStringStream.Create;
   try
-    FIdHttp.Request.AcceptCharSet := FAcceptCharset;
-    FIdHttp.Request.AcceptEncoding := FAcceptEncoding;
-    FIdHTTP.Request.Accept := FAccept;
+    IdHTTP.Request.AcceptCharset := FAcceptCharset;
+    IdHTTP.Request.Charset := FAcceptCharset;
+    IdHTTP.Request.AcceptEncoding := FAcceptEncoding;
+    IdHTTP.Request.Accept := FAccept ;
+    IdHTTP.Request.ContentType := 'application/json'+'; charset='+FAcceptCharset;
+    IdHTTP.ReadTimeout := FTimeout;
+    IdHTTP.ConnectTimeout := 60000;
     if assigned(FBody) and (FBody.Count > 0) then
-      FBody.SaveToStream(streamSource);
+      streamSource.WriteString(FBody.text);
     streamSource.Position := 0;
     case FMethod of
       rmGET:
-        FContent := FIdHTTP.Get(CreateURI);
+        FContent := IdHTTP.Get(CreateURI);
       rmPUT:
-        FContent := FIdHTTP.Put(CreateURI, streamSource);
+        FContent := IdHTTP.Put(CreateURI, streamSource);
       rmPOST:
-        FContent := FIdHTTP.Post(CreateURI, streamSource);
+        FContent := IdHTTP.Post(CreateURI, FBody);
       rmPATCH:
-        FContent := FIdHTTP.Patch(CreateURI, streamSource);
+          FContent := IdHTTP.Patch(CreateURI, streamSource);
       rmOPTIONS:
-        FContent := FIdHTTP.Options(CreateURI);
+        FContent := IdHTTP.Options(CreateURI);
       rmDELETE:
-        FContent := FIdHTTP.Delete(CreateURI);
+        FContent := IdHTTP.Delete(CreateURI);
     end;
-    result := (FIdHTTP.Response.ResponseCode >= 200) and
-      (FIdHTTP.Response.ResponseCode <= 299);
+    result := (IdHTTP.Response.ResponseCode >= 200) and
+      (IdHTTP.Response.ResponseCode <= 299);
     if assigned(AProc) then
       AProc();
   finally
-    streamSource.DisposeOf;
-    streamResponse.DisposeOf;
+    freeAndNil(streamSource);
   end;
 
 end;

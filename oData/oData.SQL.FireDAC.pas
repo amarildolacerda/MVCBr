@@ -64,8 +64,10 @@ var
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
+  iLin:Integer;
 begin
   inherited;
+  iLin:=0;
   isArray := false;
   AJson := ABody;
   if ABody <> '' then
@@ -90,6 +92,7 @@ begin
     begin
       for ji in js.AsArray do
       begin
+        inc(iLin);
         FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji,
           GetPrimaryKey(FQuery.Connection, FResource.collection));
         FQuery.ExecSQL;
@@ -99,6 +102,7 @@ begin
     end
     else
     begin
+      inc(iLin);
       if js = nil then
         FQuery.SQL.Text := CreateDeleteQuery(FODataParse, nil,
           GetPrimaryKey(FQuery.Connection, FResource.collection))
@@ -117,7 +121,7 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501,'Linha: '+iLin.toString+', '+ e.Message));
     end;
   end;
 end;
@@ -140,8 +144,11 @@ var
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
+  sKeys: string;
+  iLin:integer;
 begin
   inherited;
+  iLin := 0;
   isArray := false;
   AJson := ABody;
   if ABody <> '' then
@@ -169,11 +176,14 @@ begin
     begin
       for ji in js.AsArray do
       begin
+        inc(iLin);
         if not assigned(FResource) then
           FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
             as IJsonODastaServiceResource;
-        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji,
-          GetPrimaryKey(FQuery.Connection, FResource.collection));
+        sKeys := GetPrimaryKey(FQuery.Connection, FResource.collection);
+        if sKeys = '' then
+          sKeys := FResource.keyID;
+        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji, sKeys);
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -181,6 +191,7 @@ begin
     end
     else
     begin
+      inc(iLin);
       FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue,
         GetPrimaryKey(FQuery.Connection, FResource.collection));
       FQuery.ExecSQL;
@@ -195,7 +206,7 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, 'Linha: '+iLin.ToString+', '+ e.Message));
     end;
   end;
 end;
@@ -207,8 +218,10 @@ var
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
+  iLin:integer;
 begin
   inherited;
+  iLin := 0;
   isArray := false;
   AJson := ABody;
   if ABody <> '' then
@@ -233,6 +246,7 @@ begin
     begin
       for ji in js.AsArray do
       begin
+        inc(iLin);
         FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji);
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
@@ -241,6 +255,7 @@ begin
     end
     else
     begin
+      inc(iLin);
       FQuery.SQL.Text := CreatePOSTQuery(FODataParse, js.JsonValue);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
@@ -254,7 +269,7 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, 'Linha: '+iLin.ToString+', '+e.Message));
     end;
   end;
 end;

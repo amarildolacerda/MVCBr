@@ -11,9 +11,16 @@ uses System.Classes, System.SysUtils,
 type
 
   TAdapterResponserType = (pureJSON);
+  TRowSetChangeType = (rctInserted, rctDeleted, rctModified);
 
+const
+  TDatarowChangeTypeName: array [low(TRowSetChangeType)
+    .. high(TRowSetChangeType)] of string = ('inserted', 'deleted', 'modified');
+
+type
   TODataDatasetAdapter = class(TComponent)
   private
+    FChanges: TJsonArray;
     FJsonValue: TJsonValue;
     FActive: boolean;
     FDataset: TDataset;
@@ -21,6 +28,7 @@ type
     FRootElement: string;
     FResponseType: TAdapterResponserType;
     FBuilder: TODataBuilder;
+    FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
     procedure SetDataset(const Value: TDataset);
     procedure SetActive(const Value: boolean);
     procedure SetResponseJSON(const Value: TIdHTTPRestClient);
@@ -30,8 +38,12 @@ type
       AOperation: TOperation); override;
     procedure SetResponseType(const Value: TAdapterResponserType);
     procedure SetBuilder(const Value: TODataBuilder);
+    procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
+    procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
 
   public
+    constructor create(AOwner: TComponent); override;
+    destructor destroy; override;
     function Execute: boolean;
     class procedure FillDatasetFromJSONValue(ARootElement: string;
       ADataset: TDataset; AJSON: TJsonValue;
@@ -43,6 +55,16 @@ type
       AJSONArray: TJsonValue); static;
     class procedure CreateFieldsFromJsonRow(FDataset: TDataset;
       AJSON: TJsonObject); static;
+
+    // Array's changes
+    property Changes: TJsonArray read FChanges;
+    procedure AddChanges(ATypeChange: TRowSetChangeType; AJsonRow: TJsonValue);
+    procedure AddRowSet(ATypeChange:TRowSetChangeType;ADataset:TDataset);
+    function UpdatesPending: boolean;
+    procedure ClearChanges;
+    procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>;
+      AMethod: TIdHTTPRestMethod = rmPATCH);overload;
+    procedure ApplyUpdates;overload;
   published
     property Builder: TODataBuilder read FBuilder write SetBuilder;
     Property Active: boolean read GetActive write SetActive;
@@ -52,16 +74,79 @@ type
     Property RootElement: string read FRootElement write SetRootElement;
     Property ResponseType: TAdapterResponserType read FResponseType
       write SetResponseType default pureJSON;
+    property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate
+      write SetOnBeforeApplyUpdate;
+    property OnAfterApplyUpdates: TNotifyEvent read FOnAfterApplyUpdate
+      write SetOnAfterApplyUpdate;
   end;
 
 implementation
 
 uses
-  System.JSON.Helper,
+  System.JSON.Helper, ObjectsMappers,
   System.DateUtils,
   System.Rtti {,REST.Response.Adapter};
 
 { TIdHTTPDataSetAdapter }
+
+procedure TODataDatasetAdapter.AddChanges(ATypeChange: TRowSetChangeType;
+  AJsonRow: TJsonValue);
+begin
+  (AJsonRow as TJsonObject).addPair('rowstate',
+    TDatarowChangeTypeName[ATypeChange]);
+  FChanges.AddElement(AJsonRow);
+end;
+
+procedure TODataDatasetAdapter.ApplyUpdates(AProc: TFunc<TJsonArray, boolean>;
+  AMethod: TIdHTTPRestMethod = rmPATCH);
+begin
+
+  if assigned(FOnBeforeApplyUpdate) then
+    FOnBeforeApplyUpdate(self);
+
+  if assigned(AProc) then
+  begin
+    if AProc(FChanges) then
+    begin
+      ClearChanges;
+      if assigned(FOnAfterApplyUpdate) then
+        FOnAfterApplyUpdate(self);
+    end;
+  end
+  else if assigned(FBuilder) then
+    if FBuilder.ApplyUpdates(FChanges, AMethod) then
+    begin
+      ClearChanges;
+      if assigned(FOnAfterApplyUpdate) then
+        FOnAfterApplyUpdate(self);
+    end;
+end;
+
+procedure TODataDatasetAdapter.AddRowSet(ATypeChange: TRowSetChangeType; ADataset: TDataset);
+var js:TJsonObject;
+begin
+  js:=TJsonObject.create;
+  Mapper.DataSetToJSONObject(ADataset,js,false,nil,fpLowerCase);
+  AddChanges(ATypeChange,js);
+end;
+
+procedure TODataDatasetAdapter.ApplyUpdates;
+begin
+   ApplyUpdates(nil);
+end;
+
+procedure TODataDatasetAdapter.ClearChanges;
+begin
+  while FChanges.Count > 0 do
+    FChanges.Remove(0);
+
+end;
+
+constructor TODataDatasetAdapter.create(AOwner: TComponent);
+begin
+  inherited;
+  FChanges := TJsonArray.create;
+end;
 
 procedure TODataDatasetAdapter.CreateDatasetFromJson(AJSON: string);
 begin
@@ -93,7 +178,7 @@ begin
   for jv in AJSON do
   begin
     LFieldName := jv.JsonString.Value;
-    jtype := TJsonObject.GetJsonType(TJsonObject.Create(jv));
+    jtype := TJsonObject.GetJsonType(jv.JsonValue);
     case jtype of
       jtNumber:
         FDataset.FieldDefs.Add(LFieldName, ftFloat);
@@ -103,8 +188,8 @@ begin
         FDataset.FieldDefs.Add(LFieldName, ftDateTime);
       jtString:
         FDataset.FieldDefs.Add(LFieldName, ftString, 255);
-      jtUnknown,jtBytes:
-        FDataset.FieldDefs.Add(LFieldName,ftBlob);
+      jtUnknown, jtBytes:
+        FDataset.FieldDefs.Add(LFieldName, ftBlob);
     end;
   end;
 end;
@@ -113,7 +198,7 @@ class procedure TODataDatasetAdapter.CreateFieldsFromJson(FDataset: TDataset;
   AJSONArray: TJsonValue);
 var
   LJSONValue: TJsonValue;
-  ja: TJSONArray;
+  ja: TJsonArray;
   jo: TJsonObject;
 begin
   AJSONArray.TryGetValue(ja);
@@ -159,7 +244,7 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
           LValue := System.Variants.Null
         else if (LJSONValue IS TJsonObject) then
           LValue := LJSONValue.ToString
-        else if (LJSONValue IS TJSONArray) then
+        else if (LJSONValue IS TJsonArray) then
           LValue := LJSONValue.ToString
         else if LJSONValue IS TJSONString then
         begin
@@ -193,10 +278,10 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
   var
     LJSONValue: TJsonValue;
   begin
-    if AJSON is TJSONArray then
+    if AJSON is TJsonArray then
     begin
       // Multiple rows
-      for LJSONValue in TJSONArray(AJSON) do
+      for LJSONValue in TJsonArray(AJSON) do
         AddJSONDataRow(LJSONValue);
     end
     else
@@ -264,6 +349,12 @@ begin
   end;
 end;
 
+destructor TODataDatasetAdapter.destroy;
+begin
+  FChanges.DisposeOf;
+  inherited;
+end;
+
 function TODataDatasetAdapter.Execute: boolean;
 begin
   if assigned(FJsonValue) then
@@ -300,7 +391,7 @@ var
   ji: TJsonPair;
   achei: boolean;
   jo: TJsonObject;
-  jv: TJSONArray;
+  jv: TJsonArray;
 
 {$IFDEF REST}
   procedure LoadWithReflect(Const AJSON: TJsonObject; achou: Integer);
@@ -308,7 +399,7 @@ var
     LDataSets: TFDJSONDatasets;
     memDs: TFDMemTable;
   begin
-    LDataSets := TFDJSONDatasets.Create;
+    LDataSets := TFDJSONDatasets.create;
     TFDJSONInterceptor.JSONObjectToDataSets(AJSON, LDataSets);
 
     if ADataset.InheritsFrom(TFDMemTable) then
@@ -319,7 +410,7 @@ var
     else
     begin
       // cria um MemTable de passagem
-      memDs := TFDMemTable.Create(nil);
+      memDs := TFDMemTable.create(nil);
       try
         TFDMemTable(memDs).AppendData
           (TFDJSONDataSetsReader.GetListValue(LDataSets, achou));
@@ -422,6 +513,17 @@ begin
   FDataset := Value;
 end;
 
+procedure TODataDatasetAdapter.SetOnAfterApplyUpdate(const Value: TNotifyEvent);
+begin
+  FOnAfterApplyUpdate := Value;
+end;
+
+procedure TODataDatasetAdapter.SetOnBeforeApplyUpdate
+  (const Value: TNotifyEvent);
+begin
+  FOnBeforeApplyUpdate := Value;
+end;
+
 procedure TODataDatasetAdapter.SetResponseJSON(const Value: TIdHTTPRestClient);
 begin
   FResponseJSON := Value;
@@ -436,6 +538,11 @@ end;
 procedure TODataDatasetAdapter.SetRootElement(const Value: string);
 begin
   FRootElement := Value;
+end;
+
+function TODataDatasetAdapter.UpdatesPending: boolean;
+begin
+  result := FChanges.Count > 0;
 end;
 
 end.

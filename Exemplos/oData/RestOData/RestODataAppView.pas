@@ -20,8 +20,12 @@ uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
   MVCBr.View, MVCBr.FormView, MVCBr.Controller, IPPeerClient, Data.DB,
-  Datasnap.DBClient, VCL.Controls, VCL.Grids, VCL.DBGrids, REST.Client,
-  Data.Bind.Components, Data.Bind.ObjectScope, REST.Response.Adapter, MVCBr.IdHTTPRestClient;
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, MVCBr.ODataDatasetAdapter, oData.Comp.Client,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, MVCBr.IdHTTPRestClient,
+  VCL.Controls, VCL.Grids, VCL.DBGrids, VCL.StdCtrls,
+  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
 
 type
   /// Interface para a VIEW
@@ -35,9 +39,23 @@ type
     IThisAs<TRestODataAppView>, IRestODataAppView, IViewAs<IRestODataAppView>)
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
-    ClientDataSet1: TClientDataSet;
     IdHTTPRestClient1: TIdHTTPRestClient;
+    ODataBuilder1: TODataBuilder;
+    ODataDatasetAdapter1: TODataDatasetAdapter;
+    FDMemTable1: TFDMemTable;
+    Button1: TButton;
+    Button2: TButton;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure FDMemTable1BeforeApplyUpdates(DataSet: TFDDataSet);
+    procedure FDMemTable1BeforeDelete(DataSet: TDataSet);
+    procedure Button2Click(Sender: TObject);
+    procedure FDMemTable1BeforePost(DataSet: TDataSet);
+    procedure FDMemTable1AfterPost(DataSet: TDataSet);
   private
+    FLoading: boolean;
+    FState: TDataSetState;
   protected
     function Controller(const aController: IController): IView; override;
   public
@@ -65,10 +83,58 @@ begin
   result := self;
 end;
 
+procedure TRestODataAppView.FDMemTable1AfterPost(DataSet: TDataSet);
+begin
+  if not FLoading then
+    case FState of
+      dsInsert:
+        ODataDatasetAdapter1.AddRowSet(rctInserted, DataSet);
+      dsEdit:
+        ODataDatasetAdapter1.AddRowSet(rctModified, DataSet);
+    end;
+
+end;
+
+procedure TRestODataAppView.FDMemTable1BeforeApplyUpdates(DataSet: TFDDataSet);
+begin
+  ODataDatasetAdapter1.ApplyUpdates(nil, rmPATCH);
+end;
+
+procedure TRestODataAppView.FDMemTable1BeforeDelete(DataSet: TDataSet);
+begin
+  ODataDatasetAdapter1.AddRowSet(rctDeleted, DataSet);
+end;
+
+procedure TRestODataAppView.FDMemTable1BeforePost(DataSet: TDataSet);
+begin
+  FState := DataSet.State;
+end;
+
+procedure TRestODataAppView.FormCreate(Sender: TObject);
+begin
+  IdHTTPRestClient1.IdHTTP.Request.CustomHeaders.AddValue('token', 'abcdexz');
+end;
+
 class function TRestODataAppView.New(aController: IController): IView;
 begin
   result := TRestODataAppView.create(nil);
   result.Controller(aController);
+end;
+
+procedure TRestODataAppView.Button1Click(Sender: TObject);
+begin
+  FLoading := true;
+  try
+    ODataDatasetAdapter1.Execute;
+    ODataDatasetAdapter1.ClearChanges;
+  finally
+    FLoading := false;
+  end;
+end;
+
+procedure TRestODataAppView.Button2Click(Sender: TObject);
+begin
+  FDMemTable1.ApplyUpdates();
 end;
 
 function TRestODataAppView.Controller(const aController: IController): IView;
