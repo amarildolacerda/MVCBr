@@ -1,44 +1,27 @@
-{ *************************************************************************** }
-{ }
-{ }
-{ Copyright (C) Amarildo Lacerda }
-{ }
-{ https://github.com/amarildolacerda }
-{ }
-{ }
-{ *************************************************************************** }
-{ }
-{ Licensed under the Apache License, Version 2.0 (the "License"); }
-{ you may not use this file except in compliance with the License. }
-{ You may obtain a copy of the License at }
-{ }
-{ http://www.apache.org/licenses/LICENSE-2.0 }
-{ }
-{ Unless required by applicable law or agreed to in writing, software }
-{ distributed under the License is distributed on an "AS IS" BASIS, }
-{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
-{ See the License for the specific language governing permissions and }
-{ limitations under the License. }
-{ }
-{ *************************************************************************** }
-
 unit System.Json.Helper;
 
 interface
 
-{.$I Delphi.inc }
-{$IFDEF UNICODE}
-{$DEFINE XE}
-{$ENDIF}
 
-uses System.Classes, System.Types, System.SysUtils, System.Json,
+
+
+uses System.Classes, System.Types, System.SysUtils,
+  System.TypInfo,  System.JSON,
   System.Generics.collections, System.Classes.Helper,
-  RegularExpressions, DBXJsonReflect;
+  RegularExpressions {$ifndef BPL}, DBXJsonReflect{$endif};
+
+type
+
+    TJsonRecord<T:Record> = class
+      public
+       class function ToJson(O: T): string;
+       class procedure FromJson(O:T;AJson:string);
+    end;
 
 type
 
   TJsonType = (jtUnknown, jtObject, jtArray, jtString, jtTrue, jtFalse,
-    jtNumber, jtDate, jtDateTime, jtBytes);
+    jtNumber, jtDate, jtDateTime, jtBytes, jtNull);
 
   TJSONObjectHelper = class helper for TJSONObject
   private
@@ -64,9 +47,12 @@ type
     function AsArray: TJSONArray;
     function Contains(chave: string): boolean;
     function Find(chave: string): TJsonValue; virtual;
+
+{$ifndef BPL}
     function asObject: System.TObject;
-    class function FromObject<T>(AObject: T): TJSONObject; overload;
     class function FromRecord<T>(rec: T): TJSONObject;
+{$endif}
+    class function FromObject<T>(AObject: T): TJSONObject; overload;
     function addPair(chave: string; Value: integer): TJSONObject; overload;
     function addPair(chave: string; Value: Double): TJSONObject; overload;
     function addPair(chave: string; Value: TDatetime): TJSONObject; overload;
@@ -132,9 +118,108 @@ function ISOStrToDate(DateAsString: string): TDate;
 function ISOStrToTime(TimeAsString: string): TTime;
 function JSONStoreError(msg: string): TJsonValue;
 
+
+
 implementation
 
-uses db, System.Rtti, System.TypInfo, System.DateUtils, Rest.Json;
+uses db, System.Rtti,  System.DateUtils (*{$ifndef BPL}, Rest.JSON{$endif}*);
+
+
+class procedure TJsonRecord<T>.FromJson(O: T; AJson: string);
+var js:TJsonObject;
+    AContext  : TRttiContext;
+    AField    : TRttiField;
+    ARecord   : TRttiRecordType;
+    AFldName  : String;
+    AValue    : TValue;
+begin
+   js:= TJsonObject.ParseJSONValue(AJson) as TJsonObject;
+   try
+    AContext := TRttiContext.Create;
+    try
+        ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
+        for AField in ARecord.GetFields do
+        begin
+            AFldName := AField.Name;
+            AValue := js.GetValue(AFldName);
+            AField.SetValue(@O,AValue);
+        end;
+
+    finally
+      AContext.free;
+    end;
+
+   finally
+     js.Free;
+   end;
+end;
+
+class function TJsonRecord<T>.ToJson(O: T): string;
+var
+    AContext  : TRttiContext;
+    AField    : TRttiField;
+    ARecord   : TRttiRecordType;
+    AFldName  : String;
+    AValue    : TValue;
+    ArrFields : TArray<TRttiField>;
+    i:integer;
+    js:TJsonObject;
+begin
+    js := TJsonObject.Create;
+    AContext := TRttiContext.Create;
+    try
+        ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
+        ArrFields := ARecord.GetFields;
+        i := 0;
+        for AField in ArrFields do
+        begin
+            AFldName := AField.Name;
+            AValue := AField.GetValue(@O);
+            try
+            if AValue.IsEmpty then
+              js.addPair(AFldName,'NULL')
+            else
+            case AField.FieldType.TypeKind of
+               tkInteger,tkInt64:
+                    try
+                      js.addPair(AFldName,TJSONNumber.Create(Avalue.AsInt64));
+                    except
+                      js.addPair(AFldName,TJSONNumber.Create(0));
+                    end;
+               tkEnumeration:
+                      js.addPair(AFldName,TJSONNumber.Create(Avalue.AsInteger));
+               tkFloat:
+                 begin
+                    if AField.FieldType.ToString.Equals('TDateTime') then
+                      js.addPair(AFldName, FormatDateTime('yyyy-mm-dd HH:nn:ss',  AValue.AsExtended))
+                    else
+                    if AField.FieldType.ToString.Equals('TDate') then
+                      js.addPair(AFldName, FormatDateTime('yyyy-mm-dd',  AValue.AsExtended))
+                    else
+                    if AField.FieldType.ToString.Equals('TTime') then
+                      js.addPair(AFldName, FormatDateTime('HH:nn:ss',  AValue.AsExtended))
+                    else
+                      try
+                        js.addPair(AFldName,TJSONNumber.Create(Avalue.AsExtended));
+                      except
+                        js.addPair(AFldName,TJSONNumber.Create(0));
+                    end;
+                 end
+            else
+               js.addPair(AFldName,AValue.asString)
+            end;
+            except
+              js.addPair(AFldName,'NULL')
+            end;
+
+        end;
+        result := js.ToString;
+    finally
+        js.Free;
+        AContext.Free;
+    end;
+
+end;
 
 var
   LJson: TJson;
@@ -216,7 +301,9 @@ class function TJSONObjectHelper.GetJsonType(AJsonValue: TJsonValue): TJsonType;
 var
   LJsonString: TJSONString;
 begin
-  if AJsonValue is TJSONObject then
+  if AJsonValue is TJSONNull then
+    result := jtNull
+  else  if AJsonValue is TJSONObject then
     result := jtObject
   else if AJsonValue is TJSONArray then
     result := jtArray
@@ -319,7 +406,7 @@ end;
 
 {$IFNDEF MULTI_THREADED}
 
-function Json: TJson;
+function JSON: TJson;
 begin
   if not assigned(LJson) then
     LJson := TJson.Create;
@@ -427,6 +514,7 @@ begin
   result := TJSONObject.ParseJSONValue(dados) as TJSONObject;
 end;
 
+{$ifndef BPL}
 class function TJSONObjectHelper.FromRecord<T>(rec: T): TJSONObject;
 var
   m: TJSONMarshal;
@@ -434,6 +522,7 @@ var
 begin
   result := TJSONObject.FromObject<T>(rec);
 end;
+{$endif}
 
 class function TJSONObjectHelper.FromObject<T>(AObject: T): TJSONObject;
 var
@@ -672,6 +761,7 @@ begin
   result := V;
 end;
 
+{$ifndef BPL}
 function TJSONObjectHelper.asObject: System.TObject;
 var
   m: TJSONunMarshal;
@@ -683,6 +773,7 @@ begin
     m.Free;
   end;
 end;
+{$endif}
 
 {$IFDEF VER270}
 
