@@ -1,48 +1,48 @@
 ClassHeader=
-'{//************************************************************//}'+ #10#13 +
-'{//                                                            //}'+ #10#13 +
-'{//         Código gerado pelo assistente                      //}'+ #10#13 +
-'{//                                                            //}'+ #10#13 +
-'{//         Projeto MVCBr                                      //}'+ #10#13 +
-'{//         tireideletra.com.br  / amarildo lacerda            //}'+ #10#13 +
-'{//************************************************************//}'+ #10#13 +
-'{// Data: %date                                  //}'+ #10#13 +
+'{//************************************************************//}'+ #13#10 +
+'{//                                                            //}'+ #13#10 +
+'{//         Código gerado pelo assistente                      //}'+ #13#10 +
+'{//                                                            //}'+ #13#10 +
+'{//         Projeto MVCBr                                      //}'+ #13#10 +
+'{//         tireideletra.com.br  / amarildo lacerda            //}'+ #13#10 +
+'{//************************************************************//}'+ #13#10 +
+'{// Data: %date                                  //}'+ #13#10 +
 '{//************************************************************//}';
 
-ClassCode = 'unit %UnitIdent;                                 ' + #10#13 +
-  '                                                    ' + #10#13 +
-  ' ///                                                ' + #10#13 +
-  ' /// <summary>                                            ' + #10#13 +
-  ' ///    O Model recebe as regras de negócios        ' + #10#13 +
-  ' ///    do sistema.                                 ' + #10#13 +
-  ' /// </ummary>                                            ' + #10#13 +
-  ' ///                                                ' + #10#13 +
-  'interface                                                 ' + #10#13 +
-  'uses                                                      ' + #10#13 +
-  '  System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,' + #10#13 +
-  '  MVCBr.Interf, MVCBr.View;    ' + #10#13 +
-  '                                                          ' + #10#13 +
-  'type                                                      ' + #10#13 +
-  '  T%FormIdent = class(T%AncestorIdent       )             ' + #10#13 +
-  '  private                                                 ' + #10#13 +
-  '    { Private declarations }                              ' + #10#13 +
-  '  public                                                  ' + #10#13 +
-  '    { Public declarations }                               ' + #10#13 +
-  '  end;                                                    ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '  TView%FormIdent = class(TViewFactory)                   ' + #10#13 +
-  '    protected                                             ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '    public                                                ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '  end;                                                    ' + #10#13 +
-  '                                                          ' + #10#13 +
-  'var                                                       ' + #10#13 +
-  '  %FormIdent: T%FormIdent;                                ' + #10#13 +
-  '                                                          ' + #10#13 +
-  'implementation                                            ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '{$R *.dfm}                                                ' + #10#13 +
-  '                                                          ' + #10#13 +
-  'end.                                                      ' + #10#13;
+ClassCode = 'unit %UnitIdent;                                 ' + #13#10 +
+  '                                                    ' + #13#10 +
+  ' ///                                                ' + #13#10 +
+  ' /// <summary>                                            ' + #13#10 +
+  ' ///    O Model recebe as regras de negócios        ' + #13#10 +
+  ' ///    do sistema.                                 ' + #13#10 +
+  ' /// </ummary>                                            ' + #13#10 +
+  ' ///                                                ' + #13#10 +
+  'interface                                                 ' + #13#10 +
+  'uses                                                      ' + #13#10 +
+  '  System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,' + #13#10 +
+  '  MVCBr.Interf, MVCBr.View;    ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'type                                                      ' + #13#10 +
+  '  T%FormIdent = class(T%AncestorIdent       )             ' + #13#10 +
+  '  private                                                 ' + #13#10 +
+  '    { Private declarations }                              ' + #13#10 +
+  '  public                                                  ' + #13#10 +
+  '    { Public declarations }                               ' + #13#10 +
+  '  end;                                                    ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '  TView%FormIdent = class(TViewFactory)                   ' + #13#10 +
+  '    protected                                             ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '    public                                                ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '  end;                                                    ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'var                                                       ' + #13#10 +
+  '  %FormIdent: T%FormIdent;                                ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'implementation                                            ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '{$R *.dfm}                                                ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'end.                                                      ' + #13#10;

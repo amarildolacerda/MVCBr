@@ -37,6 +37,7 @@ requires
   MVCBrVCL;
 
 contains
-  MVCBr.FMX.PageView in '..\FMX\MVCBr.FMX.PageView.pas';
+  MVCBr.FMX.PageView in '..\FMX\MVCBr.FMX.PageView.pas',
+  MVCBr.FMX.LayoutViewManager in '..\FMX\MVCBr.FMX.LayoutViewManager.pas';
 
 end.

@@ -105,6 +105,18 @@ var
     end;
   end;
 
+var
+  LCriarPathModule: boolean;
+  function GetNewPath(ASubPath: string): string;
+  begin
+    if LCriarPathModule then
+      result := path
+    else
+      result := extractFilePath(project)  + ASubPath+'\';
+    if not directoryExists(result) then
+      ForceDirectories(result);
+  end;
+
 begin
   project := getProjectName;
   // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
@@ -131,29 +143,30 @@ begin
       end
       else
       begin
+        LCriarPathModule := cbCreateDir.Checked;
         if cbCreateDir.Checked then
         begin
-          path := path +setname+'\';//+GetUnitSubFolder(setname);
+          path := path + setname + '\'; // +GetUnitSubFolder(setname);
           if not directoryExists(path) then
             ForceDirectories(path);
         end;
 
         ChDir(extractFilePath(project));
 
-        Ctrl := TControllerCreator.create(path, setname, false, CreateModule,
-          CreateView, ModelAlone, ViewAlone, trim(lowercase(edtClassName.Text))
-          = 'tform');
+        Ctrl := TControllerCreator.create(GetNewPath('Controllers'), setname,
+          false, CreateModule, CreateView, ModelAlone, ViewAlone,
+          trim(lowercase(edtClassName.Text)) = 'tform');
         Ctrl.IsFMX := chFMX.Checked;
         Ctrl.IsInterf := true;
-        Ctrl.Templates.Values['%MdlInterf']:= setname + '.Controller.Interf';
+        Ctrl.Templates.Values['%MdlInterf'] := setname + '.Controller.Interf';
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
-        Ctrl := TControllerCreator.create(path, setname, false, CreateModule,
-          CreateView, ModelAlone, ViewAlone, trim(lowercase(edtClassName.Text))
-          = 'tform');
+        Ctrl := TControllerCreator.create(GetNewPath('Controllers'), setname,
+          false, CreateModule, CreateView, ModelAlone, ViewAlone,
+          trim(lowercase(edtClassName.Text)) = 'tform');
         Ctrl.IsFMX := chFMX.Checked;
         Ctrl.IsInterf := false;
-        Ctrl.Templates.Values['%MdlInterf']:= setname + '.Controller.Interf';
+        Ctrl.Templates.Values['%MdlInterf'] := setname + '.Controller.Interf';
         if CreateView then
         begin
           Debug('Create controller for ViewModel');
@@ -173,7 +186,7 @@ begin
 
         if ViewAlone and CreateView then
         begin
-          view := TViewCreator.create(path, setname, false);
+          view := TViewCreator.create(GetNewPath('Views'), setname, false);
           view.IsFMX := chFMX.Checked;
           view.SetAncestorName(trim(edtClassName.Text));
           (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
@@ -181,32 +194,34 @@ begin
 
         if ModelAlone and CreateModule then
         begin
-          Model := TModelCreator.create(path, setname, false);
+          Model := TModelCreator.create(GetNewPath('Models'), setname, false);
           Model.IsFMX := chFMX.Checked;
-          Model.Templates.Add('%MdlInterf='+ setname + '.Model.Interf');
+          Model.Templates.Add('%MdlInterf=' + setname + '.Model.Interf');
           (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
-          Model := TModelCreator.create(path, setname, false);
+          Model := TModelCreator.create(GetNewPath('Models'), setname, false);
           Model.IsFMX := chFMX.Checked;
-          Model.Templates.Add('%MdlInterf='+ setname + '.Model.Interf');
+          Model.Templates.Add('%MdlInterf=' + setname + '.Model.Interf');
           Model.IsInterf := true;
           (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
         end;
 
         if CreateViewModule then
         begin
-          viewModel := TViewModelCreator.create(path, setname, false);
+          viewModel := TViewModelCreator.create(GetNewPath('ViewModels'),
+            setname, false);
           viewModel.IsInterf := false;
           viewModel.IsFMX := chFMX.Checked;
-          viewModel.Templates.Add('%MdlInterf='+
-            setname + '.ViewModel.Interf');
+          viewModel.Templates.Add('%MdlInterf=' + setname +
+            '.ViewModel.Interf');
           (BorlandIDEServices as IOTAModuleServices).CreateModule(viewModel);
 
-          viewModel := TViewModelCreator.create(path, setname, false);
+          viewModel := TViewModelCreator.create(GetNewPath('ViewModels'),
+            setname, false);
           viewModel.IsInterf := false;
           viewModel.IsFMX := chFMX.Checked;
-          viewModel.Templates.Add('%MdlInterf='+
-            setname + '.ViewModel.Interf');
+          viewModel.Templates.Add('%MdlInterf=' + setname +
+            '.ViewModel.Interf');
           viewModel.IsInterf := true;
           (BorlandIDEServices as IOTAModuleServices).CreateModule(viewModel);
         end;

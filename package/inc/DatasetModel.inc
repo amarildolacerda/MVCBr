@@ -1,26 +1,26 @@
-DatasetModelIntef = 'Unit %UnitIdent '+CR+
-'                                                                       '+CR+
-'Interface                                                              '+CR+
-'                                                                       '+CR+
-'Uses System.Classes, MVCBr.Model,MVCBr.PersistentModel;                '+CR+
-'                                                                       '+CR+
-'Implementation                                                         '+CR+
-'                                                                       '+CR+
-'                                                                       '+CR+
-'                                                                       '+CR+
-'                                                                       '+CR+
+DatasetModelIntef = 'Unit %UnitIdent '+#13#10+
+'                                                                       '+#13#10+
+'Interface                                                              '+#13#10+
+'                                                                       '+#13#10+
+'Uses System.Classes, MVCBr.Model,MVCBr.PersistentModel;                '+#13#10+
+'                                                                       '+#13#10+
+'Implementation                                                         '+#13#10+
+'                                                                       '+#13#10+
+'                                                                       '+#13#10+
+'                                                                       '+#13#10+
+'                                                                       '+#13#10+
 'end.                                                                   ';
 
 
-DatasetModel = 'Unit %UnitIdent '+CR+
-'                                                                       '+CR+
-'Interface                                                              '+CR+
-'                                                                       '+CR+
-'Uses System.Classes, MVCBr.Model,MVCBr.PersistentModel;                '+CR+
-'                                                                       '+CR+
-'Implementation                                                         '+CR+
-'                                                                       '+CR+
-'                                                                       '+CR+
-'                                                                       '+CR+
-'                                                                       '+CR+
+DatasetModel = 'Unit %UnitIdent '+#13#10+
+'                                                                       '+#13#10+
+'Interface                                                              '+#13#10+
+'                                                                       '+#13#10+
+'Uses System.Classes, MVCBr.Model,MVCBr.PersistentModel;                '+#13#10+
+'                                                                       '+#13#10+
+'Implementation                                                         '+#13#10+
+'                                                                       '+#13#10+
+'                                                                       '+#13#10+
+'                                                                       '+#13#10+
+'                                                                       '+#13#10+
 'end.';

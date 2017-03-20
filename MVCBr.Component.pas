@@ -90,7 +90,7 @@ end;
 function TComponentFactory.ResolveController(
   const AGuidController: TGuid): IController;
 begin
-   result := GetController.ResolveController(AGuidController);
+  result := GetController.ResolveController(AGuidController);
 end;
 
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);

@@ -3,11 +3,6 @@ program MVCBrServer;
 {$APPTYPE CONSOLE}
 
 uses
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   System.SysUtils,
   MVCFramework.Logger,
   MVCFramework.Commons,

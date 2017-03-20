@@ -112,6 +112,16 @@ var
       end;
     end;
   end;
+  var LCriarPathModule:boolean;
+  function GetNewPath(ASubPath: string): string;
+  begin
+    if LCriarPathModule then
+      result := path
+    else
+      result := extractFilePath(project) + ASubPath;
+    if not directoryExists(result) then
+      ForceDirectories(result);
+  end;
 
 begin
   project := getProjectName;
@@ -137,6 +147,7 @@ begin
       end
       else
       begin
+        LCriarPathModule := cbCreateDir.Checked;
         if cbCreateDir.Checked then
         begin
           path := path + (setname) + '\';
@@ -148,7 +159,7 @@ begin
 
         debug('Pronto para criar o Modulo');
 
-        Ctrl := TControllerCreator.create(path, setname + '', false, false,
+        Ctrl := TControllerCreator.create(GetNewPath('Controllers') , setname + '', false, false,
           false, true, true, false);
         Ctrl.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
@@ -172,7 +183,7 @@ begin
         Ctrl.Templates.Add('%MdlInterf=' + setname + '.Controller.Interf');
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
-        Ctrl := TControllerCreator.create(path, setname + '', false, false,
+        Ctrl := TControllerCreator.create(GetNewPath('Controllers'), setname + '', false, false,
           false, true, true, false);
         Ctrl.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));

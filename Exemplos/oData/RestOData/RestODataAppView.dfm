@@ -90,6 +90,7 @@ object RestODataAppView: TRestODataAppView
     AcceptCharset = 'UTF-8'
     Accept = 'application/json, text/plain, text/html'
     AcceptEncoding = 'gzip'
+    Timeout = 360000
     Left = 64
     Top = 168
   end

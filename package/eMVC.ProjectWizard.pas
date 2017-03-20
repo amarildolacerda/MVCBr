@@ -103,6 +103,18 @@ var
   LIdentProject: string;
   LConfigProject: IOTABuildConfiguration;
 
+var
+  LCriarPathModule: Boolean;
+  function GetNewPath(ASubPath: string): string;
+  begin
+    if LCriarPathModule then
+      result := LPath
+    else
+      result := extractFilePath(LPathBase) + ASubPath+'\';
+    if not directoryExists(result) then
+      ForceDirectories(result);
+  end;
+
 begin
   // First create the Project
   // ProjectModule :=
@@ -119,6 +131,7 @@ begin
     begin
       LIsFMX := cbFMX.Checked;
       LAppName := edtApp.text;
+      LCriarPathModule := cbUsarNomeProjeto.Checked;
       if cbUsarNomeProjeto.Checked then
         LIdentProject := stringReplace(LAppName, '.', '', [rfReplaceAll]);
       if pos('.dpr', lowercase(LAppName)) <= 0 then
@@ -173,26 +186,25 @@ begin
   try
     debug('AppWizard: ' + LPath + LAppName);
 
-    LInclCreate := TIncludeCreator.Create(LPath, LIdentProject, false);
+    LInclCreate := TIncludeCreator.Create(LPath , LIdentProject, false);
     LInclCreate.isFMX := LIsFMX;
     LInclCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
     LInclCreate.Templates.add('%UnitBase=' + LAppName);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(LInclCreate);
 
-    LControntrollerCreate := TControllerCreator.Create(LPath, LIdentProject,
+    LControntrollerCreate := TControllerCreator.Create(GetNewPath('Controllers'), LIdentProject,
       false, true, true, false, false, true);
     debug('Main Controller Creator');
     LControntrollerCreate.Templates.add('//ViewModelInit=' + 'result.add( T' +
       LIdentProject + 'ViewModel.new(self));');
     LControntrollerCreate.isFMX := LIsFMX;
-    LControntrollerCreate.Templates.add('%ModuleIdent=' +
-      (LIdentProject));
+    LControntrollerCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
     LControntrollerCreate.Templates.add('%UnitBase=' + LAppName);
     LControntrollerCreate.createViewModel := true;
     (BorlandIDEServices as IOTAModuleServices)
       .CreateModule(LControntrollerCreate);
 
-    LControntrollerCreate := TControllerCreator.Create(LPath, LIdentProject,
+    LControntrollerCreate := TControllerCreator.Create(GetNewPath('Controllers'), LIdentProject,
       false, true, true, false, false, true);
     debug('Main Controller Creator');
     LControntrollerCreate.Templates.add('//ViewModelInit=' + 'result.add( T' +
@@ -203,18 +215,16 @@ begin
     LControntrollerCreate.createViewModel := true;
 
     LControntrollerCreate.isFMX := LIsFMX;
-    LControntrollerCreate.Templates.add('%ModuleIdent=' +
-      (LIdentProject));
+    LControntrollerCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
     LControntrollerCreate.Templates.add('%UnitBase=' + LAppName);
     LControntrollerCreate.IsInterf := true;
     (BorlandIDEServices as IOTAModuleServices)
       .CreateModule(LControntrollerCreate);
 
-    LModelInterfCreate := TViewModelCreator.Create(LPath, LIdentProject, false);
+    LModelInterfCreate := TViewModelCreator.Create(GetNewPath('Models'), LIdentProject, false);
     LModelInterfCreate.IsInterf := true;
     LModelInterfCreate.isFMX := LIsFMX;
-    LModelInterfCreate.Templates.add('%ModuleIdent=' +
-      (LIdentProject));
+    LModelInterfCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
     LModelInterfCreate.Templates.add('%UnitBase=' + LAppName);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(LModelInterfCreate);
 
@@ -228,7 +238,7 @@ begin
     (BorlandIDEServices as IOTAModuleServices).CreateModule(LModelCreate);
 
     // Now create a Form for the Project since the code added to the Project expects it.
-    LViewCreate := TViewCreator.Create(LPath, LIdentProject, false);
+    LViewCreate := TViewCreator.Create(GetNewPath('Views'), LIdentProject, false);
     LViewCreate.isFMX := LIsFMX;
     LViewCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
     LViewCreate.Templates.add('%UnitBase=' + LAppName);

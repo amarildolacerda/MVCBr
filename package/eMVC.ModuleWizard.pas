@@ -157,6 +157,18 @@ var
       end;
   end;
 
+  var LCriarPathModule:boolean;
+  function GetNewPath(ASubPath: string): string;
+  begin
+    if LCriarPathModule then
+      result := path
+    else
+      result := extractFilePath(project) + ASubPath+'\';
+    if not directoryExists(result) then
+      ForceDirectories(result);
+  end;
+
+
 begin
   project := getProjectName;
   // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
@@ -181,6 +193,7 @@ begin
       end
       else
       begin
+        LCriarPathModule := cbCreateDir.Checked;
         if cbCreateDir.Checked then
         begin
           path := path + (setname) + '\';
@@ -191,7 +204,7 @@ begin
         ChDir(extractFilePath(project));
 
         debug('Pronto para criar o Modulo');
-        Model := TDataModuleCreator.create(path,
+        Model := TDataModuleCreator.create(GetNewPath('Models'),
           setname + '.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
@@ -214,7 +227,7 @@ begin
 
         debug('Criou o Model');
 
-        Model := TDataModuleCreator.create(path,
+        Model := TDataModuleCreator.create(GetNewPath( 'Models'),
           setname + '.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));

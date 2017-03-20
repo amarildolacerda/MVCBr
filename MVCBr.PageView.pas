@@ -88,6 +88,7 @@ type
     FPageContainer: TComponent;
     FList: TMVCInterfacedList<IPageView>;
     procedure AfterConstruction; override;
+    destructor destroy; override;
     procedure SetPageContainer(const Value: TComponent); virtual;
     function GetPageContainer: TComponent; virtual;
     /// ligação para o PageControl component
@@ -217,6 +218,8 @@ begin
   result := nil;
   LController := ResolveController(AController);
 
+  assert(assigned(LController), 'Não associou um controller ao PageView');
+
   // checa se já existe uma aba para a mesma view
   LView := LController.GetView;
   if not assigned(LView) then
@@ -252,6 +255,12 @@ end;
 function TCustomPageViewFactory.Count: Integer;
 begin
   result := FList.Count;
+end;
+
+destructor TCustomPageViewFactory.destroy;
+begin
+  FList.DisposeOf;
+  inherited;
 end;
 
 function TCustomPageViewFactory.IndexOf(const AGuid: TGuid): Integer;
@@ -382,12 +391,14 @@ procedure TCustomPageViewFactory.Remove(APageView: IPageView);
 var
   i: Integer;
 begin
-  for i := 0 to Count - 1 do
-    if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
-    begin
-      FList.Delete(i);
-      exit;
-    end;
+  if assigned(FList) then
+  if FList.RefCount>0 then
+    for i := FList.Count - 1 downto 0 do
+      if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
+      begin
+        FList.Delete(i);
+        exit;
+      end;
 end;
 
 procedure TCustomPageViewFactory.SetActivePage(const Tab: TObject);

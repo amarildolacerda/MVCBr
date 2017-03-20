@@ -178,6 +178,11 @@ type
     function ThisAs: T;
   end;
 
+  ILayout = interface
+    ['{1A24C293-9D1F-417D-924D-8DB033EFC701}']
+    function GetLayout:TObject;
+  end;
+
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
     mtNavigator);

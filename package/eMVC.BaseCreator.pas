@@ -125,11 +125,6 @@ end;
 function TBaseCreator.getBaseName: string;
 begin
   Result := self.FBaseName;
-{  if pos('<',Result)>0 then
-    result := copy(result,1,pos('<',result)-1);
-  if ( result+' ')[1]='T' then
-     result := copy(result,2,255);
-}
   Debug('GetBaseName: ' + Result);
 end;
 
@@ -173,21 +168,22 @@ begin
 
   Result := FPath;
 
-  if TMVCConfig.new.IsCreateSubFolder then
+{  if TMVCConfig.new.IsCreateSubFolder then
   begin
     if sametext(FAncestorName, 'form') or sametext(FAncestorName, 'frame') then
-      Result := Result + 'view\'
+      Result := Result + 'Views\'
     else if sametext(FAncestorName, 'datamodule') then
-      Result := Result + 'module\'
+      Result := Result + 'Modules\'
     else if sametext(FAncestorName, 'model') then
-      Result := Result + 'model\'
+      Result := Result + 'Models\'
     else if sametext(FAncestorName, 'viewmodel') then
-      Result := Result + 'viewmodel\'
+      Result := Result + 'ViewModels\'
     else if sametext(FAncestorName, 'include') then
       Result := Result + 'inc\'
     else
       Result := Result + LowerCase(FAncestorName) + '\';
   end;
+}
 
   if not DirectoryExists(Result) then
     ForceDirectories(Result);

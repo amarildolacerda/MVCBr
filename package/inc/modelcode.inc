@@ -1,93 +1,93 @@
-ModelInterf = 'Unit %UnitIdent;              '+#10#13+
-  '                                                              ' + #10#13 +
-  'interface                                                     ' + #10#13 +
-  '                                                              ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'Uses MVCBr.Interf,MVCBr.Model;                               ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'Type                                                          ' + #10#13 +
-  '                                                              ' + #10#13 +
-  '  I%FormIdentModel = interface(IModel)                        ' + #10#13 +
-  '         [''%guid'']                                             ' + #10#13 +
-  '  end;                                                        ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'Implementation                                                ' + #10#13 +
-  'end.                                                          ' + #10#13 ;
+ModelInterf = 'Unit %UnitIdent;              '+#13#10+
+  '                                                              ' + #13#10 +
+  'interface                                                     ' + #13#10 +
+  '                                                              ' + #13#10 +
+  '                                                              ' + #13#10 +
+  'Uses MVCBr.Interf,MVCBr.Model;                               ' + #13#10 +
+  '                                                              ' + #13#10 +
+  'Type                                                          ' + #13#10 +
+  '                                                              ' + #13#10 +
+  '  I%FormIdentModel = interface(IModel)                        ' + #13#10 +
+  '         [''%guid'']                                             ' + #13#10 +
+  '  end;                                                        ' + #13#10 +
+  '                                                              ' + #13#10 +
+  'Implementation                                                ' + #13#10 +
+  'end.                                                          ' + #13#10 ;
 
-ModelHead = 'unit %UnitIdent;                                   ' + #10#13 +
-  '                                                              ' + #10#13 +
-  '{ MVCBr                                                       ' + #10#13 +
-  '  www.tireideletra.com.br                                     ' + #10#13 +
-  '  amarildo lacerda                                            ' + #10#13 +
-  '}                                                             ' + #10#13 +
-  '//%include                                                    ' + #10#13 +
-  'interface                                                     ' + #10#13 +
-  '                                                              ' + #10#13 +
+ModelHead = 'unit %UnitIdent;                                   ' + #13#10 +
+  '                                                              ' + #13#10 +
+  '{ MVCBr                                                       ' + #13#10 +
+  '  www.tireideletra.com.br                                     ' + #13#10 +
+  '  amarildo lacerda                                            ' + #13#10 +
+  '}                                                             ' + #13#10 +
+  '//%include                                                    ' + #13#10 +
+  'interface                                                     ' + #13#10 +
+  '                                                              ' + #13#10 +
   'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+
-  'MVCBr.Interf, MVCBr.Model,     ' + #10#13 +
-  '     %ModelIdent.interf, MVCBr.Controller;                    ' + #10#13 +
-  '                                                              ' + #10#13;
+  'MVCBr.Interf, MVCBr.Model,     ' + #13#10 +
+  '     %ModelIdent.interf, MVCBr.Controller;                    ' + #13#10 +
+  '                                                              ' + #13#10;
 
-ModelDef = 'type                                                 ' + #10#13 +
-  '                                                              ' + #10#13 +
-  '                                                              ' + #10#13 +
+ModelDef = 'type                                                 ' + #13#10 +
+  '                                                              ' + #13#10 +
+  '                                                              ' + #13#10 +
   '  T%FormIdentModel = class(TModelFactory,I%FormIdentModel,' +
-  '    IThisAs<T%FormIdentModel>)    ' + #10#13 +
-  '  protected                                                   ' + #10#13 +
-  '  public                                                      ' + #10#13 +
-  '    Constructor Create; override;                             ' + #10#13 +
-  '    Destructor Destroy; override;                             ' + #10#13 +
-  '    class function new:I%FormIdentModel;overload;             ' + #10#13 +
-  '    class function new(' + #10#13 +
-  '      const AController:IController):I%FormIdentModel;overload;' + #10#13 +
-  '    function ThisAs:T%FormIdentModel;                         ' + #10#13 +
-  '    procedure AfterInit;override;                             ' + #10#13 +
+  '    IThisAs<T%FormIdentModel>)    ' + #13#10 +
+  '  protected                                                   ' + #13#10 +
+  '  public                                                      ' + #13#10 +
+  '    Constructor Create; override;                             ' + #13#10 +
+  '    Destructor Destroy; override;                             ' + #13#10 +
+  '    class function new:I%FormIdentModel;overload;             ' + #13#10 +
+  '    class function new(' + #13#10 +
+  '      const AController:IController):I%FormIdentModel;overload;' + #13#10 +
+  '    function ThisAs:T%FormIdentModel;                         ' + #13#10 +
+  '    procedure AfterInit;override;                             ' + #13#10 +
 
-  '  end;                                                        ' + #10#13 +
-  '                                                              ' + #10#13;
+  '  end;                                                        ' + #13#10 +
+  '                                                              ' + #13#10;
 
-ModelImpl = 'Constructor T%FormIdentModel.Create;                ' + #10#13 +
-  'begin                                                         ' + #10#13 +
-  ' inherited create;                                            ' + #10#13 +
-  'end;                                                          ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'Destructor T%FormIdentModel.Destroy;                          ' + #10#13 +
-  'begin                                                         ' + #10#13 +
-  '  inherited;                                                  ' + #10#13 +
-  'end;                                                          ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'function T%FormIdentModel.ThisAs: T%FormIdentModel;           ' + #10#13 +
-  'begin                                                         ' + #10#13 +
-  '  result := self;                                             ' + #10#13 +
-  'end;                                                          ' + #10#13 +
-  '                                                              ' + #10#13 +
-  'class function T%FormIdentModel.new:I%FormIdentModel;        ' + #10#13 +
-  'begin                                                         ' + #10#13+
-  '   result := new(nil);                                        ' + #10#13+
-  'end;                                                          ' + #10#13+
-  '                                                              ' + #10#13 +
-  'procedure T%FormIdentModel.AfterInit;                         ' + #10#13 +
-  'begin                                                         ' + #10#13 +
-  '    // executado apos concluido o controller                 ' + #10#13 +
-  'end;                                                          ' + #10#13 +
+ModelImpl = 'Constructor T%FormIdentModel.Create;                ' + #13#10 +
+  'begin                                                         ' + #13#10 +
+  ' inherited create;                                            ' + #13#10 +
+  'end;                                                          ' + #13#10 +
+  '                                                              ' + #13#10 +
+  'Destructor T%FormIdentModel.Destroy;                          ' + #13#10 +
+  'begin                                                         ' + #13#10 +
+  '  inherited;                                                  ' + #13#10 +
+  'end;                                                          ' + #13#10 +
+  '                                                              ' + #13#10 +
+  'function T%FormIdentModel.ThisAs: T%FormIdentModel;           ' + #13#10 +
+  'begin                                                         ' + #13#10 +
+  '  result := self;                                             ' + #13#10 +
+  'end;                                                          ' + #13#10 +
+  '                                                              ' + #13#10 +
+  'class function T%FormIdentModel.new:I%FormIdentModel;        ' + #13#10 +
+  'begin                                                         ' + #13#10+
+  '   result := new(nil);                                        ' + #13#10+
+  'end;                                                          ' + #13#10+
+  '                                                              ' + #13#10 +
+  'procedure T%FormIdentModel.AfterInit;                         ' + #13#10 +
+  'begin                                                         ' + #13#10 +
+  '    // executado apos concluido o controller                 ' + #13#10 +
+  'end;                                                          ' + #13#10 +
   'class function T%FormIdentModel.new(const AController:IController):I%FormIdentModel;'
-  + #10#13 + 'begin                                                         ' +
-  #10#13 + '  result := T%FormIdentModel.create;                          ' +
-  #10#13 + '  result.Controller(AController);                             ' +
-  #10#13 + 'end;                                                          ' +
-  #10#13 + '                                                              ' +
-  #10#13;
+  + #13#10 + 'begin                                                         ' +
+  #13#10 + '  result := T%FormIdentModel.create;                          ' +
+  #13#10 + '  result.Controller(AController);                             ' +
+  #13#10 + 'end;                                                          ' +
+  #13#10 + '                                                              ' +
+  #13#10;
 
 ModelCode = ModelHead + ModelDef +
-  '                                                              ' + #10#13 +
-  'implementation                                                ' + #10#13 +
-  '                                                              ' + #10#13 +
-  '                                                              ' + #10#13 +
+  '                                                              ' + #13#10 +
+  'implementation                                                ' + #13#10 +
+  '                                                              ' + #13#10 +
+  '                                                              ' + #13#10 +
   ModelImpl + '                                                              ' +
-  'Initialization                                                ' + #10#13 +
-  'TMVCRegister.RegisterType<I%FormIdentModel,T%FormIdentModel>(T%FormIdentModel.classname,true);' + #10#13 +
-  #10#13 + 'end.                                                          ' +
-  #10#13;
+  'Initialization                                                ' + #13#10 +
+  'TMVCRegister.RegisterType<I%FormIdentModel,T%FormIdentModel>(T%FormIdentModel.classname,true);' + #13#10 +
+  #13#10 + 'end.                                                          ' +
+  #13#10;
 
 
 ModelCodeFMX = ModelCode;

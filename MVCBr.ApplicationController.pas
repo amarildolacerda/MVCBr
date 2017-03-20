@@ -230,8 +230,10 @@ begin
     begin
       if assigned(AController) then
         AController.view(FMainView);
-      // FMainView.ShowView(nil);
+       FMainView.ShowView(nil);
+{$ifndef MSWINDOWS}
       application.Run;
+{$endif}
     end;
 
   end;

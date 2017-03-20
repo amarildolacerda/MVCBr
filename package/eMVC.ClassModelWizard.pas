@@ -197,6 +197,17 @@ var
       end;
     end;
   end;
+  var LCriarPathModule:boolean;
+  function GetNewPath(ASubPath: string): string;
+  begin
+    if LCriarPathModule then
+      result := path
+    else
+      result := extractFilePath(project) + ASubPath+'\';
+    if not directoryExists(result) then
+      ForceDirectories(result);
+  end;
+
 
   function GetUnitCorrente: string;
   var
@@ -228,7 +239,7 @@ var
     Model: TClassModelCreator;
   begin
     debug('Pronto para criar o Controller');
-    Model := TClassModelCreator.create(path, setName, false);
+    Model := TClassModelCreator.create(GetNewPath('Models'), setName, false);
     Model.templates.add('//InterfImplem=' + FInterfImplem);
     Model.templates.add('//InterfCode=' + FCodeInterf);
     Model.templates.add('%UnitBase=' + setName);
@@ -245,7 +256,7 @@ var
 
     debug('Criou o Model');
 
-    Model := TClassModelCreator.create(path, setName, false);
+    Model := TClassModelCreator.create(GetNewPath('Models'), setName, false);
     Model.templates.add('//InterfImplem=' + FInterfImplem);
     Model.templates.add('//InterfCode=' + FCodeInterf);
     Model.templates.add('%UnitBase=' + setName);
@@ -269,7 +280,7 @@ var
     Model: TClassModelCreator;
   begin
     debug('Pronto para criar o Modulo');
-    Model := TClassModelCreator.create(path, setName, false);
+    Model := TClassModelCreator.create(GetNewPath('Models'), setName, false);
     Model.templates.add('//InterfImplem=' + FInterfImplem);
     Model.templates.add('//InterfCode=' + FCodeInterf);
     Model.templates.add('%UnitBase=' + setName);
@@ -285,7 +296,7 @@ var
 
     debug('Criou o Model');
 
-    Model := TClassModelCreator.create(path, setName, false);
+    Model := TClassModelCreator.create(GetNewPath('Models'), setName, false);
     Model.templates.add('//InterfImplem=' + FInterfImplem);
     Model.templates.add('//InterfCode=' + FCodeInterf);
     Model.templates.add('%UnitBase=' + setName);
@@ -309,7 +320,7 @@ var
     ViewModel: TClassModelCreator;
   begin
     debug('Pronto para criar o Modulo');
-    ViewModel := TClassModelCreator.create(path, setName, false);
+    ViewModel := TClassModelCreator.create(GetNewPath('ViewModels'), setName, false);
     ViewModel.isViewModel := true;
     ViewModel.SetAncestorName('ViewModel');
     ViewModel.templates.add('//InterfImplem=' + FInterfImplem);
@@ -328,7 +339,7 @@ var
 
     debug('Criou o Model');
 
-    ViewModel := TClassModelCreator.create(path, setName, false);
+    ViewModel := TClassModelCreator.create(GetNewPath('ViewModels'), setName, false);
     ViewModel.isViewModel := true;
     ViewModel.SetAncestorName('ViewModel');
     ViewModel.templates.add('//InterfImplem=' + FInterfImplem);
@@ -394,7 +405,7 @@ begin
       end
       else
       begin
-
+        LCriarPathModule := cbCreateDir.Checked;
         if cbCreateDir.Checked then
         begin
           path := path + ( setName ) + '\';
