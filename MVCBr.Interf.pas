@@ -243,6 +243,7 @@ type
     property Text: string read GetText write SetText;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue);
+    function ShowView(const AProc: TProc<IView>;AShowModal:boolean): Integer; overload;
 
   end;
 
@@ -256,6 +257,7 @@ type
   /// Main Controller for all Application  - Have a list os Controllers
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
+    function MainView:IView;
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     procedure Run(AController: IController;
@@ -325,6 +327,8 @@ type
     function ResolveController(const AName: string): IController; overload;
     function ResolveController(const AIID: TGuid): IController; overload;
     procedure RevokeInstance;
+    function GetModel(const IID: TGuid; out intf): IModel; overload;
+    function GetModel(const IID: TGuid): IModel; overload;
     function This: TControllerAbstract;
     function Start: IController;
   end;

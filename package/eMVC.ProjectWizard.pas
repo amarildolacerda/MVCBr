@@ -118,7 +118,6 @@ var
 begin
   // First create the Project
   // ProjectModule :=
-  LIdentProject := 'Main';
   with TFormAppWizard.Create(nil) do
   begin
     LOk := showModal = mrOK;
@@ -131,6 +130,8 @@ begin
     begin
       LIsFMX := cbFMX.Checked;
       LAppName := edtApp.text;
+      LIdentProject := LAppName;//'Main';
+
       LCriarPathModule := cbUsarNomeProjeto.Checked;
       if cbUsarNomeProjeto.Checked then
         LIdentProject := stringReplace(LAppName, '.', '', [rfReplaceAll]);
@@ -138,9 +139,9 @@ begin
         LAppName := LAppName + '.dpr';
       debug('AppName: ' + LAppName);
       LPath := trim(edtPath.text);
-      LPathBase := trim(edtPath.text);
       if LPath[length(LPath) - 1] <> '\' then
         LPath := LPath + '\';
+      LPathBase := LPath+LAppName;
       free;
     end;
   end;

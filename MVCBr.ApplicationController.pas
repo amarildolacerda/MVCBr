@@ -46,6 +46,7 @@ type
     // MainView para o Application
     FMainView: IView;
   public
+    function MainView:IView;virtual;
     constructor create;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
@@ -157,6 +158,11 @@ begin
     end);
 end;
 
+function TApplicationController.MainView: IView;
+begin
+   result := FMainView;
+end;
+
 class function TApplicationController.New: IApplicationController;
 begin
   result := TApplicationController.create;
@@ -230,10 +236,8 @@ begin
     begin
       if assigned(AController) then
         AController.view(FMainView);
-       FMainView.ShowView(nil);
-{$ifndef MSWINDOWS}
+      FMainView.ShowView(nil, false);
       application.Run;
-{$endif}
     end;
 
   end;

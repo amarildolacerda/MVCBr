@@ -2,7 +2,8 @@ unit MVCBr.FormView;
 
 interface
 
-uses {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, System.SysUtils, System.RTTI,
+uses {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}
+  System.Classes, System.SysUtils, System.RTTI,
   MVCBr.Interf, MVCBr.View;
 
 type
@@ -84,6 +85,7 @@ type
       write SetPropertyValue;
     /// Apresenta o VIEW para o usuario
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
+    function ShowView(const AProc: TProc<IView>;AShowModal:boolean): Integer; overload; virtual;
     function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
       : IView; overload; virtual;
     function ShowView(): IView; overload;
@@ -339,6 +341,12 @@ function TFormFactory.ShowView: IView;
 begin
   result := self;
   ShowView(nil);
+end;
+
+function TFormFactory.ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
+begin
+   FShowModal :=AShowModal;
+   result := ShowView(AProc);
 end;
 
 end.

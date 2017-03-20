@@ -100,17 +100,7 @@ var
   var
     i: integer;
   begin
-    result := '';
-    for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
-    begin
-      if pos('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
-        .Modules[i].FileName)) > 0 then
-      begin
-        result := (BorlandIDEServices as IOTAModuleServices).Modules[i]
-          .FileName;
-        break;
-      end;
-    end;
+    result := GetCurrentProject.FileName;
   end;
   function GetAncestorX(idx: integer): string;
   begin
@@ -157,17 +147,22 @@ var
       end;
   end;
 
-  var LCriarPathModule:boolean;
+var
+  LCriarPathModule: boolean;
   function GetNewPath(ASubPath: string): string;
   begin
     if LCriarPathModule then
       result := path
     else
-      result := extractFilePath(project) + ASubPath+'\';
+    begin
+      result := extractFilePath(project);
+      if ((result + ' ')[length(result)]) <> '\' then
+        result := result + '\';
+      result := result + ASubPath + '\';
+    end;
     if not directoryExists(result) then
       ForceDirectories(result);
   end;
-
 
 begin
   project := getProjectName;
@@ -220,32 +215,30 @@ begin
           GetModelInher(ComboBox1.ItemIndex));
 
         if IsFMX then
-          Model.Templates.Add('*.dfm='+ '*.fmx');
-        Model.Templates.Add('%UnitBase='+ setname);
+          Model.Templates.Add('*.dfm=' + '*.fmx');
+        Model.Templates.Add('%UnitBase=' + setname);
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
         debug('Criou o Model');
 
-        Model := TDataModuleCreator.create(GetNewPath( 'Models'),
+        Model := TDataModuleCreator.create(GetNewPath('Models'),
           setname + '.ModuleModel', false);
         Model.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
-        Model.Templates.Add('%intf='+
-          ComboBox1.Items.Names[ComboBox1.ItemIndex]);
+        Model.Templates.Add('%intf=' + ComboBox1.Items.Names
+          [ComboBox1.ItemIndex]);
 
-        Model.Templates.Add('%interfInherited='+
+        Model.Templates.Add('%interfInherited=' +
           GetModelInher(ComboBox1.ItemIndex));
 
-        Model.Templates.Add('%modelType='+
-          GetModelType(ComboBox1.ItemIndex));
-        Model.Templates.Add('%modelName='+
-          GetAncestorX(ComboBox1.ItemIndex));
-        Model.Templates.Add('%class='+ComboBox1.Items.ValueFromIndex
+        Model.Templates.Add('%modelType=' + GetModelType(ComboBox1.ItemIndex));
+        Model.Templates.Add('%modelName=' + GetAncestorX(ComboBox1.ItemIndex));
+        Model.Templates.Add('%class=' + ComboBox1.Items.ValueFromIndex
           [ComboBox1.ItemIndex]);
-        Model.Templates.Add('//%uses='+ GetModelUses(ComboBox1.ItemIndex));
-        Model.Templates.Add('%UnitBase='+ setname);
+        Model.Templates.Add('//%uses=' + GetModelUses(ComboBox1.ItemIndex));
+        Model.Templates.Add('%UnitBase=' + setname);
 
         Model.isInterf := true;
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);

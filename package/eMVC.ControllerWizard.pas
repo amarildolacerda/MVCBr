@@ -34,7 +34,7 @@ interface
 {$I .\inc\Compilers.inc} // Compiler Defines
 
 uses
-  SysUtils, Windows, Controls, {$IFDEF DELPHI_5 }FileCtrl, {$ENDIF}
+  System.SysUtils, Windows, Controls, {$IFDEF DELPHI_5 }FileCtrl, {$ENDIF}
   System.Classes,
   eMVC.OTAUtilities,
   eMVC.projectcreator,
@@ -100,8 +100,9 @@ var
   var
     i: integer;
   begin
-    result := '';
-    for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
+
+    result := GetCurrentProject.FileName;
+    {for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
     begin
       if pos('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
         .Modules[i].FileName)) > 0 then
@@ -110,15 +111,22 @@ var
           .FileName;
         break;
       end;
-    end;
+    end; }
   end;
-  var LCriarPathModule:boolean;
+
+var
+  LCriarPathModule: boolean;
   function GetNewPath(ASubPath: string): string;
   begin
     if LCriarPathModule then
       result := path
     else
-      result := extractFilePath(project) + ASubPath;
+    begin
+      result := extractFilePath(project);
+      if ((result + ' ')[length(result)]) <> '\' then
+        result := result + '\';
+      result := result + ASubPath+'\';
+    end;
     if not directoryExists(result) then
       ForceDirectories(result);
   end;
@@ -159,8 +167,8 @@ begin
 
         debug('Pronto para criar o Modulo');
 
-        Ctrl := TControllerCreator.create(GetNewPath('Controllers') , setname + '', false, false,
-          false, true, true, false);
+        Ctrl := TControllerCreator.create(GetNewPath('Controllers'),
+          setname + '', false, false, false, true, true, false);
         Ctrl.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Ctrl.Templates.Add('%intf=' + ComboBox1.Items.Names
@@ -183,8 +191,8 @@ begin
         Ctrl.Templates.Add('%MdlInterf=' + setname + '.Controller.Interf');
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);
 
-        Ctrl := TControllerCreator.create(GetNewPath('Controllers'), setname + '', false, false,
-          false, true, true, false);
+        Ctrl := TControllerCreator.create(GetNewPath('Controllers'),
+          setname + '', false, false, false, true, true, false);
         Ctrl.IsFMX := cbFMX.Checked;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Ctrl.Templates.Add('%intf=' + ComboBox1.Items.Names
@@ -202,7 +210,7 @@ begin
 
         // if IsFMX then
         // Ctrl.Templates.AddPair('*.dfm', '*.fmx');
-        Ctrl.Templates.Add('%UnitBase='+ setname);
+        Ctrl.Templates.Add('%UnitBase=' + setname);
         Ctrl.Templates.values['//viewmodelUses'] := ' ';
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Ctrl);

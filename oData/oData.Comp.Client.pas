@@ -80,6 +80,7 @@ Type
     FService: string;
     FServicePreffix: string;
     FExpand: string;
+    FOrder:string;
     FRestClient: TIdHTTPRestClient;
     FURI: string;
     FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
@@ -98,6 +99,7 @@ Type
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
     procedure WriteOnBeforeApplyUpdate(const Value: TNotifyEvent);
+    procedure SetOrder(const Value: string);
   public
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
@@ -121,6 +123,7 @@ Type
     property &SkipRows: integer read FSkip write SetSkip;
     property &Count: boolean read FCount write SetCount;
     property &Expand: string read FExpand write SetExpand;
+    property &Order:string read FOrder write FOrder;
     property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate
       write WriteOnBeforeApplyUpdate;
     property OnAfterApplyUpdates: TNotifyEvent read FOnAfterApplyUpdate
@@ -268,6 +271,11 @@ begin
   FOnBeforeApplyUpdate := Value;
 end;
 
+procedure TODataBuilder.SetOrder(const Value: string);
+begin
+  FOrder := Value;
+end;
+
 procedure TODataBuilder.SetResource(const Value: TODataResourceItems);
 begin
   FResource := Value;
@@ -332,6 +340,8 @@ begin
     addUrlParams('$top', topRows.ToString);
   if SkipRows > 0 then
     addUrlParams('$skip', SkipRows.ToString);
+
+  addUrlParams('$order',Order);
   addUrlParams('$expand', Expand);
   if Count then
     addUrlParams('$count', 'true');

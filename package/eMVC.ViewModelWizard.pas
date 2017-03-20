@@ -92,17 +92,7 @@ var
   var
     i: integer;
   begin
-    result := '';
-    for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
-    begin
-      if pos('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
-        .Modules[i].FileName)) > 0 then
-      begin
-        result := (BorlandIDEServices as IOTAModuleServices).Modules[i]
-          .FileName;
-        break;
-      end;
-    end;
+    result := GetCurrentProject.FileName;
   end;
 
 var
@@ -112,7 +102,12 @@ var
     if LCriarPathModule then
       result := path
     else
-      result := extractFilePath(project)  + ASubPath+'\';
+    begin
+      result := extractFilePath(project);
+      if ((result + ' ')[length(result)]) <> '\' then
+        result := result + '\';
+      result := result + ASubPath + '\';
+    end;
     if not directoryExists(result) then
       ForceDirectories(result);
   end;

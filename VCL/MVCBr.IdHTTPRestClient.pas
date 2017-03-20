@@ -44,6 +44,7 @@ type
     Property Content: String read FContent;
     Property IdHTTP: TIdCustomHTTP read GetIdHTTP;
   published
+    Property URL:string read CreateURI;
     Property Body: TStrings read FBody write SetBody;
     Property BaseURL: string read FBaseURL write SetBaseURL;
     Property Resource: string read FResource write SetResource;

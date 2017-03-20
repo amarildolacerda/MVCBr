@@ -41,8 +41,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -96,8 +94,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         Width = 233
         Height = 17
         Caption = 'criar sub-pasta para o artefato'
-        Checked = True
-        State = cbChecked
         TabOrder = 1
       end
       object cbFMX: TCheckBox
@@ -113,8 +109,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -210,8 +204,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -273,8 +265,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 83
@@ -334,8 +324,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 114
-      Height = 300
+      Width = 117
+      Height = 292
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3567,7 +3557,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitWidth = 117
       ExplicitHeight = 305
     end
   end

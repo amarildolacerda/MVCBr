@@ -60,6 +60,7 @@ type
       const AArgs: array of TValue); virtual;
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
     function ShowView(): IView; overload; virtual;
+    function ShowView(const AProc: TProc<IView>;AShowModal:boolean): Integer; overload;virtual;
     function GetViewModel: IViewModel; virtual;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
 
@@ -156,6 +157,11 @@ end;
 function TViewFactory.Update: IView;
 begin
   result := self;
+end;
+
+function TViewFactory.ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
+begin
+   result := ShowView(AProc);
 end;
 
 end.

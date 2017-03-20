@@ -198,7 +198,7 @@ ViewCodeNoViewModel =
   '  if not FInited then begin init; FInited:=true; end;     ' + #13#10 +
   'end;                                                        ' + #13#10 +
   '                                                          ' + #13#10 +
-  'procedire T%FormIdent.Init;                        ' + #13#10 +
+  'procedure T%FormIdent.Init;                        ' + #13#10 +
   'begin                                                     ' + #13#10 +
   '   // incluir incializações aqui                         ' + #13#10 +
   'end;                                                      ' + #13#10 +
