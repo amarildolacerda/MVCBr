@@ -9,9 +9,11 @@ type
   TMVCBrService = class(TService)
     procedure ServiceStart(Sender: TService; var Started: Boolean);
     procedure ServiceAfterInstall(Sender: TService);
+    procedure ServiceStop(Sender: TService; var Stopped: Boolean);
   private
-    { Private declarations }
+    FCanStop: Boolean;
   public
+    property CanStop : Boolean read FCanStop write FCanStop;
     function GetServiceController: TServiceController; override;
     procedure RunServer(APort: Integer);
   end;
@@ -84,7 +86,7 @@ begin
       //Writeln('Press ESC to stop the server');
 
       LHandle := GetStdHandle(STD_INPUT_HANDLE);
-      while True do
+      while not (CanStop) do
       begin
         //Win32Check(ReadConsoleInput(LHandle, LInputRecord, 1, LEvent));
        // if (LInputRecord.EventType = KEY_EVENT) and
@@ -123,6 +125,7 @@ end;
 
 procedure TMVCBrService.ServiceStart(Sender: TService; var Started: Boolean);
 begin
+  CanStop := False;
 
   ApplicationController.Run(TWSController.New);
   IsMultiThread := True;
@@ -135,6 +138,11 @@ begin
     on E: Exception do
       Writeln(E.ClassName, ': ', E.Message);
   end;
+end;
+
+procedure TMVCBrService.ServiceStop(Sender: TService; var Stopped: Boolean);
+begin
+  CanStop := True;
 end;
 
 end.
