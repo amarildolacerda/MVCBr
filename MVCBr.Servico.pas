@@ -68,7 +68,7 @@ begin
   try
 
     APort := Ini.ReadInteger('Config', 'Port', 8080);
-    Writeln('** MVCBr / DMVCFramework Server ** build ' +
+    LogI('** MVCBr / DMVCFramework Server Service ** build ' +
       DMVCFRAMEWORK_VERSION);
 
     LServer := TIdHTTPWebBrokerBridge.create(nil);
