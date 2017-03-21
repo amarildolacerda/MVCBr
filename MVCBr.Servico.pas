@@ -1,9 +1,12 @@
+{ Colaboração de Giovani Da Cruz 2017-03-20 }
+
 unit MVCBr.Servico;
 
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.SvcMgr, Vcl.Dialogs;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.SvcMgr, Vcl.Dialogs;
 
 type
   TMVCBrService = class(TService)
@@ -26,22 +29,22 @@ implementation
 {$R *.dfm}
 
 uses
-  System.Win.Registry,
-
   MVCBr.ApplicationController,
-  WS.Controller,
-  Web.WebReq,
-  WS.WebModule,
 
-  Winapi.ShellAPI,
-  ReqMulti,
-  IdHTTPWebBrokerBridge,
+  WS.Controller,
+  WS.WebModule,
 
   MVCFramework.Logger,
   MVCFramework.Commons,
 
+  IdHTTPWebBrokerBridge,
+
+  Web.ReqMulti,
   Web.WebBroker,
-  IniFiles;
+  Web.WebReq,
+
+  System.Win.Registry,
+  System.IniFiles;
 
 procedure ServiceController(CtrlCode: DWord); stdcall;
 begin
@@ -67,32 +70,25 @@ begin
     APort := Ini.ReadInteger('Config', 'Port', 8080);
     Writeln('** MVCBr / DMVCFramework Server ** build ' +
       DMVCFRAMEWORK_VERSION);
-    //Writeln(Format('Starting HTTP Server on port %d', [APort]));
+
     LServer := TIdHTTPWebBrokerBridge.create(nil);
     try
       LServer.DefaultPort := APort;
       LServer.Active := True;
       LogI(Format('Server started on port %s', [APort.ToString]));
+
       { more info about MaxConnections
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_MaxConnections.html }
       LServer.MaxConnections := Ini.ReadInteger('Config', 'MaxConnections', 0);
+
       { more info about ListenQueue
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_ListenQueue.html }
       LServer.ListenQueue := Ini.ReadInteger('Config', 'ListenQueue', 200);
 
-      { Comment the next line to avoid the default browser startup }
-      //ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
-       // nil, SW_SHOWMAXIMIZED);
-      //Writeln('Press ESC to stop the server');
-
       LHandle := GetStdHandle(STD_INPUT_HANDLE);
       while not (CanStop) do
       begin
-        //Win32Check(ReadConsoleInput(LHandle, LInputRecord, 1, LEvent));
-       // if (LInputRecord.EventType = KEY_EVENT) and
-        //  LInputRecord.Event.KeyEvent.bKeyDown and
-         // (LInputRecord.Event.KeyEvent.wVirtualKeyCode = VK_ESCAPE) then
-         // break;
+        { Service Run... }
       end;
     finally
       LServer.Free;
