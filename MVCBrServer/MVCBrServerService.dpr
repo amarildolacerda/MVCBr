@@ -2,7 +2,7 @@ program MVCBrServerService;
 
 uses
   Vcl.SvcMgr,
-  MVCBr.Servico in '..\MVCBr.Servico.pas' {MVCBrService: TService},
+  MVCBr.Servico in 'MVCBr.Servico.pas' {MVCBrService: TService},
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
