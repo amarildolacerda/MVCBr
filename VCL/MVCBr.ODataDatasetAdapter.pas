@@ -40,6 +40,8 @@ type
     procedure SetBuilder(const Value: TODataBuilder);
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
+    class procedure CreateFieldByProperties(FDataset: TDataset;
+      AJSONProp: TJsonValue);
 
   public
     constructor create(AOwner: TComponent); override;
@@ -59,12 +61,12 @@ type
     // Array's changes
     property Changes: TJsonArray read FChanges;
     procedure AddChanges(ATypeChange: TRowSetChangeType; AJsonRow: TJsonValue);
-    procedure AddRowSet(ATypeChange:TRowSetChangeType;ADataset:TDataset);
+    procedure AddRowSet(ATypeChange: TRowSetChangeType; ADataset: TDataset);
     function UpdatesPending: boolean;
     procedure ClearChanges;
     procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>;
-      AMethod: TIdHTTPRestMethod = rmPATCH);overload;
-    procedure ApplyUpdates;overload;
+      AMethod: TIdHTTPRestMethod = rmPATCH); overload;
+    procedure ApplyUpdates; overload;
   published
     property Builder: TODataBuilder read FBuilder write SetBuilder;
     Property Active: boolean read GetActive write SetActive;
@@ -85,7 +87,7 @@ implementation
 uses
   System.JSON.Helper, ObjectsMappers,
   System.DateUtils,
-  System.Rtti ;
+  System.Rtti;
 
 { TIdHTTPDataSetAdapter }
 
@@ -122,17 +124,19 @@ begin
     end;
 end;
 
-procedure TODataDatasetAdapter.AddRowSet(ATypeChange: TRowSetChangeType; ADataset: TDataset);
-var js:TJsonObject;
+procedure TODataDatasetAdapter.AddRowSet(ATypeChange: TRowSetChangeType;
+  ADataset: TDataset);
+var
+  js: TJsonObject;
 begin
-  js:=TJsonObject.create;
-  Mapper.DataSetToJSONObject(ADataset,js,false,nil,fpLowerCase);
-  AddChanges(ATypeChange,js);
+  js := TJsonObject.create;
+  Mapper.DataSetToJSONObject(ADataset, js, false, nil, fpLowerCase);
+  AddChanges(ATypeChange, js);
 end;
 
 procedure TODataDatasetAdapter.ApplyUpdates;
 begin
-   ApplyUpdates(nil);
+  ApplyUpdates(nil);
 end;
 
 procedure TODataDatasetAdapter.ClearChanges;
@@ -178,6 +182,8 @@ begin
   for jv in AJSON do
   begin
     LFieldName := jv.JsonString.Value;
+    if (FDataset.FieldDefs.IndexOf(LFieldName) >= 0) then
+      continue; // a coluna ja existe no dataset.
     jtype := TJsonObject.GetJsonType(jv.JsonValue);
     case jtype of
       jtNumber:
@@ -194,12 +200,53 @@ begin
   end;
 end;
 
+class procedure TODataDatasetAdapter.CreateFieldByProperties(FDataset: TDataset;
+  AJSONProp: TJsonValue);
+var
+  jp: TJsonPair;
+  jv: TJsonValue;
+  LFieldName: string;
+  LType: string;
+  LSize: integer;
+  LRequired: boolean;
+  LPrecision: integer;
+  LScale: integer;
+begin
+  with FDataset do
+    for jp in AJSONProp.asObject do
+    begin
+      LFieldName := jp.JsonString.Value.ToLower;
+      if FDataset.FieldDefs.IndexOf(LFieldName) >= 0 then
+        continue;
+      if not jp.JsonValue.TryGetValue<string>('Type', LType) then
+        continue;
+      jp.JsonValue.TryGetValue<integer>('MaxLength', LSize);
+      jp.JsonValue.TryGetValue<boolean>('Nullable', LRequired);
+      LType := LType.ToLower;
+      if LType = 'string' then
+      begin
+        FieldDefs.Add(LFieldName, ftString, LSize, LRequired);
+      end
+      else if LType = 'float' then
+      begin
+        jp.JsonValue.TryGetValue<integer>('Precision', LPrecision);
+        jp.JsonValue.TryGetValue<integer>('Scale', LScale);
+        FieldDefs.Add(LFieldName, ftFloat, 0, LRequired);
+      end
+      else if LType = 'datetime' then
+      begin
+        FieldDefs.Add(LFieldName, ftDateTime, 0, LRequired);
+      end
+    end;
+end;
+
 class procedure TODataDatasetAdapter.CreateFieldsFromJson(FDataset: TDataset;
   AJSONArray: TJsonValue);
 var
   LJSONValue: TJsonValue;
   ja: TJsonArray;
   jo: TJsonObject;
+  fld: TField;
 begin
   AJSONArray.TryGetValue(ja);
   Assert(assigned(ja)); // nao passou um json valido ?
@@ -221,7 +268,7 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
     LValue: variant;
     LJSONValue: TJsonValue;
     LField: TField;
-    i: Integer;
+    i: integer;
     LPath: string;
     LDateTime: TDateTime;
   begin
@@ -332,11 +379,13 @@ begin
 {$ENDIF}
     end;
 
-    if FDataset.FieldDefs.Count = 0 then
+    if { FDataset.FieldDefs.Count = 0 } not FDataset.Active then
       CreateFieldsFromJson(FDataset, AJSON);
 
     if (FDataset.FieldDefs.Count > 0) and (FDataset.Active = false) then
-      FDataset.Open;
+      FDataset.Open
+    else
+      raise Exception.create('Não há dados para mostrar');
 
     if FDataset.FieldDefs.Count > 0 then
       AddJSONDataRows(AJSON)
@@ -394,7 +443,7 @@ var
   jv: TJsonArray;
 
 {$IFDEF REST}
-  procedure LoadWithReflect(Const AJSON: TJsonObject; achou: Integer);
+  procedure LoadWithReflect(Const AJSON: TJsonObject; achou: integer);
   var
     LDataSets: TFDJSONDatasets;
     memDs: TFDMemTable;
@@ -430,49 +479,33 @@ var
   // achou,i: Integer;
   // _jo: TJsonObject;
   _jv: TJsonValue;
+  fld: TField;
 begin
 
   case AResponseType of
     pureJSON:
       begin
+        /// checa se tem algum field que não foi carregado no DEFs.
+        /// se houver alguma lista de fields definidas pelo coder.
+        for fld in ADataset.Fields do
+        begin
+          if ADataset.FieldDefs.IndexOf(fld.FieldName) >= 0 then
+            continue;
+          ADataset.FieldDefs.Add(fld.FieldName, fld.DataType, fld.Size,
+            fld.Required);
+        end;
+
+        if AJSON.TryGetValue('properties', _jv) then
+        begin
+          CreateFieldByProperties(ADataset, _jv);
+        end;
         if AJSON.TryGetValue(ARootElement, _jv) then
         else
           _jv := AJSON;
         DatasetFromJsonObject(ADataset, _jv);
       end;
 
-    (* reflectJSON:
-      begin
-      {$IFDEF REST}
-      Adpter := TCustomJSONDataSetAdapter.create(nil);
-      try
-      achou := 0;
-      i := 0;
-      jv := nil;
-      jo := AJSON as TJsonObject;
-      for ji in jo do
-      begin
-      if sametext(ji.JsonString.Value, ARootElement) then
-      begin
-      achou := i;
-      AJSON.TryGetValue(ARootElement, jv);
-      break;
-      end;
-      inc(i);
-      end;
-
-      if not assigned(jv) then
-      AJSON.TryGetValue(jv);
-      Adpter.Dataset := ADataset;
-      {$IFDEF REST}
-      LoadWithReflect(((jv as TJsonValue) as TJsonObject), achou);
-      {$ENDIF}
-      finally
-      Adpter.DisposeOf;
-      end;
-      {$ENDIF}
-      end;
-    *) end;
+  end;
 end;
 
 function TODataDatasetAdapter.GetActive: boolean;

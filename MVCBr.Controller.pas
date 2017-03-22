@@ -51,8 +51,10 @@ type
     procedure RevokeInstance;overload;
 
   public
+
     constructor Create; override;
     destructor destroy; override;
+    function ViewEvent(AMessage:String):IController;virtual;
     function ID(const AID: string): IController; virtual;
     function GetID: String; virtual;
     function GetModelByID(const AID: String): IModel; virtual;
@@ -257,6 +259,12 @@ var intf:IInterface;
 begin
   intf := self;
   inherited revokeInstance(intf);
+end;
+
+function TControllerFactory.ViewEvent(AMessage: String): IController;
+begin
+   result := self;
+   FView.ViewEvent(AMessage);
 end;
 
 procedure TControllerFactory.SetID(const AID: string);

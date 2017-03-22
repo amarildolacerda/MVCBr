@@ -54,6 +54,7 @@ type
     procedure SetOnClose(const Value: TCloseEvent);
     function GetText: string;
     procedure SetText(const Value: string);
+    function ApplicationController: IApplicationController;
   protected
     FOnCloseProc: TProc<IView>;
     FController: IController;
@@ -69,6 +70,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function GetGuid(AII:IInterface):TGuid;
+    function ViewEvent(AMessage:string):IView;virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetID: string;
@@ -103,6 +106,8 @@ type
 
 implementation
 
+uses MVCBr.ApplicationController;
+
 { TViewFormFacotry }
 procedure TFormFactory.AfterConstruction;
 begin
@@ -134,6 +139,11 @@ end;
 function TFormFactory.GetController: IController;
 begin
   result := FController;
+end;
+
+function TFormFactory.GetGuid(AII: IInterface): TGuid;
+begin
+   result := TMVCBr.GetGuid(AII);
 end;
 
 function TFormFactory.GetID: string;
@@ -197,10 +207,20 @@ begin
     FOnClose(Sender, ACloseAction);
 end;
 
+function TFormFactory.ApplicationController: IApplicationController;
+begin
+  result := MVCBr.ApplicationController.ApplicationController;
+end;
+
 procedure TFormFactory.DoCommand(ACommand: string;
   const AArgs: array of TValue);
 begin
 
+end;
+
+function TFormFactory.ViewEvent(AMessage: string): IView;
+begin
+  result := self;
 end;
 
 procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);

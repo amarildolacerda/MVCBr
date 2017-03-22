@@ -61,11 +61,14 @@ Type
   TODataResourceItems = class(TCollection)
   private
     FOwner: TComponent;
+    function GetItems(idx: Integer): TODataResourceItem;
+    procedure SetItems(idx: Integer; const Value: TODataResourceItem);
   public
     function Add: TODataResourceItem;
     constructor create(AOwner: TComponent);
     procedure addResource(tx: String);
     function GetOwner: TPersistent; override;
+    property Items[idx:Integer]:TODataResourceItem read GetItems write SetItems;
   end;
 
   TODataBuilder = class(TComponent)
@@ -435,9 +438,19 @@ begin
   FOwner := AOwner;
 end;
 
+function TODataResourceItems.GetItems(idx: Integer): TODataResourceItem;
+begin
+    result := TODataResourceItem(inherited items[idx]);
+end;
+
 function TODataResourceItems.GetOwner: TPersistent;
 begin
   Result := FOwner;
+end;
+
+procedure TODataResourceItems.SetItems(idx: Integer; const Value: TODataResourceItem);
+begin
+    inherited items[idx] := value;
 end;
 
 { TODataResourceParams }

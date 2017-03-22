@@ -75,6 +75,7 @@ var
   jp: TJsonPair;
   jv: TJsonObject;
   ja: TJsonArray;
+  LJv:TJsonObject;
   AName: String;
   sl: TStringList;
   s: string;
@@ -109,80 +110,80 @@ begin
   for fld in ADataset.fields do
   begin
     AName := fld.FieldName.ToLower;
-    ja := TJsonArray.create();
+    LJv := TJsonObject.Create;
     case fld.DataType of
       ftInteger:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Int32')));
+          LJv.AddPair(TJsonPair.create('Type', 'Int32'));
         end;
       ftSmallint, ftShortint, ftWord:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Int16')));
+          LJv.AddPair(TJsonPair.create('Type', 'Int16'));
         end;
       ftLargeint:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Int64')));
+          LJv.AddPair(TJsonPair.create('Type', 'Int64'));
         end;
       ftCurrency, ftBCD, ftFMTBcd:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type',
-            'Decimal')));
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Precision',
-            TJSONNumber.create(TFloatField(fld).Precision))));
+          LJv.AddPair(TJsonPair.create('Type',
+            'Decimal'));
+          LJv.AddPair(TJsonPair.create('Precision',
+            TJSONNumber.create(TFloatField(fld).Precision)));
         end;
       ftFloat, ftSingle:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Float')));
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Precision',
-            TJSONNumber.create(TFloatField(fld).Precision))));
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Scale',
-            TJSONNumber.create(5))));
+          LJv.AddPair(TJsonPair.create('Type', 'Float'));
+          LJv.AddPair(TJsonPair.create('Precision',
+            TJSONNumber.create(TFloatField(fld).Precision)));
+          LJv.AddPair(TJsonPair.create('Scale',
+            TJSONNumber.create(5)));
         end;
       fttime:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Time')));
+          LJv.AddPair(TJsonPair.create('Type', 'Time'));
         end;
       ftBlob:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'Binary')));
+          LJv.AddPair(TJsonPair.create('Type', 'Binary'));
         end;
       ftTimeStamp, ftDate, ftDatetime:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type',
-            'DateTime')));
+          LJv.AddPair(TJsonPair.create('Type',
+            'DateTime'));
         end;
       ftBoolean:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type',
-            'Boolean')));
+          LJv.AddPair(TJsonPair.create('Type',
+            'Boolean'));
         end;
       ftString, ftFixedChar, ftWideString:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'String')));
-          ja.AddElement(TJsonObject.create(TJsonPair.create('MaxLength',
-            TJSONNumber.create(fld.Size))));
+          LJv.AddPair(TJsonPair.create('Type', 'String'));
+          LJv.AddPair(TJsonPair.create('MaxLength',
+            TJSONNumber.create(fld.Size)));
         end;
       ftMemo:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'String')));
-          ja.AddElement(TJsonObject.create(TJsonPair.create('MaxLength',
-            TJSONNumber.create(255 * 255))));
+          LJv.AddPair(TJsonPair.create('Type', 'String'));
+          LJv.AddPair(TJsonPair.create('MaxLength',
+            TJSONNumber.create(255 * 255)));
         end;
       ftGUID:
         begin
-          ja.AddElement(TJsonObject.create(TJsonPair.create('Type', 'String')));
-          ja.AddElement(TJsonObject.create(TJsonPair.create('MaxLength',
-            TJSONNumber.create(36))));
+          LJv.AddPair(TJsonPair.create('Type', 'String'));
+          LJv.AddPair(TJsonPair.create('MaxLength',
+            TJSONNumber.create(36)));
         end;
 
     end;
 
     if fld.Required then
-      ja.AddElement(TJsonObject.create(TJsonPair.create('Nullable', 'false')));
+      LJv.AddPair(TJsonPair.create('Nullable', 'false'));
     //else  // nao precisa mandar se é TRUE.
     //  ja.AddElement(TJsonObject.create(TJsonPair.create('Nullable', 'true')));
 
-    jv.AddPair(TJsonPair.create(AName, ja));
+    jv.AddPair(TJsonPair.create(AName, LJv));
   end;
   jp := TJsonPair.create('properties', jv);
   JSONResponse.AddPair(jp);

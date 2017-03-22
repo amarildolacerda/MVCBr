@@ -46,7 +46,10 @@ type
     // MainView para o Application
     FMainView: IView;
   public
-    function MainView:IView;virtual;
+    function ViewEvent(AMessage: string): IApplicationController; overload;
+    function ViewEvent(AView: TGuid; AMessage: String)
+      : IApplicationController; overload;
+    function MainView: IView; virtual;
     constructor create;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
@@ -160,7 +163,7 @@ end;
 
 function TApplicationController.MainView: IView;
 begin
-   result := FMainView;
+  result := FMainView;
 end;
 
 class function TApplicationController.New: IApplicationController;
@@ -177,6 +180,17 @@ procedure TApplicationController.Run(AController: IController;
 AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
+end;
+
+function TApplicationController.ViewEvent(AMessage: string)
+  : IApplicationController;
+begin
+  result := self;
+  ForEach(
+    procedure(AController: IController)
+    begin
+      AController.ViewEvent(AMessage);
+    end);
 end;
 
 function TApplicationController.This: TObject;
@@ -199,6 +213,21 @@ var
 begin
   for i := 0 to FControllers.Count - 1 do
     (FControllers.Items[i] as IController).UpdateAll;
+end;
+
+function TApplicationController.ViewEvent(AView: TGuid; AMessage: String)
+  : IApplicationController;
+var
+  view: IView;
+begin
+  result := self;
+  ForEach(
+    procedure(AController: IController)
+    begin
+      view := AController.GetView;
+      if view.GetGuid(view) = AView then
+        AController.ViewEvent(AMessage);
+    end);
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;

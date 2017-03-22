@@ -56,11 +56,13 @@ type
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
+    function ViewEvent(AMessage: string): IView; virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
     function ShowView(): IView; overload; virtual;
-    function ShowView(const AProc: TProc<IView>;AShowModal:boolean): Integer; overload;virtual;
+    function ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
+      overload; virtual;
     function GetViewModel: IViewModel; virtual;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
 
@@ -86,6 +88,11 @@ begin
 
 end;
 
+function TViewFactory.ViewEvent(AMessage: string): IView;
+begin
+  result := self;
+end;
+
 function TViewFactory.GetController: IController;
 begin
   result := FController;
@@ -100,7 +107,6 @@ function TViewFactory.GetViewModel: IViewModel;
 begin
   result := FViewModel;
 end;
-
 
 function TViewFactory.ViewModel(const AModel: IViewModel): IView;
 begin
@@ -159,9 +165,10 @@ begin
   result := self;
 end;
 
-function TViewFactory.ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
+function TViewFactory.ShowView(const AProc: TProc<IView>;
+  AShowModal: boolean): Integer;
 begin
-   result := ShowView(AProc);
+  result := ShowView(AProc);
 end;
 
 end.

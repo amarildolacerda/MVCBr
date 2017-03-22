@@ -142,9 +142,9 @@ ControllerCode =
   '      Application.RealCreateForms;                               ' + #13#10 +
   '  {$endif}                                                       ' + #13#10 +
   ' end;                                                            ' + #13#10 +
-  ' AfterInit;                                                        ' + #13#10
-  + 'end;                                                             '
-  + #13#10 +
+  ' CreateModules;                                                  ' + #13#10 +
+  ' AfterInit;                                                      ' + #13#10 +
+  'end;                                                             ' + #13#10 +
 
   '/// Adicionar os modulos e MODELs personalizados              ' + #13#10 +
   'Procedure T%FormIdentController.CreateModules;                   ' + #13#10 +
@@ -211,8 +211,8 @@ ControllerCodeWithoutViewModel =
   '    class function New(const AModel: IModel): IController; overload;' +
   #13#10 + '    function ThisAs: T%FormIdentController;  ' + #13#10 +
   ' /// Init após criado a instância é chamado para concluir init    ' + #13#10
-  + '    procedure init;override;                                     ' +
-  #13#10 + '  end;                                      ' + #13#10 +
+  + '    procedure init;override;                                     ' + #13#10
+  + '  end;                                      ' + #13#10 +
   '                                                                 ' + #13#10 +
   'implementation                                                   ' + #13#10 +
   '///  Creator para a classe Controller                           ' + #13#10 +
