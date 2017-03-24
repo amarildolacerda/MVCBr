@@ -30,7 +30,7 @@ implementation
 {$R *.dfm}
 {$R TODataBuilder.res}
 
-uses oData.Comp.Client, VCL.Dialogs;
+uses oData.Comp.Client{, VCL.Dialogs};
 
 procedure Register;
 begin

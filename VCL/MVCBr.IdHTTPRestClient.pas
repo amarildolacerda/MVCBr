@@ -114,6 +114,8 @@ begin
   result := false;
   streamSource := TStringStream.Create;
   try
+    if FAcceptCharset='' then
+       FAcceptCharset := 'UTF-8';
     IdHTTP.Request.AcceptCharset := FAcceptCharset;
     IdHTTP.Request.Charset := FAcceptCharset;
     IdHTTP.Request.AcceptEncoding := FAcceptEncoding;
@@ -194,3 +196,4 @@ begin
 end;
 
 end.
+

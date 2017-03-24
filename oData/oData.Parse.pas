@@ -654,6 +654,7 @@ FTokenKindArray.Add('$filter', ptFilter);
 FTokenKindArray.Add('$search', ptSearch);
 FTokenKindArray.Add('$select', ptSelect);
 FTokenKindArray.Add('$orderby', ptOrderBy);
+FTokenKindArray.Add('$order', ptOrderBy);
 FTokenKindArray.Add('$top', ptTop);
 FTokenKindArray.Add('$skip', ptSkip);
 FTokenKindArray.Add('$skiptoken', ptSkipToken);

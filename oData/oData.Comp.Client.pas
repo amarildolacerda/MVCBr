@@ -68,29 +68,31 @@ Type
     constructor create(AOwner: TComponent);
     procedure addResource(tx: String);
     function GetOwner: TPersistent; override;
-    property Items[idx:Integer]:TODataResourceItem read GetItems write SetItems;
+    property Items[idx: Integer]: TODataResourceItem read GetItems
+      write SetItems;
   end;
 
   TODataBuilder = class(TComponent)
   private
     FSelect: string;
     FFilter: string;
-    FTop: integer;
-    FSkip: integer;
+    FTop: Integer;
+    FSkip: Integer;
     FCount: boolean;
     FResource: TODataResourceItems;
     FBaseURL: string;
     FService: string;
     FServicePreffix: string;
     FExpand: string;
-    FOrder:string;
+    FOrder: string;
     FRestClient: TIdHTTPRestClient;
     FURI: string;
-    FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
+    FAfterExecute, FBeforeExecute, FOnBeforeApplyUpdate, FOnAfterApplyUpdate
+      : TNotifyEvent;
     procedure SetSelect(const Value: string);
     procedure SetFilter(const Value: string);
-    procedure SetTop(const Value: integer);
-    procedure SetSkip(const Value: integer);
+    procedure SetTop(const Value: Integer);
+    procedure SetSkip(const Value: Integer);
     procedure SetCount(const Value: boolean);
     procedure SetResource(const Value: TODataResourceItems);
     procedure SetBaseURL(const Value: string);
@@ -103,15 +105,23 @@ Type
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
     procedure WriteOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOrder(const Value: string);
+    procedure SetResourceName(const Value: string);
+    function GetResourceName: string;
+    procedure SetAfterExecute(const Value: TNotifyEvent);
+    procedure SetBeforeExecute(const Value: TNotifyEvent);
+  protected
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
+
   public
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
-    function ToString: string;
-    function addResource(AResource: string): TODataResourceItem;
-    function execute: boolean; overload;
-    function execute(AProc: TProc): boolean; overload;
+    function ToString: string; virtual;
+    function addResource(AResource: string): TODataResourceItem; virtual;
+    function execute: boolean; overload; virtual;
+    function execute(AProc: TProc): boolean; overload; virtual;
     function ApplyUpdates(AChanges: TJsonArray;
-      AMethod: TIdHTTPRestMethod = rmPATCH): boolean;
+      AMethod: TIdHTTPRestMethod = rmPATCH): boolean; virtual;
   published
     property URI: string read FURI;
     property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
@@ -119,18 +129,23 @@ Type
     property ServicePreffix: string read FServicePreffix
       write SetServicePreffix;
     property Service: string read FService write SetService;
+    property ResourceName: string read GetResourceName write SetResourceName;
     property Resource: TODataResourceItems read FResource write SetResource;
     property &Select: string read FSelect write SetSelect;
     property &Filter: string read FFilter write SetFilter;
-    property &TopRows: integer read FTop write SetTop;
-    property &SkipRows: integer read FSkip write SetSkip;
+    property &TopRows: Integer read FTop write SetTop;
+    property &SkipRows: Integer read FSkip write SetSkip;
     property &Count: boolean read FCount write SetCount;
     property &Expand: string read FExpand write SetExpand;
-    property &Order:string read FOrder write FOrder;
+    property &Order: string read FOrder write FOrder;
     property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate
       write WriteOnBeforeApplyUpdate;
     property OnAfterApplyUpdates: TNotifyEvent read FOnAfterApplyUpdate
       write SetOnAfterApplyUpdate;
+    property BeforeExecute: TNotifyEvent read FBeforeExecute
+      write SetBeforeExecute;
+    property AfterExecute: TNotifyEvent read FAfterExecute
+      Write SetAfterExecute;
   end;
 
 implementation
@@ -152,14 +167,14 @@ procedure TODataBuilder.AddSqlResource(var Result: string;
 var
   p, v: string;
   it: TODataResouceParam;
-  i: integer;
+  i: Integer;
 begin
   Result := Result + '/' + AResource.Resource;
   p := '';
   // for it in AResource.FResourceParams.Items do
   for i := 0 to AResource.FResourceParams.Count - 1 do
   begin
-    it := TODataResouceParam(AResource.FResourceParams.items[i]);
+    it := TODataResouceParam(AResource.FResourceParams.Items[i]);
     if p <> '' then
       p := p + ',';
     v := it.Value;
@@ -182,8 +197,9 @@ var
   rest: TIdHTTPRestClient;
 begin
   Result := false;
-  if AChanges.count=0 then exit;
-  
+  if AChanges.Count = 0 then
+    exit;
+
   rest := TIdHTTPRestClient.create(self);
   try
     if Assigned(FRestClient) then
@@ -197,7 +213,7 @@ begin
     rest.Method := AMethod;
     rest.Body.Add(AChanges.ToString);
     rest.BaseURL := self.BaseURL;
-    rest.Resource := '/'+TODataResourceItem(FResource.items[0]).Resource;
+    rest.Resource := '/' + TODataResourceItem(FResource.Items[0]).Resource;
     rest.ResourcePreffix := self.FServicePreffix + self.FService;
     if Assigned(FOnBeforeApplyUpdate) then
       FOnBeforeApplyUpdate(self);
@@ -233,9 +249,33 @@ end;
 
 function TODataBuilder.execute(AProc: TProc): boolean;
 begin
+  Result := false;
   ToString;
+  if Assigned(FBeforeExecute) then
+    FBeforeExecute(self);
   if Assigned(FRestClient) then
     Result := FRestClient.execute(AProc);
+
+  if Result then
+    if Assigned(FAfterExecute) then
+      FAfterExecute(self);
+end;
+
+function TODataBuilder.GetResourceName: string;
+begin
+  if FResource.Count > 0 then
+    Result := FResource.Items[0].Resource
+  else
+    Result := '';
+end;
+
+procedure TODataBuilder.Notification(AComponent: TComponent;
+AOperation: TOperation);
+begin
+  inherited;
+  if AOperation = TOperation.opRemove then
+    if AComponent = FRestClient then
+      FRestClient := nil;
 
 end;
 
@@ -244,9 +284,19 @@ begin
   Result := execute(nil);
 end;
 
+procedure TODataBuilder.SetAfterExecute(const Value: TNotifyEvent);
+begin
+  FAfterExecute := Value;
+end;
+
 procedure TODataBuilder.SetBaseURL(const Value: string);
 begin
   FBaseURL := Value;
+end;
+
+procedure TODataBuilder.SetBeforeExecute(const Value: TNotifyEvent);
+begin
+  FBeforeExecute := Value;
 end;
 
 procedure TODataBuilder.SetCount(const Value: boolean);
@@ -284,6 +334,23 @@ begin
   FResource := Value;
 end;
 
+procedure TODataBuilder.SetResourceName(const Value: string);
+begin
+
+  // if ComponentState in [csReading,csWriting,csLoading] then
+  // exit;
+
+  if csDesigning in ComponentState then
+  begin // stub para mostar o valor no component
+    if FResource.Count = 0 then
+      FResource.Add;
+  end;
+
+  if FResource.Count > 0 then
+    FResource.Items[0].Resource := Value;
+
+end;
+
 procedure TODataBuilder.SetRestClient(const Value: TIdHTTPRestClient);
 begin
   FRestClient := Value;
@@ -304,19 +371,19 @@ begin
   FServicePreffix := Value;
 end;
 
-procedure TODataBuilder.SetSkip(const Value: integer);
+procedure TODataBuilder.SetSkip(const Value: Integer);
 begin
   FSkip := Value;
 end;
 
-procedure TODataBuilder.SetTop(const Value: integer);
+procedure TODataBuilder.SetTop(const Value: Integer);
 begin
   FTop := Value;
 end;
 
 function TODataBuilder.ToString: string;
 var
-  i: integer;
+  i: Integer;
   it: TODataResourceItem;
   p: string;
   procedure addUrlParams(AName: string; Txt: string);
@@ -334,7 +401,7 @@ begin
   // for it in FResource do
   for i := 0 to FResource.Count - 1 do
   begin
-    it := TODataResourceItem(FResource.items[i]);
+    it := TODataResourceItem(FResource.Items[i]);
     AddSqlResource(Result, it);
   end;
   addUrlParams('$select', Select);
@@ -344,7 +411,7 @@ begin
   if SkipRows > 0 then
     addUrlParams('$skip', SkipRows.ToString);
 
-  addUrlParams('$order',Order);
+  addUrlParams('$order', Order);
   addUrlParams('$expand', Expand);
   if Count then
     addUrlParams('$count', 'true');
@@ -440,7 +507,7 @@ end;
 
 function TODataResourceItems.GetItems(idx: Integer): TODataResourceItem;
 begin
-    result := TODataResourceItem(inherited items[idx]);
+  Result := TODataResourceItem(inherited Items[idx]);
 end;
 
 function TODataResourceItems.GetOwner: TPersistent;
@@ -448,9 +515,10 @@ begin
   Result := FOwner;
 end;
 
-procedure TODataResourceItems.SetItems(idx: Integer; const Value: TODataResourceItem);
+procedure TODataResourceItems.SetItems(idx: Integer;
+const Value: TODataResourceItem);
 begin
-    inherited items[idx] := value;
+  inherited Items[idx] := Value;
 end;
 
 { TODataResourceParams }

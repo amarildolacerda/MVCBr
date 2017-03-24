@@ -13,7 +13,6 @@ type
   TIdHTTPFireDACAdapter = class(TComponent)
   private
     FJsonValue: TJsonValue;
-    FActive: boolean;
     FDataset: TDataset;
     FResponseJSON: TIdHTTPRestClient;
     FRootElement: string;
@@ -134,7 +133,7 @@ begin
       if sametext(ji.JsonString.Value, ARootElement) then
       begin
         achou := i;
-        jv := TJSONObject.Create(ji);
+        jv := TJsonObject.create(ji);
         break;
       end;
       inc(i);
@@ -154,7 +153,8 @@ end;
 
 function TIdHTTPFireDACAdapter.GetActive: boolean;
 begin
-  result := FActive;
+  if assigned(FDataset) then
+    result := FDataset.Active;
 end;
 
 procedure TIdHTTPFireDACAdapter.Notification(AComponent: TComponent;
@@ -173,7 +173,8 @@ end;
 
 procedure TIdHTTPFireDACAdapter.SetActive(const Value: boolean);
 begin
-  FActive := Value;
+  if assigned(FDataset) then
+    FDataset.Active := Value;
 end;
 
 procedure TIdHTTPFireDACAdapter.SetDataset(const Value: TDataset);

@@ -1,3 +1,28 @@
+{ *************************************************************************** }
+{ }
+{ Projeto MVCBr }
+{ Coder: Amarildo Lacerda }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
+{
+  Objetivo: base para popular um dataset
+}
+{ *************************************************************************** }
+
 unit MVCBr.ODataDatasetAdapter;
 
 interface
@@ -6,36 +31,29 @@ uses System.Classes, System.SysUtils,
   System.JSON, System.Variants,
   System.Generics.Collections, Data.DB,
   MVCBr.IdHTTPRestClient, oData.Comp.Client,
+  MVCBr.Common,
   IdHTTP;
 
 type
 
   TAdapterResponserType = (pureJSON);
-  TRowSetChangeType = (rctInserted, rctDeleted, rctModified);
 
-const
-  TDatarowChangeTypeName: array [low(TRowSetChangeType)
-    .. high(TRowSetChangeType)] of string = ('inserted', 'deleted', 'modified');
-
-type
   TODataDatasetAdapter = class(TComponent)
   private
     FChanges: TJsonArray;
     FJsonValue: TJsonValue;
-    FActive: boolean;
     FDataset: TDataset;
     FResponseJSON: TIdHTTPRestClient;
     FRootElement: string;
     FResponseType: TAdapterResponserType;
     FBuilder: TODataBuilder;
     FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
+    FBeforeOpenDelegate: TProc<TDataset>;
     procedure SetDataset(const Value: TDataset);
     procedure SetActive(const Value: boolean);
     procedure SetResponseJSON(const Value: TIdHTTPRestClient);
     procedure SetRootElement(const Value: string);
     function GetActive: boolean;
-    procedure Notification(AComponent: TComponent;
-      AOperation: TOperation); override;
     procedure SetResponseType(const Value: TAdapterResponserType);
     procedure SetBuilder(const Value: TODataBuilder);
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
@@ -43,13 +61,19 @@ type
     class procedure CreateFieldByProperties(FDataset: TDataset;
       AJSONProp: TJsonValue);
 
+  protected
+    FResourceKeys: string;
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
+
   public
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     function Execute: boolean;
     class procedure FillDatasetFromJSONValue(ARootElement: string;
       ADataset: TDataset; AJSON: TJsonValue;
-      AResponseType: TAdapterResponserType); virtual;
+      AResponseType: TAdapterResponserType;
+      ADelegate: TProc<TDataset>); virtual;
     class procedure DatasetFromJsonObject(FDataset: TDataset;
       AJSON: TJsonValue);
     procedure CreateDatasetFromJson(AJSON: string);
@@ -67,6 +91,9 @@ type
     procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>;
       AMethod: TIdHTTPRestMethod = rmPATCH); overload;
     procedure ApplyUpdates; overload;
+    function ResourceName: string;
+    function ResourceKeys: string;
+    procedure BeforeOpenDelegate(AProc: TProc<TDataset>);
   published
     property Builder: TODataBuilder read FBuilder write SetBuilder;
     Property Active: boolean read GetActive write SetActive;
@@ -139,6 +166,11 @@ begin
   ApplyUpdates(nil);
 end;
 
+procedure TODataDatasetAdapter.BeforeOpenDelegate(AProc: TProc<TDataset>);
+begin
+  FBeforeOpenDelegate := AProc;
+end;
+
 procedure TODataDatasetAdapter.ClearChanges;
 begin
   while FChanges.Count > 0 do
@@ -153,6 +185,20 @@ begin
 end;
 
 procedure TODataDatasetAdapter.CreateDatasetFromJson(AJSON: string);
+var
+  ja: TJsonArray;
+  function GetStringListFromJson(ja: TJsonArray): string;
+  var
+    j: TJsonValue;
+  begin
+    for j in ja do
+    begin
+      if result<>'' then
+         result := result + ';';
+      Result := result + j.Value
+    end;
+  end;
+
 begin
   Assert(assigned(FDataset), 'Não atribuiu o Dataset');
   if (AJSON <> '') and (AJSON <> FResponseJSON.Content) then
@@ -168,7 +214,14 @@ begin
   if not assigned(FJsonValue) then
     FJsonValue := TJsonObject.ParseJSONValue(AJSON) as TJsonObject;
   Assert(assigned(FJsonValue), 'Não é uma representação JSON válida');
-  FillDatasetFromJSONValue(FRootElement, FDataset, FJsonValue, ResponseType);
+
+  if FJsonValue.TryGetValue<TJsonArray>('keys', ja) then
+  begin
+    FResourceKeys := GetStringListFromJson(ja);
+  end;
+
+  FillDatasetFromJSONValue(FRootElement, FDataset, FJsonValue, ResponseType,
+    FBeforeOpenDelegate);
 end;
 
 class procedure TODataDatasetAdapter.CreateFieldsFromJsonRow(FDataset: TDataset;
@@ -358,7 +411,9 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
         end;
       end;
       if not FDataset.Active then
+      begin
         FDataset.Open;
+      end;
     end;
 
     AddJSONDataRows(AJSON);
@@ -432,7 +487,7 @@ end;
 
 class procedure TODataDatasetAdapter.FillDatasetFromJSONValue
   (ARootElement: string; ADataset: TDataset; AJSON: TJsonValue;
-AResponseType: TAdapterResponserType);
+AResponseType: TAdapterResponserType; ADelegate: TProc<TDataset>);
 var
 {$IFDEF REST}
   Adpter: TCustomJSONDataSetAdapter;
@@ -480,6 +535,7 @@ var
   // _jo: TJsonObject;
   _jv: TJsonValue;
   fld: TField;
+  s: string;
 begin
 
   case AResponseType of
@@ -502,6 +558,10 @@ begin
         if AJSON.TryGetValue(ARootElement, _jv) then
         else
           _jv := AJSON;
+
+        if assigned(ADelegate) then
+          ADelegate(ADataset);
+
         DatasetFromJsonObject(ADataset, _jv);
       end;
 
@@ -510,7 +570,8 @@ end;
 
 function TODataDatasetAdapter.GetActive: boolean;
 begin
-  result := FActive;
+  if assigned(FDataset) then
+    result := FDataset.Active;
 end;
 
 procedure TODataDatasetAdapter.Notification(AComponent: TComponent;
@@ -522,14 +583,28 @@ begin
       FResponseJSON := nil;
     if AComponent = FDataset then
       FDataset := nil;
+    if AComponent = FBuilder then
+      FBuilder := nil;
   end;
   inherited;
 
 end;
 
+function TODataDatasetAdapter.ResourceKeys: string;
+begin
+  result := FResourceKeys;
+end;
+
+function TODataDatasetAdapter.ResourceName: string;
+begin
+  if assigned(FBuilder) then
+    result := FBuilder.ResourceName;
+end;
+
 procedure TODataDatasetAdapter.SetActive(const Value: boolean);
 begin
-  FActive := Value;
+  if assigned(FDataset) then
+    FDataset.Active := Value;
 end;
 
 procedure TODataDatasetAdapter.SetBuilder(const Value: TODataBuilder);
