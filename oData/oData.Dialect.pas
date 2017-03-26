@@ -287,7 +287,7 @@ begin
       'Não enviou dados a serem inseridos'));
   AResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
-  if pos('POST', AResource.method) = 0 then
+  if not AResource.method.Contains('POST') then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
@@ -331,7 +331,7 @@ begin
       'Não enviou dados a serem inseridos'));
   AResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
-  if (pos('PUT', AResource.method) = 0) and (pos('PATCH', AResource.method) = 0)
+  if (not AResource.method.contains('PUT')) and (not  AResource.method.contains('PATCH'))
   then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
@@ -348,7 +348,7 @@ begin
 
   child := oData;
   if child.ResourceParams.Count > 0 then
-  /// checa se tem parameteros   ex:   grupos('07')
+  /// checa se tem parameteros   ex:   grupos ('07')
   begin
     FKeys := GetWhereFromParams(child, '', AResource.keyID);
     /// gera a where para o parametro
@@ -486,7 +486,7 @@ var
 begin
   AResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
-  if pos('DELETE', AResource.method) = 0 then
+  if not  AResource.method.Contains('DELETE') then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
@@ -544,7 +544,7 @@ begin
     FResource := GetResource(oData.resource) as IJsonODastaServiceResource;
 
     if FResource.method <> '' then
-      if pos('GET', FResource.method) = 0 then
+      if not FResource.method.Contains('GET') then
         raise Exception.Create(TODataError.Create(403,
           'Método solicitado não autorizado'));
     FKeyID := FResource.keyID;
@@ -585,7 +585,7 @@ begin
     // relations
     child := oData;
     if child.ResourceParams.Count > 0 then
-    /// checa se tem parameteros   ex:   grupos('07')
+    /// checa se tem parameteros   ex:   grupos ('07')
     begin
       FKeys := GetWhereFromParams(child, oData.resource, FResource.keyID);
       /// gera a where para o parametro

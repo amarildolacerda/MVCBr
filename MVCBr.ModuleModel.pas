@@ -3,7 +3,7 @@ unit MVCBr.ModuleModel;
 interface
 
 uses
-  Forms, Graphics, System.UITypes, System.SysUtils, System.Classes,
+  {$ifdef FMX} FMX.Forms,{$else} VCL.Forms,VCL.Graphics,{$endif}  System.UITypes, System.SysUtils, System.Classes,
   MVCBr.Interf;
 
 type

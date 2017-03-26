@@ -61,7 +61,7 @@ var
   funcName: string;
 begin
   funcName := Context.Request.QueryStringParam(MVCCallBack_FieldName);
-  if (funcName <> '') and (pos('/json', Context.Response.ContentType) > 0) then
+  if (funcName <> '') and ( Context.Response.ContentType.Contains('/json') ) then
   begin
     funcName := Format('%s(%s);',
       [funcName, Context.Response.RawWebResponse.Content]);

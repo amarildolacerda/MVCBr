@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{A3ADDD52-4BCA-4E5B-9CBD-E9CDD21E1310}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MVCBrFireDAC.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MVCBrFireDAC">
+        <MSBuild Projects="MVCBrFireDAC.dproj"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Clean">
+        <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Make">
+        <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MVCBrFireDAC"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MVCBrFireDAC:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MVCBrFireDAC:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

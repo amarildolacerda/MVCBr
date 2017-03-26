@@ -42,19 +42,26 @@ type
   private
     FLoaded: boolean;
     FRefModelCount: integer;
+    FRefViewCount: integer;
   protected
     FView: IView;
     FID: string;
     procedure Load; virtual;
     procedure SetID(const AID: string);
     procedure AfterConstruction; override;
-    procedure RevokeInstance;overload;
+    procedure RevokeInstance; overload;
 
   public
 
     constructor Create; override;
     destructor destroy; override;
-    function ViewEvent(AMessage:String):IController;virtual;
+    function IsView(AII: TGuid): boolean;
+    function IsController(AGuid: TGuid): boolean;
+    function ApplicationController:TApplicationController;
+    function GetGuid<TInterface:IInterface>:TGuid;
+    function ShowView:IView;virtual;
+    function ViewEvent(AMessage: String): IView; overload; virtual;
+    function ViewEvent<TViewInterface>(AMessage: string): IView; overload;
     function ID(const AID: string): IController; virtual;
     function GetID: String; virtual;
     function GetModelByID(const AID: String): IModel; virtual;
@@ -82,7 +89,6 @@ type
     function UpdateByView(AView: IView): IController; virtual;
 
   end;
-
 
   TControllerFactoryOf = class of TControllerFactory;
 
@@ -173,6 +179,11 @@ begin
       AProc(FModels.Items[i] as IModel);
 end;
 
+function TControllerFactory.GetGuid<TInterface>: TGuid;
+begin
+  result := TMVCBr.GetGuid<TInterface>;
+end;
+
 function TControllerFactory.GetID: String;
 begin
   result := FID;
@@ -241,6 +252,18 @@ begin
   BeforeInit;
 end;
 
+function TControllerFactory.IsController(AGuid: TGuid): boolean;
+begin
+  result := supports(self, AGuid);
+end;
+
+function TControllerFactory.IsView(AII: TGuid): boolean;
+begin
+  result := false;
+  if assigned(FView) then
+    result := supports(FView.This, AII);
+end;
+
 procedure TControllerFactory.Load;
 begin
   if not assigned(FModels) then
@@ -255,21 +278,55 @@ begin
 end;
 
 procedure TControllerFactory.RevokeInstance;
-var intf:IInterface;
+var
+  intf: IInterface;
 begin
   intf := self;
-  inherited revokeInstance(intf);
+  inherited RevokeInstance(intf);
 end;
 
-function TControllerFactory.ViewEvent(AMessage: String): IController;
+function TControllerFactory.ViewEvent(AMessage: String): IView;
 begin
-   result := self;
-   FView.ViewEvent(AMessage);
+  result := FView;
+  FView.ViewEvent(AMessage);
+end;
+
+function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string): IView;
+var
+  i: integer;
+  pInfo: PTypeInfo;
+  IID: TGuid;
+  AView: IView;
+begin
+  result := nil;
+  if FRefViewCount > 0 then
+    exit; // LOOP !!
+  inc(FRefViewCount);
+  try
+    pInfo := TypeInfo(TViewInterface);
+    IID := GetTypeData(pInfo).Guid;
+    if supports(GetView.This, IID, AView) then
+    begin
+      result := AView;
+      AView.ViewEvent(AMessage);
+      exit;
+    end;
+    result := ApplicationController.ViewEvent(IID, AMessage);
+  finally
+    dec(FRefViewCount);
+  end;
 end;
 
 procedure TControllerFactory.SetID(const AID: string);
 begin
   FID := AID;
+end;
+
+function TControllerFactory.ShowView: IView;
+begin
+   result := FView;
+   if assigned(FView) then
+      FView.ShowView();
 end;
 
 function TControllerFactory.Start: IController;
@@ -281,6 +338,7 @@ end;
 procedure TControllerFactory.AfterConstruction;
 begin
   inherited;
+  FRefViewCount := 0;
   Load;
 end;
 
@@ -302,6 +360,11 @@ begin
       AModel.AfterInit;
     end);
 
+end;
+
+function TControllerFactory.ApplicationController: TApplicationController;
+begin
+   result := TApplicationController( ApplicationControllerInternal.This);
 end;
 
 function TControllerFactory.This: TControllerAbstract;
@@ -381,6 +444,5 @@ function TControllerFactory.GetView: IView;
 begin
   result := FView;
 end;
-
 
 end.

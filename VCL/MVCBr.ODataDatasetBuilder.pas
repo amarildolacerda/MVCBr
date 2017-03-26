@@ -62,6 +62,7 @@ type
     property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
     property Adapter: TODataDatasetAdapter read FAdapter write SetAdapter;
     function Execute: Boolean; override;
+    function Builder:TODataBuilder;virtual;
   published
     property Dataset: TDataset read FDataset write SetDataset;
   end;
@@ -86,6 +87,12 @@ begin
     FAdapter.ApplyUpdates();
     ClearChanges;
   end;
+end;
+
+function TODataDatasetBuilder.Builder: TODataBuilder;
+begin
+ if assigned(FAdapter) and assigned(FAdapter.Builder) then
+    result := FAdapter.Builder;
 end;
 
 procedure TODataDatasetBuilder.ClearChanges;

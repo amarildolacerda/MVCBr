@@ -218,7 +218,7 @@ begin
   result := nil;
   LController := ResolveController(AController);
 
-  assert(assigned(LController), 'Não associou um controller ao PageView');
+  assert(assigned(LController), 'Parâmetro não é um controller');
 
   // checa se já existe uma aba para a mesma view
   LView := LController.GetView;
@@ -295,12 +295,16 @@ var
   i: Integer;
 begin
   result := nil;
+  try
   for i := 0 to Count - 1 do
-    if Items[i].This.FView = AView then
+    if  supports( Items[i].This , IView ) then
+    if items[I].This.View = AView then
     begin
       result := Items[i];
       exit;
     end;
+  except
+  end;
 end;
 
 function TCustomPageViewFactory.FindViewByClassName(const AClassName: String)

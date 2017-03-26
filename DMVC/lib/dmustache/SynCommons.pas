@@ -773,7 +773,9 @@ uses
   Classes,
 {$ifndef LVCL}
   SyncObjs, // for TEvent and TCriticalSection
+{$ifndef LINUX}
   Contnrs,  // for TObjectList
+{$endif}
 {$ifdef HASINLINE}
   Types,
 {$endif}
@@ -60498,7 +60500,7 @@ begin
             fBackgroundException := ESynException.CreateUTF8(
               'Redirected %: "%"',[E,E.Message]);
           {$else}
-          fBackgroundException := AcquireExceptionObject;
+             fBackgroundException := Exception(AcquireExceptionObject);
           {$endif}
         end;
       finally

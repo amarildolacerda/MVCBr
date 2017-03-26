@@ -27,7 +27,10 @@ unit MVCBr.ApplicationController;
 
 interface
 
-uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes,
+uses
+{$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms,
+{$ENDIF}{$ENDIF}
+  System.Classes,
   System.Generics.Collections,
 
   System.SysUtils, MVCBr.Model, MVCBr.Interf;
@@ -46,14 +49,18 @@ type
     // MainView para o Application
     FMainView: IView;
   public
+    function FindController(AGuid: TGuid): IController; virtual;
+    function FindView(AGuid: TGuid): IView; virtual;
     function ViewEvent(AMessage: string): IApplicationController; overload;
-    function ViewEvent(AView: TGuid; AMessage: String)
-      : IApplicationController; overload;
+    function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
+    function ViewEvent<TViewInterface: IInterface>(AMessage: String)
+      : IView; overload;
     function MainView: IView; virtual;
     constructor create;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
     function This: TObject;
+    function ThisAs: TApplicationController;
     /// Count retorna a quantidade de controllers empilhados na lista
     function Count: integer;
     /// Add Adiciona um controller a lista de controller instaciados
@@ -69,7 +76,8 @@ type
       AFunc: TFunc < boolean >= nil); overload;
     class function New: IApplicationController;
     /// Loop que chama AProc para cada um dos controllers da lista
-    procedure ForEach(AProc: TProc<IController>);
+    procedure ForEach(AProc: TProc<IController>); overload;
+    function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
     procedure Inited;
     /// Envia evnet de Update a todos os controllers da lista
     procedure UpdateAll;
@@ -83,6 +91,8 @@ function ApplicationController: IApplicationController;
 procedure SetApplicationController(AController: IApplicationController);
 
 implementation
+
+uses System.TypInfo;
 
 var
   FApplication: IApplicationController;
@@ -143,13 +153,72 @@ begin
 end;
 
 /// ForEach Execut a AProc passar a instancia de cada um dos controllers instanciados.
+function TApplicationController.FindController(AGuid: TGuid): IController;
+var
+  rst: IController;
+begin
+  rst := nil;
+  ForEach(
+    function(ACtrl: IController): boolean
+    begin
+      if supports(ACtrl.This, AGuid, rst) then
+        result := true;
+    end);
+  result := rst;
+end;
+
+function TApplicationController.FindView(AGuid: TGuid): IView;
+var
+  rst: IView;
+begin
+  rst := nil;
+  ForEach(
+    function(ACtrl: IController): boolean
+    var
+      r: IView;
+    begin
+      r := ACtrl.GetView;
+      if assigned(r) then
+        if supports(r.This, AGuid, rst) then
+          result := true;
+    end);
+  result := rst;
+end;
+
+function TApplicationController.ForEach
+  (AProc: TFunc<IController, boolean>): boolean;
+var
+  i: integer;
+  LHandled: boolean;
+begin
+  Lock;
+  try
+    LHandled := false;
+    if assigned(AProc) then
+      for i := 0 to FControllers.Count - 1 do
+      begin
+        LHandled := AProc(FControllers.Items[i] as IController);
+        if LHandled then
+          break;
+      end;
+    result := LHandled;
+  finally
+    UnLock;
+  end;
+end;
+
 procedure TApplicationController.ForEach(AProc: TProc<IController>);
 var
   i: integer;
 begin
-  if assigned(AProc) then
-    for i := 0 to FControllers.Count - 1 do
-      AProc(FControllers.Items[i] as IController);
+  Lock;
+  try
+    if assigned(AProc) then
+      for i := 0 to FControllers.Count - 1 do
+        AProc(FControllers.Items[i] as IController);
+  finally
+    UnLock;
+  end;
 end;
 
 procedure TApplicationController.Inited;
@@ -164,6 +233,11 @@ end;
 function TApplicationController.MainView: IView;
 begin
   result := FMainView;
+end;
+
+function TApplicationController.ThisAs: TApplicationController;
+begin
+  result := self;
 end;
 
 class function TApplicationController.New: IApplicationController;
@@ -202,32 +276,58 @@ procedure TApplicationController.Update(const AIID: TGuid);
 var
   i: integer;
 begin
-  for i := 0 to Count - 1 do
-    if supports(FControllers.Items[i], AIID) then
-      (FControllers.Items[i] as IController).UpdateAll;
+  Lock;
+  try
+    for i := 0 to Count - 1 do
+      if supports(FControllers.Items[i], AIID) then
+        (FControllers.Items[i] as IController).UpdateAll;
+  finally
+    UnLock;
+  end;
 end;
 
 procedure TApplicationController.UpdateAll;
 var
   i: integer;
 begin
-  for i := 0 to FControllers.Count - 1 do
-    (FControllers.Items[i] as IController).UpdateAll;
+  Lock;
+  try
+    for i := 0 to FControllers.Count - 1 do
+      (FControllers.Items[i] as IController).UpdateAll;
+  finally
+    UnLock;
+  end;
 end;
 
-function TApplicationController.ViewEvent(AView: TGuid; AMessage: String)
-  : IApplicationController;
+function TApplicationController.ViewEvent(AView: TGuid;
+AMessage: String): IView;
 var
   view: IView;
+  rst: IView;
 begin
-  result := self;
+  result := nil;
   ForEach(
-    procedure(AController: IController)
+    function(AController: IController): boolean
     begin
       view := AController.GetView;
-      if view.GetGuid(view) = AView then
-        AController.ViewEvent(AMessage);
+      if assigned(view) then
+        if supports(view.This, AView) then
+        begin
+          rst := view; // stub
+          AController.ViewEvent(AMessage);
+          result := true;
+        end;
     end);
+  result := rst;
+end;
+
+function TApplicationController.ViewEvent<TViewInterface>
+  (AMessage: String): IView;
+var
+  IID: TGuid;
+begin
+  IID := TMVCBr.GetGuid<TViewInterface>;
+  result := ViewEvent(IID, AMessage);
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;
@@ -238,8 +338,10 @@ var
   Controller: TObject;
   LContrInterf: IController;
 begin
-  application.Initialize;
 
+{$IFDEF LINUX}
+{$ELSE}
+  application.Initialize;
   rt := true;
   if assigned(AFunc) then
     rt := AFunc;
@@ -273,6 +375,7 @@ begin
   { if assigned(AController) then
     AController.AfterInit;
   }
+{$ENDIF}
 end;
 
 end.

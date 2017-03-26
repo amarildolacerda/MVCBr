@@ -101,6 +101,9 @@ implementation
 
 uses ObjectsMappers, WS.Controller, oData.ProxyBase, oData.SQL,
   oData.ServiceModel, oData.Engine,
+{$IFDEF LOGEVENTS}
+  System.LogEvents.progress, System.LogEvents,
+{$ENDIF}
   System.DateUtils;
 
 { TODataController }
@@ -125,6 +128,9 @@ var
   erro: TJsonObject;
 begin
   try
+{$IFDEF LOGEVENTS}
+    LogEvents.DoMsg(nil, 0, CTX.Request.PathInfo);
+{$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
@@ -203,6 +209,9 @@ var
   LAllow: string;
 begin
   try
+{$IFDEF LOGEVENTS}
+   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+{$ENDIF}
     CTX.Response.StatusCode := 200;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
@@ -231,6 +240,9 @@ var
   erro: TJsonObject;
 begin
   try
+{$IFDEF LOGEVENTS}
+   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+{$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
@@ -245,7 +257,7 @@ begin
       else
         CTX.Response.StatusCode := 304;
 
-       RenderA(JSONResponse);
+      RenderA(JSONResponse);
     finally
     end;
   except
@@ -266,6 +278,9 @@ var
   erro: TJsonObject;
 begin
   try
+{$IFDEF LOGEVENTS}
+   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+{$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
@@ -299,6 +314,9 @@ var
   erro: TJsonObject;
 begin
   try
+{$IFDEF LOGEVENTS}
+   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+{$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
@@ -336,6 +354,9 @@ var
   erro: TJsonObject;
 begin
   try
+{$IFDEF LOGEVENTS}
+    LogEvents.DoMsg(nil, 0, CTX.Request.PathInfo);
+{$ENDIF}
     try
       FOData := ODataBase.create();
       FOData.DecodeODataURL(CTX);

@@ -925,7 +925,7 @@ end;
 
 function ISOStrToDateTime(DateTimeAsString: string): TDatetime;
 begin
-  if pos('T', DateTimeAsString) > 0 then
+  if  DateTimeAsString.Contains('T') then
     result := System.DateUtils.ISO8601ToDate(DateTimeAsString)
   else
     result := StrToDateTime(DateTimeAsString);

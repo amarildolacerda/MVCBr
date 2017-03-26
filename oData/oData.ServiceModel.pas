@@ -120,7 +120,7 @@ var
 
 implementation
 
-uses Dialogs;
+//uses VCL.Dialogs;
 { TODataServices }
 
 constructor TODataServices.create;

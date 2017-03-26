@@ -4,7 +4,7 @@ interface
 
 uses {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, System.SysUtils, System.RTTI,
-  MVCBr.Interf, MVCBr.View;
+  MVCBr.ApplicationController, MVCBr.Interf, MVCBr.View;
 
 type
 
@@ -32,14 +32,15 @@ type
     FForm: TForm;
     procedure DoClose(Sender: TObject; var Action: TCloseAction);
   public
-    class function New(AClass: TFormClass;
-      const AShowModal: boolean = true): IView;overload;
-    class function New( AForm:TForm;const AShowModal:boolean=true):IView;overload;
+    class function New(AClass: TFormClass; const AShowModal: boolean = true)
+      : IView; overload;
+    class function New(AForm: TForm; const AShowModal: boolean = true)
+      : IView; overload;
     property isShowModal: boolean read FisShowModal write SetisShowModal;
     function ShowView(const AProc: TProc<IView>): Integer; override;
     function Form: TForm;
     function ThisAs: TViewFactoryAdapter;
-    function This:TObject;
+    function This: TObject;
   end;
 
   /// <summary>
@@ -54,7 +55,6 @@ type
     procedure SetOnClose(const Value: TCloseEvent);
     function GetText: string;
     procedure SetText(const Value: string);
-    function ApplicationController: IApplicationController;
   protected
     FOnCloseProc: TProc<IView>;
     FController: IController;
@@ -68,10 +68,12 @@ type
     /// Retorna se a apresentação do formulário é ShowModal
     function GetShowModal: boolean;
   public
+    function ApplicationControllerInternal: IApplicationController;
+    function ApplicationController: TApplicationController;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function GetGuid(AII:IInterface):TGuid;
-    function ViewEvent(AMessage:string):IView;virtual;
+    function GetGuid(AII: IInterface): TGuid;
+    function ViewEvent(AMessage: string): IView; virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetID: string;
@@ -82,13 +84,17 @@ type
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
-    function ResolveController(const IID: TGuid): IController; virtual;
+    function ResolveController(const IID: TGuid): IController;
+      overload; virtual;
+    function ResolveController<TIController>: TIController; overload;
+    function GetModel<TIModel>: TIModel;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
     /// Apresenta o VIEW para o usuario
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
-    function ShowView(const AProc: TProc<IView>;AShowModal:boolean): Integer; overload; virtual;
+    function ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
+      overload; virtual;
     function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
       : IView; overload; virtual;
     function ShowView(): IView; overload;
@@ -97,16 +103,13 @@ type
     /// Evento para atualizar os dados da VIEW
     function Update: IView; virtual;
 
-
-    property Text:string read GetText write SetText;
+    property Text: string read GetText write SetText;
 
   published
     property OnClose: TCloseEvent read FOnClose write SetOnClose;
   end;
 
 implementation
-
-uses MVCBr.ApplicationController;
 
 { TViewFormFacotry }
 procedure TFormFactory.AfterConstruction;
@@ -121,18 +124,20 @@ begin
   FController := AController;
 end;
 
-var LFormCount:integer=0;
+var
+  LFormCount: Integer = 0;
+
 constructor TFormFactory.Create(AOwner: TComponent);
 begin
   inherited;
-  inc (LFormCount);
-  FID := classname+'_'+intToStr(LFormCount);
+  inc(LFormCount);
+  FID := classname + '_' + intToStr(LFormCount);
 end;
 
 destructor TFormFactory.Destroy;
 begin
   if assigned(FController) then
-    FController.This.RevokeInstance(FController);
+    FController.This.RevokeInstance(FController); // clear controller
   inherited;
 end;
 
@@ -143,12 +148,17 @@ end;
 
 function TFormFactory.GetGuid(AII: IInterface): TGuid;
 begin
-   result := TMVCBr.GetGuid(AII);
+  result := TMVCBr.GetGuid(AII);
 end;
 
 function TFormFactory.GetID: string;
 begin
   result := FID;
+end;
+
+function TFormFactory.GetModel<TIModel>: TIModel;
+begin
+  result := FController.This.GetModel<TIModel>;
 end;
 
 function TFormFactory.GetPropertyValue(ANome: string): TValue;
@@ -163,11 +173,11 @@ end;
 
 function TFormFactory.GetText: string;
 begin
-  {$ifdef FMX}
-     result := inherited Caption;
-  {$else}
-     result := inherited Caption;
-  {$endif}
+{$IFDEF FMX}
+  result := inherited Caption;
+{$ELSE}
+  result := inherited Caption;
+{$ENDIF}
 end;
 
 function TFormFactory.GetViewModel: IViewModel;
@@ -186,6 +196,11 @@ end;
 function TFormFactory.ResolveController(const IID: TGuid): IController;
 begin
   result := FController.This.ResolveController(IID);
+end;
+
+function TFormFactory.ResolveController<TIController>: TIController;
+begin
+  result := GetController.This.ResolveController<TIController>();
 end;
 
 procedure TFormFactory.SetController(const AController: IController);
@@ -207,7 +222,13 @@ begin
     FOnClose(Sender, ACloseAction);
 end;
 
-function TFormFactory.ApplicationController: IApplicationController;
+function TFormFactory.ApplicationController: TApplicationController;
+begin
+  result := TApplicationController
+    (MVCBr.ApplicationController.ApplicationController.This);
+end;
+
+function TFormFactory.ApplicationControllerInternal: IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
@@ -235,11 +256,11 @@ end;
 
 procedure TFormFactory.SetText(const Value: string);
 begin
-  {$ifdef FMX}
-     Inherited Caption := Value;
-  {$else}
-     Inherited Caption := Value;
-  {$endif}
+{$IFDEF FMX}
+  Inherited Caption := Value;
+{$ELSE}
+  Inherited Caption := Value;
+{$ENDIF}
 end;
 
 procedure TFormFactory.SetViewModel(const AViewModel: IViewModel);
@@ -349,7 +370,7 @@ end;
 
 function TViewFactoryAdapter.This: TObject;
 begin
-   result := self;   // nao alterar... é esperado retornuar um view como retorno
+  result := self; // nao alterar... é esperado retornuar um view como retorno
 end;
 
 function TViewFactoryAdapter.ThisAs: TViewFactoryAdapter;
@@ -363,10 +384,11 @@ begin
   ShowView(nil);
 end;
 
-function TFormFactory.ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
+function TFormFactory.ShowView(const AProc: TProc<IView>;
+  AShowModal: boolean): Integer;
 begin
-   FShowModal :=AShowModal;
-   result := ShowView(AProc);
+  FShowModal := AShowModal;
+  result := ShowView(AProc);
 end;
 
 end.

@@ -33,11 +33,12 @@ var
   n: integer;
 begin
   result := '';
-  n := pos('\', IdentProject);
-  if n > 0 then
+  n := IdentProject.IndexOf('\'); // pos ('\', IdentProject);
+  if n >= 0 then
   begin
-    result := '\'+copy(IdentProject, 1, n);
-    IdentProject := copy(IdentProject, n + 1, 255);
+    result := '\' + IdentProject.Substring(0, n); // copy (IdentProject, 1, n);
+    IdentProject := IdentProject.Substring(n + 1, 255);
+    // copy (IdentProject, n + 1, 255);
   end;
 end;
 

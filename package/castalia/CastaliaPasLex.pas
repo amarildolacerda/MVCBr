@@ -1571,7 +1571,7 @@ begin
         if FUseDefines then
         begin
           Param := DirectiveParam;
-          if Pos('DEFINED', Param) = 1 then
+          if  Param.Contains('DEFINED') then
           begin
             Def := Copy(Param, 9, Length(Param) - 9);
             EnterDefineBlock(IsDefined(Def));
@@ -1600,7 +1600,7 @@ begin
               if FDefineStack > 0 then
                 Dec(FDefineStack);
               Param := DirectiveParam;
-              if Pos('DEFINED', Param) = 1 then
+              if Param.contains('DEFINED') then
               begin
                 Def := Copy(Param, 9, Length(Param) - 9);
                 EnterDefineBlock(IsDefined(Def));

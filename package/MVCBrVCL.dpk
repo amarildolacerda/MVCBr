@@ -31,19 +31,13 @@ package MVCBrVCL;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
-  MVCBrCore,
   DesignIDE,
-  dbrtl,
-  CustomIPTransport,
-  IndyIPCommon,
+  bindengine,
+  bindcomp,
   IndySystem,
   IndyProtocols,
   IndyCore,
-  IndyIPClient,
-  bindengine,
-  bindcomp,
-  FireDAC;
+  MVCBrCore;
 
 contains
   MVCBr.DesignEditors.Helper in '..\VCL\MVCBr.DesignEditors.Helper.pas',

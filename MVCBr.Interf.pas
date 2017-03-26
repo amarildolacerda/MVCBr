@@ -113,12 +113,12 @@ type
   /// IMVCBrBase publica assinatura de base para as classes Factories Base
   IMVCBrBase = interface
     ['{6027634D-6A9E-4FC2-A1CE-71B2194ACCDF}']
-    function ApplicationController: IApplicationController;
+    function ApplicationControllerInternal: IApplicationController;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
-    function GetGuid(AII:IInterface):TGuid;
+    function GetGuid(AII: IInterface): TGuid;
   end;
 
   /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns
@@ -126,11 +126,15 @@ type
   TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase)
   private
     FID: string;
+    FLock: TObject;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
   public
+    Function Lock: TMVCFactoryAbstract;
+    procedure UnLock;
     constructor create;
-    function ApplicationController: IApplicationController; virtual;
+    destructor destroy; override;
+    function ApplicationControllerInternal: IApplicationController; virtual;
     function GetID: string; virtual;
     procedure SetID(const AID: string); virtual;
     class function New<TInterface: IInterface>(AClass: TClass)
@@ -139,7 +143,7 @@ type
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
     function AsType<TInterface: IInterface>: TInterface;
-    function GetGuid(AII:IInterface):TGuid;
+    function GetGuid(AII: IInterface): TGuid;
   end;
 
   TInterfaceAdapter = class(TInterfacedObject, IInterfaceAdapter)
@@ -238,7 +242,7 @@ type
   // IView é uma representação para FORM
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
-    function ViewEvent(AMessage:string):IView;
+    function ViewEvent(AMessage: string): IView;
     function Controller(const AController: IController): IView;
     function GetController: IController;
     procedure SetController(const AController: IController);
@@ -264,8 +268,10 @@ type
   /// Main Controller for all Application  - Have a list os Controllers
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
-    function ViewEvent(AMessage:string):IApplicationController;
+    function ViewEvent(AMessage: string): IView; overload;
+    function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
     function MainView: IView;
+    function FindController(AGuid: TGuid): IController;
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     procedure Run(AController: IController;
@@ -275,7 +281,8 @@ type
     function Add(const AController: IController): Integer;
     procedure Delete(const idx: Integer);
     procedure Remove(const AController: IController);
-    procedure ForEach(AProc: TProc<IController>);
+    procedure ForEach(AProc: TProc<IController>); overload;
+    function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
     procedure UpdateAll;
     procedure Update(const AIID: TGuid);
     procedure Inited;
@@ -328,9 +335,10 @@ type
   // IController manter associação entre o IView e IModel
   IController = interface(IControllerBase)
     ['{A7758E82-3AA1-44CA-8160-2DF77EC8D203}']
-    function ViewEvent(AMessage:string):IController;
-    function ApplicationController: IApplicationController;
+    function ViewEvent(AMessage: string): IView;
+    function ApplicationControllerInternal: IApplicationController;
     function GetView: IView; overload;
+    function ShowView:IView;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
@@ -669,13 +677,20 @@ var
 constructor TMVCFactoryAbstract.create;
 begin
   inherited;
+  FLock := TObject.create;
   inc(LFactoryCount);
   FID := ClassName + '_' + intToStr(LFactoryCount);
 end;
 
-function TMVCFactoryAbstract.GetGuid(AII:IInterface): TGuid;
+destructor TMVCFactoryAbstract.destroy;
 begin
-   result := TMVCBr.GetGuid(AII);
+  FLock.DisposeOf;
+  inherited;
+end;
+
+function TMVCFactoryAbstract.GetGuid(AII: IInterface): TGuid;
+begin
+  result := TMVCBr.GetGuid(AII);
 end;
 
 function TMVCFactoryAbstract.GetID: string;
@@ -694,7 +709,13 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
-function TMVCFactoryAbstract.ApplicationController: IApplicationController;
+function TMVCFactoryAbstract.Lock: TMVCFactoryAbstract;
+begin
+  result := self;
+  TMonitor.Enter(FLock);
+end;
+
+function TMVCFactoryAbstract.ApplicationControllerInternal: IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
@@ -719,6 +740,11 @@ procedure TMVCFactoryAbstract.SetPropertyValue(ANome: string;
   const Value: TValue);
 begin
   TMVCBr.SetProperty(self, ANome, Value);
+end;
+
+procedure TMVCFactoryAbstract.UnLock;
+begin
+  TMonitor.exit(FLock);
 end;
 
 { TMVCInterfacedList<T> }

@@ -222,7 +222,7 @@ begin
       begin
         add(clMetodos.items[i]);
         add('begin ');;
-        if pos('function ', clMetodos.items[i]) > 0 then
+        if clMetodos.items[i].contains('function ') then
           add('  result := base.' + GetProc(i) + ';')
         else
           add('  base.' + GetProc(i) + ';');
@@ -236,7 +236,7 @@ begin
       begin
         add(clFunctions.items[i]);
         add('begin ');;
-        if pos('function ', clFunctions.items[i]) > 0 then
+        if  clFunctions.items[i].contains('function ') then
           add('  result := base.' + GetFunc(i) + ';')
         else
           add('  base.' + GetFunc(i) + ';');
@@ -582,13 +582,13 @@ begin
   result := ExtractClassName(cbClassName.text);
   FindInterface(intf);
   if assigned(intf) then
-     result := GetClassImplements(intf,'');
+    result := GetClassImplements(intf, '');
 end;
 
 function TFormClassModel.ExtractClassName(const s: String): string;
 begin
   result := s;
-  if pos('<', s) > 0 then
+  if  s.contains('<') then
     result := copy(s, 1, pos('<', s) - 1);
 end;
 

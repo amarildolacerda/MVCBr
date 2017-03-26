@@ -162,9 +162,9 @@ function extractValue(AParameter: string): string;
 var
   i: integer;
 begin
-  i := pos('=', AParameter) + 1;
+  i :=  AParameter.IndexOf('=')+1; // pos ('=', AParameter) + 1;
   if i > 0 then
-    Result := copy(AParameter, i, length(AParameter));
+    Result := AParameter.Substring(i,length(AParameter));   //copy(AParameter, i, length(AParameter));
 end;
 
 procedure showHelpTopic(AHelpFile: string; topic: string);
@@ -398,7 +398,7 @@ begin
   begin
     getWIndowText(Found, zAppName, 127);
     Hold := trim(zAppName);
-    if (Hold <> '') and (pos(lowercase(title), lowercase(Hold)) > 0) then
+    if (Hold <> '') and ( lowercase(Hold).contains(lowercase(title)) ) then
     begin
       sendMessage(Found, WM_CLOSE, 0, 0);
       // closeWIndow(found);
@@ -428,7 +428,7 @@ begin
   begin
     getWIndowText(Found, zAppName, 127);
     Hold := trim(zAppName);
-    if (Hold <> '') and (pos(lowercase(title), lowercase(Hold)) > 0) then
+    if (Hold <> '') and ( lowercase(Hold).contains(lowercase(title))) then
     begin
       Result := Found;
       break;
@@ -597,7 +597,7 @@ end;
 
 function startWith(s, search: string): boolean;
 begin
-  Result := pos(search, s) = 1;
+  Result := s.StartsWith(search);//   pos(search, s) = 1;
 end;
 
 //

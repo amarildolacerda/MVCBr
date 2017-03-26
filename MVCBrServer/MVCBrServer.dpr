@@ -6,9 +6,11 @@ uses
   System.SysUtils,
   MVCFramework.Logger,
   MVCFramework.Commons,
+ {$ifdef MSWINDOWS}
   Winapi.Windows,
   Winapi.ShellAPI,
   ReqMulti,
+ {$endif}
   Web.WebReq,
   Web.WebBroker,
   IniFiles,

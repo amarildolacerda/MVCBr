@@ -662,6 +662,7 @@ FTokenKindArray.Add('$inlinecount', ptInLineCount);
 FTokenKindArray.Add('$count', ptCount);
 FTokenKindArray.Add('$expand', ptExpand);
 FTokenKindArray.Add('groupby', ptGroupBy);
+FTokenKindArray.Add('$group', ptGroupBy);
 FTokenKindArray.Add('''', ptQuotation);
 FTokenKindArray.Add('and', ptOperAnd);
 FTokenKindArray.Add('or', ptOperOr);

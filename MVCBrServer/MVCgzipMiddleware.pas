@@ -135,7 +135,7 @@ var
   b: Boolean;
 begin
   with Context do
-    if pos('gzip', Response.RawWebResponse.ContentEncoding) > 0 then
+    if Response.RawWebResponse.ContentEncoding.Contains('gzip') then
       try
         lFile := LFilesCompressed.GetFile(sFileName);
         if assigned(lFile) then
@@ -180,8 +180,8 @@ begin
   exit;
   with Context do
     try
-      if (pos('gzip', TIdHTTPAppRequestHack(Request.RawWebRequest)
-        .RequestInfo.AcceptEncoding) > 0) and (pos('json',Response.ContentType)>0) then
+      if ( TIdHTTPAppRequestHack(Request.RawWebRequest)
+        .RequestInfo.AcceptEncoding.Contains('gzip') ) and (Response.ContentType.Contains('json') ) then
       begin
         bLocal := true;
         sResponse := Response.RawWebResponse.Content;

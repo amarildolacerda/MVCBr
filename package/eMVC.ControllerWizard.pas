@@ -104,7 +104,7 @@ var
     result := GetCurrentProject.FileName;
     {for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
     begin
-      if pos('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
+      if pos ('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
         .Modules[i].FileName)) > 0 then
       begin
         result := (BorlandIDEServices as IOTAModuleServices).Modules[i]

@@ -818,7 +818,7 @@ begin
 //        if FDefineStack > 0 then
 //          Dec(FDefineStack);
 //        Param := Sender.DirectiveParam;
-//        if Pos('DEFINED', Param) = 1 then
+//        if Pos ('DEFINED', Param) = 1 then
 //        begin
 //          Def := Copy(Param, 9, Length(Param) - 9);
 //          EnterDefineBlock(IsDefined(Def));
@@ -878,7 +878,7 @@ begin
 //  Param := Sender.DirectiveParam;
 //  if FUseDefines then
 //  begin
-//    if Pos('DEFINED', Param) = 1 then
+//    if Pos ('DEFINED', Param) = 1 then
 //    begin
 //      Def := Copy(Param, 9, Length(Param) - 9);
 //      EnterDefineBlock(IsDefined(Def));

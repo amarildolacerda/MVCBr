@@ -1,5 +1,5 @@
 {
-  "@odata.context": "http://localhost:8886/OData/OData.svc",
+  "@odata.context": "http://localhost:8080/OData/OData.svc",
   "__comment": "Services list all resource available to OData.Service",
   "OData.Services": [
     {

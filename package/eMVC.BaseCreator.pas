@@ -114,8 +114,8 @@ begin
     self.FAncestorName := 'Object'
   else
   begin
-    if Pos('T', s) = 1 then
-      self.FAncestorName := Copy(s, 2, length(s))
+    if s.indexOf('T') = 0 then
+      self.FAncestorName :=  s.substring(1,length(s))  // Copy(s, 2, length(s))
     else
       self.FAncestorName := s;
   end;
@@ -168,22 +168,22 @@ begin
 
   Result := FPath;
 
-{  if TMVCConfig.new.IsCreateSubFolder then
-  begin
+  { if TMVCConfig.new.IsCreateSubFolder then
+    begin
     if sametext(FAncestorName, 'form') or sametext(FAncestorName, 'frame') then
-      Result := Result + 'Views\'
+    Result := Result + 'Views\'
     else if sametext(FAncestorName, 'datamodule') then
-      Result := Result + 'Modules\'
+    Result := Result + 'Modules\'
     else if sametext(FAncestorName, 'model') then
-      Result := Result + 'Models\'
+    Result := Result + 'Models\'
     else if sametext(FAncestorName, 'viewmodel') then
-      Result := Result + 'ViewModels\'
+    Result := Result + 'ViewModels\'
     else if sametext(FAncestorName, 'include') then
-      Result := Result + 'inc\'
+    Result := Result + 'inc\'
     else
-      Result := Result + LowerCase(FAncestorName) + '\';
-  end;
-}
+    Result := Result + LowerCase(FAncestorName) + '\';
+    end;
+  }
 
   if not DirectoryExists(Result) then
     ForceDirectories(Result);

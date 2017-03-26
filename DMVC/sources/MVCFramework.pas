@@ -62,7 +62,9 @@ uses
     , Web.ApacheHTTP
   // Apache Support since XE6 http://docwiki.embarcadero.com/Libraries/XE6/de/Web.ApacheHTTP
 {$ENDIF}
+{$ifndef LINUX}
     , ReqMulti {Delphi XE4 (all update) and XE5 (with no update) dont contains this unit. Look for the bug in QC}
+{$endif}
     , LoggerPro
     , MVCFramework.DuckTyping
     , MVCFramework.Patches;
@@ -638,11 +640,13 @@ uses
   IdGlobalProtocols,
   System.DateUtils,
   System.RegularExpressions,
+{$ifndef LINUX}
   WinApi.Windows,
+  Web.Win.IsapiHTTP,
+{$endif}
   System.TypInfo,
   System.ioutils,
   System.StrUtils,
-  Web.Win.IsapiHTTP,
   MVCFramework.Router,
   MVCFramework.View,
   IdURI,

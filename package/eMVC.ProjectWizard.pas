@@ -135,7 +135,7 @@ begin
       LCriarPathModule := cbUsarNomeProjeto.Checked;
       if cbUsarNomeProjeto.Checked then
         LIdentProject := stringReplace(LAppName, '.', '', [rfReplaceAll]);
-      if pos('.dpr', lowercase(LAppName)) <= 0 then
+      if  not lowercase(LAppName).Contains('.dpr') then
         LAppName := LAppName + '.dpr';
       debug('AppName: ' + LAppName);
       LPath := trim(edtPath.text);

@@ -216,9 +216,9 @@ begin
     key := pInfo.name.ToString + '_' + newName;
 {$ELSE}
   if newName = '' then
-    key := string(pInfo.name)
+    key := string(pInfo.name{$ifdef LINUX}.toString{$endif})
   else
-    key := string(pInfo.name) + '_' + newName;
+    key := string(pInfo.name{$ifdef LINUX}.toString{$endif}) + '_' + newName;
 {$ENDIF}
   key := LowerCase(key);
 
@@ -296,7 +296,7 @@ begin
 {$IFDEF ANDROID}
   result := pInfo.name.ToString;
 {$ELSE}
-  result := string(pInfo.name);
+  result := string(pInfo.name{$ifdef LINUX}.toString{$endif});
 {$ENDIF}
   if (AName <> '') then
     result := result + '_' + AName;

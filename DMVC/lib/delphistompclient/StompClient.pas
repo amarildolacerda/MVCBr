@@ -224,7 +224,7 @@ uses
   // Windows,   // Remove windows unit for compiling on ios
   IdGlobal,
   IdGlobalProtocols,
-  Character, Winapi.Windows;
+  Character {$ifndef LINUX }, Winapi.Windows{$endif};
 
 {$ENDIF}
 { TStompClient }

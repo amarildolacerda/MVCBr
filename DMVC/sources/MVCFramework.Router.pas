@@ -35,6 +35,11 @@ uses
   System.Generics.Collections;
 
 type
+
+{$ifdef LINUX}
+  ansiString = string;
+{$endif}
+
   TMVCRouter = class
   private
     FCTX: TRttiContext;
@@ -55,7 +60,7 @@ type
     function GetAttribute<T: TCustomAttribute>(AAttributes: TArray<TCustomAttribute>): T;
 
   public
-    class function StringMethodToHTTPMetod(const Value: AnsiString): TMVCHTTPMethodType;
+    class function StringMethodToHTTPMetod(const Value:  AnsiString): TMVCHTTPMethodType;
     constructor Create(AMVCConfig: TMVCConfig);
     function ExecuteRouting(const AWebRequestPathInfo: AnsiString;
       AWebRequestMethodType: TMVCHTTPMethodType; const AWebRequestContentType: AnsiString;
@@ -71,7 +76,9 @@ type
 implementation
 
 uses
+{$ifndef LINUX}
   System.AnsiStrings,
+{$endif}
   System.StrUtils,
   System.RegularExpressions,
   System.SysUtils,

@@ -156,7 +156,7 @@ begin
             result := ViewCodeNoViewModel;
 
           if FIsFMX then
-            result := stringReplace(result,'*.FRM','*.FMX',[]);
+            result := stringReplace(result,'*.DFM','*.FMX',[]);
 
           if SameText(FAncestorIdent, dataModuleAncestorName) then
           begin

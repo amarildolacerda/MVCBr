@@ -35,9 +35,13 @@ Type
   TODataResourceParams = class(TCollection)
   private
     FOwner: TComponent;
+    function GetItems(idx: Integer): TODataResouceParam;
+    procedure SetItems(idx: Integer; const Value: TODataResouceParam);
   public
     constructor create(AOwner: TComponent);
     function GetOwner: TPersistent; override;
+    property Items[idx: Integer]: TODataResouceParam read GetItems
+      write SetItems;
   end;
 
   TODataResourceItem = class(TCollectionItem)
@@ -185,7 +189,10 @@ begin
         v := QuotedStr(DateToISO8601(StrToDateTimeDef(v, 0)));
 
     end;
-    p := p + it.FName + '=' + v;
+    if it.FName<>'' then
+       p := p + it.FName + '=' + v
+    else
+       p := p + v;
   end;
   if p <> '' then
     Result := Result + '(' + p + ')';
@@ -529,9 +536,20 @@ begin
   FOwner := AOwner;
 end;
 
+function TODataResourceParams.GetItems(idx: Integer): TODataResouceParam;
+begin
+  Result := TODataResouceParam(inherited Items[idx]);
+end;
+
 function TODataResourceParams.GetOwner: TPersistent;
 begin
   Result := FOwner;
+end;
+
+procedure TODataResourceParams.SetItems(idx: Integer;
+const Value: TODataResouceParam);
+begin
+  inherited Items[idx] := Value;
 end;
 
 end.

@@ -538,6 +538,9 @@ var
   s: string;
 begin
 
+  if ADataset.active then
+     ADataset.Close;
+
   case AResponseType of
     pureJSON:
       begin
