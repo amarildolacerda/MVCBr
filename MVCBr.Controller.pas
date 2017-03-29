@@ -55,11 +55,13 @@ type
 
     constructor Create; override;
     destructor destroy; override;
+
     function IsView(AII: TGuid): boolean;
     function IsController(AGuid: TGuid): boolean;
-    function ApplicationController:TApplicationController;
-    function GetGuid<TInterface:IInterface>:TGuid;
-    function ShowView:IView;virtual;
+    function IsModel(AIModel: TGuid): boolean;
+    function ApplicationController: TApplicationController;
+    function GetGuid<TInterface: IInterface>: TGuid;
+    function ShowView: IView; virtual;
     function ViewEvent(AMessage: String): IView; overload; virtual;
     function ViewEvent<TViewInterface>(AMessage: string): IView; overload;
     function ID(const AID: string): IController; virtual;
@@ -257,6 +259,19 @@ begin
   result := supports(self, AGuid);
 end;
 
+function TControllerFactory.IsModel(AIModel: TGuid): boolean;
+var
+  i: integer;
+begin
+  result := false;
+  for i := 0 to FModels.Count - 1 do
+    if supports((FModels.Items[i] as IModel).This, AIModel) then
+    begin
+      result := true;
+      exit;
+    end;
+end;
+
 function TControllerFactory.IsView(AII: TGuid): boolean;
 begin
   result := false;
@@ -324,9 +339,9 @@ end;
 
 function TControllerFactory.ShowView: IView;
 begin
-   result := FView;
-   if assigned(FView) then
-      FView.ShowView();
+  result := FView;
+  if assigned(FView) then
+    FView.ShowView();
 end;
 
 function TControllerFactory.Start: IController;
@@ -364,7 +379,7 @@ end;
 
 function TControllerFactory.ApplicationController: TApplicationController;
 begin
-   result := TApplicationController( ApplicationControllerInternal.This);
+  result := TApplicationController(ApplicationControllerInternal.This);
 end;
 
 function TControllerFactory.This: TControllerAbstract;

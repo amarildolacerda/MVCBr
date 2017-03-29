@@ -193,9 +193,9 @@ var
   begin
     for j in ja do
     begin
-      if result<>'' then
-         result := result + ';';
-      Result := result + j.Value
+      if result <> '' then
+        result := result + ';';
+      result := result + j.Value
     end;
   end;
 
@@ -364,6 +364,16 @@ class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
             if TryISO8601ToDate(LJSONValue.Value, LDateTime) then
               LValue := TDate(DateOf(LDateTime));
           end
+          else if LField.DataType = ftFloat then
+          begin
+            LField.AsFloat := LValue;
+            continue;
+          end
+          else if LField.DataType = ftCurrency then
+          begin
+            LField.AsCurrency := LValue;
+            continue;
+          end
         end
         else
           LValue := LJSONValue.Value;
@@ -446,8 +456,8 @@ begin
       AddJSONDataRows(AJSON)
     else
       UpdateDataset(AJSON);
-
     FDataset.first;
+
   finally
     FDataset.EnableControls;
   end;
@@ -538,8 +548,8 @@ var
   s: string;
 begin
 
-  if ADataset.active then
-     ADataset.Close;
+  if ADataset.Active then
+    ADataset.Close;
 
   case AResponseType of
     pureJSON:

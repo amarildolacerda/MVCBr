@@ -49,13 +49,17 @@ type
     // MainView para o Application
     FMainView: IView;
   public
+    function MainView: IView; virtual;
+    procedure SetMainView(AView:IView);
     function FindController(AGuid: TGuid): IController; virtual;
     function FindView(AGuid: TGuid): IView; virtual;
+    function FindModel(AGuid: TGuid): IModel; overload;virtual;
+    function FindModel<TIModel:IInterface>: TIModel;overload;
+
     function ViewEvent(AMessage: string): IApplicationController; overload;
     function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
     function ViewEvent<TViewInterface: IInterface>(AMessage: String)
       : IView; overload;
-    function MainView: IView; virtual;
     constructor create;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
@@ -167,6 +171,32 @@ begin
   result := rst;
 end;
 
+function TApplicationController.FindModel(AGuid: TGuid): IModel;
+var
+  rst: IModel;
+begin
+  rst := nil;
+  ForEach(
+    function(ACtrl: IController): boolean
+    begin
+      ACtrl.GetModel(AGuid, rst);
+      if assigned(rst) then
+        result := true;
+    end);
+  result := rst;
+end;
+
+function TApplicationController.FindModel<TIModel>: TIModel;
+var
+  IID: TGuid;
+  AModel:IModel;
+begin
+  IID := TMVCBr.GetGuid<TIModel>;
+  AModel := findModel(IID);
+  if assigned(AModel) then
+     result := TIModel( AModel );
+end;
+
 function TApplicationController.FindView(AGuid: TGuid): IView;
 var
   rst: IView;
@@ -254,6 +284,11 @@ procedure TApplicationController.Run(AController: IController;
 AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
+end;
+
+procedure TApplicationController.SetMainView(AView: IView);
+begin
+  FMainView := AView;
 end;
 
 function TApplicationController.ViewEvent(AMessage: string)

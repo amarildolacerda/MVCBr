@@ -87,7 +87,8 @@ type
     function ResolveController(const IID: TGuid): IController;
       overload; virtual;
     function ResolveController<TIController>: TIController; overload;
-    function GetModel<TIModel>: TIModel;
+    function GetModel<TIModel>: TIModel;overload;
+    function GetModel(AII:TGuid):IModel;overload;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
@@ -154,6 +155,11 @@ end;
 function TFormFactory.GetID: string;
 begin
   result := FID;
+end;
+
+function TFormFactory.GetModel(AII: TGuid): IModel;
+begin
+  FController.GetModel(AII,result);
 end;
 
 function TFormFactory.GetModel<TIModel>: TIModel;

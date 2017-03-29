@@ -55,7 +55,7 @@ type
   public
     constructor create; virtual;
     destructor destroy; override;
-    procedure SetController(const AController:IController);
+    procedure SetController(const AController:IController);virtual;
     function GetController: IController;
     function GetOwner: TComponent; override;
     function Controller(const AController: IController): IModel; virtual;
@@ -141,7 +141,7 @@ end;
 function TModelFactory.Controller(const AController: IController): IModel;
 begin
   result := self;
-  FController := AController;
+  setController(AController);
 end;
 
 function TModelFactory.This: TObject;

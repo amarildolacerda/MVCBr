@@ -189,7 +189,7 @@ begin
         v := QuotedStr(DateToISO8601(StrToDateTimeDef(v, 0)));
 
     end;
-    if it.FName<>'' then
+    if it.FName.Trim<>'' then
        p := p + it.FName + '=' + v
     else
        p := p + v;

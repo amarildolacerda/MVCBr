@@ -246,6 +246,7 @@ type
     function Controller(const AController: IController): IView;
     function GetController: IController;
     procedure SetController(const AController: IController);
+    function GetModel(AII:TGuid):IModel;
     function GetViewModel: IViewModel;
     procedure SetViewModel(const AViewModel: IViewModel);
     function GetID: string;
@@ -271,6 +272,7 @@ type
     function ViewEvent(AMessage: string): IView; overload;
     function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
     function MainView: IView;
+    procedure SetMainView(AView:IView);
     function FindController(AGuid: TGuid): IController;
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
@@ -336,6 +338,9 @@ type
   IController = interface(IControllerBase)
     ['{A7758E82-3AA1-44CA-8160-2DF77EC8D203}']
     function ViewEvent(AMessage: string): IView;
+    function IsView(AII: TGuid): boolean;
+    function IsController(AGuid: TGuid): boolean;
+    function IsModel(AIModel: TGuid): boolean;
     function ApplicationControllerInternal: IApplicationController;
     function GetView: IView; overload;
     function ShowView:IView;

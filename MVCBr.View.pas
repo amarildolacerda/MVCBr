@@ -65,6 +65,7 @@ type
       overload; virtual;
     function GetViewModel: IViewModel; virtual;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
+    function GetModel(AII:TGuid):IModel;
 
     function Update: IView; virtual;
     function GetController: IController;
@@ -96,6 +97,11 @@ end;
 function TViewFactory.GetController: IController;
 begin
   result := FController;
+end;
+
+function TViewFactory.GetModel(AII: TGuid): IModel;
+begin
+  result := FController.GetModel(AII,result);
 end;
 
 function TViewFactory.GetText: String;

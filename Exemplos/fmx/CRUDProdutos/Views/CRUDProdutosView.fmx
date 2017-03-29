@@ -1,0 +1,133 @@
+object CRUDProdutosView: TCRUDProdutosView
+  Left = 0
+  Top = 0
+  Caption = 'CRUDProdutosView'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 0
+  object StringGrid1: TStringGrid
+    CanFocus = True
+    ClipChildren = True
+    Position.X = 48.000000000000000000
+    Position.Y = 88.000000000000000000
+    Size.Width = 569.000000000000000000
+    Size.Height = 337.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    RowCount = 8
+    Viewport.Width = 565.000000000000000000
+    Viewport.Height = 312.000000000000000000
+  end
+  object Button1: TButton
+    Position.X = 56.000000000000000000
+    Position.Y = 64.000000000000000000
+    TabOrder = 5
+    Text = 'Abrir'
+    OnClick = Button1Click
+  end
+  object Button2: TButton
+    Position.X = 160.000000000000000000
+    Position.Y = 64.000000000000000000
+    Size.Width = 105.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 7
+    Text = 'Apply Update'
+    OnClick = Button2Click
+  end
+  object ODataFDMemTable1: TODataFDMemTable
+    Active = True
+    FieldDefs = <
+      item
+        Name = 'codigo'
+        DataType = ftString
+        Size = 30
+      end
+      item
+        Name = 'descricao'
+        DataType = ftString
+        Size = 128
+      end
+      item
+        Name = 'grupo'
+        DataType = ftString
+        Size = 10
+      end
+      item
+        Name = 'unidade'
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'preco'
+        DataType = ftFloat
+      end>
+    IndexDefs = <>
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    StoreDefs = True
+    KeyFields = 'codigo'
+    UpdateTable = 'produtos'
+    Left = 120
+    Top = 160
+  end
+  object ODataDatasetBuilder1: TODataDatasetBuilder
+    BaseURL = 'http://localhost:8080'
+    ServicePreffix = '/OData'
+    Service = '/OData.svc'
+    ResourceName = 'produtos'
+    Resource = <
+      item
+        Resource = 'produtos'
+        ResourceParams = <>
+      end>
+    TopRows = 0
+    SkipRows = 0
+    Count = False
+    Dataset = ODataFDMemTable1
+    Left = 120
+    Top = 232
+  end
+  object BindSourceDB1: TBindSourceDB
+    DataSet = ODataFDMemTable1
+    ScopeMappings = <>
+    Left = 304
+    Top = 224
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 20
+    Top = 5
+    object LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      GridControl = StringGrid1
+      Columns = <
+        item
+          MemberName = 'codigo'
+        end
+        item
+          MemberName = 'descricao'
+          Width = 180
+        end
+        item
+          MemberName = 'grupo'
+        end
+        item
+          MemberName = 'unidade'
+        end
+        item
+          MemberName = 'preco'
+        end>
+    end
+  end
+end
