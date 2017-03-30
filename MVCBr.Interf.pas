@@ -132,7 +132,7 @@ type
   public
     Function Lock: TMVCFactoryAbstract;
     procedure UnLock;
-    constructor create;
+    constructor create; virtual;
     destructor destroy; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function GetID: string; virtual;
@@ -214,6 +214,7 @@ type
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     function Controller(const AController: IController): IModel;
+    function ApplicationControllerInternal: IApplicationController;
     function GetModelTypes: TModelTypes;
     function GetController: IController;
     procedure SetModelTypes(const AModelType: TModelTypes);

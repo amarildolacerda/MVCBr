@@ -26,6 +26,8 @@ type
   protected
     procedure AfterConstruction; override;
   public
+    function ApplicationControllerInternal: IApplicationController; virtual;
+    function ApplicationController:TApplicationController;virtual;
     function This: TObject;virtual;
     function GetID: string;virtual;
     function ID(const AID: String): IModel;
@@ -54,6 +56,16 @@ end;
 procedure TComponentFactory.AfterInit;
 begin
   FAdapter.AfterInit;
+end;
+
+function TComponentFactory.ApplicationController: TApplicationController;
+begin
+    result := TApplicationController(ApplicationControllerInternal.This);
+end;
+
+function TComponentFactory.ApplicationControllerInternal: IApplicationController;
+begin
+  result := MVCBr.ApplicationController.ApplicationController;
 end;
 
 function TComponentFactory.Controller(const AController: IController): IModel;

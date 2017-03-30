@@ -20,7 +20,7 @@ type
     FAcceptCharset: string;
     FAccept: String;
     FAcceptEncoding: string;
-    FResourcePreffix: string;
+    FResourcePrefix: string;
     FTimeout: integer;
     FBody: TStrings;
     procedure SetBaseURL(const Value: string);
@@ -29,7 +29,7 @@ type
     procedure SetAcceptCharset(const Value: string);
     procedure SetAccept(const Value: String);
     procedure SetAcceptEncoding(const Value: string);
-    procedure SetResourcePreffix(const Value: string);
+    procedure SetResourcePrefix(const Value: string);
     procedure SetTimeout(const Value: integer);
     procedure SetBody(const Value: TStrings);
     function GetIdHTTP: TIdCustomHTTP;
@@ -48,8 +48,8 @@ type
     Property Body: TStrings read FBody write SetBody;
     Property BaseURL: string read FBaseURL write SetBaseURL;
     Property Resource: string read FResource write SetResource;
-    Property ResourcePreffix: string read FResourcePreffix
-      write SetResourcePreffix;
+    Property ResourcePrefix: string read FResourcePrefix
+      write SetResourcePrefix;
     Property Method: TIdHTTPRestMethod read FMethod write SetMethod
       default rmGET;
     Property AcceptCharset: string read FAcceptCharset write SetAcceptCharset;
@@ -75,6 +75,7 @@ end;
 constructor TIdHTTPRestClient.Create(AOwner: TComponent);
 begin
   inherited;
+  FMethod := rmGET;
   FIdHTTP := TIdCustomHTTP.Create(self);
   FBody := TStringList.Create;
   if (csDesigning in ComponentState) and (FAccept = '') then
@@ -88,7 +89,7 @@ end;
 
 function TIdHTTPRestClient.CreateURI: string;
 begin
-  result := FBaseURL + FResourcePreffix + FResource;
+  result := FBaseURL + FResourcePrefix + FResource;
 end;
 
 destructor TIdHTTPRestClient.destroy;
@@ -185,9 +186,9 @@ begin
   FResource := Value;
 end;
 
-procedure TIdHTTPRestClient.SetResourcePreffix(const Value: string);
+procedure TIdHTTPRestClient.SetResourcePrefix(const Value: string);
 begin
-  FResourcePreffix := Value;
+  FResourcePrefix := Value;
 end;
 
 procedure TIdHTTPRestClient.SetTimeout(const Value: integer);

@@ -50,17 +50,19 @@ type
     FMainView: IView;
   public
     function MainView: IView; virtual;
-    procedure SetMainView(AView:IView);
+    procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController; virtual;
     function FindView(AGuid: TGuid): IView; virtual;
-    function FindModel(AGuid: TGuid): IModel; overload;virtual;
-    function FindModel<TIModel:IInterface>: TIModel;overload;
+    function FindModel(AGuid: TGuid): IModel; overload; virtual;
+    function FindModel<TIModel: IInterface>: TIModel; overload;
 
     function ViewEvent(AMessage: string): IApplicationController; overload;
+    function ViewEventOther(ASender: IController; AMessage: string)
+      : IApplicationController;
     function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
     function ViewEvent<TViewInterface: IInterface>(AMessage: String)
       : IView; overload;
-    constructor create;
+    constructor create; override;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
     function This: TObject;
@@ -189,12 +191,12 @@ end;
 function TApplicationController.FindModel<TIModel>: TIModel;
 var
   IID: TGuid;
-  AModel:IModel;
+  AModel: IModel;
 begin
   IID := TMVCBr.GetGuid<TIModel>;
-  AModel := findModel(IID);
+  AModel := FindModel(IID);
   if assigned(AModel) then
-     result := TIModel( AModel );
+    result := TIModel(AModel);
 end;
 
 function TApplicationController.FindView(AGuid: TGuid): IView;
@@ -294,12 +296,7 @@ end;
 function TApplicationController.ViewEvent(AMessage: string)
   : IApplicationController;
 begin
-  result := self;
-  ForEach(
-    procedure(AController: IController)
-    begin
-      AController.ViewEvent(AMessage);
-    end);
+  result := ViewEventOther(nil,AMessage);
 end;
 
 function TApplicationController.This: TObject;
@@ -356,6 +353,7 @@ begin
   result := rst;
 end;
 
+
 function TApplicationController.ViewEvent<TViewInterface>
   (AMessage: String): IView;
 var
@@ -363,6 +361,19 @@ var
 begin
   IID := TMVCBr.GetGuid<TViewInterface>;
   result := ViewEvent(IID, AMessage);
+end;
+
+function TApplicationController.ViewEventOther(ASender: IController;
+AMessage: string): IApplicationController;
+begin
+  result := self;
+  ForEach(
+    procedure(AController: IController)
+    begin
+     if (not assigned(ASender)) or (ASender<>AController) then  /// CHECK NO LOOP
+        AController.ViewEvent(AMessage);
+    end);
+
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;

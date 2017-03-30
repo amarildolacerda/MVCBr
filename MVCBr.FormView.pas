@@ -1,3 +1,16 @@
+///
+///  MVCBr.FormView - implements base class of FormView
+///  Auth: amarildo lacerda
+///  Date: jan/2017
+
+{
+  Changes:
+   29-mar-2017
+     + MainViewEvent  - send ViewEvent to MainView   by: amarildo lacerda
+     + ViewEventOther  - send ViewEvent to other VIEW
+}
+
+
 unit MVCBr.FormView;
 
 interface
@@ -48,6 +61,7 @@ type
   /// </summary>
   TFormFactory = class(TForm, IMVCBrBase, IView)
   private
+    FEventRef: Integer;
     FOnClose: TCloseEvent;
     FID: string;
     function GetPropertyValue(ANome: string): TValue;
@@ -74,6 +88,8 @@ type
     destructor Destroy; override;
     function GetGuid(AII: IInterface): TGuid;
     function ViewEvent(AMessage: string): IView; virtual;
+    function MainViewEvent(AMessage: string): IView; virtual;
+    function ViewEventOther(AMessage: string): IView;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetID: string;
@@ -87,8 +103,8 @@ type
     function ResolveController(const IID: TGuid): IController;
       overload; virtual;
     function ResolveController<TIController>: TIController; overload;
-    function GetModel<TIModel>: TIModel;overload;
-    function GetModel(AII:TGuid):IModel;overload;
+    function GetModel<TIModel>: TIModel; overload;
+    function GetModel(AII: TGuid): IModel; overload;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
@@ -119,6 +135,7 @@ begin
   FShowModal := true;
 end;
 
+///  Set Controller to VIEW
 function TFormFactory.Controller(const AController: IController): IView;
 begin
   result := self;
@@ -126,13 +143,14 @@ begin
 end;
 
 var
-  LFormCount: Integer = 0;
+  LViewsCount: Integer = 0;  /// counter to instance of VIEW
 
 constructor TFormFactory.Create(AOwner: TComponent);
 begin
   inherited;
-  inc(LFormCount);
-  FID := classname + '_' + intToStr(LFormCount);
+  FEventRef := 0;
+  inc(LViewsCount);
+  FID := classname + '_' + intToStr(LViewsCount);
 end;
 
 destructor TFormFactory.Destroy;
@@ -159,7 +177,7 @@ end;
 
 function TFormFactory.GetModel(AII: TGuid): IModel;
 begin
-  FController.GetModel(AII,result);
+  FController.GetModel(AII, result);
 end;
 
 function TFormFactory.GetModel<TIModel>: TIModel;
@@ -245,9 +263,35 @@ begin
 
 end;
 
+function TFormFactory.ViewEventOther(AMessage: string): IView;
+begin
+  result := self;
+  if FEventRef = 0 then
+  begin
+  /// check NO LOOP
+    /// takecare with this lines... dont put your code in LOOP
+    /// sometimes you will need some override to broken LOOPs
+    /// if other view call this event, it will drop at second calls
+    /// a better implementation its call ViewEvent to 1 VIEW only by her TGUID (IInterface)
+    inc(FEventRef);
+    try
+      ApplicationController.ViewEventOther(GetController, AMessage);
+    finally
+      dec(FEventRef);
+    end;
+  end;
+end;
+
 function TFormFactory.ViewEvent(AMessage: string): IView;
 begin
   result := self;
+  ///  use inherited this method on child
+  ///  takecare put code here and start a loop whithout end
+end;
+
+function TFormFactory.MainViewEvent(AMessage: string): IView;
+begin
+  ApplicationController.MainView.ViewEvent(AMessage);
 end;
 
 procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);

@@ -135,7 +135,7 @@ var
   b: Boolean;
 begin
   with Context do
-    if Response.RawWebResponse.ContentEncoding.Contains('gzip') then
+    if {$ifdef WIN32} pos('gzip',Response.RawWebResponse.ContentEncoding)>0 {$else}  Response.RawWebResponse.ContentEncoding.Contains('gzip'){$endif} then
       try
         lFile := LFilesCompressed.GetFile(sFileName);
         if assigned(lFile) then

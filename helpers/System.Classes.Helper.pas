@@ -26,8 +26,8 @@ unit System.Classes.Helper;
 interface
 
 uses System.Classes, System.SysUtils, System.Rtti,
-     System.Generics.Collections,
-     System.TypInfo, System.Json;
+  System.Generics.Collections,
+  System.TypInfo, System.Json;
 
 Type
 
@@ -54,8 +54,8 @@ Type
   TMemberVisibilitySet = set of TMemberVisibility;
 
   TValueNamed = record
-     name:string;
-     value:TValue;
+    name: string;
+    Value: TValue;
   end;
 
   TObjectHelper = class helper for TObject
@@ -110,8 +110,8 @@ Type
     class procedure &ContextGetRecordFieldsList<T: Record >(AStrings: TStrings;
       ARec: T; const AVisibility: TMemberVisibilitySet = [mvPublic];
       AFunc: TFunc < string, boolean >= nil); static;
-    class procedure &ContextRecordValuesList<T: Record >(AList: TList<TValueNamed>;
-      ARec: T); static;
+    class procedure &ContextRecordValuesList<T: Record >
+      (AList: TList<TValueNamed>; ARec: T); static;
     class function GetRecordValue<T: Record >(rec: T; aNome: string)
       : TValue; static;
 
@@ -140,6 +140,9 @@ Type
     property MaxThread: Integer read FMaxThread write SetMaxThread;
   end;
 
+  {TFontHelper = class helper for TFont
+  end;
+  }
 implementation
 
 uses {$IF CompilerVersion>28} System.Threading, {$ENDIF} System.DateUtils,
@@ -195,7 +198,7 @@ var
 begin
   aCtx := TRttiContext.create;
   try
-    result := aCtx.GetType(self.ClassType).GetFields[idx].Name;
+    result := aCtx.GetType(self.ClassType).GetFields[idx].name;
   finally
     aCtx.Free;
   end;
@@ -271,7 +274,7 @@ begin
           if LAttr is HideAttribute then
             LTemAtributo := true; // é um Field [HIDE]
         if not LTemAtributo then
-          AList.Add(AFld.Name);
+          AList.Add(AFld.name);
       end;
     end;
   finally
@@ -308,10 +311,10 @@ begin
             LContinue := false; // é um Field [HIDE]
 
         if assigned(AFunc) and LContinue then
-          LContinue := AFunc(AField.Name);
+          LContinue := AFunc(AField.name);
 
         if LContinue then
-          AStrings.Add(lowercase(AField.Name));
+          AStrings.Add(lowercase(AField.name));
       end;
     end;
   finally
@@ -330,7 +333,7 @@ begin
     LRecord := LContext.GetType(TypeInfo(T)).AsRecord;
     for LField in LRecord.GetFields do
     begin
-      if sameText(LField.Name, aNome) then
+      if sameText(LField.name, aNome) then
       begin
         result := LField.GetValue(@rec);
         exit;
@@ -373,7 +376,7 @@ begin
           if LAttr is HideAttribute then
             LTemAtributo := true; // é um Field [HIDE]
         if not LTemAtributo then
-          AList.Add(aMethod.Name);
+          AList.Add(aMethod.name);
       end;
     end;
   finally
@@ -486,11 +489,11 @@ begin
       begin
         AValue := aProperty.GetValue(self);
         if AValue.IsDate or AValue.IsDateTime then
-          AList.Add(aProperty.Name + '=' + ISODateTimeToString(AValue.AsDouble))
+          AList.Add(aProperty.name + '=' + ISODateTimeToString(AValue.AsDouble))
         else if AValue.IsBoolean then
-          AList.Add(aProperty.Name + '=' + ord(AValue.AsBoolean).ToString)
+          AList.Add(aProperty.name + '=' + ord(AValue.AsBoolean).ToString)
         else
-          AList.Add(aProperty.Name + '=' + AValue.ToString);
+          AList.Add(aProperty.name + '=' + AValue.ToString);
       end;
     end;
   finally
@@ -514,7 +517,7 @@ begin
     for aProperty in aRtti.GetProperties do
     begin
       if aProperty.Visibility in AVisibility then
-        AList.Add(aProperty.Name);
+        AList.Add(aProperty.name);
     end;
   finally
     aCtx.Free;
@@ -600,7 +603,7 @@ var
 begin
   aCtx := TRttiContext.create;
   try
-    result := aCtx.GetType(self.ClassType).GetProperties[idx].Name;
+    result := aCtx.GetType(self.ClassType).GetProperties[idx].name;
   finally
     aCtx.Free;
   end;
@@ -612,15 +615,15 @@ var
   LContext: TRttiContext;
   LRecord: TRttiRecordType;
   LField: TRttiField;
-  LNamed:TValueNamed;
+  LNamed: TValueNamed;
 begin
   LContext := TRttiContext.create;
   try
     LRecord := LContext.GetType(TypeInfo(T)).AsRecord;
     for LField in LRecord.GetFields do
     begin
-      LNamed.name := LField.Name;
-      LNamed.value := LField.GetValue(@ARec);
+      LNamed.name := LField.name;
+      LNamed.Value := LField.GetValue(@ARec);
       AList.Add(LNamed);
     end;
   finally

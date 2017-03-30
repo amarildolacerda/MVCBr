@@ -40,6 +40,7 @@ type
 
   TODataDatasetAdapter = class(TComponent)
   private
+    FOrigemFieldNameList: TStringList;
     FChanges: TJsonArray;
     FJsonValue: TJsonValue;
     FDataset: TDataset;
@@ -59,7 +60,7 @@ type
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
     class procedure CreateFieldByProperties(FDataset: TDataset;
-      AJSONProp: TJsonValue);
+      AJSONProp: TJsonValue; FFieldList: TStrings);
 
   protected
     FResourceKeys: string;
@@ -72,10 +73,10 @@ type
     function Execute: boolean;
     class procedure FillDatasetFromJSONValue(ARootElement: string;
       ADataset: TDataset; AJSON: TJsonValue;
-      AResponseType: TAdapterResponserType;
-      ADelegate: TProc<TDataset>); virtual;
-    class procedure DatasetFromJsonObject(FDataset: TDataset;
-      AJSON: TJsonValue);
+      AResponseType: TAdapterResponserType; ADelegate: TProc<TDataset>;
+      FFieldList: TStrings; AKeys: String); virtual;
+    class procedure DatasetFromJsonObject(FDataset: TDataset; AJSON: TJsonValue;
+      FFieldList: TStrings);
     procedure CreateDatasetFromJson(AJSON: string);
     class procedure CreateFieldsFromJson(FDataset: TDataset;
       AJSONArray: TJsonValue); static;
@@ -181,6 +182,7 @@ end;
 constructor TODataDatasetAdapter.create(AOwner: TComponent);
 begin
   inherited;
+  FOrigemFieldNameList := TStringList.create;
   FChanges := TJsonArray.create;
 end;
 
@@ -221,7 +223,7 @@ begin
   end;
 
   FillDatasetFromJSONValue(FRootElement, FDataset, FJsonValue, ResponseType,
-    FBeforeOpenDelegate);
+    FBeforeOpenDelegate, FOrigemFieldNameList, FResourceKeys);
 end;
 
 class procedure TODataDatasetAdapter.CreateFieldsFromJsonRow(FDataset: TDataset;
@@ -254,13 +256,13 @@ begin
 end;
 
 class procedure TODataDatasetAdapter.CreateFieldByProperties(FDataset: TDataset;
-  AJSONProp: TJsonValue);
+  AJSONProp: TJsonValue; FFieldList: TStrings);
 var
   jp: TJsonPair;
   jv: TJsonValue;
   LFieldName: string;
   LType: string;
-  LSize: integer;
+  LSize, n: integer;
   LRequired: boolean;
   LPrecision: integer;
   LScale: integer;
@@ -269,28 +271,34 @@ begin
     for jp in AJSONProp.asObject do
     begin
       LFieldName := jp.JsonString.Value.ToLower;
-      if FDataset.FieldDefs.IndexOf(LFieldName) >= 0 then
-        continue;
-      if not jp.JsonValue.TryGetValue<string>('Type', LType) then
-        continue;
-      jp.JsonValue.TryGetValue<integer>('MaxLength', LSize);
-      jp.JsonValue.TryGetValue<boolean>('Nullable', LRequired);
-      LType := LType.ToLower;
-      if LType = 'string' then
+      if assigned(FFieldList) then
+        FFieldList.Add(LFieldName);
+      n := FDataset.FieldDefs.IndexOf(LFieldName);
+      if n < 0 then
       begin
-        FieldDefs.Add(LFieldName, ftString, LSize, LRequired);
-      end
-      else if LType = 'float' then
-      begin
-        jp.JsonValue.TryGetValue<integer>('Precision', LPrecision);
-        jp.JsonValue.TryGetValue<integer>('Scale', LScale);
-        FieldDefs.Add(LFieldName, ftFloat, 0, LRequired);
-      end
-      else if LType = 'datetime' then
-      begin
-        FieldDefs.Add(LFieldName, ftDateTime, 0, LRequired);
-      end
+        if not jp.JsonValue.TryGetValue<string>('Type', LType) then
+          continue;
+        jp.JsonValue.TryGetValue<integer>('MaxLength', LSize);
+        jp.JsonValue.TryGetValue<boolean>('Nullable', LRequired);
+        LType := LType.ToLower;
+        if LType = 'string' then
+        begin
+          FieldDefs.Add(LFieldName, ftString, LSize, LRequired);
+        end
+        else if LType = 'float' then
+        begin
+          jp.JsonValue.TryGetValue<integer>('Precision', LPrecision);
+          jp.JsonValue.TryGetValue<integer>('Scale', LScale);
+          FieldDefs.Add(LFieldName, ftFloat, 0, LRequired);
+        end
+        else if LType = 'datetime' then
+        begin
+          FieldDefs.Add(LFieldName, ftDateTime, 0, LRequired);
+        end;
+        n := FDataset.FieldDefs.IndexOf(LFieldName);
+      end;
     end;
+
 end;
 
 class procedure TODataDatasetAdapter.CreateFieldsFromJson(FDataset: TDataset;
@@ -315,7 +323,7 @@ begin
 end;
 
 class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
-  AJSON: TJsonValue);
+  AJSON: TJsonValue; FFieldList: TStrings);
   procedure AddJSONDataRow(const AJsonValue: TJsonValue);
   var
     LValue: variant;
@@ -439,8 +447,8 @@ begin
       FDataset.Close;
 {$ENDIF}
 {$IFNDEF MSWINDOWS}
-      while Dataset.Eof = false do
-        Dataset.Delete;
+      while FDataset.Eof = false do
+        FDataset.Delete;
 {$ENDIF}
     end;
 
@@ -466,6 +474,7 @@ end;
 destructor TODataDatasetAdapter.destroy;
 begin
   FChanges.DisposeOf;
+  FOrigemFieldNameList.DisposeOf;
   inherited;
 end;
 
@@ -497,7 +506,8 @@ end;
 
 class procedure TODataDatasetAdapter.FillDatasetFromJSONValue
   (ARootElement: string; ADataset: TDataset; AJSON: TJsonValue;
-AResponseType: TAdapterResponserType; ADelegate: TProc<TDataset>);
+AResponseType: TAdapterResponserType; ADelegate: TProc<TDataset>;
+FFieldList: TStrings; AKeys: String);
 var
 {$IFDEF REST}
   Adpter: TCustomJSONDataSetAdapter;
@@ -558,6 +568,7 @@ begin
         /// se houver alguma lista de fields definidas pelo coder.
         for fld in ADataset.Fields do
         begin
+          fld.ProviderFlags := fld.ProviderFlags - [pfInUpdate, pfInWhere];
           if ADataset.FieldDefs.IndexOf(fld.FieldName) >= 0 then
             continue;
           ADataset.FieldDefs.Add(fld.FieldName, fld.DataType, fld.Size,
@@ -566,7 +577,7 @@ begin
 
         if AJSON.TryGetValue('properties', _jv) then
         begin
-          CreateFieldByProperties(ADataset, _jv);
+          CreateFieldByProperties(ADataset, _jv, FFieldList);
         end;
         if AJSON.TryGetValue(ARootElement, _jv) then
         else
@@ -575,7 +586,15 @@ begin
         if assigned(ADelegate) then
           ADelegate(ADataset);
 
-        DatasetFromJsonObject(ADataset, _jv);
+        DatasetFromJsonObject(ADataset, _jv, FFieldList);
+        s := ';' + AKeys.ToLower + ';';
+        for fld in ADataset.Fields do
+        begin
+          if FFieldList.IndexOf(fld.FieldName) >= 0 then
+            fld.ProviderFlags := fld.ProviderFlags + [pfInUpdate];
+          if s.Contains(';' + fld.FieldName.ToLower + ';') then
+            fld.ProviderFlags := fld.ProviderFlags + [pfInWhere];
+        end;
       end;
 
   end;

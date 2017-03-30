@@ -86,7 +86,7 @@ Type
     FResource: TODataResourceItems;
     FBaseURL: string;
     FService: string;
-    FServicePreffix: string;
+    FServicePrefix: string;
     FExpand: string;
     FOrder: string;
     FRestClient: TIdHTTPRestClient;
@@ -101,7 +101,7 @@ Type
     procedure SetResource(const Value: TODataResourceItems);
     procedure SetBaseURL(const Value: string);
     procedure SetService(const Value: string);
-    procedure SetServicePreffix(const Value: string);
+    procedure SetServicePrefix(const Value: string);
     procedure SetExpand(const Value: string);
     procedure AddSqlResource(var Result: string; AResource: TODataResourceItem);
     procedure SetRestClient(const Value: TIdHTTPRestClient);
@@ -130,8 +130,8 @@ Type
     property URI: string read FURI;
     property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
     property BaseURL: string read FBaseURL write SetBaseURL;
-    property ServicePreffix: string read FServicePreffix
-      write SetServicePreffix;
+    property ServicePrefix: string read FServicePrefix
+      write SetServicePrefix;
     property Service: string read FService write SetService;
     property ResourceName: string read GetResourceName write SetResourceName;
     property Resource: TODataResourceItems read FResource write SetResource;
@@ -221,7 +221,7 @@ begin
     rest.Body.Add(AChanges.ToString);
     rest.BaseURL := self.BaseURL;
     rest.Resource := '/' + TODataResourceItem(FResource.Items[0]).Resource;
-    rest.ResourcePreffix := self.FServicePreffix + self.FService;
+    rest.ResourcePrefix := self.FServicePrefix + self.FService;
     if Assigned(FOnBeforeApplyUpdate) then
       FOnBeforeApplyUpdate(self);
     Result := rest.execute(
@@ -242,7 +242,7 @@ begin
   if (csDesigning in ComponentState) and (FBaseURL = '') then
   begin
     FBaseURL := 'http://localhost:8080';
-    FServicePreffix := '/OData';
+    FServicePrefix := '/OData';
     FService := '/OData.svc';
   end;
 
@@ -373,9 +373,9 @@ begin
   FService := Value;
 end;
 
-procedure TODataBuilder.SetServicePreffix(const Value: string);
+procedure TODataBuilder.SetServicePrefix(const Value: string);
 begin
-  FServicePreffix := Value;
+  FServicePrefix := Value;
 end;
 
 procedure TODataBuilder.SetSkip(const Value: Integer);
@@ -426,13 +426,13 @@ begin
     Result := Result + '?' + p;
 
   FURI := Result;
-  Result := FBaseURL + FServicePreffix + FService + Result;
+  Result := FBaseURL + FServicePrefix + FService + Result;
 
   if Assigned(FRestClient) then
   begin
     FRestClient.BaseURL := self.BaseURL;
     FRestClient.Resource := self.FURI;
-    FRestClient.ResourcePreffix := self.ServicePreffix + self.Service;
+    FRestClient.ResourcePrefix := self.ServicePrefix + self.Service;
   end;
 
 end;
