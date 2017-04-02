@@ -56,7 +56,7 @@ object WSConfigView: TWSConfigView
       Height = 13
       Caption = 'Senha'
     end
-    object Driver: TComboBox
+    object driverid: TComboBox
       Left = 72
       Top = 24
       Width = 137
@@ -74,7 +74,7 @@ object WSConfigView: TWSConfigView
       Width = 225
       Height = 21
       TabOrder = 1
-      Text = 'localhost:3050'
+      Text = 'localhost'
       TextHint = 'Endere'#231'o do Servidor de Dados'
     end
     object Database: TEdit

@@ -43,7 +43,7 @@ type
     IWSConfigView, IViewAs<IWSConfigView>)
     GroupBox1: TGroupBox;
     Label1: TLabel;
-    Driver: TComboBox;
+    driverid: TComboBox;
     Label2: TLabel;
     Server: TEdit;
     Label3: TLabel;
@@ -123,7 +123,7 @@ end;
 function TWSConfigView.GetServer: TJsonValue;
 begin
   result := TJsonObject.create();
-  result.addPair('driverid', Driver.Text);
+  result.addPair('driverid', DriverID.Text);
   result.addPair('server', Server.Text);
   result.addPair('database', Database.Text);
   result.addPair('user_name', User_Name.Text);
@@ -144,7 +144,7 @@ begin
   ///
   FList.Add(WSPort);
   /// conexões de Banco de Dados
-  FList.Add(Driver);
+  FList.Add(DriverID);
   FList.Add(Server);
   FList.Add(Database);
   FList.Add(User_Name);
