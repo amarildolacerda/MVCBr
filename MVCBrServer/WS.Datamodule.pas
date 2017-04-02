@@ -40,6 +40,7 @@ type
 
 var
   WSDatamodule: TWSDatamodule;
+  WSConnectionString: string;
 
 implementation
 
@@ -69,6 +70,8 @@ var
   LQueryCount: Integer = 0;
 
 constructor TFDQueryAuto.create(AOwner: TComponent);
+var
+  old: char;
 begin
   inherited;
   ConnectionName := 'MVCBr_Firebird';
@@ -83,6 +86,16 @@ begin
     Connection.Params.values['database'] := 'mvcbr';
     Connection.Params.values['user_name'] := 'sysdba';
     Connection.Params.values['password'] := 'masterkey';
+    if WSConnectionString <> '' then
+    begin
+      old := Connection.Params.Delimiter;
+      try
+        Connection.Params.Delimiter := ';';
+        Connection.Params.DelimitedText := WSConnectionString;
+      finally
+        Connection.Params.Delimiter := old;
+      end;
+    end;
   end;
 end;
 

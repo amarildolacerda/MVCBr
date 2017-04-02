@@ -52,6 +52,8 @@ type
     function MainView: IView; virtual;
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController; virtual;
+    function ResolveController(AGuid: TGuid): IController; virtual;
+
     function FindView(AGuid: TGuid): IView; virtual;
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
     function FindModel<TIModel: IInterface>: TIModel; overload;
@@ -282,6 +284,18 @@ begin
   FControllers.Remove(AController);
 end;
 
+function TApplicationController.ResolveController(AGuid: TGuid): IController;
+var
+  stb: TControllerAbstract;
+begin
+  stb := TControllerAbstract.create;
+  try
+    stb.ResolveController(AGuid, result);
+  finally
+    stb.DisposeOf;
+  end;
+end;
+
 procedure TApplicationController.Run(AController: IController;
 AFunc: TFunc<boolean>);
 begin
@@ -296,7 +310,7 @@ end;
 function TApplicationController.ViewEvent(AMessage: string)
   : IApplicationController;
 begin
-  result := ViewEventOther(nil,AMessage);
+  result := ViewEventOther(nil, AMessage);
 end;
 
 function TApplicationController.This: TObject;
@@ -353,7 +367,6 @@ begin
   result := rst;
 end;
 
-
 function TApplicationController.ViewEvent<TViewInterface>
   (AMessage: String): IView;
 var
@@ -370,7 +383,8 @@ begin
   ForEach(
     procedure(AController: IController)
     begin
-     if (not assigned(ASender)) or (ASender<>AController) then  /// CHECK NO LOOP
+      if (not assigned(ASender)) or (ASender <> AController) then
+        /// CHECK NO LOOP
         AController.ViewEvent(AMessage);
     end);
 

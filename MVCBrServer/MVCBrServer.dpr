@@ -13,7 +13,7 @@ uses
  {$endif}
   Web.WebReq,
   Web.WebBroker,
-  IniFiles,
+  System.JsonFiles,
   IdHTTPWebBrokerBridge,
   MVCBr.ApplicationController,
   WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
@@ -47,13 +47,12 @@ var
   LEvent: DWord;
   LHandle: THandle;
   LServer: TIdHTTPWebBrokerBridge;
-  Ini: TIniFile;
+  ini:TJsonFile;
 begin
-  Ini := TIniFile.create(ExtractFilePath(ParamStr(0) + 'MVBrServer.ini'));
+  Ini := TJsonFile.Create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
   try
-
-    APort := Ini.ReadInteger('Config', 'Port', 8080);
-    Writeln('** MVCBr / DMVCFramework Server ** build ' +
+    APort := Ini.ReadInteger('Config', 'WSPort', 8080);
+    Writeln('** MVCBrOData powered by DMVCFramework Server ** build ' +
       DMVCFRAMEWORK_VERSION);
     Writeln(Format('Starting HTTP Server on port %d', [APort]));
     LServer := TIdHTTPWebBrokerBridge.create(nil);

@@ -2,21 +2,18 @@ unit System.Json.Helper;
 
 interface
 
-
-
-
 uses System.Classes, System.Types, System.SysUtils,
-  System.TypInfo,  System.JSON,
+  System.TypInfo, System.Json,
   System.Generics.collections, System.Classes.Helper,
-  RegularExpressions {$ifndef BPL}, DBXJsonReflect{$endif};
+  RegularExpressions {$IFNDEF BPL}, DBXJsonReflect{$ENDIF};
 
 type
 
-    TJsonRecord<T:Record> = class
-      public
-       class function ToJson(O: T): string;
-       class procedure FromJson(O:T;AJson:string);
-    end;
+  TJsonRecord<T: Record > = class
+  public
+    class function ToJson(O: T): string;
+    class procedure FromJson(O: T; AJson: string);
+  end;
 
 type
 
@@ -30,13 +27,13 @@ type
 
   public
 {$IFDEF VER270}
-    function ToJSON: string;
+    function ToJson: string;
 {$ENDIF}
     class function GetTypeAsString(AType: TJsonType): string; static;
     class function GetJsonType(AJsonValue: TJsonValue): TJsonType; static;
     class function Stringify(so: TJSONObject): string;
     class function Parse(const dados: string): TJSONObject;
-    constructor create(AKey,AValue:String);overload;
+    constructor create(AKey, AValue: String); overload;
     function V(chave: String): variant;
     function S(chave: string): string;
     function I(chave: string): integer;
@@ -49,10 +46,10 @@ type
     function Contains(chave: string): boolean;
     function Find(chave: string): TJsonValue; virtual;
 
-{$ifndef BPL}
+{$IFNDEF BPL}
     function asObject: System.TObject;
     class function FromRecord<T>(rec: T): TJSONObject;
-{$endif}
+{$ENDIF}
     class function FromObject<T>(AObject: T): TJSONObject; overload;
     function addPair(chave: string; Value: integer): TJSONObject; overload;
     function addPair(chave: string; Value: Double): TJSONObject; overload;
@@ -80,9 +77,10 @@ type
   private
   public
 {$IFDEF VER270}
-    function ToJSON: string;
+    function ToJson: string;
 {$ENDIF}
-    class Function New(AKey,AValue:String):TJsonValue;
+    class Function New(AKey, AValue: String): TJsonValue;
+    procedure addPair(AKey, AValue: string);
     function ToRecord<T>: T; overload;
     function ToRecord<T: Record >(var ARec: T): T; overload;
     class function ToRecord<T: record >(AJson: string): T; overload; static;
@@ -92,6 +90,7 @@ type
     function Datatype: TJsonType;
     function asObject: TJSONObject;
     function AsInteger: integer;
+    function AsString:string;
   end;
 
   TJSONPairHelper = class helper for TJsonPair
@@ -120,106 +119,105 @@ function ISOStrToDate(DateAsString: string): TDate;
 function ISOStrToTime(TimeAsString: string): TTime;
 function JSONStoreError(msg: string): TJsonValue;
 
-
-
 implementation
 
-uses db, System.Rtti,  System.DateUtils (*{$ifndef BPL}, Rest.JSON{$endif}*);
-
+uses db, System.Rtti, System.DateUtils (*{$ifndef BPL}, Rest.JSON{$endif}*);
 
 class procedure TJsonRecord<T>.FromJson(O: T; AJson: string);
-var js:TJsonObject;
-    AContext  : TRttiContext;
-    AField    : TRttiField;
-    ARecord   : TRttiRecordType;
-    AFldName  : String;
-    AValue    : TValue;
+var
+  js: TJSONObject;
+  AContext: TRttiContext;
+  AField: TRttiField;
+  ARecord: TRttiRecordType;
+  AFldName: String;
+  AValue: TValue;
 begin
-   js:= TJsonObject.ParseJSONValue(AJson) as TJsonObject;
-   try
-    AContext := TRttiContext.Create;
+  js := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
+  try
+    AContext := TRttiContext.create;
     try
-        ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
-        for AField in ARecord.GetFields do
-        begin
-            AFldName := AField.Name;
-            AValue := js.GetValue(AFldName);
-            AField.SetValue(@O,AValue);
-        end;
+      ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
+      for AField in ARecord.GetFields do
+      begin
+        AFldName := AField.Name;
+        AValue := js.GetValue(AFldName);
+        AField.SetValue(@O, AValue);
+      end;
 
     finally
       AContext.free;
     end;
 
-   finally
-     js.Free;
-   end;
+  finally
+    js.free;
+  end;
 end;
 
 class function TJsonRecord<T>.ToJson(O: T): string;
 var
-    AContext  : TRttiContext;
-    AField    : TRttiField;
-    ARecord   : TRttiRecordType;
-    AFldName  : String;
-    AValue    : TValue;
-    ArrFields : TArray<TRttiField>;
-    i:integer;
-    js:TJsonObject;
+  AContext: TRttiContext;
+  AField: TRttiField;
+  ARecord: TRttiRecordType;
+  AFldName: String;
+  AValue: TValue;
+  ArrFields: TArray<TRttiField>;
+  I: integer;
+  js: TJSONObject;
 begin
-    js := TJsonObject.Create;
-    AContext := TRttiContext.Create;
-    try
-        ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
-        ArrFields := ARecord.GetFields;
-        i := 0;
-        for AField in ArrFields do
-        begin
-            AFldName := AField.Name;
-            AValue := AField.GetValue(@O);
-            try
-            if AValue.IsEmpty then
-              js.addPair(AFldName,'NULL')
-            else
-            case AField.FieldType.TypeKind of
-               tkInteger,tkInt64:
-                    try
-                      js.addPair(AFldName,TJSONNumber.Create(Avalue.AsInt64));
-                    except
-                      js.addPair(AFldName,TJSONNumber.Create(0));
-                    end;
-               tkEnumeration:
-                      js.addPair(AFldName,TJSONNumber.Create(Avalue.AsInteger));
-               tkFloat:
-                 begin
-                    if AField.FieldType.ToString.Equals('TDateTime') then
-                      js.addPair(AFldName, FormatDateTime('yyyy-mm-dd HH:nn:ss',  AValue.AsExtended))
-                    else
-                    if AField.FieldType.ToString.Equals('TDate') then
-                      js.addPair(AFldName, FormatDateTime('yyyy-mm-dd',  AValue.AsExtended))
-                    else
-                    if AField.FieldType.ToString.Equals('TTime') then
-                      js.addPair(AFldName, FormatDateTime('HH:nn:ss',  AValue.AsExtended))
-                    else
-                      try
-                        js.addPair(AFldName,TJSONNumber.Create(Avalue.AsExtended));
-                      except
-                        js.addPair(AFldName,TJSONNumber.Create(0));
-                    end;
-                 end
-            else
-               js.addPair(AFldName,AValue.asString)
-            end;
-            except
-              js.addPair(AFldName,'NULL')
-            end;
+  js := TJSONObject.create;
+  AContext := TRttiContext.create;
+  try
+    ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
+    ArrFields := ARecord.GetFields;
+    I := 0;
+    for AField in ArrFields do
+    begin
+      AFldName := AField.Name;
+      AValue := AField.GetValue(@O);
+      try
+        if AValue.IsEmpty then
+          js.addPair(AFldName, 'NULL')
+        else
+          case AField.FieldType.TypeKind of
+            tkInteger, tkInt64:
+              try
+                js.addPair(AFldName, TJSONNumber.create(AValue.AsInt64));
+              except
+                js.addPair(AFldName, TJSONNumber.create(0));
+              end;
+            tkEnumeration:
+              js.addPair(AFldName, TJSONNumber.create(AValue.AsInteger));
+            tkFloat:
+              begin
+                if AField.FieldType.ToString.Equals('TDateTime') then
+                  js.addPair(AFldName, FormatDateTime('yyyy-mm-dd HH:nn:ss',
+                    AValue.AsExtended))
+                else if AField.FieldType.ToString.Equals('TDate') then
+                  js.addPair(AFldName, FormatDateTime('yyyy-mm-dd',
+                    AValue.AsExtended))
+                else if AField.FieldType.ToString.Equals('TTime') then
+                  js.addPair(AFldName, FormatDateTime('HH:nn:ss',
+                    AValue.AsExtended))
+                else
+                  try
+                    js.addPair(AFldName, TJSONNumber.create(AValue.AsExtended));
+                  except
+                    js.addPair(AFldName, TJSONNumber.create(0));
+                  end;
+              end
+          else
+            js.addPair(AFldName, AValue.asString)
+          end;
+      except
+        js.addPair(AFldName, 'NULL')
+      end;
 
-        end;
-        result := js.ToString;
-    finally
-        js.Free;
-        AContext.Free;
     end;
+    result := js.ToString;
+  finally
+    js.free;
+    AContext.free;
+  end;
 
 end;
 
@@ -305,7 +303,7 @@ var
 begin
   if AJsonValue is TJSONNull then
     result := jtNull
-  else  if AJsonValue is TJSONObject then
+  else if AJsonValue is TJSONObject then
     result := jtObject
   else if AJsonValue is TJSONArray then
     result := jtArray
@@ -339,7 +337,7 @@ end;
 
 function JSONstringify(so: IJson): string;
 begin
-  result := so.ToJSON;
+  result := so.ToJson;
 end;
 
 function ReadJsonFloat(const dados: string; chave: string): Extended;
@@ -350,7 +348,7 @@ begin
   try
     I.TryGetValue<Extended>(chave, result);
   finally
-    I.Free;
+    I.free;
   end;
 end;
 
@@ -375,7 +373,7 @@ begin
       result :=  I.V[chave];
       end; }
   finally
-    j.Free;
+    j.free;
   end;
 end;
 
@@ -402,16 +400,16 @@ begin
   try
     j.TryGetValue<integer>(chave, result);
   finally
-    j.Free;
+    j.free;
   end;
 end;
 
 {$IFNDEF MULTI_THREADED}
 
-function JSON: TJson;
+function Json: TJson;
 begin
   if not assigned(LJson) then
-    LJson := TJson.Create;
+    LJson := TJson.create;
   result := LJson;
 end;
 
@@ -431,12 +429,12 @@ end;
 
 function TJSONObjectHelper.addPair(chave: string; Value: integer): TJSONObject;
 begin
-  result := addPair(chave, TJSONNumber.Create(Value));
+  result := addPair(chave, TJSONNumber.create(Value));
 end;
 
 function TJSONObjectHelper.addPair(chave: string; Value: Double): TJSONObject;
 begin
-  result := addPair(chave, TJSONNumber.Create(Value));
+  result := addPair(chave, TJSONNumber.create(Value));
 end;
 
 function TJSONObjectHelper.addPair(chave: string; Value: TDatetime)
@@ -453,7 +451,7 @@ end;
 
 function TJSONObjectHelper.AsArray: TJSONArray;
 begin
-  result := TJSONObject.ParseJSONValue(self.ToJSON) as TJSONArray;
+  result := TJSONObject.ParseJSONValue(self.ToJson) as TJSONArray;
 end;
 
 function TJSONObjectHelper.B(chave: string): boolean;
@@ -478,7 +476,7 @@ end;
 
 constructor TJSONObjectHelper.create(AKey, AValue: String);
 begin
-   inherited create( TJSONPair.Create(AKey,AValue) );
+  inherited create(TJsonPair.create(AKey, AValue));
 end;
 
 function TJSONObjectHelper.F(chave: string): Extended;
@@ -521,7 +519,8 @@ begin
   result := TJSONObject.ParseJSONValue(dados) as TJSONObject;
 end;
 
-{$ifndef BPL}
+{$IFNDEF BPL}
+
 class function TJSONObjectHelper.FromRecord<T>(rec: T): TJSONObject;
 var
   m: TJSONMarshal;
@@ -529,7 +528,7 @@ var
 begin
   result := TJSONObject.FromObject<T>(rec);
 end;
-{$endif}
+{$ENDIF}
 
 class function TJSONObjectHelper.FromObject<T>(AObject: T): TJSONObject;
 var
@@ -544,8 +543,8 @@ var
   LAttr: TCustomAttribute;
   LContinue: boolean;
 begin
-  result := TJSONObject.Create;
-  ctx := TRttiContext.Create;
+  result := TJSONObject.create;
+  ctx := TRttiContext.create;
   typ := ctx.GetType(TypeInfo(T));
   P := @AObject;
   for field in typ.GetFields do
@@ -576,27 +575,27 @@ begin
               end; *)
           end;
         tkInteger:
-          result.addPair(key, TJSONNumber.Create(field.GetValue(P).AsInteger));
+          result.addPair(key, TJSONNumber.create(field.GetValue(P).AsInteger));
         tkFloat:
           begin // System.Classes.Helper
             if sametext(field.FieldType.Name, 'TDateTime') then
-              result.addPair(TJsonPair.Create(key,
-                ISODateTimeToString(field.GetValue(P).asExtended)))
+              result.addPair(TJsonPair.create(key,
+                ISODateTimeToString(field.GetValue(P).AsExtended)))
             else if sametext(field.FieldType.Name, 'TDate') then
-              result.addPair(TJsonPair.Create(key,
-                ISODateToString(field.GetValue(P).asExtended)))
+              result.addPair(TJsonPair.create(key,
+                ISODateToString(field.GetValue(P).AsExtended)))
             else if sametext(field.FieldType.Name, 'TTime') then
-              result.addPair(TJsonPair.Create(key,
-                ISOTimeToString(field.GetValue(P).asExtended)))
+              result.addPair(TJsonPair.create(key,
+                ISOTimeToString(field.GetValue(P).AsExtended)))
             else if sametext(field.FieldType.Name, 'TTimeStamp') then
-              result.addPair(TJsonPair.Create(key,
-                ISODateTimeToString(field.GetValue(P).asExtended)))
+              result.addPair(TJsonPair.create(key,
+                ISODateTimeToString(field.GetValue(P).AsExtended)))
             else
               result.addPair(key,
-                TJSONNumber.Create(field.GetValue(P).asExtended));
+                TJSONNumber.create(field.GetValue(P).AsExtended));
           end
       else
-        result.addPair(TJsonPair.Create(key, field.GetValue(P).ToString));
+        result.addPair(TJsonPair.create(key, field.GetValue(P).ToString));
       end;
     except
     end;
@@ -618,13 +617,13 @@ begin
     addPair(chave, Value)
   else
   begin
-    V.JsonValue := TJSONString.Create(Value);
+    V.JsonValue := TJSONString.create(Value);
   end;
 end;
 
 class function TJSONObjectHelper.Stringify(so: TJSONObject): string;
 begin
-  result := so.ToJSON;
+  result := so.ToJson;
 end;
 
 class function TJSONValueHelper.ToRecord<T>(AJson: string): T;
@@ -635,7 +634,7 @@ begin
   try
     result := (j).ToRecord<T>;
   finally
-    j.Free;
+    j.free;
   end;
 end;
 
@@ -649,7 +648,7 @@ var
   AFieldName: String;
   j: TJSONObject;
 begin
-  AContext := TRttiContext.Create;
+  AContext := TRttiContext.create;
   try
 
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
@@ -695,7 +694,7 @@ begin
       end;
     end;
   finally
-    AContext.Free;
+    AContext.free;
   end;
   result := ARec;
 
@@ -711,7 +710,7 @@ var
   AFieldName: String;
   j: TJSONObject;
 begin
-  AContext := TRttiContext.Create;
+  AContext := TRttiContext.create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     j := self as TJSONObject;
@@ -756,7 +755,7 @@ begin
       end;
     end;
   finally
-    AContext.Free;
+    AContext.free;
   end;
 end;
 
@@ -768,23 +767,23 @@ begin
   result := V;
 end;
 
-{$ifndef BPL}
+{$IFNDEF BPL}
+
 function TJSONObjectHelper.asObject: System.TObject;
 var
   m: TJSONunMarshal;
 begin
-  m := TJSONunMarshal.Create;
+  m := TJSONunMarshal.create;
   try
     result := m.Unmarshal(self);
   finally
-    m.Free;
+    m.free;
   end;
 end;
-{$endif}
-
+{$ENDIF}
 {$IFDEF VER270}
 
-function TJSONObjectHelper.ToJSON: string;
+function TJSONObjectHelper.ToJson: string;
 begin
   result := ToString;
 end;
@@ -831,12 +830,17 @@ end;
 { TJSONValueHelper }
 {$IFDEF VER270}
 
-function TJSONValueHelper.ToJSON: string;
+function TJSONValueHelper.ToJson: string;
 begin
   result := ToString;
 end;
 {$ENDIF}
 { TJSONValueHelper }
+
+procedure TJSONValueHelper.addPair(AKey, AValue: string);
+begin
+  (self as TJSONObject).addPair(AKey, AValue);
+end;
 
 function TJSONValueHelper.AsArray: TJSONArray;
 begin
@@ -858,6 +862,18 @@ begin
   result := TJsonPair(self);
 end;
 
+function TJSONValueHelper.AsString: string;
+var p:TJsonPair;
+begin
+   result := '';
+   for p in (self as TJsonObject) do
+   begin
+       if result>'' then
+          result := result+';';
+       result := result + p.JsonString.Value+'='+p.JsonValue.Value;
+   end;
+end;
+
 function TJSONValueHelper.Datatype: TJsonType;
 begin
   result := TJSONObject.GetJsonType(self);
@@ -875,7 +891,7 @@ var
   j: TJSONObject;
   APair: TJsonPair;
 begin
-  AContext := TRttiContext.Create;
+  AContext := TRttiContext.create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     for AField in ARecord.GetFields do
@@ -885,31 +901,32 @@ begin
       APair := nil;
       case AField.FieldType.TypeKind of
         tkInteger, tkFloat, tkInt64:
-          APair := TJsonPair.Create(AFieldName,
-            TJSONNumber.Create(AValue.asExtended));
+          APair := TJsonPair.create(AFieldName,
+            TJSONNumber.create(AValue.AsExtended));
         tkString, tkWString, tkLString, tkChar, tkWChar, tkUString:
-          APair := TJsonPair.Create(AFieldName, AValue.AsString);
+          APair := TJsonPair.create(AFieldName, AValue.asString);
       else
         if sametext(AField.FieldType.Name, 'Boolean') then
         begin
-          APair := TJsonPair.Create(AFieldName,
-            TJSONBool.Create(AValue.AsBoolean));
+          APair := TJsonPair.create(AFieldName,
+            TJSONBool.create(AValue.AsBoolean));
         end;
       end;
       if assigned(APair) then
         AList.Add(APair);
     end;
   finally
-    AContext.Free;
+    AContext.free;
   end;
 
 end;
 
 class function TJSONValueHelper.New(AKey, AValue: String): TJsonValue;
-var APair:TJsonPair;
+var
+  APair: TJsonPair;
 begin
-   APair:=TJsonPair.Create(AKey,AValue);
-   result := TJsonObject.Create(APair);
+  APair := TJsonPair.create(AKey, AValue);
+  result := TJSONObject.create(APair);
 end;
 
 { TJSONPairHelper }
@@ -939,7 +956,7 @@ end;
 
 function ISOStrToDateTime(DateTimeAsString: string): TDatetime;
 begin
-  if  DateTimeAsString.Contains('T') then
+  if DateTimeAsString.Contains('T') then
     result := System.DateUtils.ISO8601ToDate(DateTimeAsString)
   else
     result := StrToDateTime(DateTimeAsString);
@@ -960,7 +977,7 @@ function JSONStoreError(msg: string): TJsonValue;
 var
   js: TJSONObject;
 begin
-  js := TJSONObject.Create;
+  js := TJSONObject.create;
   js.addPair('error', msg);
   js.addPair('ok', 'false');
   result := js;

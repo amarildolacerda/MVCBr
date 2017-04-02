@@ -19,7 +19,7 @@ object WSConfigView: TWSConfigView
     Top = 152
     Width = 329
     Height = 169
-    Caption = 'Configura'#231#245'es do Banco de Dados'
+    Caption = 'Database Config'
     TabOrder = 0
     object Label1: TLabel
       Left = 24
@@ -56,7 +56,7 @@ object WSConfigView: TWSConfigView
       Height = 13
       Caption = 'Senha'
     end
-    object cbDriver: TComboBox
+    object Driver: TComboBox
       Left = 72
       Top = 24
       Width = 137
@@ -68,7 +68,7 @@ object WSConfigView: TWSConfigView
         'FB'
         'MySQL')
     end
-    object edServer: TEdit
+    object Server: TEdit
       Left = 72
       Top = 51
       Width = 225
@@ -77,29 +77,32 @@ object WSConfigView: TWSConfigView
       Text = 'localhost:3050'
       TextHint = 'Endere'#231'o do Servidor de Dados'
     end
-    object edBancoDados: TEdit
+    object Database: TEdit
       Left = 72
       Top = 77
       Width = 225
       Height = 21
       TabOrder = 2
+      Text = 'mvcbr'
       TextHint = 'Local/Identifica'#231#227'o do banco de dados'
     end
-    object edUsuario: TEdit
+    object user_name: TEdit
       Left = 72
       Top = 104
       Width = 153
       Height = 21
       TabOrder = 3
+      Text = 'sysdba'
       TextHint = 'Usu'#225'rio de login no banco da dados'
     end
-    object edSenha: TEdit
+    object Password: TEdit
       Left = 72
       Top = 131
       Width = 121
       Height = 21
       PasswordChar = '*'
       TabOrder = 4
+      Text = 'masterkey'
       TextHint = 'Senha de acesso'
     end
   end
@@ -117,7 +120,22 @@ object WSConfigView: TWSConfigView
     Top = 8
     Width = 329
     Height = 138
-    Caption = 'Configura'#231#245'es do Servidor'
+    Caption = 'Server Config'
     TabOrder = 2
+    object Label6: TLabel
+      Left = 32
+      Top = 32
+      Width = 20
+      Height = 13
+      Caption = 'Port'
+    end
+    object WSPort: TEdit
+      Left = 64
+      Top = 29
+      Width = 65
+      Height = 21
+      TabOrder = 0
+      Text = '8080'
+    end
   end
 end

@@ -59,7 +59,10 @@ function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
 implementation
 
-uses MVCAsyncMiddleware, MVCgzipMiddleware;
+uses WSConfig.Controller, WS.Datamodule, WSConfig.Controller.Interf,
+  WSConfigView,
+  MVCAsyncMiddleware,
+  MVCgzipMiddleware, MVCBr.ApplicationController;
 
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 begin
@@ -184,7 +187,14 @@ begin
     end;
 end;
 
+var
+  Config: IWSConfigController;
+
 initialization
+
+Config := ApplicationController.resolveController(IWSConfigController)
+  as IWSConfigController;
+WSConnectionString := Config.ConnectionString;
 
 FList := TThreadList<TMVCControllerClass>.Create;
 

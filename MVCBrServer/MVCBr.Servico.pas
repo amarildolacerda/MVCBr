@@ -8,7 +8,7 @@
 {
   Alterações:
     * 01/04/2017 - alterado o RunServer para permitir rodar em loop do serviço - por: amarildo lacerda
-
+    * 02/04/2017 - alterado para gravar configurações no MVCBrServer.json - por: AL
 }
 
 unit MVCBr.Servico;
@@ -55,7 +55,7 @@ uses
   Web.WebReq,
 
   System.Win.Registry,
-  System.IniFiles;
+  System.JsonFiles;
 
 var
   LServer: TIdHTTPWebBrokerBridge;
@@ -75,12 +75,12 @@ var
   LInputRecord: TInputRecord;
   LEvent: DWord;
   LHandle: THandle;
-  Ini: TIniFile;
+  Ini: TJsonFile;
 begin
-  Ini := TIniFile.create(ExtractFilePath(ParamStr(0) + 'MVCBrServer.ini'));
+  Ini := TJsonFile.create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
   try
 
-    APort := Ini.ReadInteger('Config', 'Port', 8080);
+    APort := Ini.ReadInteger('Config', 'WSPort', 8080);
 //    LogI('** MVCBr / DMVCFramework Server Service ** build ' +
 //      DMVCFRAMEWORK_VERSION);
 

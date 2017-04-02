@@ -20,14 +20,22 @@ uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
   MVCBr.ObjectConfigList, MVCBr.View,
+  System.JSON,
   MVCBr.FormView, MVCBr.Controller,
   VCL.Controls, VCL.StdCtrls;
 
 type
+  TWSConfigView = class;
+
   /// Interface para a VIEW
   IWSConfigView = interface(IView)
     ['{3DCAFC16-0A94-403F-8EAA-F328F6588A66}']
     // incluir especializacoes aqui
+    function ThisAs: TWSConfigView;
+    function GetConfig: TJsonValue;
+    function GetServer: TJsonValue;
+    function ConnectionString: string;
+    function GetPort: integer;
   end;
 
   /// Object Factory que implementa a interface da VIEW
@@ -35,17 +43,19 @@ type
     IWSConfigView, IViewAs<IWSConfigView>)
     GroupBox1: TGroupBox;
     Label1: TLabel;
-    cbDriver: TComboBox;
+    Driver: TComboBox;
     Label2: TLabel;
-    edServer: TEdit;
+    Server: TEdit;
     Label3: TLabel;
-    edBancoDados: TEdit;
+    Database: TEdit;
     Label4: TLabel;
-    edUsuario: TEdit;
+    user_name: TEdit;
     Label5: TLabel;
-    edSenha: TEdit;
+    Password: TEdit;
     Button1: TButton;
     GroupBox2: TGroupBox;
+    Label6: TLabel;
+    WSPort: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
@@ -61,11 +71,17 @@ type
     function ViewAs: IWSConfigView;
     function ShowView(const AProc: TProc<IView>): integer; override;
     function Update: IView; override;
+    function GetConfig: TJsonValue;
+    function GetServer: TJsonValue;
+    function ConnectionString: string;
+    function GetPort: integer;
   end;
 
 Implementation
 
 {$R *.DFM}
+
+uses System.JSON.helper;
 
 function TWSConfigView.Update: IView;
 begin
@@ -80,10 +96,38 @@ end;
 
 procedure TWSConfigView.FormCreate(Sender: TObject);
 begin
-   FList := TObjectConfigModel.new;
-   FList.FileName := ExtractFilePath(ParamStr(0))+'MVCBrServer.ini';
-   AddControls;
-   FList.ReadConfig;
+  FList := TObjectConfigModel.New;
+  FList.FileName := ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config';
+  AddControls;
+  try
+    if not fileExists(FList.FileName) then
+      FList.WriteConfig;
+  except
+  end;
+  FList.ReadConfig;
+end;
+
+function TWSConfigView.GetConfig: TJsonValue;
+var
+  j: TJsonObject;
+begin
+  j := TJsonObject.create() as TJsonObject;
+  j.addPair('connection', GetServer);
+end;
+
+function TWSConfigView.GetPort: integer;
+begin
+  result := strToIntDef(WSPort.Text, 8080);
+end;
+
+function TWSConfigView.GetServer: TJsonValue;
+begin
+  result := TJsonObject.create();
+  result.addPair('driverid', Driver.Text);
+  result.addPair('server', Server.Text);
+  result.addPair('database', Database.Text);
+  result.addPair('user_name', User_Name.Text);
+  result.addPair('password', Password.Text);
 end;
 
 class function TWSConfigView.New(aController: IController): IView;
@@ -92,19 +136,39 @@ begin
   result.Controller(aController);
 end;
 
+/// adiciona os componentes a serem gravados na configuração em uma lista
+///
 procedure TWSConfigView.AddControls;
 begin
-   FList.Add(cbDriver);
-   FList.Add(edServer);
-   FList.Add(edBancoDados);
-   FList.Add(edUsuario);
-   FList.Add(edSenha);
+  /// dados do servidor
+  ///
+  FList.Add(WSPort);
+  /// conexões de Banco de Dados
+  FList.Add(Driver);
+  FList.Add(Server);
+  FList.Add(Database);
+  FList.Add(User_Name);
+  FList.Add(Password);
 end;
 
+/// escreve os dados no arquivo de configuração
 procedure TWSConfigView.Button1Click(Sender: TObject);
 begin
   FList.WriteConfig;
   close;
+end;
+
+/// inicializa o controller do VIEW
+function TWSConfigView.ConnectionString: string;
+var
+  str: TStringList;
+begin
+  with GetServer do
+    try
+      result := asString;
+    finally
+      free;
+    end;
 end;
 
 function TWSConfigView.Controller(const aController: IController): IView;
