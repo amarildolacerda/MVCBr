@@ -73,6 +73,7 @@ unit MVCBr.Interf;
 interface
 
 uses System.Classes, System.SysUtils, System.Generics.Collections,
+  System.JSON, {$IFDEF FMX} FMX.layouts, {$ENDIF}
   System.TypInfo, System.RTTI;
 
 type
@@ -243,11 +244,12 @@ type
   // IView é uma representação para FORM
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
-    function ViewEvent(AMessage: string): IView;
+    function ViewEvent(AMessage: string): IView; overload;
+    function ViewEvent(AMessage: TJsonValue): IView; overload;
     function Controller(const AController: IController): IView;
     function GetController: IController;
     procedure SetController(const AController: IController);
-    function GetModel(AII:TGuid):IModel;
+    function GetModel(AII: TGuid): IModel;
     function GetViewModel: IViewModel;
     procedure SetViewModel(const AViewModel: IViewModel);
     function GetID: string;
@@ -273,7 +275,7 @@ type
     function ViewEvent(AMessage: string): IView; overload;
     function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
     function MainView: IView;
-    procedure SetMainView(AView:IView);
+    procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController;
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
@@ -338,13 +340,16 @@ type
   // IController manter associação entre o IView e IModel
   IController = interface(IControllerBase)
     ['{A7758E82-3AA1-44CA-8160-2DF77EC8D203}']
+{$IFDEF FMX}
+    procedure Embedded(AControl: TLayout);
+{$ENDIF}
     function ViewEvent(AMessage: string): IView;
     function IsView(AII: TGuid): boolean;
     function IsController(AGuid: TGuid): boolean;
     function IsModel(AIModel: TGuid): boolean;
     function ApplicationControllerInternal: IApplicationController;
     function GetView: IView; overload;
-    function ShowView:IView;
+    function ShowView: IView;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
@@ -721,7 +726,8 @@ begin
   TMonitor.Enter(FLock);
 end;
 
-function TMVCFactoryAbstract.ApplicationControllerInternal: IApplicationController;
+function TMVCFactoryAbstract.ApplicationControllerInternal
+  : IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;

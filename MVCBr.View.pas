@@ -33,7 +33,7 @@ interface
 
 uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} system.Classes,
   system.SysUtils, system.Rtti, MVCBr.Model,
-  MVCBr.Interf;
+  MVCBr.Interf, System.JSON;
 
 type
 
@@ -56,7 +56,8 @@ type
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
-    function ViewEvent(AMessage: string): IView; virtual;
+    function ViewEvent(AMessage: string): IView; overload;virtual;
+    function ViewEvent(AMessage: TJsonValue): IView;overload;virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
@@ -112,6 +113,11 @@ end;
 function TViewFactory.GetViewModel: IViewModel;
 begin
   result := FViewModel;
+end;
+
+function TViewFactory.ViewEvent(AMessage: TJsonValue): IView;
+begin
+
 end;
 
 function TViewFactory.ViewModel(const AModel: IViewModel): IView;

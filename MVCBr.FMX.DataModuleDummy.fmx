@@ -1,0 +1,10 @@
+object DataModuleDummy: TDataModuleDummy
+  Left = 0
+  Top = 0
+  ClientHeight = 111
+  ClientWidth = 199
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 0
+end

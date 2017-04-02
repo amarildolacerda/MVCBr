@@ -13,7 +13,8 @@ interface
 
 uses
 {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF} System.UITypes, System.SysUtils, System.Classes,
-  MVCBr.ApplicationController, MVCBr.Interf, MVCBr.DataModuleDummy;
+  MVCBr.ApplicationController, MVCBr.Interf,
+{$IFDEF FMX}MVCBr.FMX.DataModuleDummy{$ELSE} MVCBr.VCL.DataModuleDummy{$ENDIF};
 
 type
   // TModuleFactory = class({$IFDEF BPL}TDataModule, {$ELSE} TForm,
@@ -51,9 +52,9 @@ type
 
   published
     /// stub compatibility
-    //property ClientHeight:integer read FClientHeight write SetClientHeight;
-    //property ClientWidth:integer read FClientWidth write SetClientWidth;
-    //property Color:TColor read FColor write SetColor;
+    // property ClientHeight:integer read FClientHeight write SetClientHeight;
+    // property ClientWidth:integer read FClientWidth write SetClientWidth;
+    // property Color:TColor read FColor write SetColor;
   end;
 
 implementation
@@ -70,7 +71,7 @@ end;
 
 function TModuleFactory.ApplicationController: TApplicationController;
 begin
-    result := TApplicationController(ApplicationControllerInternal.This);
+  result := TApplicationController(ApplicationControllerInternal.This);
 end;
 
 function TModuleFactory.ApplicationControllerInternal: IApplicationController;

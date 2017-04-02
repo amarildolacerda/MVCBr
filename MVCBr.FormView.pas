@@ -16,7 +16,7 @@ unit MVCBr.FormView;
 interface
 
 uses {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}
-  System.Classes, System.SysUtils, System.RTTI,
+  System.Classes, System.SysUtils, System.RTTI, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf, MVCBr.View;
 
 type
@@ -87,7 +87,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetGuid(AII: IInterface): TGuid;
-    function ViewEvent(AMessage: string): IView; virtual;
+    function ViewEvent(AMessage: string): IView; overload;virtual;
+    function ViewEvent(AMessage: TJsonValue): IView;overload;virtual;
     function MainViewEvent(AMessage: string): IView; virtual;
     function ViewEventOther(AMessage: string): IView;
     Procedure DoCommand(ACommand: string;
@@ -259,6 +260,11 @@ end;
 
 procedure TFormFactory.DoCommand(ACommand: string;
   const AArgs: array of TValue);
+begin
+
+end;
+
+function TFormFactory.ViewEvent(AMessage: TJsonValue): IView;
 begin
 
 end;

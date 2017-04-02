@@ -21,7 +21,10 @@ uses
   WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
   MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
   oData.SQL in '..\oData\oData.SQL.pas',
-  oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas';
+  oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas',
+  WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
+  WS.Controller in 'WS\WS.Controller.pas',
+  WS.QueryController in 'WS\WS.QueryController.pas';
 
 {$R *.RES}
 
@@ -46,4 +49,5 @@ begin
     Vcl.SvcMgr.Application.Initialize;
   Vcl.SvcMgr.Application.CreateForm(TMVCBrService, MVCBrService);
   Vcl.SvcMgr.Application.Run;
+
 end.

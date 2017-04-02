@@ -30,6 +30,7 @@ interface
 uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
   System.Generics.Collections,
   System.TypInfo,
+  {$ifdef FMX} FMX.Layouts,{$endif}
   System.Classes, System.SysUtils,
   MVCBr.ApplicationController,
   System.RTTI;
@@ -55,7 +56,9 @@ type
 
     constructor Create; override;
     destructor destroy; override;
-
+{$ifdef FMX}
+    procedure Embedded(AControl: TLayout);virtual;
+{$endif}
     function IsView(AII: TGuid): boolean;
     function IsController(AGuid: TGuid): boolean;
     function IsModel(AIModel: TGuid): boolean;
@@ -90,6 +93,9 @@ type
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
 
+
+
+
   end;
 
   TControllerFactoryOf = class of TControllerFactory;
@@ -97,6 +103,24 @@ type
 implementation
 
 { TController }
+
+
+{$ifdef FMX}
+ procedure TControllerFactory.Embedded(AControl: TLayout);
+var
+  child: ILayOut;
+begin
+  if supports(getView.This, ILayOut, child) then
+  begin
+    with TLayout(child.GetLayout) do
+    begin
+      Parent := AControl;
+    end;
+
+  end;
+end;
+{$endif}
+
 
 function TControllerFactory.Add(const AModel: IModel): integer;
 var

@@ -1,4 +1,15 @@
-{ Colaboração de Giovani Da Cruz 2017-03-20 }
+{  
+
+   MVCBr - OData Service
+   Coder: Giovani Da Cruz 2017-03-20 
+   
+}
+
+{
+  Alterações:
+    * 01/04/2017 - alterado o RunServer para permitir rodar em loop do serviço - por: amarildo lacerda
+
+}
 
 unit MVCBr.Servico;
 
@@ -16,7 +27,7 @@ type
   private
     FCanStop: Boolean;
   public
-    property CanStop : Boolean read FCanStop write FCanStop;
+    property CanStop: Boolean read FCanStop write FCanStop;
     function GetServiceController: TServiceController; override;
     procedure RunServer(APort: Integer);
   end;
@@ -46,6 +57,9 @@ uses
   System.Win.Registry,
   System.IniFiles;
 
+var
+  LServer: TIdHTTPWebBrokerBridge;
+
 procedure ServiceController(CtrlCode: DWord); stdcall;
 begin
   MVCBrService.Controller(CtrlCode);
@@ -61,21 +75,19 @@ var
   LInputRecord: TInputRecord;
   LEvent: DWord;
   LHandle: THandle;
-  LServer: TIdHTTPWebBrokerBridge;
   Ini: TIniFile;
 begin
-  Ini := TIniFile.create(ExtractFilePath(ParamStr(0) + 'MVBrServer.ini'));
+  Ini := TIniFile.create(ExtractFilePath(ParamStr(0) + 'MVCBrServer.ini'));
   try
 
     APort := Ini.ReadInteger('Config', 'Port', 8080);
-    LogI('** MVCBr / DMVCFramework Server Service ** build ' +
-      DMVCFRAMEWORK_VERSION);
+//    LogI('** MVCBr / DMVCFramework Server Service ** build ' +
+//      DMVCFRAMEWORK_VERSION);
 
     LServer := TIdHTTPWebBrokerBridge.create(nil);
     try
       LServer.DefaultPort := APort;
-      LServer.Active := True;
-      LogI(Format('Server started on port %s', [APort.ToString]));
+//      LogI(Format('Server started on port %s', [APort.ToString]));
 
       { more info about MaxConnections
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_MaxConnections.html }
@@ -85,13 +97,16 @@ begin
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_ListenQueue.html }
       LServer.ListenQueue := Ini.ReadInteger('Config', 'ListenQueue', 200);
 
+
+      LServer.Active := True;
+
       LHandle := GetStdHandle(STD_INPUT_HANDLE);
-      while not (CanStop) do
-      begin
+      (* while not (CanStop) do
+        begin
         { Service Run... }
-      end;
+        end; *)
     finally
-      LServer.Free;
+      // LServer.Free;
     end;
   finally
     Ini.Free;
@@ -101,13 +116,13 @@ end;
 
 procedure TMVCBrService.ServiceAfterInstall(Sender: TService);
 var
-  regEdit : TRegistry;
+  regEdit: TRegistry;
 begin
-  regEdit := TRegistry.Create(KEY_READ or KEY_WRITE);
+  regEdit := TRegistry.create(KEY_READ or KEY_WRITE);
   try
     regEdit.RootKey := HKEY_LOCAL_MACHINE;
 
-    if regEdit.OpenKey('\SYSTEM\CurrentControlSet\Services\' + Name,False) then
+    if regEdit.OpenKey('\SYSTEM\CurrentControlSet\Services\' + Name, False) then
     begin
       regEdit.WriteString('Description', 'Servidor MVCBr');
       regEdit.CloseKey;
@@ -122,7 +137,6 @@ end;
 procedure TMVCBrService.ServiceStart(Sender: TService; var Started: Boolean);
 begin
   CanStop := False;
-
   ApplicationController.Run(TWSController.New);
   IsMultiThread := True;
   try

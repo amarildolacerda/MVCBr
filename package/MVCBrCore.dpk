@@ -32,16 +32,33 @@ package MVCBrCore;
 requires
   rtl,
   vcl,
-  fmx;
+  fmx,
+  dbrtl,
+  FireDAC,
+  FireDACCommonDriver,
+  FireDACCommon;
 
 contains
-  MVCBr.View in '..\MVCBr.View.pas',
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
   MVCBr.Component in '..\MVCBr.Component.pas',
   MVCBr.Controller in '..\MVCBr.Controller.pas',
+  MVCBr.DatabaseModel.Interf in '..\MVCBr.DatabaseModel.Interf.pas',
+  MVCBr.DatabaseModel in '..\MVCBr.DatabaseModel.pas',
+  MVCBr.FireDAC.Model in '..\MVCBr.FireDAC.Model.pas',
+  MVCBr.FireDACModel.Interf in '..\MVCBr.FireDACModel.Interf.pas',
+  MVCBr.FireDACModel in '..\MVCBr.FireDACModel.pas',
   MVCBr.FormView in '..\MVCBr.FormView.pas',
+  MVCBr.Interf in '..\MVCBr.Interf.pas',
+  MVCBr.InterfaceHelper in '..\MVCBr.InterfaceHelper.pas',
+  MVCBr.IoC in '..\MVCBr.IoC.pas',
   MVCBr.Model in '..\MVCBr.Model.pas',
   MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
-  MVCBr.PageView in '..\MVCBr.PageView.pas';
+  MVCBr.NavigatorModel in '..\MVCBr.NavigatorModel.pas',
+  MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
+  MVCBr.PageView in '..\MVCBr.PageView.pas',
+  MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
+  MVCBr.ValidateModel in '..\MVCBr.ValidateModel.pas',
+  MVCBr.View in '..\MVCBr.View.pas',
+  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas';
 
 end.

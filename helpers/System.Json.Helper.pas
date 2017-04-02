@@ -36,6 +36,7 @@ type
     class function GetJsonType(AJsonValue: TJsonValue): TJsonType; static;
     class function Stringify(so: TJSONObject): string;
     class function Parse(const dados: string): TJSONObject;
+    constructor create(AKey,AValue:String);overload;
     function V(chave: String): variant;
     function S(chave: string): string;
     function I(chave: string): integer;
@@ -81,6 +82,7 @@ type
 {$IFDEF VER270}
     function ToJSON: string;
 {$ENDIF}
+    class Function New(AKey,AValue:String):TJsonValue;
     function ToRecord<T>: T; overload;
     function ToRecord<T: Record >(var ARec: T): T; overload;
     class function ToRecord<T: record >(AJson: string): T; overload; static;
@@ -472,6 +474,11 @@ var
 begin
   LJSONValue := FindValue(chave);
   result := LJSONValue <> nil;
+end;
+
+constructor TJSONObjectHelper.create(AKey, AValue: String);
+begin
+   inherited create( TJSONPair.Create(AKey,AValue) );
 end;
 
 function TJSONObjectHelper.F(chave: string): Extended;
@@ -896,6 +903,13 @@ begin
     AContext.Free;
   end;
 
+end;
+
+class function TJSONValueHelper.New(AKey, AValue: String): TJsonValue;
+var APair:TJsonPair;
+begin
+   APair:=TJsonPair.Create(AKey,AValue);
+   result := TJsonObject.Create(APair);
 end;
 
 { TJSONPairHelper }
