@@ -61,7 +61,7 @@ implementation
 
 uses WSConfig.Controller, WS.Datamodule, WSConfig.Controller.Interf,
   WSConfigView,
-  MVCAsyncMiddleware,
+  MVCAsyncMiddleware, MVCFramework.Middleware.CORS,
   MVCgzipMiddleware, MVCBr.ApplicationController;
 
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
@@ -174,6 +174,8 @@ begin
     end;
   FMVC.AddMiddleware(TMVCgzipCallBackMiddleware.Create);
   FMVC.AddMiddleware(TMVCAsyncCallBackMiddleware.Create);
+  FMVC.AddMiddleware(TCORSMiddleware.Create);
+
 end;
 
 function RegisterWSController(const AClass: TMVCControllerClass): integer;
