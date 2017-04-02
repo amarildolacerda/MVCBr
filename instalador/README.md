@@ -1,4 +1,5 @@
 
+MVCBrServiceSetup é um instalador do servidor OData Windows Service.
 
 Após instalar o serviço:
 1. configurar firebird3 para apontar para o banco de dados-
