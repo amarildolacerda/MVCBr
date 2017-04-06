@@ -65,8 +65,8 @@ type
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
     function ShowView: IView; virtual;
-    function ViewEvent(AMessage: String): IView; overload; virtual;
-    function ViewEvent<TViewInterface>(AMessage: string): IView; overload;
+    function ViewEvent(AMessage: String;var AHandled: boolean): IView; overload; virtual;
+    function ViewEvent<TViewInterface>(AMessage: string;var AHandled: boolean): IView; overload;
     function ID(const AID: string): IController; virtual;
     function GetID: String; virtual;
     function GetModelByID(const AID: String): IModel; virtual;
@@ -324,13 +324,13 @@ begin
   inherited RevokeInstance(intf);
 end;
 
-function TControllerFactory.ViewEvent(AMessage: String): IView;
+function TControllerFactory.ViewEvent(AMessage: String;var AHandled: boolean): IView;
 begin
   result := FView;
-  FView.ViewEvent(AMessage);
+  FView.ViewEvent(AMessage,AHandled);
 end;
 
-function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string): IView;
+function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string;var AHandled: boolean): IView;
 var
   i: integer;
   pInfo: PTypeInfo;
@@ -347,10 +347,10 @@ begin
     if supports(GetView.This, IID, AView) then
     begin
       result := AView;
-      AView.ViewEvent(AMessage);
+      AView.ViewEvent(AMessage,AHandled);
       exit;
     end;
-    result := ApplicationController.ViewEvent(IID, AMessage);
+    result := ApplicationController.ViewEvent(IID, AMessage,AHandled);
   finally
     dec(FRefViewCount);
   end;

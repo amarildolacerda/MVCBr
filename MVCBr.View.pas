@@ -56,8 +56,8 @@ type
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
-    function ViewEvent(AMessage: string): IView; overload;virtual;
-    function ViewEvent(AMessage: TJsonValue): IView;overload;virtual;
+    function ViewEvent(AMessage: string;var AHandled: boolean): IView; overload;virtual;
+    function ViewEvent(AMessage: TJsonValue;var AHandled: boolean): IView;overload;virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
@@ -90,7 +90,7 @@ begin
 
 end;
 
-function TViewFactory.ViewEvent(AMessage: string): IView;
+function TViewFactory.ViewEvent(AMessage: string;var AHandled: boolean): IView;
 begin
   result := self;
 end;
@@ -115,7 +115,7 @@ begin
   result := FViewModel;
 end;
 
-function TViewFactory.ViewEvent(AMessage: TJsonValue): IView;
+function TViewFactory.ViewEvent(AMessage: TJsonValue;var AHandled: boolean): IView;
 begin
 
 end;

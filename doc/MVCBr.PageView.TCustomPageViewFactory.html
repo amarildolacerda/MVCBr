@@ -90,89 +90,93 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetPageContainer">SetPageContainer</a></b>(const Value: TComponent); virtual;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#destroy">destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetPageContainer">SetPageContainer</a></b>(const Value: TComponent); virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainer">GetPageContainer</a></b>: TComponent; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Remove">Remove</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: Boolean); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoViewCreate">DoViewCreate</a></b>(Sender: TObject); virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Notification">Notification</a></b>(AComponent: TComponent; AOperation: TOperation); override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageTabClass">GetPageTabClass</a></b>: TComponentClass; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainerClass">GetPageContainerClass</a></b>: TComponentClass; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Count">Count</a></b>: Integer;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePage">ActivePage</a></b>: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePage">SetActivePage</a></b>(Const Tab: TObject); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewItem">NewItem</a></b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddForm">AddForm</a></b>(AClass: TFormClass): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByID">FindViewByID</a></b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByClassName">FindViewByClassName</a></b>(const AClassName: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#IndexOf">IndexOf</a></b>(Const AGuid: TGuid): Integer;</code></td>
 </tr>
@@ -270,6 +274,14 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="destroy"></a><code>destructor <b>destroy</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

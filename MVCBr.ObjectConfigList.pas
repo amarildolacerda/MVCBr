@@ -23,6 +23,8 @@
 { *************************************************************************** }
 
 {
+  Objetivo: é um gerenciador de componentes de configura a serem persistindo
+            localmente pro INI ou JSON
   Alterações:
   02/04/2017 - por: amarildo lacerda
   + Adicionado suporte a JsonFile para a gravação dos dados

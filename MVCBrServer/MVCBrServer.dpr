@@ -6,11 +6,11 @@ uses
   System.SysUtils,
   MVCFramework.Logger,
   MVCFramework.Commons,
- {$ifdef MSWINDOWS}
+  {$ifdef MSWINDOWS}
   Winapi.Windows,
   Winapi.ShellAPI,
   ReqMulti,
- {$endif}
+  {$endif }
   Web.WebReq,
   Web.WebBroker,
   System.JsonFiles,
@@ -37,7 +37,8 @@ uses
   WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   oData.JSON in '..\oData\oData.JSON.pas',
-  MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas';
+  MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
+  WS.Common in 'WS\WS.Common.pas';
 
 {$R *.res}
 

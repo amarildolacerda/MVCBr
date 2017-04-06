@@ -1,4 +1,6 @@
 DiGraph Classes {
+  IConfigFile -> IInterface
+  IConfigFile [href="MVCBr.ObjectConfigList.IConfigFile.html"]
   IJsonObject -> IInterface
   IJsonObject [href="oData.JSON.IJsonObject.html"]
   IObjectConfigList -> IInterface
@@ -31,12 +33,16 @@ DiGraph Classes {
   TODataPropertyEditor [href="oData.Comp.Editor.TODataPropertyEditor.html"]
   TControllerFactory -> TControllerAbstract
   TControllerFactory [href="MVCBr.Controller.TControllerFactory.html"]
+  TModuleFactory -> TDataModuleDummy
+  TModuleFactory [href="MVCBr.ModuleModel.TModuleFactory.html"]
   TFormFactory -> TForm
   TFormFactory [href="MVCBr.FormView.TFormFactory.html"]
-  TModuleFactory -> TForm
-  TModuleFactory [href="MVCBr.ModuleModel.TModuleFactory.html"]
   TODataPropertyDlg -> TForm
   TODataPropertyDlg [href="oData.Comp.Editor.TODataPropertyDlg.html"]
+  TConfigIniFile -> TInterfacedObject
+  TConfigIniFile [href="MVCBr.ObjectConfigList.TConfigIniFile.html"]
+  TConfigJsonFile -> TInterfacedObject
+  TConfigJsonFile [href="MVCBr.ObjectConfigList.TConfigJsonFile.html"]
   TInterfacedJsonObject -> TInterfacedObject
   TInterfacedJsonObject [href="oData.JSON.TInterfacedJsonObject.html"]
   TObjectConfigListItem -> TInterfacedObject
@@ -91,6 +97,8 @@ DiGraph Classes {
   TJSONObjectHelper [href="System.Json.Helper.TJSONObjectHelper.html"]
   TJSONPairHelper -> TObject
   TJSONPairHelper [href="System.Json.Helper.TJSONPairHelper.html"]
+  TJsonRecord -> TObject
+  TJsonRecord [href="System.Json.Helper.TJsonRecord.html"]
   TJSONValueHelper -> TObject
   TJSONValueHelper [href="System.Json.Helper.TJSONValueHelper.html"]
   TList -> TObject

@@ -72,55 +72,55 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#V">V</a></b>(chave: String): variant;</code></td>
+<td class="itemcode"><code>constructor <b><a  href="System.Json.Helper.TJSONObjectHelper.html#create">create</a></b>(AKey, AValue: String); overload;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#V">V</a></b>(chave: String): variant;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#S">S</a></b>(chave: string): string;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#I">I</a></b>(chave: string): integer;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#O">O</a></b>(chave: string): TJSONObject; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#O">O</a></b>(index: integer): TJSONObject; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#F">F</a></b>(chave: string): Extended;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#B">B</a></b>(chave: string): boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#A">A</a></b>(chave: string): TJSONArray;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#AsArray">AsArray</a></b>: TJSONArray;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#Contains">Contains</a></b>(chave: string): boolean;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#Find">Find</a></b>(chave: string): TJsonValue; virtual;</code></td>
 </tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#asObject">asObject</a></b>: System.TObject;</code></td>
-</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#FromObject">FromObject</a></b>&lt;T&gt;(AObject: T): TJSONObject; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#asObject">asObject</a></b>: System.TObject;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -128,17 +128,21 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#addPair">addPair</a></b>(chave: string; Value: integer): TJSONObject; overload;</code></td>
+<td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#FromObject">FromObject</a></b>&lt;T&gt;(AObject: T; AVisibility: <a  href="System.Json.Helper.html#TMemberVisibilitySet">TMemberVisibilitySet</a> = [mvPublic, mvPublished]) : TJSONObject; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#addPair">addPair</a></b>(chave: string; Value: Double): TJSONObject; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#addPair">addPair</a></b>(chave: string; Value: integer): TJSONObject; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#addPair">addPair</a></b>(chave: string; Value: TDatetime): TJSONObject; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#addPair">addPair</a></b>(chave: string; Value: Double): TJSONObject; overload;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#addPair">addPair</a></b>(chave: string; Value: TDatetime): TJSONObject; overload;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TJSONObjectHelper.html#Coalesce">Coalesce</a></b>(chave: string; Value: string): TJsonPair;</code></td>
 </tr>
@@ -196,6 +200,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Parse"></a><code>class function <b>Parse</b>(const dados: string): TJSONObject;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="create"></a><code>constructor <b>create</b>(AKey, AValue: String); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -299,7 +311,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FromObject"></a><code>class function <b>FromObject</b>&lt;T&gt;(AObject: T): TJSONObject; overload;</code></td>
+<td class="itemcode"><a name="FromRecord"></a><code>class function <b>FromRecord</b>&lt;T&gt;(rec: T): TJSONObject;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -307,7 +319,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FromRecord"></a><code>class function <b>FromRecord</b>&lt;T&gt;(rec: T): TJSONObject;</code></td>
+<td class="itemcode"><a name="FromObject"></a><code>class function <b>FromObject</b>&lt;T&gt;(AObject: T; AVisibility: <a  href="System.Json.Helper.html#TMemberVisibilitySet">TMemberVisibilitySet</a> = [mvPublic, mvPublished]) : TJSONObject; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

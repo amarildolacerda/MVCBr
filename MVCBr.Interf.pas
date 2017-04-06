@@ -244,8 +244,8 @@ type
   // IView é uma representação para FORM
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
-    function ViewEvent(AMessage: string): IView; overload;
-    function ViewEvent(AMessage: TJsonValue): IView; overload;
+    function ViewEvent(AMessage: string;var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: TJsonValue;var AHandled: boolean): IView; overload;
     function Controller(const AController: IController): IView;
     function GetController: IController;
     procedure SetController(const AController: IController);
@@ -272,8 +272,8 @@ type
   /// Main Controller for all Application  - Have a list os Controllers
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
-    function ViewEvent(AMessage: string): IView; overload;
-    function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
+    function ViewEvent(AMessage: string;var AHandled: boolean): IView; overload;
+    function ViewEvent(AView: TGuid; AMessage: String;var AHandled: boolean): IView; overload;
     function MainView: IView;
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController;
@@ -344,7 +344,7 @@ type
 {$IFDEF FMX}
     procedure Embedded(AControl: TLayout);
 {$ENDIF}
-    function ViewEvent(AMessage: string): IView;
+    function ViewEvent(AMessage: string; var AHandled:boolean): IView;
     function IsView(AII: TGuid): boolean;
     function IsController(AGuid: TGuid): boolean;
     function IsModel(AIModel: TGuid): boolean;

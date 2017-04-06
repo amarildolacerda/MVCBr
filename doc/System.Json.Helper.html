@@ -35,10 +35,8 @@ MVCBr
 <tr>
 <td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Funções e Procedimentos</a></td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
-<p>
-***************************************************************************</p>
-<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
-<ul class="useslist"><li>System.Classes</li><li>System.Types</li><li>System.SysUtils</li><li>System.Json</li><li>System.Generics.collections</li><li>System.Classes.Helper</li><li>RegularExpressions</li><li>DBXJsonReflect</li></ul><h2 class="overview">Visão Geral</h2>
+&nbsp;<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>System.Classes</li><li>System.Types</li><li>System.SysUtils</li><li>System.TypInfo</li><li>System.Json</li><li>System.Generics.collections</li><li>System.Classes.Helper</li><li>RegularExpressions</li><li>DBXJsonReflect</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
 <table class="classestable wide_list">
 <tr class="listheader">
@@ -46,22 +44,26 @@ MVCBr
 <th class="itemdesc">Descrição</th>
 </tr>
 <tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJsonRecord.html"><code>TJsonRecord</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONObjectHelper.html"><code>TJSONObjectHelper</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONArrayHelper.html"><code>TJSONArrayHelper</code></a></td>
 <td class="itemdesc">procedure FromRecord&lt;T :record&gt;(rec:T);</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJsonValuesList.html"><code>TJsonValuesList</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONValueHelper.html"><code>TJSONValueHelper</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONPairHelper.html"><code>TJSONPairHelper</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
@@ -111,12 +113,15 @@ MVCBr
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJsonType">TJsonType</a></b> = (...);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJson">IJson</a></b> = TJSONObject;</code></td>
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#TMemberVisibilitySet">TMemberVisibilitySet</a></b> = set of TMemberVisibility;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJSONArray">IJSONArray</a></b> = TJSONArray;</code></td>
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJson">IJson</a></b> = TJSONObject;</code></td>
 </tr>
 <tr class="list2">
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJSONArray">IJSONArray</a></b> = TJSONArray;</code></td>
+</tr>
+<tr class="list">
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJson">TJson</a></b> = TJSONObject;</code></td>
 </tr>
 </table>
@@ -236,8 +241,17 @@ jtDate: &nbsp;</li>
 jtDateTime: &nbsp;</li>
 <li>
 jtBytes: &nbsp;</li>
+<li>
+jtNull: &nbsp;</li>
 </ul>
 </td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TMemberVisibilitySet"></a><code><b>TMemberVisibilitySet</b> = set of TMemberVisibility;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">

@@ -58,12 +58,14 @@ type
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
     function FindModel<TIModel: IInterface>: TIModel; overload;
 
-    function ViewEvent(AMessage: string): IApplicationController; overload;
-    function ViewEventOther(ASender: IController; AMessage: string)
-      : IApplicationController;
-    function ViewEvent(AView: TGuid; AMessage: String): IView; overload;
-    function ViewEvent<TViewInterface: IInterface>(AMessage: String)
+    function ViewEvent(AMessage: string; var AHandled: boolean)
+      : IApplicationController; overload;
+    function ViewEventOther(ASender: IController; AMessage: string;
+      var AHandled: boolean): IApplicationController;
+    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
       : IView; overload;
+    function ViewEvent<TViewInterface: IInterface>(AMessage: String;
+      var AHandled: boolean): IView; overload;
     constructor create; override;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
@@ -245,14 +247,16 @@ procedure TApplicationController.ForEach(AProc: TProc<IController>);
 var
   i: integer;
 begin
-  Lock;
-  try
-    if assigned(AProc) then
-      for i := 0 to FControllers.Count - 1 do
-        AProc(FControllers.Items[i] as IController);
-  finally
-    UnLock;
-  end;
+  ForEach(
+    function(AController: IController): boolean
+    begin
+      try
+        result := false;
+        AProc(AController);
+      except
+        result := true;
+      end;
+    end);
 end;
 
 procedure TApplicationController.Inited;
@@ -307,10 +311,10 @@ begin
   FMainView := AView;
 end;
 
-function TApplicationController.ViewEvent(AMessage: string)
-  : IApplicationController;
+function TApplicationController.ViewEvent(AMessage: string;
+var AHandled: boolean): IApplicationController;
 begin
-  result := ViewEventOther(nil, AMessage);
+  result := ViewEventOther(nil, AMessage, AHandled);
 end;
 
 function TApplicationController.This: TObject;
@@ -345,11 +349,12 @@ begin
   end;
 end;
 
-function TApplicationController.ViewEvent(AView: TGuid;
-AMessage: String): IView;
+function TApplicationController.ViewEvent(AView: TGuid; AMessage: String;
+var AHandled: boolean): IView;
 var
   view: IView;
   rst: IView;
+  LHandled: boolean;
 begin
   result := nil;
   ForEach(
@@ -360,34 +365,41 @@ begin
         if supports(view.This, AView) then
         begin
           rst := view; // stub
-          AController.ViewEvent(AMessage);
-          result := true;
+          AController.ViewEvent(AMessage, LHandled);
+          result := LHandled;
         end;
     end);
   result := rst;
+  AHandled := LHandled;
 end;
 
-function TApplicationController.ViewEvent<TViewInterface>
-  (AMessage: String): IView;
+function TApplicationController.ViewEvent<TViewInterface>(AMessage: String;
+var AHandled: boolean): IView;
 var
   IID: TGuid;
 begin
   IID := TMVCBr.GetGuid<TViewInterface>;
-  result := ViewEvent(IID, AMessage);
+  result := ViewEvent(IID, AMessage, AHandled);
 end;
 
 function TApplicationController.ViewEventOther(ASender: IController;
-AMessage: string): IApplicationController;
+AMessage: string; var AHandled: boolean): IApplicationController;
+var
+  LHandled: boolean;
+  i: integer;
 begin
   result := self;
   ForEach(
-    procedure(AController: IController)
+    function(AController: IController):Boolean
     begin
+      result := false;
       if (not assigned(ASender)) or (ASender <> AController) then
         /// CHECK NO LOOP
-        AController.ViewEvent(AMessage);
+        if supports(AController.This, IController) then
+          AController.ViewEvent(AMessage, result);
+      LHandled := result;
     end);
-
+  AHandled := LHandled;
 end;
 
 procedure TApplicationController.Run(AClass: TComponentClass;

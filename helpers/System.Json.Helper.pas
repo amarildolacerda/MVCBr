@@ -20,6 +20,8 @@ type
   TJsonType = (jtUnknown, jtObject, jtArray, jtString, jtTrue, jtFalse,
     jtNumber, jtDate, jtDateTime, jtBytes, jtNull);
 
+  TMemberVisibilitySet = set of TMemberVisibility;
+
   TJSONObjectHelper = class helper for TJSONObject
   private
     function GetValueBase(chave: string): string;
@@ -50,7 +52,12 @@ type
     function asObject: System.TObject;
     class function FromRecord<T>(rec: T): TJSONObject;
 {$ENDIF}
-    class function FromObject<T>(AObject: T): TJSONObject; overload;
+    class function FromObject<T>(AObject: T;
+      AVisibility: TMemberVisibilitySet = [mvPublic, mvPublished])
+      : TJSONObject; overload;
+{$IFDEF CompilerVersion<=30}
+    function addPair(chave: string; Value: string): TJSONObject; overload;
+{$ENDIF}
     function addPair(chave: string; Value: integer): TJSONObject; overload;
     function addPair(chave: string; Value: Double): TJSONObject; overload;
     function addPair(chave: string; Value: TDatetime): TJSONObject; overload;
@@ -90,7 +97,7 @@ type
     function Datatype: TJsonType;
     function asObject: TJSONObject;
     function AsInteger: integer;
-    function AsString:string;
+    function AsString: string;
   end;
 
   TJSONPairHelper = class helper for TJsonPair
@@ -206,7 +213,7 @@ begin
                   end;
               end
           else
-            js.addPair(AFldName, AValue.asString)
+            js.addPair(AFldName, AValue.AsString)
           end;
       except
         js.addPair(AFldName, 'NULL')
@@ -427,6 +434,16 @@ begin
   TryGetValue<TJSONArray>(chave, result);
 end;
 
+{$IFDEF CompilerVersion<=30}
+function TJSONObjectHelper.addPair(chave: string; Value: string)
+  : TJSONObject; overload;
+var pair:TJsonPair;
+begin
+  pair := TJsonPair.create(chave,value);
+  self.add(pair);
+end;
+{$ENDIF}
+
 function TJSONObjectHelper.addPair(chave: string; Value: integer): TJSONObject;
 begin
   result := addPair(chave, TJSONNumber.create(Value));
@@ -530,7 +547,8 @@ begin
 end;
 {$ENDIF}
 
-class function TJSONObjectHelper.FromObject<T>(AObject: T): TJSONObject;
+class function TJSONObjectHelper.FromObject<T>(AObject: T;
+  AVisibility: TMemberVisibilitySet): TJSONObject;
 var
   typ: TRttiType;
   ctx: TRttiContext;
@@ -560,7 +578,7 @@ begin
         continue;
 
       key := field.Name.ToLower;
-      if not(field.Visibility in [mvPublic, mvPublished]) then
+      if not(field.Visibility in AVisibility) then
         continue;
 
       tk := field.FieldType.TypeKind;
@@ -863,15 +881,16 @@ begin
 end;
 
 function TJSONValueHelper.AsString: string;
-var p:TJsonPair;
+var
+  P: TJsonPair;
 begin
-   result := '';
-   for p in (self as TJsonObject) do
-   begin
-       if result>'' then
-          result := result+';';
-       result := result + p.JsonString.Value+'='+p.JsonValue.Value;
-   end;
+  result := '';
+  for P in (self as TJSONObject) do
+  begin
+    if result > '' then
+      result := result + ';';
+    result := result + P.JsonString.Value + '=' + P.JsonValue.Value;
+  end;
 end;
 
 function TJSONValueHelper.Datatype: TJsonType;
@@ -904,7 +923,7 @@ begin
           APair := TJsonPair.create(AFieldName,
             TJSONNumber.create(AValue.AsExtended));
         tkString, tkWString, tkLString, tkChar, tkWChar, tkUString:
-          APair := TJsonPair.create(AFieldName, AValue.asString);
+          APair := TJsonPair.create(AFieldName, AValue.AsString);
       else
         if sametext(AField.FieldType.Name, 'Boolean') then
         begin

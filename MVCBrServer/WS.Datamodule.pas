@@ -40,13 +40,12 @@ type
 
 var
   WSDatamodule: TWSDatamodule;
-  WSConnectionString: string;
 
 implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 // uses FireDAC.Adpt;
-uses System.SyncObjs;
+uses System.SyncObjs, WS.Common ;
 
 {$R *.dfm}
 

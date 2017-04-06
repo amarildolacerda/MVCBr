@@ -57,6 +57,7 @@ type
     procedure FromJsonObject(oJson: TJsonObject; AAppend: boolean); overload;
     procedure DoLoopEvent(AEvent: TProc); overload;
     procedure DoLoopEvent(AEvent: TProc<TDataset>); overload;
+    procedure ForEach(AEvent: TFunc<TDataset,boolean>);
     procedure DoEventIf(AFieldName: string; AValue: Variant;
       AEvent: TProc); overload;
     procedure DoEventIf(AFieldName: string; AValue: Variant;
@@ -250,6 +251,26 @@ begin
   if not assigned(f) then
     exit;
   f.DisplayLabel := ATitle;
+end;
+
+procedure TDatasetHelper.ForEach(AEvent: TFunc<TDataset, boolean>);
+var
+  book: TBookMark;
+begin
+  book := GetBookmark;
+  try
+    DisableControls;
+    first;
+    while Eof = false do
+    begin
+      if not AEvent(self) then exit;
+      next;
+    end;
+  finally
+    GotoBookmark(book);
+    FreeBookmark(book);
+    EnableControls;
+  end;
 end;
 
 function TDatasetHelper.FieldMask(fld, mask: string): TDataset;

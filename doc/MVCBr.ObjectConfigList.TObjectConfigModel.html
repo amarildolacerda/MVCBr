@@ -66,7 +66,15 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FIniFile">FIniFile</a></b>: TIniFile;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FContentFile">FContentFile</a></b>: <a  href="MVCBr.ObjectConfigList.IConfigFile.html">IConfigFile</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FContentType">FContentType</a></b>: <a  href="MVCBr.ObjectConfigList.html#TObjectConfigContentType">TObjectConfigContentType</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FComponentFullPath">FComponentFullPath</a></b>: boolean;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
@@ -81,7 +89,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>Function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetIniFile">GetIniFile</a></b>: TIniFile;</code></td>
+<td class="itemcode"><code>Function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetContentFile">GetContentFile</a></b>: <a  href="MVCBr.ObjectConfigList.IConfigFile.html">IConfigFile</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -90,6 +98,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetFileName">GetFileName</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetContentType">SetContentType</a></b>(const Value: <a  href="MVCBr.ObjectConfigList.html#TObjectConfigContentType">TObjectConfigContentType</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetComponentFullPath">SetComponentFullPath</a></b>(const Value: boolean);</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -101,33 +117,37 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#new">new</a></b>: <a  href="MVCBr.ObjectConfigList.IObjectConfigList.html">IObjectConfigList</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#This">This</a></b>: TObject;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#new">new</a></b>: <a  href="MVCBr.ObjectConfigList.IObjectConfigList.html">IObjectConfigList</a>;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#ReadConfig">ReadConfig</a></b>; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#WriteConfig">WriteConfig</a></b>; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#Count">Count</a></b>: integer;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#RegisterControl">RegisterControl</a></b>(ASection: string; AText: string; AControl: TControl); overload; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#Add">Add</a></b>(AControl: TControl); overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#WriteItem">WriteItem</a></b>(ASection, AItem: string; AValue: TValue); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#ReadItem">ReadItem</a></b>(ASection, AItem: string; out AValue: TValue); virtual;</code></td>
 </tr>
@@ -136,12 +156,21 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#Items">Items</a></b>[idx:integer]: <a  href="MVCBr.ObjectConfigList.IObjectConfigListItem.html">IObjectConfigListItem</a> read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetItems">GetItems</a>
-      write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetItems">SetItems</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#ContentType">ContentType</a></b>: <a  href="MVCBr.ObjectConfigList.html#TObjectConfigContentType">TObjectConfigContentType</a> read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FContentType">FContentType</a>
+      write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetContentType">SetContentType</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#Items">Items</a></b>[idx:integer]: <a  href="MVCBr.ObjectConfigList.IObjectConfigListItem.html">IObjectConfigListItem</a> read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetItems">GetItems</a>
+      write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetItems">SetItems</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>property <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FileName">FileName</a></b>: string read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetFileName">GetFileName</a> write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetFileName">SetFileName</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#ComponentFullPath">ComponentFullPath</a></b>: boolean read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FComponentFullPath">FComponentFullPath</a> write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetComponentFullPath">SetComponentFullPath</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -181,7 +210,23 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FIniFile"></a><code><b>FIniFile</b>: TIniFile;</code></td>
+<td class="itemcode"><a name="FContentFile"></a><code><b>FContentFile</b>: <a  href="MVCBr.ObjectConfigList.IConfigFile.html">IConfigFile</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FContentType"></a><code><b>FContentType</b>: <a  href="MVCBr.ObjectConfigList.html#TObjectConfigContentType">TObjectConfigContentType</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FComponentFullPath"></a><code><b>FComponentFullPath</b>: boolean;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -206,7 +251,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="GetIniFile"></a><code>Function <b>GetIniFile</b>: TIniFile;</code></td>
+<td class="itemcode"><a name="GetContentFile"></a><code>Function <b>GetContentFile</b>: <a  href="MVCBr.ObjectConfigList.IConfigFile.html">IConfigFile</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -229,6 +274,22 @@ MVCBr
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetContentType"></a><code>procedure <b>SetContentType</b>(const Value: <a  href="MVCBr.ObjectConfigList.html#TObjectConfigContentType">TObjectConfigContentType</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetComponentFullPath"></a><code>procedure <b>SetComponentFullPath</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="create"></a><code>constructor <b>create</b>;</code></td>
 </tr>
@@ -239,6 +300,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="destroy"></a><code>destructor <b>destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -311,6 +380,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ContentType"></a><code>property <b>ContentType</b>: <a  href="MVCBr.ObjectConfigList.html#TObjectConfigContentType">TObjectConfigContentType</a> read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FContentType">FContentType</a>
+      write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetContentType">SetContentType</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:integer]: <a  href="MVCBr.ObjectConfigList.IObjectConfigListItem.html">IObjectConfigListItem</a> read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetItems">GetItems</a>
       write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetItems">SetItems</a>;</code></td>
 </tr>
@@ -321,6 +399,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="FileName"></a><code>property <b>FileName</b>: string read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#GetFileName">GetFileName</a> write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetFileName">SetFileName</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ComponentFullPath"></a><code>property <b>ComponentFullPath</b>: boolean read <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#FComponentFullPath">FComponentFullPath</a> write <a  href="MVCBr.ObjectConfigList.TObjectConfigModel.html#SetComponentFullPath">SetComponentFullPath</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

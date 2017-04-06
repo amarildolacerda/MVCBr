@@ -1,15 +1,14 @@
 ///
-///  MVCBr.FormView - implements base class of FormView
-///  Auth: amarildo lacerda
-///  Date: jan/2017
+/// MVCBr.FormView - implements base class of FormView
+/// Auth: amarildo lacerda
+/// Date: jan/2017
 
 {
   Changes:
-   29-mar-2017
-     + MainViewEvent  - send ViewEvent to MainView   by: amarildo lacerda
-     + ViewEventOther  - send ViewEvent to other VIEW
+  29-mar-2017
+  + MainViewEvent  - send ViewEvent to MainView   by: amarildo lacerda
+  + ViewEventOther  - send ViewEvent to other VIEW
 }
-
 
 unit MVCBr.FormView;
 
@@ -87,10 +86,13 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetGuid(AII: IInterface): TGuid;
-    function ViewEvent(AMessage: string): IView; overload;virtual;
-    function ViewEvent(AMessage: TJsonValue): IView;overload;virtual;
-    function MainViewEvent(AMessage: string): IView; virtual;
-    function ViewEventOther(AMessage: string): IView;
+    function ViewEvent(AMessage: string; var AHandled: boolean): IView;
+      overload; virtual;
+    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView;
+      overload; virtual;
+    function MainViewEvent(AMessage: string; var AHandled: boolean)
+      : IView; virtual;
+    function ViewEventOther(AMessage: string; var AHandled: boolean): IView;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetID: string;
@@ -115,6 +117,7 @@ type
       overload; virtual;
     function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
       : IView; overload; virtual;
+    function ShowView(const IIDController: TGuid): IView; overload; virtual;
     function ShowView(): IView; overload;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
     function GetViewModel: IViewModel; virtual;
@@ -136,7 +139,7 @@ begin
   FShowModal := true;
 end;
 
-///  Set Controller to VIEW
+/// Set Controller to VIEW
 function TFormFactory.Controller(const AController: IController): IView;
 begin
   result := self;
@@ -144,7 +147,8 @@ begin
 end;
 
 var
-  LViewsCount: Integer = 0;  /// counter to instance of VIEW
+  LViewsCount: Integer = 0;
+  /// counter to instance of VIEW
 
 constructor TFormFactory.Create(AOwner: TComponent);
 begin
@@ -264,40 +268,43 @@ begin
 
 end;
 
-function TFormFactory.ViewEvent(AMessage: TJsonValue): IView;
+function TFormFactory.ViewEvent(AMessage: TJsonValue;
+  var AHandled: boolean): IView;
 begin
-
+  result := self;
 end;
 
-function TFormFactory.ViewEventOther(AMessage: string): IView;
+function TFormFactory.ViewEventOther(AMessage: string;
+  var AHandled: boolean): IView;
 begin
   result := self;
   if FEventRef = 0 then
   begin
-  /// check NO LOOP
+    /// check NO LOOP
     /// takecare with this lines... dont put your code in LOOP
     /// sometimes you will need some override to broken LOOPs
     /// if other view call this event, it will drop at second calls
     /// a better implementation its call ViewEvent to 1 VIEW only by her TGUID (IInterface)
     inc(FEventRef);
     try
-      ApplicationController.ViewEventOther(GetController, AMessage);
+      ApplicationController.ViewEventOther(GetController, AMessage, AHandled);
     finally
       dec(FEventRef);
     end;
   end;
 end;
 
-function TFormFactory.ViewEvent(AMessage: string): IView;
+function TFormFactory.ViewEvent(AMessage: string; var AHandled: boolean): IView;
 begin
   result := self;
-  ///  use inherited this method on child
-  ///  takecare put code here and start a loop whithout end
+  /// use inherited this method on child
+  /// takecare put code here and start a loop whithout end
 end;
 
-function TFormFactory.MainViewEvent(AMessage: string): IView;
+function TFormFactory.MainViewEvent(AMessage: string;
+  var AHandled: boolean): IView;
 begin
-  ApplicationController.MainView.ViewEvent(AMessage);
+  ApplicationController.MainView.ViewEvent(AMessage, AHandled);
 end;
 
 procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);
@@ -327,11 +334,17 @@ begin
 
 end;
 
+function TFormFactory.ShowView(const IIDController: TGuid): IView;
+begin
+  result := showView(IIDController,nil);
+end;
+
 function TFormFactory.ShowView(const IIDController: TGuid;
   const AProc: TProc<IView>): IView;
 var
   LController: IController;
 begin
+  result := nil;
   LController := ResolveController(IIDController);
   if assigned(LController) then
   begin
@@ -439,6 +452,7 @@ begin
   result := self;
   ShowView(nil);
 end;
+
 
 function TFormFactory.ShowView(const AProc: TProc<IView>;
   AShowModal: boolean): Integer;

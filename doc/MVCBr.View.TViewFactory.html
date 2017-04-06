@@ -86,6 +86,14 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: string;var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: TJsonValue;var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>Procedure <b><a  href="MVCBr.View.TViewFactory.html#DoCommand">DoCommand</a></b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
 </tr>
 <tr class="list">
@@ -98,11 +106,19 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#GetViewModel">GetViewModel</a></b>: IViewModel; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProc: TProc&lt;IView&gt;; AShowModal: boolean): Integer; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#GetViewModel">GetViewModel</a></b>: IViewModel; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.View.TViewFactory.html#SetViewModel">SetViewModel</a></b>(const AViewModel: IViewModel); virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#GetModel">GetModel</a></b>(AII:TGuid):IModel;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -196,6 +212,22 @@ FView: IView;</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: string;var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: TJsonValue;var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="DoCommand"></a><code>Procedure <b>DoCommand</b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -220,6 +252,14 @@ FView: IView;</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProc: TProc&lt;IView&gt;; AShowModal: boolean): Integer; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="GetViewModel"></a><code>function <b>GetViewModel</b>: IViewModel; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -229,6 +269,14 @@ FView: IView;</p>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="SetViewModel"></a><code>procedure <b>SetViewModel</b>(const AViewModel: IViewModel); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetModel"></a><code>function <b>GetModel</b>(AII:TGuid):IModel;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

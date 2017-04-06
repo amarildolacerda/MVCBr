@@ -60,7 +60,7 @@ function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 implementation
 
 uses WSConfig.Controller, WS.Datamodule, WSConfig.Controller.Interf,
-  WSConfigView,
+  WSConfigView, WS.Common,
   MVCAsyncMiddleware, MVCFramework.Middleware.CORS,
   MVCgzipMiddleware, MVCBr.ApplicationController;
 
