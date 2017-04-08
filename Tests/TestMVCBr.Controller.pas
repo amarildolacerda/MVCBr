@@ -18,9 +18,11 @@ uses
   MVCBr.Controller;
 
 type
+
   // Test methods for class TControllerFactory
   TTestModel = class(TModelFactory)
   end;
+
   TTestView = class(TViewFactory)
   end;
 
@@ -49,12 +51,17 @@ type
     procedure TestDelete;
     procedure TestCount;
     procedure TestForEach;
+    procedure TestForEachFunc;
     procedure TestUpdateAll;
     procedure TestUpdateByModel;
     procedure TestUpdateByView;
+    procedure TestResolveController;
   end;
 
 implementation
+
+
+uses test.Controller.interf;
 
 procedure TestTControllerFactory.SetUp;
 begin
@@ -132,6 +139,13 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTControllerFactory.TestResolveController;
+var ctrl:ITestController;
+begin
+  ctrl :=  FControllerFactory.ResolveController<ITestController>;
+  CheckNotNull(ctrl,'Não inicializou o controller');
+end;
+
 procedure TestTControllerFactory.TestBeforeInit;
 begin
   FControllerFactory.BeforeInit;
@@ -165,8 +179,8 @@ begin
   ReturnValue := FControllerFactory.View(AView);
   checkNotNull(ReturnValue, 'Não retornou a view');
 
-  CheckSame(ReturnValue,FControllerFactory.GetView.GetController ,'Modou o Controller, quando o esperado é que continuaria a mesma');
-  CheckSame(AView,FControllerFactory.GetView  ,'Modou a View, quando o esperado é que continuaria a mesma');
+  CheckSame(ReturnValue,FControllerFactory.GetView.GetController ,'Mudou o Controller, quando o esperado é que continuaria o mesmo');
+  CheckSame(AView,FControllerFactory.GetView  ,'Mudou a View, quando o esperado é que continuaria a mesma');
 
   // TODO: Validate method results
 end;
@@ -178,6 +192,9 @@ begin
   ReturnValue := FControllerFactory.This;
   checkNotNull(ReturnValue);
   // TODO: Validate method results
+
+  checkTrue(ReturnValue.This.InheritsFrom(TControllerFactory),'Não herdou de TControllerFactory');
+
 end;
 
 procedure TestTControllerFactory.TestControllerAs;
@@ -261,6 +278,21 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTControllerFactory.TestForEachFunc;
+var
+  AProc: TProc<IModel>;
+  rt:boolean;
+begin
+  rt := false;
+  // TODO: Setup method call parameters
+  AProc := procedure(Mdl:IModel) begin
+    rt := true;
+  end;
+  FControllerFactory.ForEach(AProc);
+  checkTrue(rt);
+  // TODO: Validate method results
+end;
+
 procedure TestTControllerFactory.TestUpdateAll;
 var
   ReturnValue: IController;
@@ -293,6 +325,9 @@ begin
   CheckNotNull(ReturnValue);
   // TODO: Validate method results
 end;
+
+{ TTestControllerFactory }
+
 
 initialization
 

@@ -152,11 +152,16 @@ destructor TApplicationController.destroy;
 begin
   if assigned(FControllers) then
   begin
-    try
-      FControllers.clear;
-      FControllers.DisposeOf;
-    except
-    end;
+    if FControllers.RefCount > 0 then
+      try
+        FControllers.clear;
+{$IFDEF MSWINDOWS}
+        FreeAndNil(FControllers);
+{$ELSE}
+        FControllers.disposeOf;
+{$ENDIF}
+      except
+      end;
     FControllers := nil;
   end;
   inherited;
@@ -296,7 +301,7 @@ begin
   try
     stb.ResolveController(AGuid, result);
   finally
-    stb.DisposeOf;
+    stb.disposeOf;
   end;
 end;
 
@@ -390,7 +395,7 @@ var
 begin
   result := self;
   ForEach(
-    function(AController: IController):Boolean
+    function(AController: IController): boolean
     begin
       result := false;
       if (not assigned(ASender)) or (ASender <> AController) then
