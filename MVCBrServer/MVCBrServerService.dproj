@@ -129,6 +129,7 @@
         <DCCReference Include="WS\WS.Controller.Interf.pas"/>
         <DCCReference Include="WS\WS.Controller.pas"/>
         <DCCReference Include="WS\WS.QueryController.pas"/>
+        <DCCReference Include="WS\WS.Common.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -157,7 +158,7 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="dcuservico\Win32\Debug\MVCBrServerService.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="MVCBrServerService.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>MVCBrServerService.exe</RemoteName>
                         <Overwrite>true</Overwrite>

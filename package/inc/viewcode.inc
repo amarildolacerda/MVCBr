@@ -1,8 +1,8 @@
 ViewHead = '/// <summary>                                                     '
   + #10#13 +
-  '///    Uma View representa a camada de apresentação ao usuário    ' + #10#13
-  + '///    deve esta associado a um controller onde ocorrerá          ' +
-  #10#13 + '///    a troca de informações e comunicação com os Models         '
+  '///    Um View representa a camada de apresentação ao usuário    ' + #10#13
+  + '///    deverá associar a um controller onde ocorrerá          ' +
+  #10#13 + '///    a troca de informação e comunicação com os Models         '
   + #13#10 +
   '/// </summary>                                                    ' + #13#10
   + 'unit %UnitIdent;                                ' + #13#10 +
@@ -39,7 +39,7 @@ ViewDef = '                                   '#13#10 +
   '    function ViewAs:I%FormIdent;                      ' + #13#10 +
   '    function ShowView(const AProc: TProc<IView>): integer;override;' + #13#10
   + '    function Update: IView;override;                      ' + #13#10 +
-  '    procedure Init;                                        '+#13#10+
+  '    procedure Init;override;                               '+#13#10+
   '  end;                                                    ' + #13#10 +
   '                                                          ' + #13#10;
 

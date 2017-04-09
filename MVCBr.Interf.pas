@@ -259,6 +259,7 @@ type
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
     function ShowView(const AProc: TProc<IView>; AShowModal: boolean)
       : Integer; overload;
+    procedure Init;
 
   end;
 

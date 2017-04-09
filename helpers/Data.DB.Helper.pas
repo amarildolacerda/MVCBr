@@ -51,6 +51,8 @@ type
     procedure ChangeAllValuesTo(AFieldName: string; AValue: Variant); overload;
     procedure ChangeAllValuesTo(AFieldName: string; AValue: Variant;
       AConfirm: TFunc<boolean>); overload;
+    procedure ChangeAllValuesTo(AFieldName: string; AValue: Variant;
+      AConfirm: TFunc<TDataset,boolean>); overload;
     procedure AppendFromJson(sJson: string);
     procedure CopyFromJson(sJosn: string);
     procedure JsonToRecord(sJson: string; AAppend: boolean); overload;
@@ -692,6 +694,42 @@ function TFieldHelper.ToStream(stream: TStream): TField;
 begin
   result := self;
   TBlobField(Self).SaveToStream(stream);
+end;
+
+procedure TDatasetHelper.ChangeAllValuesTo(AFieldName: string; AValue: Variant;
+  AConfirm: TFunc<TDataset, boolean>);
+var
+  book: TBookMark;
+  fld: TField;
+begin
+  fld := FindField(AFieldName);
+  if fld = nil then
+    exit;
+  book := GetBookmark;
+  DisableControls;
+  try
+    first;
+    while Eof = false do
+    begin
+      if AConfirm(self) then
+      begin
+        if fld.Calculated then
+          FieldByName(AFieldName).Value := AValue
+        else if FieldByName(AFieldName).Value <> AValue then
+        begin
+          Edit;
+          FieldByName(AFieldName).Value := AValue;
+          Post;
+        end;
+      end;
+      next;
+    end;
+  finally
+    if BookmarkValid(book) then
+      GotoBookmark(book);
+    FreeBookmark(book);
+    EnableControls;
+  end;
 end;
 
 end.

@@ -24,7 +24,8 @@ uses
   oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas',
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
-  WS.QueryController in 'WS\WS.QueryController.pas';
+  WS.QueryController in 'WS\WS.QueryController.pas',
+  WS.Common in 'WS\WS.Common.pas';
 
 {$R *.RES}
 

@@ -227,7 +227,10 @@ begin
 
   result := FindView(LView);
   if assigned(result) then
+  begin
+    init(result);
     exit;
+  end;
 
   // criar nova aba
   result := AddView(LView);
@@ -297,7 +300,7 @@ begin
   result := nil;
   try
   for i := 0 to Count - 1 do
-    if  supports( Items[i].This , IView ) then
+    if  supports( Items[i].This , IPageView ) then
     if items[I].This.View = AView then
     begin
       result := Items[i];

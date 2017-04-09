@@ -109,13 +109,13 @@ destructor TFMXLayoutViewManager.destroy;
 var
   item: TObject;
 begin
-{  while FList.Count > 0 do
-  begin
+  { while FList.Count > 0 do
+    begin
     item := IPageView(FList.Items[FList.Count - 1]).This.Tab;
     freeAndNil(item);
     FList.Delete(FList.Count - 1);
-  end;
-}
+    end;
+  }
   inherited;
 end;
 
@@ -184,6 +184,8 @@ var
   tl: TLayout;
   o: TComponent;
   LLayout: ILayout;
+  base: TObject;
+  iChild: Integer;
 begin
   if assigned(APageView) then
     if assigned(APageView.This.View) then
@@ -200,11 +202,22 @@ begin
         if supports(frm, ILayout, LLayout) and
           (LLayout.GetLayout.InheritsFrom(TLayout)) then
         begin
-          while Layout.ChildrenCount > 0 do
-            Layout.RemoveObject(0);
+          base := LLayout.GetLayout;
+          iChild := 0;
+          while Layout.ChildrenCount > iChild do
+          begin
+            if Layout.Children[iChild].InheritsFrom(TLayout) and
+              (Layout.Children[iChild] = base) then
+              inc(iChild)
+            else
+              Layout.RemoveObject(iChild);
+          end;
           TFormFactory(APageView.This.View.This).isShowModal := false;
-          APageView.This.View.ShowView(nil);
-          Layout.AddObject(TLayout(LLayout.GetLayout));
+          if iChild = 0 then
+          begin
+            Layout.AddObject(TLayout(LLayout.GetLayout));
+            APageView.This.View.init();
+          end;
           if assigned(AfterCreateComplete) then
             AfterCreateComplete(APageView.This);
         end

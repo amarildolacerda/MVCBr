@@ -56,6 +56,7 @@ type
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
+    procedure Init; virtual;
     function ViewEvent(AMessage: string;var AHandled: boolean): IView; overload;virtual;
     function ViewEvent(AMessage: TJsonValue;var AHandled: boolean): IView;overload;virtual;
     Procedure DoCommand(ACommand: string;
@@ -113,6 +114,11 @@ end;
 function TViewFactory.GetViewModel: IViewModel;
 begin
   result := FViewModel;
+end;
+
+procedure TViewFactory.Init;
+begin
+
 end;
 
 function TViewFactory.ViewEvent(AMessage: TJsonValue;var AHandled: boolean): IView;

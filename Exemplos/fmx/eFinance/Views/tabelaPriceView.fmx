@@ -1,0 +1,664 @@
+object tabelaPriceView: TtabelaPriceView
+  Left = 0
+  Top = 0
+  Caption = 'tabelaPriceView'
+  ClientHeight = 566
+  ClientWidth = 362
+  Quality = HighQuality
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 3
+  object Layout1: TLayout
+    Align = Client
+    Size.Width = 362.000000000000000000
+    Size.Height = 566.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object ToolBar1: TToolBar
+      Size.Width = 362.000000000000000000
+      Size.Height = 48.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      object SpeedButton1: TSpeedButton
+        Align = Left
+        Margins.Left = 10.000000000000000000
+        Position.X = 10.000000000000000000
+        Size.Width = 48.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'arrowlefttoolbutton'
+        Text = 'SpeedButton1'
+        OnClick = SpeedButton1Click
+      end
+      object SpeedButton2: TSpeedButton
+        Align = Right
+        Margins.Left = 10.000000000000000000
+        Position.X = 314.000000000000000000
+        Size.Width = 48.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'arrowrighttoolbutton'
+        Text = 'SpeedButton2'
+        OnClick = SpeedButton2Click
+      end
+      object Label3: TLabel
+        Align = Client
+        StyledSettings = [Family, Size, FontColor]
+        Size.Width = 188.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'toollabel'
+        TextSettings.Font.StyleExt = {00070000000000000004000000}
+        TextSettings.HorzAlign = Center
+        Text = 'Financiamento'
+      end
+      object SpeedButton4: TSpeedButton
+        Align = Right
+        Margins.Left = 10.000000000000000000
+        Position.X = 256.000000000000000000
+        Size.Width = 48.000000000000000000
+        Size.Height = 48.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'donetoolbutton'
+        Text = 'SpeedButton4'
+        OnClick = SpeedButton4Click
+      end
+    end
+    object VertScrollBox1: TVertScrollBox
+      Align = Client
+      Size.Width = 362.000000000000000000
+      Size.Height = 518.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 2
+      Viewport.Width = 362.000000000000000000
+      Viewport.Height = 518.000000000000000000
+      object TabControl1: TTabControl
+        Align = Client
+        Images = ImageList1
+        Margins.Left = 5.000000000000000000
+        Margins.Top = 5.000000000000000000
+        Margins.Right = 5.000000000000000000
+        Margins.Bottom = 5.000000000000000000
+        Size.Width = 352.000000000000000000
+        Size.Height = 508.000000000000000000
+        Size.PlatformDefault = False
+        StyleLookup = 'tabcontrolstyle'
+        TabHeight = 49.000000000000000000
+        TabIndex = 0
+        TabOrder = 0
+        TabPosition = Bottom
+        OnChange = TabControl1Change
+        Sizes = (
+          352s
+          459s
+          352s
+          459s
+          352s
+          459s)
+        object tabValores: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = True
+          ImageIndex = 0
+          Size.Width = 117.000000000000000000
+          Size.Height = 49.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'Dados'
+          ExplicitSize.cx = 50.000000000000000000
+          ExplicitSize.cy = 50.000000000000000000
+          object GridPanelLayout1: TGridPanelLayout
+            Align = Top
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 50.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Position.X = 10.000000000000000000
+            Position.Y = 50.000000000000000000
+            Size.Width = 332.000000000000000000
+            Size.Height = 160.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            ColumnCollection = <
+              item
+                Value = 50.000000000000000000
+              end
+              item
+                Value = 50.000000000000000000
+              end>
+            ControlCollection = <
+              item
+                Column = 0
+                Control = Label1
+                Row = 0
+              end
+              item
+                Column = 1
+                Control = edValorFinanciado
+                Row = 0
+              end
+              item
+                Column = 0
+                Control = Label2
+                Row = 1
+              end
+              item
+                Column = 1
+                Control = edValorEntrada
+                Row = 1
+              end
+              item
+                Column = 0
+                Control = Label4
+                Row = 2
+              end
+              item
+                Column = 1
+                Control = edNrParcelas
+                Row = 2
+              end
+              item
+                Column = 0
+                Control = Label5
+                Row = 3
+              end
+              item
+                Column = 1
+                Control = edTaxaJuros
+                Row = 3
+              end>
+            RowCollection = <
+              item
+                Value = 26.209367801382140000
+              end
+              item
+                Value = 25.287944714614790000
+              end
+              item
+                Value = 23.931405170207320000
+              end
+              item
+                Value = 24.571282313795740000
+              end
+              item
+                SizeStyle = Auto
+              end>
+            object Label1: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 41.934989929199220000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Valor financiado'
+            end
+            object edValorFinanciado: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              TabOrder = 0
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 5.000000000000000000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 100.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+            end
+            object Label2: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 40.460716247558590000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Valor da entrada'
+            end
+            object edValorEntrada: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              TabOrder = 1
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 46.934989929199220000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 100.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+            end
+            object Label4: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 38.290252685546880000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'N'#250'mero parcelas'
+            end
+            object edNrParcelas: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              Anchors = []
+              TabOrder = 2
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 87.395706176757810000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 100.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+            end
+            object Label5: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 39.314056396484380000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Taxa juros (%)'
+            end
+            object edTaxaJuros: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              Anchors = []
+              TabOrder = 3
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 125.685958862304700000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 100.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+              object SpeedButton3: TSpeedButton
+                Align = Right
+                Margins.Top = -10.000000000000000000
+                Margins.Right = -50.000000000000000000
+                Position.X = 102.000000000000000000
+                Position.Y = -10.000000000000000000
+                Size.Width = 48.000000000000000000
+                Size.Height = 48.000000000000000000
+                Size.PlatformDefault = False
+                StyleLookup = 'infotoolbutton'
+                Text = 'SpeedButton3'
+                OnClick = SpeedButton3Click
+              end
+            end
+          end
+        end
+        object tabTaxaEquivalente: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          ImageIndex = 1
+          Size.Width = 117.000000000000000000
+          Size.Height = 49.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'Taxa'
+          ExplicitSize.cx = 50.000000000000000000
+          ExplicitSize.cy = 50.000000000000000000
+          object GridPanelLayout2: TGridPanelLayout
+            Align = Top
+            Margins.Left = 10.000000000000000000
+            Margins.Top = 50.000000000000000000
+            Margins.Right = 10.000000000000000000
+            Position.X = 10.000000000000000000
+            Position.Y = 50.000000000000000000
+            Size.Width = 332.000000000000000000
+            Size.Height = 160.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            ColumnCollection = <
+              item
+                Value = 50.000000000000000000
+              end
+              item
+                Value = 50.000000000000000000
+              end>
+            ControlCollection = <
+              item
+                Column = 0
+                Control = Label6
+                Row = 0
+              end
+              item
+                Column = 1
+                Control = edEqTaxaConhecida
+                Row = 0
+              end
+              item
+                Column = 0
+                Control = Label7
+                Row = 1
+              end
+              item
+                Column = 1
+                Control = edEqPeriodoDado
+                Row = 1
+              end
+              item
+                Column = 0
+                Control = Label9
+                Row = 2
+              end
+              item
+                Column = 1
+                Control = edEqPeriodoDesejado
+                Row = 2
+              end
+              item
+                Column = 0
+                Control = Label8
+                Row = 3
+              end
+              item
+                Column = 1
+                Control = edEqCalculado
+                Row = 3
+              end>
+            ExpandStyle = FixedSize
+            RowCollection = <
+              item
+                Value = 25.718097725692800000
+              end
+              item
+                Value = 25.718097725692800000
+              end
+              item
+                Value = 24.277716545684460000
+              end
+              item
+                Value = 24.286088002929940000
+              end>
+            object Label6: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 41.148956298828130000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Taxa conhecida (%)'
+            end
+            object edEqTaxaConhecida: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              TabOrder = 0
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 5.000000000000000000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 100.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+              OnExit = edEqTaxaConhecidaExit
+            end
+            object Label7: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 41.148956298828130000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Per'#237'odos da taxa'
+            end
+            object edEqPeriodoDado: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              TabOrder = 1
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 46.148956298828130000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 59.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+              OnExit = edEqPeriodoDadoExit
+            end
+            object Label9: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 38.844345092773440000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Per'#237'odo desejado'
+            end
+            object edEqPeriodoDesejado: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              TabOrder = 2
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 87.297912597656250000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 59.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+              OnExit = edEqPeriodoDesejadoExit
+            end
+            object Label8: TLabel
+              Align = Client
+              Size.Width = 166.000000000000000000
+              Size.Height = 38.857742309570310000
+              Size.PlatformDefault = False
+              TextSettings.HorzAlign = Trailing
+              Text = 'Calculado'
+            end
+            object edEqCalculado: TEdit
+              Touch.InteractiveGestures = [LongTap, DoubleTap]
+              Align = Left
+              TabOrder = 3
+              ReadOnly = True
+              TextSettings.HorzAlign = Center
+              Position.X = 166.000000000000000000
+              Position.Y = 126.142257690429700000
+              Margins.Top = 5.000000000000000000
+              Margins.Bottom = 5.000000000000000000
+              Size.Width = 100.000000000000000000
+              Size.Height = 32.000000000000000000
+              Size.PlatformDefault = False
+            end
+          end
+        end
+        object tabCalcular: TTabItem
+          CustomIcon = <
+            item
+            end>
+          IsSelected = False
+          ImageIndex = 2
+          Size.Width = 118.000000000000000000
+          Size.Height = 49.000000000000000000
+          Size.PlatformDefault = False
+          StyleLookup = ''
+          TabOrder = 0
+          Text = 'C'#225'lculos'
+          ExplicitSize.cx = 50.000000000000000000
+          ExplicitSize.cy = 50.000000000000000000
+          object StringGrid1: TStringGrid
+            Align = Client
+            CanFocus = True
+            ClipChildren = True
+            ControlType = Platform
+            Opacity = 0.899999976158142100
+            Margins.Left = 20.000000000000000000
+            Margins.Top = 10.000000000000000000
+            Margins.Right = 20.000000000000000000
+            Margins.Bottom = 10.000000000000000000
+            Size.Width = 312.000000000000000000
+            Size.Height = 439.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            RowCount = 0
+            Options = [ColumnResize, ColumnMove, ColLines, RowLines, Tabs, Header, HeaderClick, AutoDisplacement]
+            Viewport.Width = 312.000000000000000000
+            Viewport.Height = 407.000000000000000000
+          end
+        end
+      end
+    end
+  end
+  object FDMemTable1: TFDMemTable
+    Active = True
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 93
+    Top = 117
+    object FDMemTable1n: TIntegerField
+      DisplayLabel = 'Per'#237'odo'
+      FieldName = 'n'
+    end
+    object FDMemTable1Value: TCurrencyField
+      DisplayLabel = 'Valor'
+      DisplayWidth = 20
+      FieldName = 'Value'
+      DisplayFormat = '0.00'
+    end
+  end
+  object BindSourceDB1: TBindSourceDB
+    DataSet = FDMemTable1
+    ScopeMappings = <>
+    Left = 208
+    Top = 112
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 20
+    Top = 5
+    object LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      GridControl = StringGrid1
+      Columns = <
+        item
+          MemberName = 'n'
+          Width = 80
+        end
+        item
+          MemberName = 'Value'
+          Width = 120
+        end>
+    end
+  end
+  object ImageList1: TImageList
+    Source = <
+      item
+        MultiResBitmap.Height = 10
+        MultiResBitmap.Width = 10
+        MultiResBitmap = <
+          item
+            Scale = 3.000000000000000000
+            Width = 30
+            Height = 30
+            PNG = {
+              89504E470D0A1A0A0000000D494844520000001E0000001E08060000003B30AE
+              A2000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              020949444154484BD5963D360441148507895028241392C990098532AC002B60
+              07580156C00E4845EC00998C1D70BF9E7A755EBFAE19DD7D66E670CFB9A7FAA7
+              AAEFFBAB573DE8883BF1BBC013D1E35A64EE767557C07C1ADB6249BC11771C5F
+              449E47EC890FE2617517D05518BC8B88E10D2C89824711232FC4C69C3EC2800F
+              6D25C68FE2295EDE8AA73C107856435FE137D187DA83FCDE8B78FB25F27E45AC
+              210AAF8B9FE27975F73B98EB0B88F544E0AABA1BA2988A288C854C3C135FC591
+              5599103D2612E0208D841C6388400D51D816921B0CA02A4BE2BC232AE4CE7B84
+              E1841841B61961E73EA6A39863AA914A041862D71E88958A8B5C628C3940448E
+              86977594845984E5563C842AEE45E6D87BEF0D29B28222BC38D11A584D982CC4
+              848B7C5BE87DE1515CCCE51906DA3563630B798CF298BC603DB07CC7B608BCC7
+              A4040FF118360ACA63218D1178BB2F22B8212E8BBBE2627AB62A32674DDC1489
+              122346E0E987F894C622E6D21841A8F80896F70161672FB7ED07193EC77D106B
+              A181528E27056A04079EC589F5EA36A040ADF8389B5B857DD2A16647F0CD7C58
+              4CD3638F4B916D9A433E2B6180706EAFB31246902D8678855909DB4193BBD934
+              8539B92830FA3CB9E594CA0D699AC25430E27849DB1DDBBB0DFFBA738DC59F13
+              A6087297E9815FD78E3A16297F7E77F809C87BAF258E45EA8382EABAB602E214
+              5957721AD12CC66030F8015CD180D71700187C0000000049454E44AE426082}
+            FileName = 'C:\Fontes\Icones\streamline\designer-cup.png'
+          end>
+        Name = 'designer-cup'
+      end
+      item
+        MultiResBitmap.Height = 10
+        MultiResBitmap.Width = 10
+        MultiResBitmap = <
+          item
+            Scale = 3.000000000000000000
+            Width = 30
+            Height = 30
+            PNG = {
+              89504E470D0A1A0A0000000D494844520000001E0000001E08060000003B30AE
+              A2000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              019049444154484BBD970151033110450B0A400148280A0007380009A00050C0
+              E00007E0001C800370D03A80FF92A6DDE62E974C2EE1CD7C2E496FEEEF6DB69B
+              B288584ABF9DF52D2D0FF4C77221BD4B976ED68727E9C80F77604C5401E60FD2
+              AD34B8B992D8C36117AF24C69FD26A736D41D69894BFFAE176EFF97C2ECEE3D0
+              8FFF9F5471B14EAA79E32FE954FA91CEA412A88B733F1C40AD24AB3AAC33476B
+              E965732D81A0D99E314EA49B9C712D64088D41407CA5F6C078507115B0453C67
+              4A7BB4329EC279F44A7575713DBA591A2AFDCD0F47C916971FEEA0203046742B
+              1A3A1D8BF48775D6B8D692DD4E1E4ECAE21B599B6DDCB37371B010702C17744F
+              638A885AE088B5BA93928C458A485369AA53F76D534DF531B102A2A3EA839A82
+              3151C5EA0EC6C7927DB3F0760460D3DC94547171FC916A4E245B201F521352C6
+              9861F22CD1C518373385947120D71AABC9197703637AB22DA29CEEA5D950C13C
+              8C6E425A4BE1F7179A221C8D14A5853EE1BEB21887A6D192C9CE55FBC6255C4B
+              74C5B837BBDF5C18B3C7ADFE3D2964B1FE03CD9397D2D25133E8000000004945
+              4E44AE426082}
+            FileName = 'C:\Fontes\Icones\streamline\coffee-machine.png'
+          end>
+        Name = 'coffee-machine'
+      end
+      item
+        MultiResBitmap.Height = 30
+        MultiResBitmap.Width = 30
+        MultiResBitmap = <
+          item
+            Width = 30
+            Height = 30
+            PNG = {
+              89504E470D0A1A0A0000000D494844520000001E0000001E08060000003B30AE
+              A2000000017352474200AECE1CE90000000467414D410000B18F0BFC61050000
+              00E649444154484BED965D11C23010840B0AEA002420011C20A11650C0A00009
+              C50948A803C0010ECAEE35F7D01F4232D31C0FE49BD9F69266B29364DB6991B1
+              62E1EE21AC9D7C3C9C66E50EB55FC431B3C389B75D39099F714C10315BCD491B
+              E825AD3125B48182E68C35BE404F698D5941151465ECDB42E50A1D20AE7A0AAE
+              F60CEDA4E5E7C64B0D713596A2A7147B1646D0AB5D76F5C7C0A440BCD4D81C86
+              8B5BCD40F0C0F5954881BE8A0C32832AC69A6AFD08A4D0D0A3D7698118FFEC8C
+              73B8F4E05368E8D1EBB4408C73B872B85220C6FF1BAE1324FF410670AB8F2CF8
+              67A801305251BD0144B8BABF76DF4D110000000049454E44AE426082}
+            FileName = 'C:\Fontes\Icones\streamline\briefcase.png'
+          end>
+        Name = 'briefcase'
+      end>
+    Destination = <
+      item
+        Layers = <
+          item
+            Name = 'designer-cup'
+            SourceRect.Right = 10.000000000000000000
+            SourceRect.Bottom = 10.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'coffee-machine'
+            SourceRect.Right = 10.000000000000000000
+            SourceRect.Bottom = 10.000000000000000000
+          end>
+      end
+      item
+        Layers = <
+          item
+            Name = 'briefcase'
+            SourceRect.Right = 30.000000000000000000
+            SourceRect.Bottom = 30.000000000000000000
+          end>
+      end>
+    Left = 61
+    Top = 69
+  end
+end

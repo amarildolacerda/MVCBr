@@ -81,6 +81,7 @@ type
     /// Retorna se a apresentação do formulário é ShowModal
     function GetShowModal: boolean;
   public
+    procedure Init; virtual;
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
     constructor Create(AOwner: TComponent); override;
@@ -216,6 +217,11 @@ begin
     result := FController.GetModelByType(mtViewModel) as IViewModel;
 end;
 
+procedure TFormFactory.Init;
+begin
+
+end;
+
 function TFormFactory.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
@@ -336,7 +342,7 @@ end;
 
 function TFormFactory.ShowView(const IIDController: TGuid): IView;
 begin
-  result := showView(IIDController,nil);
+  result := ShowView(IIDController, nil);
 end;
 
 function TFormFactory.ShowView(const IIDController: TGuid;
@@ -452,7 +458,6 @@ begin
   result := self;
   ShowView(nil);
 end;
-
 
 function TFormFactory.ShowView(const AProc: TProc<IView>;
   AShowModal: boolean): Integer;
