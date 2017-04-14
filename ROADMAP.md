@@ -1,5 +1,5 @@
 $expand param -> gerar detail para um master
-     http://localhost:8080/OData/OData.svc/nfe(1)?$expand=nfeitem,nfecliente,nferodape,nfeimpostos
+    <pre> http://localhost:8080/OData/OData.svc/nfe(1)?$expand=nfeitem,nfecliente,nferodape,nfeimpostos </pre>
      retorno:
      <pre>
      {
