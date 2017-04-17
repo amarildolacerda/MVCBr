@@ -1,16 +1,14 @@
 program MVCBrServer;
-
 {$APPTYPE CONSOLE}
-
 uses
   System.SysUtils,
   MVCFramework.Logger,
   MVCFramework.Commons,
-  {$ifdef MSWINDOWS}
+  {$IFDEF LINUX}
+  MVCFramework.REPLCommandsHandlerU,
+  {$ELSE}
   Winapi.Windows,
-  Winapi.ShellAPI,
-  ReqMulti,
-  {$endif }
+  {$ENDIF }
   Web.WebReq,
   Web.WebBroker,
   System.JsonFiles,
@@ -32,44 +30,84 @@ uses
   oData.SQL in '..\oData\oData.SQL.pas',
   WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
   oData.Dialect.MySQL in '..\oData\oData.Dialect.MySQL.pas',
-  WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
-  WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas',
-  WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   oData.JSON in '..\oData\oData.JSON.pas',
   MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
-  WS.Common in 'WS\WS.Common.pas';
+  WS.Common in 'WS\WS.Common.pas',
+  WSConfigView in 'WSConfig\WSConfigView.pas',
+  config.Model in 'Models\config.Model.pas',
+  config.Model.Interf in 'Models\config.Model.Interf.pas';
 
 {$R *.res}
 
 procedure RunServer(APort: Integer);
 var
+{$IFDEF LINUX}
+  lCustomHandler: TMVCCustomREPLCommandsHandler;
+  lCmd, lStartupCommand: string;
+{$ELSE}
   LInputRecord: TInputRecord;
   LEvent: DWord;
+{$ENDIF}
   LHandle: THandle;
   LServer: TIdHTTPWebBrokerBridge;
-  ini:TJsonFile;
+  ini: TJsonFile;
 begin
-  Ini := TJsonFile.Create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
+  ini := TJsonFile.Create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
   try
-    APort := Ini.ReadInteger('Config', 'WSPort', 8080);
+    APort := ini.ReadInteger('Config', 'WSPort', 8080);
     Writeln('** MVCBrOData powered by DMVCFramework Server ** build ' +
       DMVCFRAMEWORK_VERSION);
     Writeln(Format('Starting HTTP Server on port %d', [APort]));
-    LServer := TIdHTTPWebBrokerBridge.create(nil);
+    LServer := TIdHTTPWebBrokerBridge.Create(nil);
     try
       LServer.DefaultPort := APort;
       LServer.Active := True;
       LogI(Format('Server started on port %s', [APort.ToString]));
       { more info about MaxConnections
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_MaxConnections.html }
-      LServer.MaxConnections := Ini.ReadInteger('Config', 'MaxConnections', 0);
+      LServer.MaxConnections := ini.ReadInteger('Config', 'MaxConnections', 0);
       { more info about ListenQueue
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_ListenQueue.html }
-      LServer.ListenQueue := Ini.ReadInteger('Config', 'ListenQueue', 200);
+      LServer.ListenQueue := ini.ReadInteger('Config', 'ListenQueue', 200);
       { Comment the next line to avoid the default browser startup }
-      ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
-        nil, SW_SHOWMAXIMIZED);
+{$IFDEF LINUX}
+      Writeln('Write "quit" or "exit" to shutdown the server');
+      repeat
+        // TextColor(RED);
+        // TextColor(LightRed);
+        Write('-> ');
+        // TextColor(White);
+        if lStartupCommand.IsEmpty then
+          ReadLn(lCmd)
+        else
+        begin
+          lCmd := lStartupCommand;
+          lStartupCommand := '';
+          Writeln(lCmd);
+        end;
+
+        case HandleCommand(lCmd.ToLower, LServer, lCustomHandler) of
+          THandleCommandResult.Continue:
+            begin
+              Continue;
+            end;
+          THandleCommandResult.Break:
+            begin
+              Break;
+            end;
+          THandleCommandResult.Unknown:
+            begin
+              REPLEmit('Unknown command: ' + lCmd);
+            end;
+        end;
+      until false;
+
+{$ELSE}
+    {$ifdef WIN32}
+      //ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
+      //  nil, SW_SHOWMAXIMIZED);
+    {$endif}
       Writeln('Press ESC to stop the server');
       LHandle := GetStdHandle(STD_INPUT_HANDLE);
       while True do
@@ -78,13 +116,14 @@ begin
         if (LInputRecord.EventType = KEY_EVENT) and
           LInputRecord.Event.KeyEvent.bKeyDown and
           (LInputRecord.Event.KeyEvent.wVirtualKeyCode = VK_ESCAPE) then
-          break;
+          Break;
       end;
+{$ENDIF}
     finally
       LServer.Free;
     end;
   finally
-    Ini.Free;
+    ini.Free;
   end;
 end;
 

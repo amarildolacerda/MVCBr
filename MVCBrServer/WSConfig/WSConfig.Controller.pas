@@ -24,7 +24,7 @@ interface
 
 { .$I ..\inc\mvcbr.inc }
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
+  System.SysUtils, {$IFDEF LINUX} {$ELSE}  {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   System.Classes, MVCBr.Interf,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
   System.RTTI, WSConfig.Controller.Interf,
@@ -129,6 +129,9 @@ var
   ref: TWSConfigView;
 begin
   inherited;
+{$IFDEF LINUX}
+  FView := TWSConfigView.new(self);
+{$ELSE}
   if not assigned(FView) then
   begin
     Application.CreateForm(TWSConfigView, ref);
@@ -138,6 +141,7 @@ begin
       Application.RealCreateForms;
 {$ENDIF}
   end;
+{$ENDIF}
   AfterInit;
 end;
 

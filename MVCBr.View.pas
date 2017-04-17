@@ -31,7 +31,7 @@ unit MVCBr.View;
 
 interface
 
-uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} system.Classes,
+uses {$ifdef LINUX}  {$else} {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$endif} system.Classes,
   system.SysUtils, system.Rtti, MVCBr.Model,
   MVCBr.Interf, System.JSON;
 
@@ -43,9 +43,8 @@ type
   /// TViewFactory é um Factory abstrato a ser utilizado com finalidades genericas
   /// sem ligação direta com um visualizador
   /// </summary>
-  TViewFactory = class(TMVCInterfacedObject, IView)
+  TViewFactory = class(TMVCFactoryAbstract, IView)
   private
-    // FView: IView;
     FText: string;
     FController: IController;
     FViewModel: IViewModel;

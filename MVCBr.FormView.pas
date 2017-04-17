@@ -14,7 +14,7 @@ unit MVCBr.FormView;
 
 interface
 
-uses {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}
+uses {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   System.Classes, System.SysUtils, System.RTTI, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf, MVCBr.View;
 
@@ -27,7 +27,7 @@ type
 
   IViewAdpater = interface(IView)
     ['{A5FCFDC8-67F2-4202-AED1-95314077F28F}']
-    function Form: TForm;
+    function Form: {$IFDEF LINUX} TComponent {$ELSE} TForm{$ENDIF};
     function ThisAs: TViewFactoryAdapter;
   end;
 
@@ -41,16 +41,19 @@ type
     FOnProc: TProc<IView>;
     procedure SetisShowModal(const Value: boolean);
   protected
-    FForm: TForm;
+    FForm: {$IFDEF LINUX} TComponent {$ELSE} TForm{$ENDIF};
+{$IFDEF LINUX}
+{$ELSE}
     procedure DoClose(Sender: TObject; var Action: TCloseAction);
+{$ENDIF}
   public
-    class function New(AClass: TFormClass; const AShowModal: boolean = true)
-      : IView; overload;
-    class function New(AForm: TForm; const AShowModal: boolean = true)
-      : IView; overload;
+    class function New(AClass: {$IFDEF LINUX} TComponentClass
+{$ELSE} TFormClass{$ENDIF}; const AShowModal: boolean = true): IView; overload;
+    class function New(AForm: {$IFDEF LINUX} TComponent
+{$ELSE} TForm{$ENDIF}; const AShowModal: boolean = true): IView; overload;
     property isShowModal: boolean read FisShowModal write SetisShowModal;
     function ShowView(const AProc: TProc<IView>): Integer; override;
-    function Form: TForm;
+    function Form: {$IFDEF LINUX} TComponent {$ELSE} TForm{$ENDIF};
     function ThisAs: TViewFactoryAdapter;
     function This: TObject;
   end;
@@ -58,14 +61,19 @@ type
   /// <summary>
   /// TFormFactory é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr
   /// </summary>
-  TFormFactory = class(TForm, IMVCBrBase, IView)
+  TFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
+    IMVCBrBase, IView)
   private
     FEventRef: Integer;
-    FOnClose: TCloseEvent;
     FID: string;
+{$IFDEF LINUX}
+    FCaption: string;
+{$ELSE}
+    FOnClose: TCloseEvent;
+    procedure SetOnClose(const Value: TCloseEvent);
+{$ENDIF}
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
-    procedure SetOnClose(const Value: TCloseEvent);
     function GetText: string;
     procedure SetText(const Value: string);
   protected
@@ -73,14 +81,17 @@ type
     FController: IController;
     FShowModal: boolean;
     // FViewModel:IViewModel;
+{$IFDEF LINUX}
+{$ELSE}
     procedure DoCloseView(Sender: TObject; var ACloseAction: TCloseAction);
+{$ENDIF}
     procedure SetController(const AController: IController);
     function Controller(const AController: IController): IView; virtual;
-    procedure AfterConstruction; override;
     procedure SetShowModal(const AShowModal: boolean);
     /// Retorna se a apresentação do formulário é ShowModal
     function GetShowModal: boolean;
   public
+    procedure AfterConstruction; override;
     procedure Init; virtual;
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
@@ -113,11 +124,15 @@ type
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
     /// Apresenta o VIEW para o usuario
-    function ShowView(const AProc: TProc<IView>): Integer; overload; virtual;
-    function ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer;
-      overload; virtual;
-    function ShowView(const IIDController: TGuid; const AProc: TProc<IView>)
+    function ShowView(const IIDController: TGuid;
+      const AProcBeforeShow: TProc<IView>; const AProcONClose: TProc<IView>)
       : IView; overload; virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>): Integer;
+      overload; virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
+      : Integer; overload; virtual;
+    function ShowView(const IIDController: TGuid;
+      const AProcBeforeShow: TProc<IView>): IView; overload; virtual;
     function ShowView(const IIDController: TGuid): IView; overload; virtual;
     function ShowView(): IView; overload;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
@@ -128,7 +143,10 @@ type
     property Text: string read GetText write SetText;
 
   published
+{$IFDEF LINUX}
+{$ELSE}
     property OnClose: TCloseEvent read FOnClose write SetOnClose;
+{$ENDIF}
   end;
 
 implementation
@@ -163,6 +181,7 @@ destructor TFormFactory.Destroy;
 begin
   if assigned(FController) then
     FController.This.RevokeInstance(FController); // clear controller
+  FController := nil;
   inherited;
 end;
 
@@ -203,10 +222,14 @@ end;
 
 function TFormFactory.GetText: string;
 begin
+{$IFDEF LINUX}
+  result := FCaption;
+{$ELSE}
 {$IFDEF FMX}
   result := inherited Caption;
 {$ELSE}
   result := inherited Caption;
+{$ENDIF}
 {$ENDIF}
 end;
 
@@ -243,6 +266,9 @@ begin
   FController := AController;
 end;
 
+{$IFDEF LINUX}
+{$ELSE}
+
 procedure TFormFactory.SetOnClose(const Value: TCloseEvent);
 begin
   FOnClose := Value;
@@ -256,6 +282,7 @@ begin
   if assigned(FOnClose) then
     FOnClose(Sender, ACloseAction);
 end;
+{$ENDIF}
 
 function TFormFactory.ApplicationController: TApplicationController;
 begin
@@ -325,10 +352,14 @@ end;
 
 procedure TFormFactory.SetText(const Value: string);
 begin
+{$IFDEF LINUX}
+  FCaption := Value;
+{$ELSE}
 {$IFDEF FMX}
   Inherited Caption := Value;
 {$ELSE}
   Inherited Caption := Value;
+{$ENDIF}
 {$ENDIF}
 end;
 
@@ -342,11 +373,15 @@ end;
 
 function TFormFactory.ShowView(const IIDController: TGuid): IView;
 begin
-  result := ShowView(IIDController, nil);
+  result := ShowView(IIDController,
+    procedure(Sender: IView)
+    begin
+      // stub to nothing..
+    end);
 end;
 
 function TFormFactory.ShowView(const IIDController: TGuid;
-  const AProc: TProc<IView>): IView;
+const AProcBeforeShow: TProc<IView>): IView;
 var
   LController: IController;
 begin
@@ -355,23 +390,45 @@ begin
   if assigned(LController) then
   begin
     result := LController.GetView;
-    result.ShowView(AProc);
+    result.ShowView(AProcBeforeShow);
   end;
 end;
 
-function TFormFactory.ShowView(const AProc: TProc<IView>): Integer;
+function TFormFactory.ShowView(const AProcBeforeShow: TProc<IView>): Integer;
 begin
   result := 0;
+  if assigned(AProcBeforeShow) then
+    AProcBeforeShow(self);
+{$IFDEF LINUX}
+{$ELSE}
 {$IFDEF MSWINDOWS}
   if FShowModal then
     result := ord(ShowModal);
-  if assigned(AProc) then
-    AProc(self);
 {$ELSE}
-  FOnCloseProc := AProc;
-  OnClose := DoCloseView;
   Show;
 {$ENDIF}
+{$ENDIF}
+end;
+
+function TFormFactory.ShowView(const IIDController: TGuid;
+const AProcBeforeShow: TProc<IView>; const AProcONClose: TProc<IView>): IView;
+var
+  ctrl: IController;
+begin
+  result := nil;
+  ctrl := ResolveController(IIDController);
+  if assigned(ctrl) then
+  begin
+    result := ctrl.GetView;
+    if assigned(AProcBeforeShow) then
+      AProcBeforeShow(TFormFactory(result.This));
+    FOnCloseProc := AProcONClose;
+{$IFDEF LINUX}
+{$ELSE}
+    OnClose := DoCloseView;
+{$ENDIF}
+    result.ShowView();
+  end;
 end;
 
 function TFormFactory.This: TObject;
@@ -385,23 +442,28 @@ begin
 end;
 
 { TViewFactoryAdapter }
+{$IFDEF LINUX}
+{$ELSE}
 
 procedure TViewFactoryAdapter.DoClose(Sender: TObject;
-  var Action: TCloseAction);
+var Action: TCloseAction);
 begin
   if assigned(FOnProc) then
     FOnProc(self);
   if assigned(FForm) and assigned(FForm.OnClose) then
     FForm.OnClose(Sender, Action);
 end;
+{$ENDIF}
 
-function TViewFactoryAdapter.Form: TForm;
+function TViewFactoryAdapter.Form:
+{$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF};
 begin
   result := FForm;
 end;
 
-class function TViewFactoryAdapter.New(AForm: TForm;
-  const AShowModal: boolean): IView;
+class function TViewFactoryAdapter.New(AForm:
+{$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF};
+const AShowModal: boolean): IView;
 var
   obj: TViewFactoryAdapter;
 begin
@@ -411,8 +473,9 @@ begin
   result := obj;
 end;
 
-class function TViewFactoryAdapter.New(AClass: TFormClass;
-  const AShowModal: boolean): IView;
+class function TViewFactoryAdapter.New(AClass:
+{$IFDEF LINUX} TComponentClass{$ELSE} TFormClass{$ENDIF};
+const AShowModal: boolean): IView;
 var
   obj: TViewFactoryAdapter;
 begin
@@ -430,6 +493,8 @@ end;
 function TViewFactoryAdapter.ShowView(const AProc: TProc<IView>): Integer;
 begin
   FOnProc := AProc;
+{$IFDEF LINUX}
+{$ELSE}
   if isShowModal then
   begin
     result := ord(FForm.ShowModal);
@@ -441,6 +506,7 @@ begin
     FForm.OnClose := DoClose;
     FForm.Show;
   end;
+{$ENDIF}
 end;
 
 function TViewFactoryAdapter.This: TObject;
@@ -459,11 +525,11 @@ begin
   ShowView(nil);
 end;
 
-function TFormFactory.ShowView(const AProc: TProc<IView>;
-  AShowModal: boolean): Integer;
+function TFormFactory.ShowView(const AProcBeforeShow: TProc<IView>;
+AShowModal: boolean): Integer;
 begin
   FShowModal := AShowModal;
-  result := ShowView(AProc);
+  result := ShowView(AProcBeforeShow);
 end;
 
 end.

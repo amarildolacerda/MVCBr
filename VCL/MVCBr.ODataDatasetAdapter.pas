@@ -22,6 +22,13 @@
   Objetivo: base para popular um dataset
 }
 { *************************************************************************** }
+{
+  Alterações:
+  16/04/2017 - por amarildo lacerda
+  . = altera link de TODataBuilder para TODataCustomBuilder
+  . + criar parametros  Params
+  . + evento OnGetParams
+}
 
 unit MVCBr.ODataDatasetAdapter;
 
@@ -37,6 +44,7 @@ uses System.Classes, System.SysUtils,
 type
 
   TAdapterResponserType = (pureJSON);
+  TODataGetResourceParams = procedure(sender: TObject; var AResource: string) of object;
 
   TODataDatasetAdapter = class(TComponent)
   private
@@ -47,41 +55,39 @@ type
     FResponseJSON: TIdHTTPRestClient;
     FRootElement: string;
     FResponseType: TAdapterResponserType;
-    FBuilder: TODataBuilder;
+    FBuilder: TODataCustomBuilder;
     FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
     FBeforeOpenDelegate: TProc<TDataset>;
+    FOnGetParams: TODataGetResourceParams;
+    FParams: TParams;
     procedure SetDataset(const Value: TDataset);
     procedure SetActive(const Value: boolean);
     procedure SetResponseJSON(const Value: TIdHTTPRestClient);
     procedure SetRootElement(const Value: string);
     function GetActive: boolean;
     procedure SetResponseType(const Value: TAdapterResponserType);
-    procedure SetBuilder(const Value: TODataBuilder);
+    procedure SetBuilder(const Value: TODataCustomBuilder);
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
-    class procedure CreateFieldByProperties(FDataset: TDataset;
-      AJSONProp: TJsonValue; FFieldList: TStrings);
+    class procedure CreateFieldByProperties(FDataset: TDataset; AJSONProp: TJsonValue; FFieldList: TStrings);
+    procedure SetOnGetParams(const Value: TODataGetResourceParams);
+    procedure SetParams(const Value: TParams);
 
   protected
     FResourceKeys: string;
-    procedure Notification(AComponent: TComponent;
-      AOperation: TOperation); override;
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
 
   public
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     function Execute: boolean;
-    class procedure FillDatasetFromJSONValue(ARootElement: string;
-      ADataset: TDataset; AJSON: TJsonValue;
-      AResponseType: TAdapterResponserType; ADelegate: TProc<TDataset>;
-      FFieldList: TStrings; AKeys: String); virtual;
-    class procedure DatasetFromJsonObject(FDataset: TDataset; AJSON: TJsonValue;
-      FFieldList: TStrings);
+    procedure DoGetParams(var AURI: string); virtual;
+    class procedure FillDatasetFromJSONValue(ARootElement: string; ADataset: TDataset; AJSON: TJsonValue; AResponseType: TAdapterResponserType;
+      ADelegate: TProc<TDataset>; FFieldList: TStrings; AKeys: String); virtual;
+    class procedure DatasetFromJsonObject(FDataset: TDataset; AJSON: TJsonValue; FFieldList: TStrings);
     procedure CreateDatasetFromJson(AJSON: string);
-    class procedure CreateFieldsFromJson(FDataset: TDataset;
-      AJSONArray: TJsonValue); static;
-    class procedure CreateFieldsFromJsonRow(FDataset: TDataset;
-      AJSON: TJsonObject); static;
+    class procedure CreateFieldsFromJson(FDataset: TDataset; AJSONArray: TJsonValue); static;
+    class procedure CreateFieldsFromJsonRow(FDataset: TDataset; AJSON: TJsonObject); static;
 
     // Array's changes
     property Changes: TJsonArray read FChanges;
@@ -89,46 +95,41 @@ type
     procedure AddRowSet(ATypeChange: TRowSetChangeType; ADataset: TDataset);
     function UpdatesPending: boolean;
     procedure ClearChanges;
-    procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>;
-      AMethod: TIdHTTPRestMethod = rmPATCH); overload;
+    procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>; AMethod: TIdHTTPRestMethod = rmPATCH); overload;
     procedure ApplyUpdates; overload;
     function ResourceName: string;
     function ResourceKeys: string;
     procedure BeforeOpenDelegate(AProc: TProc<TDataset>);
   published
-    property Builder: TODataBuilder read FBuilder write SetBuilder;
+    property Builder: TODataCustomBuilder read FBuilder write SetBuilder;
     Property Active: boolean read GetActive write SetActive;
     Property Dataset: TDataset read FDataset write SetDataset;
-    Property ResponseJSON: TIdHTTPRestClient read FResponseJSON
-      write SetResponseJSON;
+    Property Params: TParams read FParams write SetParams;
+    Property ResponseJSON: TIdHTTPRestClient read FResponseJSON write SetResponseJSON;
     Property RootElement: string read FRootElement write SetRootElement;
-    Property ResponseType: TAdapterResponserType read FResponseType
-      write SetResponseType default pureJSON;
-    property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate
-      write SetOnBeforeApplyUpdate;
-    property OnAfterApplyUpdates: TNotifyEvent read FOnAfterApplyUpdate
-      write SetOnAfterApplyUpdate;
+    Property ResponseType: TAdapterResponserType read FResponseType write SetResponseType default pureJSON;
+    property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate write SetOnBeforeApplyUpdate;
+    property OnAfterApplyUpdates: TNotifyEvent read FOnAfterApplyUpdate write SetOnAfterApplyUpdate;
+    property OnGetParams: TODataGetResourceParams read FOnGetParams write SetOnGetParams;
   end;
 
 implementation
 
 uses
   System.JSON.Helper, ObjectsMappers,
+  System.Classes.Helper,
   System.DateUtils,
   System.Rtti;
 
 { TIdHTTPDataSetAdapter }
 
-procedure TODataDatasetAdapter.AddChanges(ATypeChange: TRowSetChangeType;
-  AJsonRow: TJsonValue);
+procedure TODataDatasetAdapter.AddChanges(ATypeChange: TRowSetChangeType; AJsonRow: TJsonValue);
 begin
-  (AJsonRow as TJsonObject).addPair('rowstate',
-    TDatarowChangeTypeName[ATypeChange]);
+  (AJsonRow as TJsonObject).addPair('rowstate', TDatarowChangeTypeName[ATypeChange]);
   FChanges.AddElement(AJsonRow);
 end;
 
-procedure TODataDatasetAdapter.ApplyUpdates(AProc: TFunc<TJsonArray, boolean>;
-  AMethod: TIdHTTPRestMethod = rmPATCH);
+procedure TODataDatasetAdapter.ApplyUpdates(AProc: TFunc<TJsonArray, boolean>; AMethod: TIdHTTPRestMethod = rmPATCH);
 begin
 
   if assigned(FOnBeforeApplyUpdate) then
@@ -152,8 +153,7 @@ begin
     end;
 end;
 
-procedure TODataDatasetAdapter.AddRowSet(ATypeChange: TRowSetChangeType;
-  ADataset: TDataset);
+procedure TODataDatasetAdapter.AddRowSet(ATypeChange: TRowSetChangeType; ADataset: TDataset);
 var
   js: TJsonObject;
 begin
@@ -182,6 +182,7 @@ end;
 constructor TODataDatasetAdapter.create(AOwner: TComponent);
 begin
   inherited;
+  FParams := TParams.create;
   FOrigemFieldNameList := TStringList.create;
   FChanges := TJsonArray.create;
 end;
@@ -222,12 +223,10 @@ begin
     FResourceKeys := GetStringListFromJson(ja);
   end;
 
-  FillDatasetFromJSONValue(FRootElement, FDataset, FJsonValue, ResponseType,
-    FBeforeOpenDelegate, FOrigemFieldNameList, FResourceKeys);
+  FillDatasetFromJSONValue(FRootElement, FDataset, FJsonValue, ResponseType, FBeforeOpenDelegate, FOrigemFieldNameList, FResourceKeys);
 end;
 
-class procedure TODataDatasetAdapter.CreateFieldsFromJsonRow(FDataset: TDataset;
-  AJSON: TJsonObject);
+class procedure TODataDatasetAdapter.CreateFieldsFromJsonRow(FDataset: TDataset; AJSON: TJsonObject);
 var
   jv: TJsonPair;
   LFieldName: string;
@@ -255,8 +254,7 @@ begin
   end;
 end;
 
-class procedure TODataDatasetAdapter.CreateFieldByProperties(FDataset: TDataset;
-  AJSONProp: TJsonValue; FFieldList: TStrings);
+class procedure TODataDatasetAdapter.CreateFieldByProperties(FDataset: TDataset; AJSONProp: TJsonValue; FFieldList: TStrings);
 var
   jp: TJsonPair;
   jv: TJsonValue;
@@ -301,8 +299,7 @@ begin
 
 end;
 
-class procedure TODataDatasetAdapter.CreateFieldsFromJson(FDataset: TDataset;
-  AJSONArray: TJsonValue);
+class procedure TODataDatasetAdapter.CreateFieldsFromJson(FDataset: TDataset; AJSONArray: TJsonValue);
 var
   LJSONValue: TJsonValue;
   ja: TJsonArray;
@@ -312,18 +309,18 @@ begin
   AJSONArray.TryGetValue(ja);
   Assert(assigned(ja)); // nao passou um json valido ?
 
-  Assert(ja.Count > 0); // nao tem nenhum linha de dados ?
-
   LJSONValue := ja.Get(0); // pega a primeira linha do json
-  Assert(assigned(LJSONValue));
 
-  jo := TJsonObject.ParseJSONValue(LJSONValue.ToJSON) as TJsonObject;
-  CreateFieldsFromJsonRow(FDataset, jo);
+  if assigned(LJSONValue) then
+  begin
+    jo := TJsonObject.ParseJSONValue(LJSONValue.ToJSON) as TJsonObject;
+    CreateFieldsFromJsonRow(FDataset, jo);
+  end;
+  Assert(FDataset.FieldDefs.Count > 0, 'Não retornou colunas de dados'); // nao tem nenhum linha de dados ?
 
 end;
 
-class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset;
-  AJSON: TJsonValue; FFieldList: TStrings);
+class procedure TODataDatasetAdapter.DatasetFromJsonObject(FDataset: TDataset; AJSON: TJsonValue; FFieldList: TStrings);
   procedure AddJSONDataRow(const AJsonValue: TJsonValue);
   var
     LValue: variant;
@@ -475,10 +472,71 @@ destructor TODataDatasetAdapter.destroy;
 begin
   FChanges.DisposeOf;
   FOrigemFieldNameList.DisposeOf;
+  FParams.DisposeOf;
   inherited;
 end;
 
+procedure TODataDatasetAdapter.DoGetParams(var AURI: string);
+var
+  i: integer;
+  prm: TParam;
+  v: string;
+  ds: TDataset;
+  /// checa se tem um MasterSource
+  function GetMasterSource(ADs: TDataset): TDataset;
+  var
+    v: TValue;
+    o: TObject;
+  begin
+    result := nil;
+    /// usa RTTI para pegar o MasterSource
+    v := FDataset.ContextProperties['MasterSource'];
+    if v.IsObject then
+    begin
+      o := v.asObject;
+      if o.InheritsFrom(TDatasource) then
+        result := TDatasource(v.asObject).Dataset;
+    end;
+  end;
+  procedure FillParamValue;
+  var
+    fld: TField;
+  begin
+    if not assigned(ds) then
+      exit;
+    // pegar o valor do Mastersource;
+    fld := ds.FindField(prm.name);
+    if not assigned(fld) then
+      exit;
+    prm.DataType := fld.DataType;
+    prm.Value := fld.Value;
+  end;
+
+begin
+  /// varre os params para pegar o valor do MasterSource
+  for i := 0 to FParams.Count - 1 do
+  begin
+    prm := FParams.items[i];
+    ds := GetMasterSource(FDataset);
+    FillParamValue;
+    if prm.IsNull then
+      continue;
+    case prm.DataType of
+      ftSmallint, ftInteger, ftCurrency, ftFloat, ftBCD:
+        v := prm.Value;
+    else
+      v := quotedStr(prm.Value);
+    end;
+    AURI := StringReplace(AURI, '{' + prm.name + '}', v, [rfReplaceAll, rfIgnoreCase]);
+  end;
+  /// chama evento para completar os parametros
+  if assigned(FOnGetParams) then
+    FOnGetParams(self, AURI);
+end;
+
 function TODataDatasetAdapter.Execute: boolean;
+var
+  FURI: string;
 begin
   if assigned(FJsonValue) then
     FJsonValue.DisposeOf;
@@ -488,12 +546,17 @@ begin
 
   if assigned(FBuilder) then
   begin
+    FBuilder.ToString;
+    FURI := FBuilder.URI;
+    ///  checa se tem parametros - MasterDetail
+    if FURI.Contains('{') then
+      DoGetParams(FURI);
     result := FBuilder.Execute(
       procedure
       begin
         if assigned(FDataset) then
           CreateDatasetFromJson('');
-      end);
+      end, FURI);
   end
   else if assigned(FResponseJSON) then
     result := FResponseJSON.Execute(
@@ -504,10 +567,8 @@ begin
       end);
 end;
 
-class procedure TODataDatasetAdapter.FillDatasetFromJSONValue
-  (ARootElement: string; ADataset: TDataset; AJSON: TJsonValue;
-AResponseType: TAdapterResponserType; ADelegate: TProc<TDataset>;
-FFieldList: TStrings; AKeys: String);
+class procedure TODataDatasetAdapter.FillDatasetFromJSONValue(ARootElement: string; ADataset: TDataset; AJSON: TJsonValue; AResponseType: TAdapterResponserType;
+ADelegate: TProc<TDataset>; FFieldList: TStrings; AKeys: String);
 var
 {$IFDEF REST}
   Adpter: TCustomJSONDataSetAdapter;
@@ -528,16 +589,14 @@ var
 
     if ADataset.InheritsFrom(TFDMemTable) then
     begin // é um FdMemTable
-      TFDMemTable(ADataset).AppendData
-        (TFDJSONDataSetsReader.GetListValue(LDataSets, achou));
+      TFDMemTable(ADataset).AppendData(TFDJSONDataSetsReader.GetListValue(LDataSets, achou));
     end
     else
     begin
       // cria um MemTable de passagem
       memDs := TFDMemTable.create(nil);
       try
-        TFDMemTable(memDs).AppendData
-          (TFDJSONDataSetsReader.GetListValue(LDataSets, achou));
+        TFDMemTable(memDs).AppendData(TFDJSONDataSetsReader.GetListValue(LDataSets, achou));
         TFDDataset(ADataset).Close;
         TFDDataset(ADataset).CachedUpdates := True;
         TFDDataset(ADataset).Data := memDs.Data;
@@ -571,8 +630,7 @@ begin
           fld.ProviderFlags := fld.ProviderFlags - [pfInUpdate, pfInWhere];
           if ADataset.FieldDefs.IndexOf(fld.FieldName) >= 0 then
             continue;
-          ADataset.FieldDefs.Add(fld.FieldName, fld.DataType, fld.Size,
-            fld.Required);
+          ADataset.FieldDefs.Add(fld.FieldName, fld.DataType, fld.Size, fld.Required);
         end;
 
         if AJSON.TryGetValue('properties', _jv) then
@@ -606,8 +664,7 @@ begin
     result := FDataset.Active;
 end;
 
-procedure TODataDatasetAdapter.Notification(AComponent: TComponent;
-AOperation: TOperation);
+procedure TODataDatasetAdapter.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   if (AOperation = TOperation.opRemove) then
   begin
@@ -639,7 +696,7 @@ begin
     FDataset.Active := Value;
 end;
 
-procedure TODataDatasetAdapter.SetBuilder(const Value: TODataBuilder);
+procedure TODataDatasetAdapter.SetBuilder(const Value: TODataCustomBuilder);
 begin
   FBuilder := Value;
   if assigned(FBuilder) then
@@ -658,10 +715,19 @@ begin
   FOnAfterApplyUpdate := Value;
 end;
 
-procedure TODataDatasetAdapter.SetOnBeforeApplyUpdate
-  (const Value: TNotifyEvent);
+procedure TODataDatasetAdapter.SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
 begin
   FOnBeforeApplyUpdate := Value;
+end;
+
+procedure TODataDatasetAdapter.SetOnGetParams(const Value: TODataGetResourceParams);
+begin
+  FOnGetParams := Value;
+end;
+
+procedure TODataDatasetAdapter.SetParams(const Value: TParams);
+begin
+  FParams := Value;
 end;
 
 procedure TODataDatasetAdapter.SetResponseJSON(const Value: TIdHTTPRestClient);
@@ -669,8 +735,7 @@ begin
   FResponseJSON := Value;
 end;
 
-procedure TODataDatasetAdapter.SetResponseType(const Value
-  : TAdapterResponserType);
+procedure TODataDatasetAdapter.SetResponseType(const Value: TAdapterResponserType);
 begin
   FResponseType := Value;
 end;

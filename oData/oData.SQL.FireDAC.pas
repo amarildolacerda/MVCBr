@@ -83,7 +83,7 @@ begin
   freeAndNil(FQuery);
 
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
-    as IJsonODastaServiceResource;
+    as IJsonODataServiceResource;
 
   FQuery := QueryClass.Create(nil) as TFdQuery;
   FQuery.Connection.StartTransaction;
@@ -165,7 +165,7 @@ begin
   end;
 
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
-    as IJsonODastaServiceResource;
+    as IJsonODataServiceResource;
 
   result := 0;
   freeAndNil(FQuery);
@@ -179,7 +179,7 @@ begin
         inc(iLin);
         if not assigned(FResource) then
           FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
-            as IJsonODastaServiceResource;
+            as IJsonODataServiceResource;
         sKeys := GetPrimaryKey(FQuery.Connection, FResource.collection);
         if sKeys = '' then
           sKeys := FResource.keyID;
@@ -234,7 +234,7 @@ begin
   end;
 
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
-    as IJsonODastaServiceResource;
+    as IJsonODataServiceResource;
 
   result := 0;
   freeAndNil(FQuery);

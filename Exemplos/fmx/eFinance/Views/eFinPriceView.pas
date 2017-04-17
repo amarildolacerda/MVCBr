@@ -271,7 +271,7 @@ end;
 procedure TeFinPriceView.Init;
 begin
   // incluir incializações aqui
-  TTask.Create(
+ { TTask.Create(
     procedure
     begin
       sleep(50);
@@ -282,6 +282,7 @@ begin
           showDrawer(False);
         end);
     end).start;
+    }
 end;
 
 function TeFinPriceView.This: TObject;

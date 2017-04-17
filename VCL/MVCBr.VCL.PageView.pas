@@ -23,12 +23,14 @@ type
     procedure SetAfterTabCreate(const Value: TNotifyEvent);
     procedure SetAfterCreateComplete(const Value: TNotifyEvent);
     procedure DoPageChange(Sender: TObject);
+    procedure DoFormCloseQuery(Sender: TObject; var canClose: boolean);
+    function TabsheetIndexOf(tab: TObject): integer;
   protected
     Procedure DoQueryClose(const APageView: IPageView;
       var ACanClose: boolean); override;
-    procedure SetActivePage(Const Tab: TObject); override;
-    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
-
+    procedure SetActivePage(Const tab: TObject); override;
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
 
   public
     class function New(AController: IController): IPageViews;
@@ -43,7 +45,8 @@ type
     property PageControl: TPageControl read GetPageControlEx
       write SetPageControlEx;
     property AfterViewCreate;
-    property AfterCreateComplete: TNotifyEvent read FAfterCreateComplete write SetAfterCreateComplete;
+    property AfterCreateComplete: TNotifyEvent read FAfterCreateComplete
+      write SetAfterCreateComplete;
     property AfterTabCreate: TNotifyEvent read FAfterTabCreate
       write SetAfterTabCreate;
     property OnQueryClose: TVCLpageViewOnQueryClose read FOnQueryClose
@@ -53,6 +56,8 @@ type
 procedure register;
 
 implementation
+
+uses MVCBr.Controller;
 
 procedure register;
 begin
@@ -79,6 +84,34 @@ begin
     FOnQueryClose(APageView, ACanClose);
 end;
 
+procedure TVCLPageViewManager.DoFormCloseQuery(Sender: TObject;
+  var canClose: boolean);
+var
+  LPageView: IPageView;
+  i: integer;
+  tab: TObject;
+  pgIndex: integer;
+begin
+  LPageView := FindViewByClassName(Sender.ClassName);
+  if not assigned(LPageView) then
+    exit;
+  DoQueryClose(LPageView, canClose);
+
+  if not canClose then
+    abort;
+  pgIndex := PageViewIndexOf(LPageView);
+  if (pgIndex >= 0) and assigned(LPageView) then
+  begin
+    i := TabsheetIndexOf(LPageView.This.tab);
+    if (i >= 0) and (pgIndex >= 0) then
+    begin
+      TForm(LPageView.This.View.This).OnCloseQuery := nil;
+      LPageView.This.tab.Free;
+
+    end;
+  end;
+end;
+
 procedure TVCLPageViewManager.DoPageChange(Sender: TObject);
 begin
   if assigned(FOldPageChange) then
@@ -97,18 +130,19 @@ begin
 end;
 
 type
-  TTabSheetView = class(TTabSheet)
+  TTabSheetView = class(TTabsheet)
   public
     PageView: IPageView;
     destructor destroy; override;
-    procedure CanClose(var ACanClose: boolean);
+    procedure canClose(var ACanClose: boolean);
   end;
 
-procedure TTabSheetView.CanClose(var ACanClose: boolean);
+procedure TTabSheetView.canClose(var ACanClose: boolean);
 var
   form: TForm;
   ref: TVCLPageViewManager;
 begin
+  // chamado quando a tabsheet é apagada.
   ref := TVCLPageViewManager(PageView.This.GetOwner);
   if assigned(ref) and assigned(ref.OnQueryClose) then
     TVCLPageViewManager(ref).OnQueryClose(PageView, ACanClose);
@@ -122,10 +156,10 @@ begin
           if assigned(form.OnCloseQuery) then
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
-          with PageView.This.View.GetController do
-          begin
-            //RevokeInstance;
-          end;
+        begin
+          TControllerFactory.RevokeInstance(PageView.This.View.GetController);
+          // apaga a instancia da lista de controller instaciados.
+        end;
 
       end;
 end;
@@ -135,11 +169,12 @@ var
   LCanClose: boolean;
 begin
   LCanClose := true;
-  CanClose(LCanClose);
+  canClose(LCanClose);
   if not LCanClose then
     abort;
   if assigned(PageView) then
   begin
+    TForm(PageView.This.View.This).OnCloseQuery := nil;
     PageView.remove;
     PageView := nil;
   end;
@@ -167,19 +202,24 @@ begin
         frm := TForm(APageView.This.View.This);
       with frm do
       begin
-        parent := TTabSheet(APageView.This.Tab);
+        parent := TTabsheet(APageView.This.tab);
         Align := alClient;
         BorderStyle := bsNone;
-        TTabSheet(APageView.This.Tab).Caption := APageView.This.text;
+        TTabsheet(APageView.This.tab).Caption := APageView.This.text;
         if APageView.This.View.This.InheritsFrom(TFormFactory) then
         begin
-          TFormFactory(APageView.This.View.This).isShowModal := false;
+          with TFormFactory(APageView.This.View.This) do
+          begin
+            OnCloseQuery := DoFormCloseQuery;
+            isShowModal := false;
+          end;
           APageView.This.View.ShowView(nil);
+          APageView.This.View.Init;
           show;
         end
         else
           show;
-        if assigned(FAfterCreateComplete ) then
+        if assigned(FAfterCreateComplete) then
           FAfterCreateComplete(APageView.This);
       end;
     end;
@@ -193,15 +233,15 @@ end;
 
 function TVCLPageViewManager.NewTab(APageView: IPageView): TObject;
 var
-  Tab: TTabSheetView;
+  tab: TTabSheetView;
 begin
-  Tab := GetPageTabClass.Create(FPageContainer) as TTabSheetView;
-  Tab.PageControl := TPageControl(FPageContainer);
-  Tab.PageView := APageView;
-  TPageControl(FPageContainer).ActivePage := Tab;
-  result := Tab;
+  tab := GetPageTabClass.Create(FPageContainer) as TTabSheetView;
+  tab.PageControl := TPageControl(FPageContainer);
+  tab.PageView := APageView;
+  TPageControl(FPageContainer).ActivePage := tab;
+  result := tab;
   if assigned(FAfterTabCreate) then
-    FAfterTabCreate(Tab);
+    FAfterTabCreate(tab);
 end;
 
 procedure TVCLPageViewManager.Notification(AComponent: TComponent;
@@ -211,10 +251,10 @@ begin
 
 end;
 
-procedure TVCLPageViewManager.SetActivePage(const Tab: TObject);
+procedure TVCLPageViewManager.SetActivePage(const tab: TObject);
 begin
   inherited;
-  TPageControl(FPageContainer).ActivePage := TTabSheet(Tab);
+  TPageControl(FPageContainer).ActivePage := TTabsheet(tab);
 end;
 
 procedure TVCLPageViewManager.SetAfterCreateComplete(const Value: TNotifyEvent);
@@ -246,6 +286,20 @@ begin
   end;
   FPageContainer := Value;
 
+end;
+
+function TVCLPageViewManager.TabsheetIndexOf(tab: TObject): integer;
+var
+  i: integer;
+begin
+  result := -1;
+  with TPageControl(FPageContainer) do
+    for i := 0 to PageCount - 1 do
+      if Pages[i].Equals(tab) then
+      begin
+        result := i;
+        exit;
+      end;
 end;
 
 function TVCLPageViewManager.Update: IModel;

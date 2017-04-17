@@ -53,7 +53,7 @@ type
       overload; virtual;
 
     destructor Destroy; override;
-    property FileName: string read FFileName;
+    property FileName: string read FFileName write FFileName;
     procedure ReadSection(const Section: string; Strings: TStrings); overload;
     function ReadSection(const Section: string): TJsonObject; overload;
     function ReadSectionJsonValue(const Section: TJsonObject; Ident: string)

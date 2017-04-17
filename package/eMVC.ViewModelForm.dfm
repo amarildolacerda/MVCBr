@@ -212,8 +212,6 @@ object FormNewSet: TFormNewSet
         Width = 313
         Height = 17
         Caption = 'Criar uma ViewModel'
-        Checked = True
-        State = cbChecked
         TabOrder = 2
       end
     end
@@ -255,9 +253,7 @@ object FormNewSet: TFormNewSet
         Height = 81
         ItemHeight = 13
         Items.Strings = (
-          'TForm'
-          'TFrame'
-          'TTreeView')
+          'TForm')
         TabOrder = 0
         OnClick = listClassNameClick
       end

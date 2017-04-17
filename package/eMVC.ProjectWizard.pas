@@ -229,7 +229,7 @@ begin
     LModelInterfCreate.Templates.add('%UnitBase=' + LAppName);
     (BorlandIDEServices as IOTAModuleServices).CreateModule(LModelInterfCreate);
 
-    LModelCreate := TViewModelCreator.Create(LPath, LIdentProject, false);
+    LModelCreate := TViewModelCreator.Create(GetNewPath('ViewModels'), LIdentProject, false);
     LModelCreate.isFMX := LIsFMX;
     LModelCreate.Templates.add('%MdlInterf=' + LIdentProject +
       '.ViewModel.Interf');

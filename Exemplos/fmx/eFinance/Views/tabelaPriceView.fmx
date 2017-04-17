@@ -61,7 +61,6 @@ object tabelaPriceView: TtabelaPriceView
         Size.Height = 48.000000000000000000
         Size.PlatformDefault = False
         StyleLookup = 'donetoolbutton'
-        Text = 'SpeedButton4'
         OnClick = SpeedButton4Click
       end
     end

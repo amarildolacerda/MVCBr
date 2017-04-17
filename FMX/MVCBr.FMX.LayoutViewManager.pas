@@ -166,9 +166,9 @@ begin
           if assigned(form.OnCloseQuery) then
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
-          with PageView.This.View.GetController do
+          //with PageView.This.View.GetController do
           begin
-            RevokeInstance;
+            TControllerAbstract.RevokeInstance(PageView.This.View.GetController);
           end;
       end;
 end;

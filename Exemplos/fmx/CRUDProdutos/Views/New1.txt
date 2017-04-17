@@ -1,0 +1,17 @@
+http://..../OData.svc/notafiscal
+[
+  {"rowstate":"inserting","notafiscal":"1", "data":"xx/ss/sss",
+
+      "produtos" : [
+                   ],
+      "clientes" : [
+                   ],
+      "rodape" :   [
+                   ]
+  }
+]
+
+
+
+
+http://.../OData.svc/notafiscal(1)?$expand=clientes,rodape,produtos

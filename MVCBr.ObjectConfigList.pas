@@ -24,7 +24,7 @@
 
 {
   Objetivo: é um gerenciador de componentes de configura a serem persistindo
-            localmente pro INI ou JSON
+  localmente pro INI ou JSON
   Alterações:
   02/04/2017 - por: amarildo lacerda
   + Adicionado suporte a JsonFile para a gravação dos dados
@@ -37,10 +37,36 @@ interface
 
 uses System.Classes, System.SysUtils, System.RTTI,
   System.JsonFiles, System.IniFiles,
-  VCL.StdCtrls, MVCBr.Model,
-  VCL.Controls, System.Generics.Collections;
+{$IFDEF LINUX} {$ELSE}VCL.StdCtrls, VCL.Controls, {$ENDIF} MVCBr.Model,
+  System.Generics.Collections;
 
 type
+
+{$IFDEF LINUX}
+  TButton = TComponent;
+  TGroupBox = TComponent;
+
+  TComboBox = class(TComponent)
+  public
+    text: string;
+  end;
+
+  TLabel = class(TComponent)
+  public
+    Caption: string;
+  end;
+
+  TCheckBox = class(TComponent)
+  public
+    checked: boolean;
+  end;
+
+  TEdit = class(TComponent)
+  public
+    text: string;
+  end;
+{$ENDIF}
+
   TObjectConfigContentType = (ctIniFile, ctJsonFile);
   IObjectConfigListItem = interface;
 
@@ -49,9 +75,10 @@ type
     function This: TObject;
     procedure ReadConfig;
     procedure WriteConfig;
-    procedure RegisterControl(ASection: string; AText: string;
-      AControl: TControl); overload;
-    procedure Add(AControl: TControl); overload;
+    procedure RegisterControl(ASection: string; AText: string; AControl:
+{$IFDEF LINUX} TComponent {$ELSE} TControl{$ENDIF}); overload;
+    procedure Add(AControl: {$IFDEF LINUX} TComponent
+{$ELSE} TControl{$ENDIF}); overload;
     procedure SetFileName(const Value: string);
     function GetFileName: string;
     property FileName: string read GetFileName write SetFileName;
@@ -95,7 +122,7 @@ type
 
   TObjectConfigListItem = class(TInterfacedObject, IObjectConfigListItem)
   private
-    FControl: TControl;
+    FControl: {$IFDEF LINUX} TComponent {$ELSE} TControl{$ENDIF};
     FSection: string;
     FItem: string;
     procedure SetSection(const Value: string);
@@ -105,8 +132,9 @@ type
     function GetItem: string;
     function GetSection: string;
   public
-    class function new(ASection, AItem: string; AControl: TControl)
-      : IObjectConfigListItem;
+    class function new(ASection, AItem: string; AControl:
+{$IFDEF LINUX} TComponent
+{$ELSE} TControl{$ENDIF}): IObjectConfigListItem;
     property Section: string read GetSection write SetSection;
     property Item: string read GetItem write SetItem;
     property Value: TValue read GetValue write SetValue;
@@ -179,13 +207,15 @@ type
     function Count: integer;
     property Items[idx: integer]: IObjectConfigListItem read GetItems
       write SetItems;
-    procedure RegisterControl(ASection: string; AText: string;
-      AControl: TControl); overload; virtual;
-    procedure Add(AControl: TControl); overload; virtual;
+    procedure RegisterControl(ASection: string; AText: string; AControl:
+{$IFDEF LINUX} TComponent {$ELSE} TControl{$ENDIF}); overload; virtual;
+    procedure Add(AControl: {$IFDEF LINUX} TComponent
+{$ELSE} TControl{$ENDIF}); overload; virtual;
     property FileName: string read GetFileName write SetFileName;
     procedure WriteItem(ASection, AItem: string; AValue: TValue); virtual;
     procedure ReadItem(ASection, AItem: string; out AValue: TValue); virtual;
-    property  ComponentFullPath:boolean read FComponentFullPath write SetComponentFullPath;
+    property ComponentFullPath: boolean read FComponentFullPath
+      write SetComponentFullPath;
   end;
 
 implementation
@@ -282,7 +312,8 @@ begin
       AValue := ReadString(ASection, AItem, AValue.AsString);
 end;
 
-procedure TObjectConfigModel.Add(AControl: TControl);
+procedure TObjectConfigModel.Add(AControl: {$IFDEF LINUX} TComponent
+{$ELSE} TControl{$ENDIF});
 var
   LItem: string;
 begin
@@ -290,12 +321,12 @@ begin
     LItem := AControl.className + '.' + AControl.name
   else
     LItem := AControl.name;
-
   RegisterControl('Config', LItem, AControl);
 end;
 
 procedure TObjectConfigModel.RegisterControl(ASection: string; AText: string;
-  AControl: TControl);
+  AControl: {$IFDEF LINUX} TComponent
+{$ELSE} TControl{$ENDIF});
 var
   obj: TObjectConfigListItem;
 begin
@@ -342,7 +373,11 @@ begin
     for i := 0 to FList.Count - 1 do
       FProcWrite(FList.Items[i] as IObjectConfigListItem);
   if ContentType = ctJsonFile then
-    TJsonFile(GetContentFile.ConfigFile).UpdateFile;
+    with TJsonFile(GetContentFile.ConfigFile) do
+    begin
+      FileName := self.FFileName;
+      UpdateFile;
+    end;
 end;
 
 procedure TObjectConfigModel.WriteItem(ASection, AItem: string; AValue: TValue);
@@ -370,17 +405,21 @@ end;
 
 function TObjectConfigListItem.GetValue: TValue;
 begin
+  result := nil;
+  if not assigned(FControl) then
+    exit;
+
   if FControl.InheritsFrom(TEdit) then
     result := TEdit(FControl).text
   else if FControl.InheritsFrom(TCheckBox) then
-    result := TCheckBox(FControl).Checked
+    result := TCheckBox(FControl).checked
   else if FControl.InheritsFrom(TComboBox) then
     result := TComboBox(FControl).text;
-
 end;
 
-class function TObjectConfigListItem.new(ASection, AItem: string;
-  AControl: TControl): IObjectConfigListItem;
+class function TObjectConfigListItem.new(ASection, AItem: string; AControl:
+{$IFDEF LINUX} TComponent
+{$ELSE} TControl{$ENDIF}): IObjectConfigListItem;
 var
   obj: TObjectConfigListItem;
 begin
@@ -406,10 +445,9 @@ begin
   if FControl.InheritsFrom(TEdit) then
     TEdit(FControl).text := Value.AsString
   else if FControl.InheritsFrom(TCheckBox) then
-    TCheckBox(FControl).Checked := Value.AsBoolean
+    TCheckBox(FControl).checked := Value.AsBoolean
   else if FControl.InheritsFrom(TComboBox) then
     TComboBox(FControl).text := Value.AsString;
-
 end;
 
 function TObjectConfigListItem.This: TObjectConfigListItem;

@@ -11,20 +11,21 @@ interface
 uses
   System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
-  FireDAC.Phys, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys.MSAcc,
-  FireDAC.Phys.MSAccDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
-  FireDAC.Phys.FBDef, FireDAC.Phys.IBBase, FireDAC.Phys.FB, FireDAC.Comp.UI,
-  FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.Phys.MySQLDef,
-  FireDAC.Phys.MySQL;
+  FireDAC.Phys, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys.FB,
+  FireDAC.Phys.FBDef, FireDAC.DatS, FireDAC.DApt.Intf,
+{$IFDEF LINUX}
+  FireDAC.CONSOLEUI.Wait,
+{$ELSE}
+  FireDAC.VCLUI.Wait,
+  FireDAC.Phys.MSAcc,
+  FireDAC.Phys.MSAccDef,
+  FireDAC.Comp.ui,
+{$ENDIF}
+  FireDAC.DApt, FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Comp.Client,
+  FireDAC.Phys.IBBase, Data.DB;
 
 type
   TWSDatamodule = class(TDataModule)
-    FDManager1: TFDManager;
-    FDConnection1: TFDConnection;
-    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
-    FDPhysFBDriverLink1: TFDPhysFBDriverLink;
-    FDSchemaAdapter1: TFDSchemaAdapter;
-    FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
     procedure FDManager1AfterLoadConnectionDefFile(Sender: TObject);
   private
     { Private declarations }
@@ -45,18 +46,36 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 // uses FireDAC.Adpt;
-uses System.SyncObjs, WS.Common ;
+uses System.SyncObjs, WS.Common;
 
 {$R *.dfm}
 
 var
   ConnectionStrings: string;
+{$IFDEF LINUX}
+{$ELSE}
+  FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+{$ENDIF}
+  FDConnection1: TFDConnection;
+  FDPhysFBDriverLink1: TFDPhysFBDriverLink;
+  FDSchemaAdapter1: TFDSchemaAdapter;
+  FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
+  FDManager1: TFDManager;
 
 procedure TWSDatamodule.AfterConstruction;
 begin
   inherited;
+  FDConnection1 := TFDConnection.create(self);
   ConnectionStrings := FDConnection1.Params.Text;
-
+  FDPhysFBDriverLink1 := TFDPhysFBDriverLink.create(self);
+  FDSchemaAdapter1 := TFDSchemaAdapter.create(self);
+  FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(self);
+  FDManager1 := TFDManager.create(self);
+{$IFDEF MSWINDOWS}
+  FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(self);
+{$ENDIF}
+  FDConnection1.ConnectionName := 'MVCBr_DB';
+  FDConnection1.driverName := 'FB';
 end;
 
 procedure TWSDatamodule.FDManager1AfterLoadConnectionDefFile(Sender: TObject);
@@ -73,7 +92,7 @@ var
   old: char;
 begin
   inherited;
-  ConnectionName := 'MVCBr_Firebird';
+  ConnectionName := 'MVCBr_DB';
   TInterlocked.Add(LQueryCount, 0);
 
   name := '__query__' + LQueryCount.ToString;

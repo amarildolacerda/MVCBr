@@ -1,4 +1,4 @@
-ProjectCode = 'PROGRAM %ModuleIdent;                         ' + #13#10 +
+ProjectCode = 'program %ModuleIdent;                         ' + #13#10 +
   '                                                          ' + #13#10 +
   '// Código gerado pelo Assistente MVCBr OTA                ' + #13#10 +
   '// www.tireideletra.com.br                                ' + #13#10 +
@@ -18,7 +18,7 @@ ProjectCode = 'PROGRAM %ModuleIdent;                         ' + #13#10 +
   '    end);                                                 ' + #13#10 +
   'end.                                                      ' + #13#10;
 
-ProjectCodeFMX = 'PROGRAM %ModuleIdent;                         ' + #13#10 +
+ProjectCodeFMX = 'program %ModuleIdent;                         ' + #13#10 +
   '                                                          ' + #13#10 +
   '// Código gerado pelo Assistente MVCBr OTA                ' + #13#10 +
   '// www.tireideletra.com.br                                ' + #13#10 +

@@ -16,8 +16,8 @@ uses
   eFinPriceView in 'Views\eFinPriceView.pas' {eFinPriceView},
   tabelaPriceView in 'Views\tabelaPriceView.pas' {tabelaPriceView},
   eFinPrice.ViewModel in 'eFinPrice.ViewModel.pas',
-  System.Finance in 'System.Finance.pas',
-  MVCBr.KeyBoard.helper in '..\..\MVCBr\FMX\MVCBr.KeyBoard.helper.pas';
+  System.Finance in 'System.Finance.pas';
+//  MVCBr.KeyBoard.helper in '..\..\MVCBr\FMX\MVCBr.KeyBoard.helper.pas';
 
 {$R *.res}
 begin

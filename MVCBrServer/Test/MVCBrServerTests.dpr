@@ -30,7 +30,17 @@ uses
   oData.ProxyBase in '..\..\oData\oData.ProxyBase.pas',
   oData.ServiceModel in '..\..\oData\oData.ServiceModel.pas',
   oData.SQL.FireDAC in '..\..\oData\oData.SQL.FireDAC.pas',
-  oData.SQL in '..\..\oData\oData.SQL.pas';
+  oData.SQL in '..\..\oData\oData.SQL.pas',
+  WSConfig.Controller.Interf in '..\WSConfig\WSConfig.Controller.Interf.pas',
+  WSConfig.Controller in '..\WSConfig\WSConfig.Controller.pas',
+  WSConfigView in '..\WSConfig\WSConfigView.pas' {WSConfigView},
+  WS.Common in '..\WS\WS.Common.pas',
+  WS.Controller.Interf in '..\WS\WS.Controller.Interf.pas',
+  WS.Controller in '..\WS\WS.Controller.pas',
+  WS.QueryController in '..\WS\WS.QueryController.pas',
+  WS.Datamodule in '..\WS.Datamodule.pas' {WSDatamodule: TDataModule},
+  MVCgzipMiddleware in '..\MVCgzipMiddleware.pas',
+  MVCAsyncMiddleware in '..\MVCAsyncMiddleware.pas';
 
 {$R *.RES}
 

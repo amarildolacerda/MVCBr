@@ -12,7 +12,7 @@ ControllerCodeInterf =
   ' ///                                                          ' + #13#10 +
   'interface                                                        ' + #13#10 +
   'uses                                                             ' + #13#10 +
-  'System.SysUtils,{$ifdef FMX} FMX.Forms,{$else}VCL.Forms,{$endif}' + #13#10 +
+  'System.SysUtils,{$ifdef LINUX} {$else} {$ifdef FMX} FMX.Forms,{$else}VCL.Forms,{$endif} {$endif}' + #13#10 +
   'System.Classes, MVCBr.Interf;                                   ' + #13#10 +
   'type                                                             ' + #13#10 +
   '  I%FormIdentController = interface(IController)' + #13#10 +
@@ -39,7 +39,7 @@ ControllerCode =
   '//%include                                                       ' + #13#10 +
   'uses                                                             ' + #13#10 +
   '                                                                 ' + #13#10 +
-  'System.SysUtils, {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}' + #13#10
+  'System.SysUtils,{$ifdef LINUX} {$else} {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}{$endif}' + #13#10
   + 'System.Classes, MVCBr.Interf,                                      ' +
   #13#10 + 'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' +
   #13#10 + 'System.RTTI, %UnitIdent.interf, %FormIdent.ViewModel, %FormIdent.ViewModel.Interf,'
@@ -186,7 +186,7 @@ ControllerCodeWithoutViewModel =
   '//%include                                                       ' + #13#10 +
   'uses                                                             ' + #13#10 +
   '                                                                 ' + #13#10 +
-  'System.SysUtils, {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}' + #13#10
+  'System.SysUtils,{$ifdef LINUX} {$else} {$ifdef FMX} FMX.Forms,{$else}  VCL.Forms,{$endif}{$endif}' + #13#10
   + 'System.Classes, MVCBr.Interf,                                      ' +
   #13#10 + 'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' +
   #13#10 + 'System.RTTI, %UnitIdent.interf, ' + #13#10 + '%FormIdentView;' +
@@ -313,7 +313,7 @@ ControllerCodeOnly =
   '//%include                                                       ' + #13#10 +
   'uses                                                             ' + #13#10 +
   '                                                                 ' + #13#10 +
-  'System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'
+  'System.SysUtils,{$ifdef LINUX} {$else}{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif}{$endif} System.Classes,'
   + 'MVCBr.Interf,        ' + #13#10 +
   'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #13#10 +
   '%UnitIdent.interf,                                              ' + #13#10 +

@@ -15,6 +15,12 @@
         <Projects Include="MVCBrFMX.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="MVCBrOData.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="MVCBrFireDAC.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -59,14 +65,32 @@
     <Target Name="MVCBrFMX:Make">
         <MSBuild Projects="MVCBrFMX.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MVCBrOData">
+        <MSBuild Projects="MVCBrOData.dproj"/>
+    </Target>
+    <Target Name="MVCBrOData:Clean">
+        <MSBuild Projects="MVCBrOData.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrOData:Make">
+        <MSBuild Projects="MVCBrOData.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrFireDAC">
+        <MSBuild Projects="MVCBrFireDAC.dproj"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Clean">
+        <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Make">
+        <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrCore;MVCBr;MVCBrVCL;MVCBrFMX"/>
+        <CallTarget Targets="MVCBrCore;MVCBr;MVCBrVCL;MVCBrFMX;MVCBrOData;MVCBrFireDAC"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrCore:Clean;MVCBr:Clean;MVCBrVCL:Clean;MVCBrFMX:Clean"/>
+        <CallTarget Targets="MVCBrCore:Clean;MVCBr:Clean;MVCBrVCL:Clean;MVCBrFMX:Clean;MVCBrOData:Clean;MVCBrFireDAC:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrCore:Make;MVCBr:Make;MVCBrVCL:Make;MVCBrFMX:Make"/>
+        <CallTarget Targets="MVCBrCore:Make;MVCBr:Make;MVCBrVCL:Make;MVCBrFMX:Make;MVCBrOData:Make;MVCBrFireDAC:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

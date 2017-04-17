@@ -331,7 +331,7 @@ end;
 
 initialization
 
-TMVCRegister.RegisterInterfaced<IModel>('Teste.Model', IModel,
+TMVCbR.RegisterInterfaced<IModel>('Teste.Model', IModel,
   TTestModel, true);
 // Register any test cases with the test runner
 RegisterTest(TestTControllerFactory.Suite);

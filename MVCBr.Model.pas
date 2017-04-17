@@ -31,19 +31,13 @@ Uses System.Classes, System.SysUtils, System.Generics.collections, MVCBr.Interf;
 
 type
 
-  TMVCInterfacedObject = Class(TMVCFactoryAbstract)
-  public
-    //class function New(AClass: TInterfacedClass): IInterface;
-    function GetOwner: TComponent; virtual;
-  end;
 
   TModelFactory = class;
 
   TModelFactoryClass = class of TModelFactory;
 
-  TModelFactory = class(TMVCInterfacedObject, IModel)
+  TModelFactory = class(TMVCOwnedInterfacedObject, IModel)
   private
-    FOwned: TComponent;
     FID: string;
     FModelTypes: TModelTypes;
     function GetModelTypes: TModelTypes;
@@ -57,7 +51,6 @@ type
     destructor destroy; override;
     procedure SetController(const AController:IController);virtual;
     function GetController: IController;
-    function GetOwner: TComponent; override;
     function Controller(const AController: IController): IModel; virtual;
     function This: TObject; virtual;
     function GetID: string; virtual;
@@ -79,7 +72,6 @@ end;
 
 destructor TModelFactory.destroy;
 begin
-  FOwned.DisposeOf;
   inherited;
 end;
 
@@ -98,10 +90,6 @@ begin
   result := FModelTypes;
 end;
 
-function TModelFactory.GetOwner: TComponent;
-begin
-  result := FOwned;
-end;
 
 function TModelFactory.ID(const AID: String): IModel;
 begin
@@ -129,7 +117,6 @@ procedure TModelFactory.afterConstruction;
 begin
   inherited;
   FModelTypes := [mtCommon];
-  FOwned := TComponent.create(nil);
   SetID( self.classname );
 end;
 
@@ -154,16 +141,4 @@ begin
   result := self;
 end;
 
-{ TMVCInterfacedObject }
-
-function TMVCInterfacedObject.GetOwner: TComponent;
-begin
-  result := nil;
-end;
-
-{class function TMVCInterfacedObject.New(AClass: TInterfacedClass): IInterface;
-begin
-  result := AClass.create;
-end;
-}
 end.

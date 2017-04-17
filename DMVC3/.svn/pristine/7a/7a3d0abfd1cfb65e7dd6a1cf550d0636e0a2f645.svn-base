@@ -1,0 +1,36 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{87E6405B-4E52-4C01-A512-8293F36E951B}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="WineCellarClient.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="WineCellarClient">
+        <MSBuild Projects="WineCellarClient.dproj"/>
+    </Target>
+    <Target Name="WineCellarClient:Clean">
+        <MSBuild Projects="WineCellarClient.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="WineCellarClient:Make">
+        <MSBuild Projects="WineCellarClient.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="WineCellarClient"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="WineCellarClient:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="WineCellarClient:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

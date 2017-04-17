@@ -22,9 +22,7 @@ type
     /// <param name="AControllerQualifiedClassName">Qualified classname of the matching controller.</param>
     /// <param name="AActionNAme">Method name of the matching controller method.</param>
     /// <param name="Handled">If set to True the Request would finished. Response must be set by the implementor. Default value is False.</param>
-    procedure OnBeforeControllerAction(Context: TWebContext;
-      const AControllerQualifiedClassName: string; const aActionName: string;
-      var Handled: Boolean);
+    procedure OnBeforeControllerAction(Context: TWebContext; const AControllerQualifiedClassName: string; const aActionName: string; var Handled: Boolean);
     /// <summary>
     /// Procedure is called after the specific controller method was called.
     /// It is still possible to cancel or to completly modifiy the request.
@@ -32,13 +30,12 @@ type
     /// <param name="Context">Webcontext which contains the complete request and response of the actual call.</param>
     /// <param name="AActionNAme">Method name of the matching controller method.</param>
     /// <param name="Handled">If set to True the Request would finished. Response must be set by the implementor. Default value is False.</param>
-    procedure OnAfterControllerAction(Context: TWebContext;
-      const aActionName: string; const Handled: Boolean);
+    procedure OnAfterControllerAction(Context: TWebContext; const aActionName: string; const Handled: Boolean);
   end;
 
 implementation
 
-uses VCL.Dialogs, System.Generics.collections, IdGlobal, IdHTTPWebBrokerBridge,
+uses {$IFDEF LINUX} {$ELSE}VCL.Dialogs, {$ENDIF} System.Generics.collections, IdGlobal, IdHTTPWebBrokerBridge,
   IdCustomHTTPServer, IdZLibHeaders;
 
 type
@@ -70,13 +67,13 @@ begin
       if sametext(it.FileName, sName) then
       begin
         result := it; // items[I];
-        result.stream.Seek(0, soFromBeginning);
+        result.stream.Seek(0, TSeekOrigin.soBeginning);
         exit;
       end;
 
     try
       result := TFileCompressed.Create(sName);
-      result.stream.Seek(0, soFromBeginning);
+      result.stream.Seek(0, TSeekOrigin.soBeginning);
     except
       begin
         FreeAndNil(result);
@@ -135,7 +132,7 @@ var
   b: Boolean;
 begin
   with Context do
-    if {$ifdef WIN32} pos('gzip',Response.RawWebResponse.ContentEncoding)>0 {$else}  Response.RawWebResponse.ContentEncoding.Contains('gzip'){$endif} then
+    if {$IFDEF WIN32} pos('gzip', Response.RawWebResponse.ContentEncoding) > 0 {$ELSE} Response.RawWebResponse.ContentEncoding.Contains('gzip'){$ENDIF} then
       try
         lFile := LFilesCompressed.GetFile(sFileName);
         if assigned(lFile) then
@@ -145,13 +142,11 @@ begin
           Response.RawWebResponse.ContentStream := TMemoryStream.Create;
           System.TMonitor.Enter(lFile);
           try
-            Response.RawWebResponse.ContentStream.CopyFrom(lFile.stream,
-              lFile.stream.Size);
+            Response.RawWebResponse.ContentStream.CopyFrom(lFile.stream, lFile.stream.Size);
           finally
             System.TMonitor.exit(lFile);
           end;
-          Response.RawWebResponse.ContentLength :=
-            Response.RawWebResponse.ContentStream.Size;
+          Response.RawWebResponse.ContentLength := Response.RawWebResponse.ContentStream.Size;
           Response.RawWebResponse.ContentEncoding := 'gzip';
         end;
         Response.RawWebResponse.SendResponse;
@@ -165,6 +160,7 @@ type
   public
     property RequestInfo: TIdHTTPRequestInfo read FRequestInfo;
   end;
+
   TIdHTTPAppResponseHack = class(TIdHTTPAppResponse)
 
   end;
@@ -180,8 +176,7 @@ begin
   exit;
   with Context do
     try
-      if ( TIdHTTPAppRequestHack(Request.RawWebRequest)
-        .RequestInfo.AcceptEncoding.Contains('gzip') ) and (Response.ContentType.Contains('json') ) then
+      if (TIdHTTPAppRequestHack(Request.RawWebRequest).RequestInfo.AcceptEncoding.Contains('gzip')) and (Response.ContentType.Contains('json')) then
       begin
         bLocal := true;
         sResponse := Response.RawWebResponse.Content;
@@ -195,8 +190,7 @@ begin
             begin
               if Context.Response.RawWebResponse.ContentStream.Size < 0004 then
                 exit;
-              sResponse := ReadStringFromStream
-                (Response.RawWebResponse.ContentStream,-1, IndyTextEncoding_UTF8);
+              sResponse := ReadStringFromStream(Response.RawWebResponse.ContentStream, -1, IndyTextEncoding_UTF8);
             end
             else
               Response.RawWebResponse.ContentStream := TMemoryStream.Create;
@@ -205,14 +199,12 @@ begin
             Response.RawWebResponse.ContentLength := 0;
             WriteStringToStream(lTmpStream, sResponse, IndyTextEncoding_UTF8);
             lTmpStream.Position := 0;
-            lCompressor.CompressStream(lTmpStream,
-              Response.RawWebResponse.ContentStream, 9, GZIP_WINBITS, 9, 0);
+            lCompressor.CompressStream(lTmpStream, Response.RawWebResponse.ContentStream, 9, GZIP_WINBITS, 9, 0);
             // or other suitable byte encoding
-            Response.RawWebResponse.ContentLength :=
-              Response.RawWebResponse.ContentStream.Size;
+            Response.RawWebResponse.ContentLength := Response.RawWebResponse.ContentStream.Size;
             Response.RawWebResponse.ContentEncoding := 'gzip;';
-            //TIdHTTPAppResponse(Response).CharSet := 'UTF-8';
-             Response.RawWebResponse.SendResponse;
+            // TIdHTTPAppResponse(Response).CharSet := 'UTF-8';
+            Response.RawWebResponse.SendResponse;
           finally
             lTmpStream.free;
           end;
@@ -230,21 +222,18 @@ end;
 
 { TMVCgzipCallBackMiddleware }
 
-procedure TMVCgzipCallBackMiddleware.OnAfterControllerAction
-  (Context: TWebContext; const aActionName: string; const Handled: Boolean);
+procedure TMVCgzipCallBackMiddleware.OnAfterControllerAction(Context: TWebContext; const aActionName: string; const Handled: Boolean);
 begin
   CompressHttpResponse(Context);
 end;
 
-procedure TMVCgzipCallBackMiddleware.OnBeforeControllerAction
-  (Context: TWebContext; const AControllerQualifiedClassName,
-  aActionName: string; var Handled: Boolean);
+procedure TMVCgzipCallBackMiddleware.OnBeforeControllerAction(Context: TWebContext; const AControllerQualifiedClassName, aActionName: string;
+  var Handled: Boolean);
 begin
 
 end;
 
-procedure TMVCgzipCallBackMiddleware.OnBeforeRouting(Context: TWebContext;
-  var Handled: Boolean);
+procedure TMVCgzipCallBackMiddleware.OnBeforeRouting(Context: TWebContext; var Handled: Boolean);
 begin
 
 end;

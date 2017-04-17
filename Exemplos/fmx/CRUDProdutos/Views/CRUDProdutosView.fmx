@@ -17,7 +17,7 @@ object CRUDProdutosView: TCRUDProdutosView
     Size.Height = 337.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
-    RowCount = 8
+    RowCount = 0
     Viewport.Width = 565.000000000000000000
     Viewport.Height = 312.000000000000000000
   end
@@ -81,7 +81,7 @@ object CRUDProdutosView: TCRUDProdutosView
   end
   object ODataDatasetBuilder1: TODataDatasetBuilder
     BaseURL = 'http://localhost:8080'
-    ServicePreffix = '/OData'
+    ServicePrefix = '/OData'
     Service = '/OData.svc'
     ResourceName = 'produtos'
     Resource = <

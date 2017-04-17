@@ -112,7 +112,11 @@ function TODataController.CreateJson(CTX: TWebContext; const AValue: string)
   : TJsonObject;
 begin
   CTX.Response.SetCustomHeader('OData-Version', '4.0');
+{$IFDEF DMVC2}
   CTX.Response.ContentType := 'application/json;odata.metadata=minimal';
+{$ELSE}
+  CTX.Response.ContentType := 'application/json';
+{$ENDIF}
   result := TJsonObject.create as TJsonObject;
   result.addPair('@odata.context', AValue);
   result.addPair('StartsAt', DateToISO8601(now));
@@ -210,7 +214,7 @@ var
 begin
   try
 {$IFDEF LOGEVENTS}
-   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+    LogEvents.DoMsg(nil, 0, CTX.Request.PathInfo);
 {$ENDIF}
     CTX.Response.StatusCode := 200;
     FOData := ODataBase.create();
@@ -241,7 +245,7 @@ var
 begin
   try
 {$IFDEF LOGEVENTS}
-   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+    LogEvents.DoMsg(nil, 0, CTX.Request.PathInfo);
 {$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
@@ -279,7 +283,7 @@ var
 begin
   try
 {$IFDEF LOGEVENTS}
-   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+    LogEvents.DoMsg(nil, 0, CTX.Request.PathInfo);
 {$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();
@@ -315,7 +319,7 @@ var
 begin
   try
 {$IFDEF LOGEVENTS}
-   LogEvents.DoMsg(nil,0,CTX.Request.PathInfo);
+    LogEvents.DoMsg(nil, 0, CTX.Request.PathInfo);
 {$ENDIF}
     CTX.Response.StatusCode := 500;
     FOData := ODataBase.create();

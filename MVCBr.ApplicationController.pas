@@ -23,6 +23,14 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
+{
+  Application Controller - Singleton central para os controller
+  Alterações:
+  12/04/2017 - por: amarildo lacerda
+  + Introduzido Fucntion Default para Singleton
+  + Incluido   class var FApplicationController
+}
+
 unit MVCBr.ApplicationController;
 
 interface
@@ -32,8 +40,7 @@ uses
 {$ENDIF}{$ENDIF}
   System.Classes,
   System.Generics.Collections,
-
-  System.SysUtils, MVCBr.Model, MVCBr.Interf;
+  System.SysUtils, MVCBr.Interf;
 
 type
   /// <summary>
@@ -41,14 +48,18 @@ type
   /// No ApplicationController fica armazenado uma lista de Controllers
   /// ativos
   /// </summary>
-  TApplicationController = class(TMVCInterfacedObject, IApplicationController)
+  TApplicationController = class(TMVCOwnedInterfacedObject, IApplicationController)
   private
     /// Lista de controllers instanciados
-    FControllers: TMVCInterfacedList<IController>;
+    FControllers: IInterfaceList;
   protected
-    // MainView para o Application
+    /// MainView para o Application
     FMainView: IView;
+    /// singleton
+    class var FApplicationController: IApplicationController;
   public
+    class function Default: IApplicationController;
+    /// Loop que chama AProc para cada um dos controllers da lista
     function MainView: IView; virtual;
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController; virtual;
@@ -58,14 +69,10 @@ type
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
     function FindModel<TIModel: IInterface>: TIModel; overload;
 
-    function ViewEvent(AMessage: string; var AHandled: boolean)
-      : IApplicationController; overload;
-    function ViewEventOther(ASender: IController; AMessage: string;
-      var AHandled: boolean): IApplicationController;
-    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
-      : IView; overload;
-    function ViewEvent<TViewInterface: IInterface>(AMessage: String;
-      var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: string; var AHandled: boolean): IApplicationController; overload;
+    function ViewEventOther(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;
+    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView; overload;
+    function ViewEvent<TViewInterface: IInterface>(AMessage: String; var AHandled: boolean): IView; overload;
     constructor create; override;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
@@ -79,13 +86,9 @@ type
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
     /// Executa o ApplicationController
-    procedure Run(AClass: TComponentClass; AController: IController;
-      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     /// Executa
-    procedure Run(AController: IController;
-      AFunc: TFunc < boolean >= nil); overload;
-    class function New: IApplicationController;
-    /// Loop que chama AProc para cada um dos controllers da lista
+    procedure Run(AController: IController; AFunc: TFunc < boolean >= nil); overload;
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
     procedure Inited;
@@ -95,29 +98,17 @@ type
     procedure Update(const AIID: TGuid);
   end;
 
+  /// Singleton
   /// ApplicationController é uma instância que implementa a interface ...
 function ApplicationController: IApplicationController;
-/// Altera o ApplicationController
-procedure SetApplicationController(AController: IApplicationController);
 
 implementation
 
 uses System.TypInfo;
 
-var
-  FApplication: IApplicationController;
-
 function ApplicationController(): IApplicationController;
 begin
-  if not assigned(FApplication) then
-    FApplication := TApplicationController.New;
-  result := FApplication;
-end;
-
-procedure SetApplicationController(AController: IApplicationController);
-begin
-  FApplication := nil; // limpa a instancia carregada;
-  FApplication := AController;
+  result := TApplicationController.Default;
 end;
 
 { TApplicationController }
@@ -140,7 +131,14 @@ end;
 constructor TApplicationController.create;
 begin
   inherited create;
-  FControllers := TMVCInterfacedList<IController>.create;
+  FControllers := TInterfaceList.create;
+end;
+
+class function TApplicationController.Default: IApplicationController;
+begin
+  if not assigned(FApplicationController) then
+    FApplicationController := TApplicationController.create;
+  result := FApplicationController;
 end;
 
 procedure TApplicationController.Delete(const idx: integer);
@@ -150,20 +148,7 @@ end;
 
 destructor TApplicationController.destroy;
 begin
-  if assigned(FControllers) then
-  begin
-    if FControllers.RefCount > 0 then
-      try
-        FControllers.clear;
-{$IFDEF MSWINDOWS}
-        FreeAndNil(FControllers);
-{$ELSE}
-        FControllers.disposeOf;
-{$ENDIF}
-      except
-      end;
-    FControllers := nil;
-  end;
+  // FreeAndNil(FControllers);
   inherited;
 end;
 
@@ -226,8 +211,7 @@ begin
   result := rst;
 end;
 
-function TApplicationController.ForEach
-  (AProc: TFunc<IController, boolean>): boolean;
+function TApplicationController.ForEach(AProc: TFunc<IController, boolean>): boolean;
 var
   i: integer;
   LHandled: boolean;
@@ -283,11 +267,6 @@ begin
   result := self;
 end;
 
-class function TApplicationController.New: IApplicationController;
-begin
-  result := TApplicationController.create;
-end;
-
 procedure TApplicationController.Remove(const AController: IController);
 begin
   FControllers.Remove(AController);
@@ -305,8 +284,7 @@ begin
   end;
 end;
 
-procedure TApplicationController.Run(AController: IController;
-AFunc: TFunc<boolean>);
+procedure TApplicationController.Run(AController: IController; AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
 end;
@@ -316,8 +294,7 @@ begin
   FMainView := AView;
 end;
 
-function TApplicationController.ViewEvent(AMessage: string;
-var AHandled: boolean): IApplicationController;
+function TApplicationController.ViewEvent(AMessage: string; var AHandled: boolean): IApplicationController;
 begin
   result := ViewEventOther(nil, AMessage, AHandled);
 end;
@@ -354,8 +331,7 @@ begin
   end;
 end;
 
-function TApplicationController.ViewEvent(AView: TGuid; AMessage: String;
-var AHandled: boolean): IView;
+function TApplicationController.ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView;
 var
   view: IView;
   rst: IView;
@@ -378,8 +354,7 @@ begin
   AHandled := LHandled;
 end;
 
-function TApplicationController.ViewEvent<TViewInterface>(AMessage: String;
-var AHandled: boolean): IView;
+function TApplicationController.ViewEvent<TViewInterface>(AMessage: String; var AHandled: boolean): IView;
 var
   IID: TGuid;
 begin
@@ -387,8 +362,7 @@ begin
   result := ViewEvent(IID, AMessage, AHandled);
 end;
 
-function TApplicationController.ViewEventOther(ASender: IController;
-AMessage: string; var AHandled: boolean): IApplicationController;
+function TApplicationController.ViewEventOther(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;
 var
   LHandled: boolean;
   i: integer;
@@ -407,8 +381,7 @@ begin
   AHandled := LHandled;
 end;
 
-procedure TApplicationController.Run(AClass: TComponentClass;
-AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
+procedure TApplicationController.Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
   rt: boolean;
   reference: TComponent;
@@ -454,5 +427,9 @@ begin
   }
 {$ENDIF}
 end;
+
+initialization
+
+finalization
 
 end.

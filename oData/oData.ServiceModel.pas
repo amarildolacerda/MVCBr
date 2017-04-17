@@ -43,31 +43,54 @@ type
     function resource(AName: string): IJsonODataServiceRelation;
   end;
 
-  IJsonODastaServiceResource = interface(IJsonObject)
+  IJsonODataServiceExpand = interface(IJsonObject)
+    ['{D010F6F6-D4D0-47DF-AD8D-701085DDA22F}']
+  end;
+
+  TJsonODataServiceExpand = class(TInterfacedJsonObject,
+    IJsonODataServiceExpand)
+  public
+    class function New(AJson: TJsonValue): IJsonODataServiceExpand;
+    function resource: string;
+    function filter: string;
+  end;
+
+  IJsonODataServiceExpands = interface(IJsonObject)
+    ['{04CE6D28-A21A-4A21-8FFB-A9FC8C245064}']
+  end;
+
+  TJsonODataServiceExpands = class(TInterfacedJsonObject,
+    IJsonODataServiceExpands)
+    class function New(AJson: TJsonValue): IJsonODataServiceExpands;
+    function expand(AName: string): IJsonODataServiceExpand;
+  end;
+
+  IJsonODataServiceResource = interface(IJsonObject)
     ['{F78C1EEF-24B4-49CD-BA33-0BEB7F7F98F9}']
     function resource: string;
     function collection: string;
     function &fields: string;
     function keyID: string;
-    function GetPrimaryKey:string;
-    procedure SetPrimaryKey(const AKeys:string);
-    property primaryKey:string read getPrimaryKey write SetPrimaryKey;
+    function GetPrimaryKey: string;
+    procedure SetPrimaryKey(const AKeys: string);
+    property primaryKey: string read GetPrimaryKey write SetPrimaryKey;
     function method: string;
     function searchFields: string;
     function relations: IJsonODataServiceRelations;
     function maxpagesize: integer;
     function relation(AName: string): IJsonODataServiceRelation;
     function &join: string;
+    function Expands: IJsonODataServiceExpands;
   end;
 
   TJsonODastaServiceResource = class(TInterfacedJsonObject,
-    IJsonODastaServiceResource)
+    IJsonODataServiceResource)
   private
-    FPrimaryKey:string;
-    procedure SetprimaryKey(const Value: string);
-    function getPrimaryKey: string;
+    FPrimaryKey: string;
+    procedure SetPrimaryKey(const Value: string);
+    function GetPrimaryKey: string;
   public
-    class function New(AJson: TJsonValue): IJsonODastaServiceResource;
+    class function New(AJson: TJsonValue): IJsonODataServiceResource;
     function resource: string;
     function collection: string;
     function fields: string;
@@ -77,15 +100,17 @@ type
     function maxpagesize: integer;
     function relations: IJsonODataServiceRelations;
     function relation(AName: string): IJsonODataServiceRelation;
+    function Expands: IJsonODataServiceExpands;
+    function Expand(AName: string): IJsonODataServiceExpand;
     function &join: string;
-    property primaryKey:string read getPrimaryKey write SetPrimaryKey;
+    property primaryKey: string read GetPrimaryKey write SetPrimaryKey;
 
   end;
 
   IODataServices = interface
     ['{051E22D6-6BB1-4C35-A1DA-9885360283CD}']
     procedure LoadFromJsonFile(AJson: String);
-    function resource(AName: string): IJsonODastaServiceResource;
+    function resource(AName: string): IJsonODataServiceResource;
     function hasResource(AName: String): boolean;
     function LockJson: TJsonObject;
     procedure UnlockJson;
@@ -108,7 +133,7 @@ type
     procedure UnlockJson; virtual;
     procedure LoadFromJsonFile(AJson: String);
     function hasResource(AName: String): boolean; virtual;
-    function resource(AName: string): IJsonODastaServiceResource; virtual;
+    function resource(AName: string): IJsonODataServiceResource; virtual;
 
     function ResourceList: TJsonArray;
     function GetRoot: TJsonArray;
@@ -120,7 +145,7 @@ var
 
 implementation
 
-//uses VCL.Dialogs;
+// uses VCL.Dialogs;
 { TODataServices }
 
 constructor TODataServices.create;
@@ -187,7 +212,8 @@ begin
         str.LoadFromFile(AJson);
         FJson := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
         if not assigned(FJson) then
-           raise Exception.Create('Metadata inválido, revisar o JSON do metadata');
+          raise Exception.create
+            ('Metadata inválido, revisar o JSON do metadata');
       end
       else
       begin
@@ -213,11 +239,12 @@ begin
       str.Free;
     end;
   except
-   on e:exception do
-   begin
-    // showMessage('Cant load services (' + AJson + ')');
-    raise Exception.create('Cant load services (' + AJson + ') /*'+e.message+'*/');
-   end;
+    on e: Exception do
+    begin
+      // showMessage('Cant load services (' + AJson + ')');
+      raise Exception.create('Cant load services (' + AJson + ') /*' +
+        e.message + '*/');
+    end;
   end;
 end;
 
@@ -232,7 +259,7 @@ begin
   LoadFromJsonFile(FFileJson);
 end;
 
-function TODataServices.resource(AName: string): IJsonODastaServiceResource;
+function TODataServices.resource(AName: string): IJsonODataServiceResource;
 var
   jr: TJsonArray;
   it: TJsonValue;
@@ -296,14 +323,54 @@ begin
   JSON.TryGetValue<string>('collection', result);
 end;
 
+function TJsonODastaServiceResource.Expand(
+  AName: string): IJsonODataServiceExpand;
+var
+  r: IJsonODataServiceExpands;
+  rst: TJsonValue;
+  it: TJsonValue;
+  ja: TJsonArray;
+  s: String;
+begin
+  result := nil;
+  r := expands;
+  if assigned(r) then
+  begin
+    ja := r.JSON as TJsonArray;
+    for it in ja do
+    begin
+      it.TryGetValue<string>('resource', s);
+      if s = AName then
+      begin
+        result := TJsonODataServiceExpand.New(it);
+        exit;
+      end;
+    end;
+  end;
+end;
+
+function TJsonODastaServiceResource.Expands: IJsonODataServiceExpands;
+var
+  jo: TJsonValue;
+  jv: TJsonValue;
+begin
+  result := nil;
+  jv := JSON.GetValue<TJsonValue>('expands');
+  jo := TJsonObject.ParseJSONValue(jv.ToJSON);
+  if assigned(jo) then
+  begin
+    result := TJsonODataServiceExpands.New(jo);
+  end;
+end;
+
 function TJsonODastaServiceResource.fields: string;
 begin
   JSON.TryGetValue<string>('fields', result);
 end;
 
-function TJsonODastaServiceResource.getPrimaryKey: string;
+function TJsonODastaServiceResource.GetPrimaryKey: string;
 begin
-   result := FPrimaryKey;
+  result := FPrimaryKey;
 end;
 
 function TJsonODastaServiceResource.join: string;
@@ -328,7 +395,7 @@ begin
 end;
 
 class function TJsonODastaServiceResource.New(AJson: TJsonValue)
-  : IJsonODastaServiceResource;
+  : IJsonODataServiceResource;
 var
   j: TJsonODastaServiceResource;
 begin
@@ -337,7 +404,6 @@ begin
   result := j;
 
 end;
-
 
 function TJsonODastaServiceResource.relation(AName: string)
   : IJsonODataServiceRelation;
@@ -389,9 +455,9 @@ begin
   JSON.TryGetValue<string>('searchFields', result);
 end;
 
-procedure TJsonODastaServiceResource.SetprimaryKey(const Value: string);
+procedure TJsonODastaServiceResource.SetPrimaryKey(const Value: string);
 begin
-  FprimaryKey := Value;
+  FPrimaryKey := Value;
 end;
 
 { TJsonODataServiceRelation }
@@ -461,6 +527,56 @@ begin
         end;
       end;
     end;
+end;
+
+{ TJsonODataServiceExpand }
+
+function TJsonODataServiceExpand.filter: string;
+begin
+  JSON.TryGetValue<string>('filter', result);
+end;
+
+class function TJsonODataServiceExpand.New(
+  AJson: TJsonValue): IJsonODataServiceExpand;
+begin
+
+end;
+
+function TJsonODataServiceExpand.resource: string;
+begin
+  JSON.TryGetValue<string>('resource', result);
+end;
+
+{ TJsonODataServiceExpands }
+
+function TJsonODataServiceExpands.expand(
+  AName: string): IJsonODataServiceExpand;
+var
+  arr: TJsonArray;
+  it: TJsonValue;
+  jo: TJsonObject;
+  rs: string;
+begin
+  arr := AsArray;
+  result := nil;
+  if assigned(arr) then
+    for it in arr do
+    begin
+      if it.TryGetValue<string>('resource', rs) then
+      begin
+        if rs = AName then
+        begin
+          result := TJsonODataServiceExpand.New(it as TJsonObject);
+          exit;
+        end;
+      end;
+    end;
+end;
+
+class function TJsonODataServiceExpands.New(
+  AJson: TJsonValue): IJsonODataServiceExpands;
+begin
+
 end;
 
 initialization

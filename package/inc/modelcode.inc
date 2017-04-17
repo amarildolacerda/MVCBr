@@ -23,7 +23,7 @@ ModelHead = 'unit %UnitIdent;                                   ' + #13#10 +
   '//%include                                                    ' + #13#10 +
   'interface                                                     ' + #13#10 +
   '                                                              ' + #13#10 +
-  'uses System.SysUtils,{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif} System.Classes,'+
+  'uses System.SysUtils,{$ifdef LINUX} {$else}{$ifdef FMX} FMX.Forms,{$else} VCL.Forms,{$endif}{$endif} System.Classes,'+
   'MVCBr.Interf, MVCBr.Model,     ' + #13#10 +
   '     %ModelIdent.interf, MVCBr.Controller;                    ' + #13#10 +
   '                                                              ' + #13#10;
@@ -85,7 +85,7 @@ ModelCode = ModelHead + ModelDef +
   '                                                              ' + #13#10 +
   ModelImpl + '                                                              ' +
   'Initialization                                                ' + #13#10 +
-  'TMVCRegister.RegisterType<I%FormIdentModel,T%FormIdentModel>(T%FormIdentModel.classname,true);' + #13#10 +
+  'TMVCBr.RegisterType<I%FormIdentModel,T%FormIdentModel>(T%FormIdentModel.classname,true);' + #13#10 +
   #13#10 + 'end.                                                          ' +
   #13#10;
 

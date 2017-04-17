@@ -17,12 +17,15 @@ unit WSConfigView;
 interface
 
 uses
-{$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
+{$IFDEF LINUX} {$ELSE} {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}{$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
-  MVCBr.ObjectConfigList, MVCBr.View,
+  MVCBr.ObjectConfigList,
+  MVCBr.View,
   System.JSON,
-  MVCBr.FormView, MVCBr.Controller,
-  VCL.Controls, VCL.StdCtrls;
+{$IFDEF LINUX}
+{$ELSE}
+  VCL.Controls, VCL.StdCtrls, {$ENDIF}
+  MVCBr.FormView, MVCBr.Controller;
 
 type
   TWSConfigView = class;
@@ -56,11 +59,11 @@ type
     GroupBox2: TGroupBox;
     Label6: TLabel;
     WSPort: TEdit;
-    procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
   private
   protected
     FList: IObjectConfigList;
+    procedure AfterConstruction; override;
     procedure AddControls;
     function Controller(const aController: IController): IView; override;
   public
@@ -79,7 +82,10 @@ type
 
 Implementation
 
+{$IFDEF LINUX}
+{$ELSE}
 {$R *.DFM}
+{$ENDIF}
 
 uses System.JSON.helper;
 
@@ -92,19 +98,6 @@ end;
 function TWSConfigView.ViewAs: IWSConfigView;
 begin
   result := self;
-end;
-
-procedure TWSConfigView.FormCreate(Sender: TObject);
-begin
-  FList := TObjectConfigModel.New;
-  FList.FileName := ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config';
-  AddControls;
-  try
-    if not fileExists(FList.FileName) then
-      FList.WriteConfig;
-  except
-  end;
-  FList.ReadConfig;
 end;
 
 function TWSConfigView.GetConfig: TJsonValue;
@@ -123,10 +116,10 @@ end;
 function TWSConfigView.GetServer: TJsonValue;
 begin
   result := TJsonObject.create();
-  result.addPair('driverid', DriverID.Text);
+  result.addPair('driverid', driverid.Text);
   result.addPair('server', Server.Text);
   result.addPair('database', Database.Text);
-  result.addPair('user_name', User_Name.Text);
+  result.addPair('user_name', user_name.Text);
   result.addPair('password', Password.Text);
 end;
 
@@ -140,28 +133,63 @@ end;
 ///
 procedure TWSConfigView.AddControls;
 begin
+{$IFDEF LINUX}
+  WSPort := TEdit.create(self);
+  WSPort.Name := 'WSPort';
+  WSPort.Text := '8080';
+  driverid := TComboBox.create(self);
+  driverid.Name := 'driverid';
+  driverid.Text := 'FB';
+  Server := TEdit.create(self);
+  Server.Name := 'server';
+  Server.Text := 'localhost';
+  Database := TEdit.create(self);
+  Database.Name := 'database';
+  Database.Text := 'mvcbr';
+  user_name := TEdit.create(self);
+  user_name.Name := 'user_name';
+  user_name.Text := 'SYSDBA';
+  Password := TEdit.create(self);
+  Password.Name := 'password';
+  Password.Text := 'masterkey';
+{$ENDIF}
   /// dados do servidor
-  ///
   FList.Add(WSPort);
   /// conexões de Banco de Dados
-  FList.Add(DriverID);
+  FList.Add(driverid);
   FList.Add(Server);
   FList.Add(Database);
-  FList.Add(User_Name);
+  FList.Add(user_name);
   FList.Add(Password);
 end;
 
 /// escreve os dados no arquivo de configuração
+procedure TWSConfigView.AfterConstruction;
+begin
+  inherited;
+  FList := TObjectConfigModel.New;
+  FList.FileName := ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config';
+  AddControls;
+  try
+    if not fileExists(FList.FileName) then
+      FList.WriteConfig
+    else
+      FList.ReadConfig;
+  except
+  end;
+end;
+
 procedure TWSConfigView.Button1Click(Sender: TObject);
 begin
   FList.WriteConfig;
+{$IFDEF LINUX}
+{$ELSE}
   close;
+{$ENDIF}
 end;
 
 /// inicializa o controller do VIEW
 function TWSConfigView.ConnectionString: string;
-var
-  str: TStringList;
 begin
   with GetServer do
     try

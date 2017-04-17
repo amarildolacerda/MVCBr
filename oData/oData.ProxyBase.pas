@@ -113,10 +113,10 @@ end;
 
 function TODataBase.ExecuteOPTIONS(var JSON: TJSONObject): Integer;
 var s:string;
-    LResource:IJsonODastaServiceResource;
+    LResource:IJsonODataServiceResource;
 begin
    AdapterAPI.createGETQuery(FODataParse.oData,'',false);
-  LResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
+  LResource := AdapterAPI.GetResource as IJsonODataServiceResource;
   s := LResource.method;
   if s='' then
      s := 'GET';

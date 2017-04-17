@@ -18,7 +18,7 @@ unit WSConfig.Controller.Interf;
 interface
 
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
+  System.SysUtils, {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}{$ENDIF}
   System.Classes, MVCBr.Interf;
 
 type

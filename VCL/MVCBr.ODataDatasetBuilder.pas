@@ -22,6 +22,13 @@
   Créditos: Ivan Cesar - fornecendo o Dataset com DeltaJSON
 }
 { *************************************************************************** }
+{
+  Alterações:
+  16/04/2017 - por amarildo lacerda
+  . + Params;
+  . + OnGetParams evento;
+  . + Criar Params com base no Filter
+}
 
 unit MVCBr.ODataDatasetBuilder;
 
@@ -33,9 +40,11 @@ uses system.Classes, system.SysUtils, Data.db,
 
 type
 
-  TODataDatasetBuilder = class(TODataBuilder)
+  TODataDatasetBuilder = class(TODataCustomBuilder)
   private
+    FRef: Integer;
     FState: TDataSetState;
+    FOldBeforeOpen: TDatasetNotifyEvent;
     FOldAfterOpen: TDatasetNotifyEvent;
     FOldBeforePost: TDatasetNotifyEvent;
     FOldAfterPost: TDatasetNotifyEvent;
@@ -43,17 +52,23 @@ type
     FRestClient: TIdHTTPRestClient;
     FDataset: TDataset;
     FAdapter: TODataDatasetAdapter;
+    FOnGetParams: TODataGetResourceParams;
+    procedure SetOnGetParams(const Value: TODataGetResourceParams);
+    function GetParams: TParams;
+    procedure setParams(const Value: TParams);
   protected
+    procedure SetFilter(const Value: string); override;
+
     procedure SetDataset(const Value: TDataset); virtual;
     procedure SetRestClient(const Value: TIdHTTPRestClient); virtual;
     procedure SetAdapter(const Value: TODataDatasetAdapter); virtual;
     procedure ClearChanges; virtual;
+    procedure DoBeforeOpen(sender: TDataset); virtual;
     procedure DoAfterOpen(sender: TDataset); virtual;
     procedure DoBeforePost(sender: TDataset); virtual;
     procedure DoAfterPost(sender: TDataset); virtual;
     procedure DoBeforeDelete(sender: TDataset); virtual;
-    procedure Notification(AComponent: TComponent;
-      AOperation: TOperation); override;
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
 
   public
     constructor create(AOwner: TComponent); override;
@@ -62,9 +77,29 @@ type
     property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
     property Adapter: TODataDatasetAdapter read FAdapter write SetAdapter;
     function Execute: Boolean; override;
-    function Builder:TODataBuilder;virtual;
+    function Builder: TODataCustomBuilder; virtual;
   published
     property Dataset: TDataset read FDataset write SetDataset;
+    property Params: TParams read GetParams write setParams;
+    property OnGetParams: TODataGetResourceParams read FOnGetParams write SetOnGetParams;
+    property URI;
+    property BaseURL;
+    property ServicePrefix;
+    property Service;
+    property ResourceName;
+    property Resource;
+    property &Select;
+    property &Filter;
+    property &TopRows;
+    property &SkipRows;
+    property &Count;
+    property &Expand;
+    property &Order;
+    property OnBeforeApplyUpdates;
+    property OnAfterApplyUpdates;
+    property BeforeExecute;
+    property AfterExecute;
+
   end;
 
 implementation
@@ -89,9 +124,9 @@ begin
   end;
 end;
 
-function TODataDatasetBuilder.Builder: TODataBuilder;
+function TODataDatasetBuilder.Builder: TODataCustomBuilder;
 begin
- if assigned(FAdapter) and assigned(FAdapter.Builder) then
+  if assigned(FAdapter) and assigned(FAdapter.Builder) then
     result := FAdapter.Builder;
 end;
 
@@ -110,6 +145,7 @@ end;
 constructor TODataDatasetBuilder.create(AOwner: TComponent);
 begin
   inherited;
+  FRef := 0;
   FAdapter := TODataDatasetAdapter.create(self);
   FAdapter.RootElement := 'value';
   FAdapter.Builder := self; // TODataBuilder.create(FAdapter);
@@ -117,7 +153,7 @@ begin
   with RestClient do
   begin
     AcceptCharset := 'UTF-8';
-    Accept := 'application/json; odata.metadata=minimal';
+    Accept := 'application/json';
     AcceptEncoding := 'gzip';
   end;
 end;
@@ -161,6 +197,12 @@ begin
 
 end;
 
+procedure TODataDatasetBuilder.DoBeforeOpen(sender: TDataset);
+begin
+  if assigned(FOldBeforeOpen) then
+    FOldBeforeOpen(sender);
+end;
+
 procedure TODataDatasetBuilder.DoBeforePost(sender: TDataset);
 begin
   if assigned(FOldBeforePost) then
@@ -181,13 +223,24 @@ begin
         o.UpdateTable := FAdapter.ResourceName;
       end;
     end);
-  result := FAdapter.Execute;
+  inc(FRef);
+  try
+    FAdapter.OnGetParams := FOnGetParams;
+    result := FAdapter.Execute;
+  finally
+    dec(FRef);
+  end;
   if result then
     ClearChanges;
 end;
 
-procedure TODataDatasetBuilder.Notification(AComponent: TComponent;
-AOperation: TOperation);
+function TODataDatasetBuilder.GetParams: TParams;
+begin
+  if assigned(FAdapter) then
+    result := FAdapter.Params;
+end;
+
+procedure TODataDatasetBuilder.Notification(AComponent: TComponent; AOperation: TOperation);
 begin
   if AOperation = TOperation.opRemove then
   begin
@@ -215,10 +268,14 @@ begin
     FDataset.AfterOpen := FOldAfterOpen;
     FDataset.BeforePost := FOldBeforePost;
     FDataset.AfterPost := FOldAfterPost;
+    FDataset.BeforeOpen := FOldBeforeOpen;
   end;
   FDataset := Value;
   if not assigned(Value) then
     exit;
+
+  FOldBeforeOpen := FDataset.BeforeOpen;
+  FDataset.BeforeOpen := DoBeforeOpen;
 
   FOldAfterOpen := FDataset.AfterOpen;
   FDataset.AfterOpen := DoAfterOpen;
@@ -238,6 +295,46 @@ begin
         ApplyUpdates;
       end);
 
+end;
+
+procedure TODataDatasetBuilder.SetFilter(const Value: string);
+var
+  rst: String;
+  p: string;
+  n: Integer;
+  prms: TParams;
+begin
+  inherited;
+  prms := Params;
+  if not assigned(prms) then
+    exit;
+  /// criar os parametros;
+  rst := Value;
+  repeat
+    n := rst.IndexOf('{');
+    if n < 0 then
+      exit;
+    rst := rst.Remove(0, n + 1);
+    n := rst.IndexOf('}');
+    p := rst.Substring(0, n);
+    if prms.FindParam(p) = nil then
+      with prms.AddParameter do
+      begin
+        Name := p;
+        DataType := ftstring;
+      end;
+  until rst = '';
+end;
+
+procedure TODataDatasetBuilder.SetOnGetParams(const Value: TODataGetResourceParams);
+begin
+  FOnGetParams := Value;
+end;
+
+procedure TODataDatasetBuilder.setParams(const Value: TParams);
+begin
+  if assigned(FAdapter) then
+    FAdapter.Params := Value;
 end;
 
 procedure TODataDatasetBuilder.SetRestClient(const Value: TIdHTTPRestClient);

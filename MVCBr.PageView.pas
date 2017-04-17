@@ -25,6 +25,9 @@ type
     ['{FCAA865A-3ED1-46B2-AFCA-627F511B3A2C}']
     function This: TPageView;
     procedure Remove;
+    procedure SetTab(const Value: TObject);
+    function GetTab: TObject;
+    property Tab: TObject read GetTab write SetTab;
   end;
 
   IPageViews = interface(IModel)
@@ -60,6 +63,7 @@ type
     procedure SetText(const Value: string);
     function GetText: string;
     procedure SetTab(const Value: TObject);
+    function GetTab: TObject;
     procedure SetID(const Value: String);
     procedure SetView(const Value: IView);
   protected
@@ -68,7 +72,7 @@ type
     function GetOwner: TCustomPageViewFactory;
     function This: TPageView;
     property Text: string read GetText write SetText;
-    property Tab: TObject read FTab write SetTab;
+    property Tab: TObject read GetTab write SetTab;
     property ID: String read FID write SetID;
     property View: IView read FView write SetView;
     procedure Remove; virtual;
@@ -86,7 +90,7 @@ type
     procedure SetAfterViewCreate(const Value: TNotifyEvent);
   protected
     FPageContainer: TComponent;
-    FList: TMVCInterfacedList<IPageView>;
+    FList:  IInterfaceList;// TMVCInterfacedList<IPageView>;
     procedure AfterConstruction; override;
     destructor destroy; override;
     procedure SetPageContainer(const Value: TComponent); virtual;
@@ -113,9 +117,12 @@ type
       write SetActivePageIndex;
 
     property Items[idx: Integer]: IPageView read GetItems write SetItems;
+    function PageViewIndexOf(APageView: IPageView): Integer;
     function NewItem(Const ACaption: string): IPageView; virtual;
     function AddView(AView: IView): IPageView; overload; virtual;
     function AddView(Const AController: TGuid): IPageView; overload; virtual;
+    function AddView(Const AController: TGuid; ABeforeShow: TProc<IView>)
+      : IPageView; overload; virtual;
     function AddForm(AClass: TFormClass): IPageView; virtual;
     function FindViewByID(Const AID: String): IPageView; virtual;
     function FindViewByClassName(const AClassName: String): IPageView; virtual;
@@ -133,6 +140,11 @@ implementation
 function TPageView.GetOwner: TCustomPageViewFactory;
 begin
   result := FOwner;
+end;
+
+function TPageView.GetTab: TObject;
+begin
+  result := FTab;
 end;
 
 function TPageView.GetText: string;
@@ -210,7 +222,13 @@ begin
   result := AddView(TViewFactoryAdapter.New(ref, false));
 end;
 
-function TCustomPageViewFactory.AddView(const AController: TGuid): IPageView;
+function TCustomPageViewFactory.AddView(Const AController: TGuid): IPageView;
+begin
+  result := AddView(AController, nil);
+end;
+
+function TCustomPageViewFactory.AddView(const AController: TGuid;
+  ABeforeShow: TProc<IView>): IPageView;
 var
   LController: IController;
   LView: IView;
@@ -222,17 +240,22 @@ begin
 
   // checa se já existe uma aba para a mesma view
   LView := LController.GetView;
+  if LView.GetController=nil then
+     LView.SetController(LController);
   if not assigned(LView) then
     exit;
 
   result := FindView(LView);
   if assigned(result) then
   begin
-    init(result);
+    Init(result);
     exit;
   end;
 
   // criar nova aba
+  if assigned(ABeforeShow) then
+    ABeforeShow(LView);
+
   result := AddView(LView);
 
 end;
@@ -262,7 +285,7 @@ end;
 
 destructor TCustomPageViewFactory.destroy;
 begin
-  FList.DisposeOf;
+  FList:=nil;//.DisposeOf;
   inherited;
 end;
 
@@ -299,13 +322,13 @@ var
 begin
   result := nil;
   try
-  for i := 0 to Count - 1 do
-    if  supports( Items[i].This , IPageView ) then
-    if items[I].This.View = AView then
-    begin
-      result := Items[i];
-      exit;
-    end;
+    for i := 0 to Count - 1 do
+      if supports(Items[i].This, IPageView) then
+        if Items[i].This.View = AView then
+        begin
+          result := Items[i];
+          exit;
+        end;
   except
   end;
 end;
@@ -394,18 +417,35 @@ begin
       FPageContainer := nil;
 end;
 
+function TCustomPageViewFactory.PageViewIndexOf(APageView: IPageView): Integer;
+var
+  i: Integer;
+  LPageView: IPageView;
+begin
+  result := -1;
+  if not assigned(APageView) then exit;
+
+  for i:=0 to FList.Count-1 do
+  begin
+    if APageView.Tab.Equals( items[i].Tab ) then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+end;
+
 procedure TCustomPageViewFactory.Remove(APageView: IPageView);
 var
   i: Integer;
 begin
   if assigned(FList) then
-  if FList.RefCount>0 then
-    for i := FList.Count - 1 downto 0 do
-      if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
-      begin
-        FList.Delete(i);
-        exit;
-      end;
+      for i := FList.Count - 1 downto 0 do
+        if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
+        begin
+          FList.Delete(i);
+          exit;
+        end;
 end;
 
 procedure TCustomPageViewFactory.SetActivePage(const Tab: TObject);

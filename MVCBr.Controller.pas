@@ -30,7 +30,7 @@ interface
 uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
   System.Generics.Collections,
   System.TypInfo,
-  {$ifdef FMX} FMX.Layouts,{$endif}
+{$IFDEF FMX} FMX.Layouts, {$ENDIF}
   System.Classes, System.SysUtils,
   MVCBr.ApplicationController,
   System.RTTI;
@@ -50,23 +50,24 @@ type
     procedure Load; virtual;
     procedure SetID(const AID: string);
     procedure AfterConstruction; override;
-    procedure RevokeInstance; overload;
 
   public
 
     constructor Create; override;
     destructor destroy; override;
-{$ifdef FMX}
-    procedure Embedded(AControl: TLayout);virtual;
-{$endif}
+{$IFDEF FMX}
+    procedure Embedded(AControl: TLayout); virtual;
+{$ENDIF}
     function IsView(AII: TGuid): boolean;
     function IsController(AGuid: TGuid): boolean;
     function IsModel(AIModel: TGuid): boolean;
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
     function ShowView: IView; virtual;
-    function ViewEvent(AMessage: String;var AHandled: boolean): IView; overload; virtual;
-    function ViewEvent<TViewInterface>(AMessage: string;var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: String; var AHandled: boolean): IView;
+      overload; virtual;
+    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: boolean)
+      : IView; overload;
     function ID(const AID: string): IController; virtual;
     function GetID: String; virtual;
     function GetModelByID(const AID: String): IModel; virtual;
@@ -93,9 +94,6 @@ type
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
 
-
-
-
   end;
 
   TControllerFactoryOf = class of TControllerFactory;
@@ -104,13 +102,13 @@ implementation
 
 { TController }
 
+{$IFDEF FMX}
 
-{$ifdef FMX}
- procedure TControllerFactory.Embedded(AControl: TLayout);
+procedure TControllerFactory.Embedded(AControl: TLayout);
 var
   child: ILayOut;
 begin
-  if supports(getView.This, ILayOut, child) then
+  if supports(GetView.This, ILayOut, child) then
   begin
     with TLayout(child.GetLayout) do
     begin
@@ -119,8 +117,7 @@ begin
 
   end;
 end;
-{$endif}
-
+{$ENDIF}
 
 function TControllerFactory.Add(const AModel: IModel): integer;
 var
@@ -176,17 +173,18 @@ begin
 end;
 
 destructor TControllerFactory.destroy;
+var ac:TApplicationController;
 begin
   if assigned(FModels) then
   begin
     try
       FModels.Clear;
-      FModels.DisposeOf;
     except
     end;
     FModels := nil;
   end;
-  ApplicationController.remove(self);
+  ac := ApplicationController;
+  if assigned(ac) then ac.remove(self);
   inherited;
 end;
 
@@ -275,6 +273,8 @@ end;
 
 procedure TControllerFactory.Init;
 begin
+  if assigned(FView) then
+    FView.SetController(self);
   BeforeInit;
 end;
 
@@ -316,21 +316,15 @@ begin
   end;
 end;
 
-procedure TControllerFactory.RevokeInstance;
-var
-  intf: IInterface;
-begin
-  intf := self;
-  inherited RevokeInstance(intf);
-end;
-
-function TControllerFactory.ViewEvent(AMessage: String;var AHandled: boolean): IView;
+function TControllerFactory.ViewEvent(AMessage: String;
+  var AHandled: boolean): IView;
 begin
   result := FView;
-  FView.ViewEvent(AMessage,AHandled);
+  FView.ViewEvent(AMessage, AHandled);
 end;
 
-function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string;var AHandled: boolean): IView;
+function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string;
+  var AHandled: boolean): IView;
 var
   i: integer;
   pInfo: PTypeInfo;
@@ -347,10 +341,10 @@ begin
     if supports(GetView.This, IID, AView) then
     begin
       result := AView;
-      AView.ViewEvent(AMessage,AHandled);
+      AView.ViewEvent(AMessage, AHandled);
       exit;
     end;
-    result := ApplicationController.ViewEvent(IID, AMessage,AHandled);
+    result := ApplicationController.ViewEvent(IID, AMessage, AHandled);
   finally
     dec(FRefViewCount);
   end;
@@ -402,8 +396,13 @@ begin
 end;
 
 function TControllerFactory.ApplicationController: TApplicationController;
+var
+  ac: IApplicationController;
 begin
-  result := TApplicationController(ApplicationControllerInternal.This);
+  result := nil;
+  ac := ApplicationControllerInternal;
+  if assigned(ac) then
+    result := TApplicationController(ac.This);
 end;
 
 function TControllerFactory.This: TControllerAbstract;

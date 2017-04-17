@@ -19,7 +19,7 @@ type
   TODataSQL = class(TODataBase)
   private
   protected
-    FResource: IJsonODastaServiceResource;
+    FResource: IJsonODataServiceResource;
     function EncodeFilterSql(AFilter: string): string; virtual;
   public
     function GetConnection(ADataset: TDataset): TObject; virtual;
@@ -65,7 +65,7 @@ function TODataSQL.CreateDeleteQuery(FParse: IODataParse;
   AJsonBody: TJsonValue;AKeys:string): string;
 begin
   result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody,AKeys);
-  FResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
+  FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 end;
 
 procedure TODataSQL.CreateEntitiesSchema(ADataset: TDataset;
@@ -209,14 +209,14 @@ begin
   end
   else
     result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody,AKeys);
-  FResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
+  FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 end;
 
 function TODataSQL.CreatePOSTQuery(FParse: IODataParse;
   AJsonBody: TJsonValue): string;
 begin
   result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody);
-  FResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
+  FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 end;
 
 function TODataSQL.CreateGETQuery(FParse: IODataParse;
@@ -224,7 +224,7 @@ function TODataSQL.CreateGETQuery(FParse: IODataParse;
 begin
   result := AdapterAPI.CreateGETQuery(FParse.oData,
     EncodeFilterSql(FParse.oData.Filter), AInLineCount);
-  FResource := AdapterAPI.GetResource as IJsonODastaServiceResource;
+  FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 
 end;
 
