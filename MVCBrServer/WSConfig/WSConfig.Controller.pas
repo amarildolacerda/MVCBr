@@ -127,7 +127,6 @@ end;
 function TWSConfigController.GetPort: integer;
 begin
   result := ViewAs.GetPort;
-
 end;
 
 /// Evento INIT chamado apos a inicializacao do controller
