@@ -62,6 +62,7 @@ type
     FBaseURL: string;
     FGroupBy: string;
     FSearch: string;
+    Fdebug: string;
     procedure SetSelect(const Value: string);
     procedure SetFilter(const Value: string);
     procedure SetOrderBy(const Value: string);
@@ -88,6 +89,8 @@ type
     function GetGroupBy: string;
     procedure SetSearch(const Value: string);
     function GetSearch: string;
+    procedure Setdebug(const Value: string);
+    function GetDebug: string;
   protected
     FChild: IODataDecode;
     FExpandItem: TDictionary<string, IODataDecode>;
@@ -134,6 +137,7 @@ type
     property &Top: integer read GetTop write SetTop;
     property &SkipToken: string read GetSkipToken write SetSkipToken;
     property &InLineCount: string read GetInLineCount write SetInLineCount;
+    property &Debug:string read GetDebug write SetDebug;
     property &GroupBy: string read GetGroupBy write SetGroupBy;
     function ToString: string; virtual;
 
@@ -232,6 +236,7 @@ begin
     add('$inlinecount', InLineCount);
     add('$expand', Expand);
     add('$format', Format);
+    add('$debug',Debug);
     if query.Count > 0 then
       result := result + '?' + query.DelimitedText;
   finally
@@ -260,6 +265,11 @@ end;
 function TODataDecode.ExpandItem(const idx: integer): IODataDecode;
 begin
   result := FExpandItem.Values.ToArray[idx];
+end;
+
+function TODataDecode.GetDebug: string;
+begin
+   result := Fdebug;
 end;
 
 function TODataDecode.GetExpand: string;
@@ -356,6 +366,11 @@ end;
 procedure TODataDecode.SetBaseURL(const Value: string);
 begin
   FBaseURL := Value;
+end;
+
+procedure TODataDecode.Setdebug(const Value: string);
+begin
+  Fdebug := Value;
 end;
 
 procedure TODataDecode.SetExpand(const Value: string);

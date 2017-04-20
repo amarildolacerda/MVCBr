@@ -36,7 +36,8 @@ uses
   WS.Common in 'WS\WS.Common.pas',
   WSConfigView in 'WSConfig\WSConfigView.pas',
   config.Model in 'Models\config.Model.pas',
-  config.Model.Interf in 'Models\config.Model.Interf.pas';
+  config.Model.Interf in 'Models\config.Model.Interf.pas',
+  oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas';
 
 {$R *.res}
 

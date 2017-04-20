@@ -62,8 +62,9 @@ type
     procedure Button1Click(Sender: TObject);
   private
   protected
-    FList: IObjectConfigList;
+    FList: TObjectConfigModel;
     procedure AfterConstruction; override;
+    destructor destroy; override;
     procedure AddControls;
     function Controller(const aController: IController): IView; override;
   public
@@ -142,7 +143,7 @@ begin
   driverid.Text := 'FB';
   Server := TEdit.create(self);
   Server.Name := 'server';
-  Server.Text := 'localhost';
+  Server.Text := 'DbMVCBr';
   Database := TEdit.create(self);
   Database.Name := 'database';
   Database.Text := 'mvcbr';
@@ -167,11 +168,11 @@ end;
 procedure TWSConfigView.AfterConstruction;
 begin
   inherited;
-  FList := TObjectConfigModel.New;
+  FList := TObjectConfigModel.create;
   FList.FileName := ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config';
   AddControls;
   try
-    if not fileExists(FList.FileName) then
+    if not fileExists(FList.FileName,false) then
       FList.WriteConfig
     else
       FList.ReadConfig;
@@ -202,6 +203,13 @@ end;
 function TWSConfigView.Controller(const aController: IController): IView;
 begin
   result := inherited Controller(aController);
+end;
+
+destructor TWSConfigView.destroy;
+begin
+  if assigned(FList) then
+    FList.free;
+  inherited;
 end;
 
 function TWSConfigView.This: TObject;

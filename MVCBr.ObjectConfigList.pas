@@ -267,6 +267,7 @@ begin
   result := FFileName;
 end;
 
+{$D+}
 Function TObjectConfigModel.GetContentFile: IConfigFile;
 begin
   if not assigned(FContentFile) then
@@ -278,6 +279,7 @@ begin
     end;
   result := FContentFile;
 end;
+{$D-}
 
 function TObjectConfigModel.GetItems(idx: integer): IObjectConfigListItem;
 begin
@@ -377,7 +379,13 @@ begin
     begin
       FileName := self.FFileName;
       UpdateFile;
-    end;
+    end
+  else
+     with TIniFile(GetContentFile.ConfigFile) do
+     begin
+       //FileName := self.FFileName;
+       UpdateFile;
+     end;
 end;
 
 procedure TObjectConfigModel.WriteItem(ASection, AItem: string; AValue: TValue);

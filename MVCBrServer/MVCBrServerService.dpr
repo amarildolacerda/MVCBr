@@ -7,7 +7,7 @@ uses
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
   oData.Collections in '..\oData\oData.Collections.pas',
-  oData.Dialect.Firebird in '..\oData\oData.Dialect.Firebird.pas',
+  oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas',
   oData.Dialect.MySQL in '..\oData\oData.Dialect.MySQL.pas',
   oData.Dialect in '..\oData\oData.Dialect.pas',
   oData.Engine in '..\oData\oData.Engine.pas',
@@ -25,7 +25,8 @@ uses
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
   WS.QueryController in 'WS\WS.QueryController.pas',
-  WS.Common in 'WS\WS.Common.pas';
+  WS.Common in 'WS\WS.Common.pas',
+  oData.Dialect.Firebird in '..\oData\oData.Dialect.Firebird.pas';
 
 {$R *.RES}
 

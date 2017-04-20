@@ -99,7 +99,7 @@ type
 
 implementation
 
-uses ObjectsMappers, WS.Controller, oData.ProxyBase, oData.SQL,
+uses ObjectsMappers, WS.Common, {WS.Controller,} oData.ProxyBase, oData.SQL,
   oData.ServiceModel, oData.Engine,
 {$IFDEF LOGEVENTS}
   System.LogEvents.progress, System.LogEvents,

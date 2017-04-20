@@ -27,7 +27,7 @@ type
 implementation
 
 uses
-  MVCFramework.Logger,
+  MVCFramework.Logger, WS.Common,
   /// Adicionado WS.Controller para registrar uma lista de Serviços inicializados pelo Server
   WS.Controller,
   System.JSON;

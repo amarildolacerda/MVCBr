@@ -23,6 +23,8 @@ Type
   TODataDialect = class(TInterfacedObject, IODataDialect)
   private
   protected
+    FSkip: integer;
+    FTop: integer;
     FKeyID: string;
     FResource: IJsonODataServiceResource;
     FCollection: string;
@@ -50,6 +52,7 @@ Type
     function TopCmdStmt: string; virtual;
     function SkipCmdStmt: string; virtual;
     procedure CreateTopSkip(var Result: string; nTop, nSkip: integer); virtual;
+    function AfterCreateSQL(var SQL: string):boolean; virtual;
     procedure &and(var Result: string); virtual;
     procedure &or(var Result: string); virtual;
   public
@@ -111,9 +114,8 @@ begin
     then
       continue;
 
-    if TInterfacedJsonObject.GetJsonType(p)=jtNull then
-       continue;
-
+    if TInterfacedJsonObject.GetJsonType(p) = jtNull then
+      continue;
 
     if cols <> '' then
     begin
@@ -167,7 +169,7 @@ begin
       continue;
 
     if TInterfacedJsonObject.GetJsonType(p) = jtNull then
-       continue;
+      continue;
 
     if cols <> '' then
     begin
@@ -259,6 +261,11 @@ begin
     Result := '(' + Result + ') or ';
 end;
 
+function TODataDialect.AfterCreateSQL(var SQL: string):boolean;
+begin
+   result := false;  /// nao alterou nada.
+end;
+
 procedure TODataDialect.&and(var Result: string);
 begin
   if Result <> '' then
@@ -331,8 +338,8 @@ begin
       'Não enviou dados a serem inseridos'));
   AResource := GetResource(oData.resource) as IJsonODataServiceResource;
 
-  if (not AResource.method.contains('PUT')) and (not  AResource.method.contains('PATCH'))
-  then
+  if (not AResource.method.Contains('PUT')) and
+    (not AResource.method.Contains('PATCH')) then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
@@ -486,7 +493,7 @@ var
 begin
   AResource := GetResource(oData.resource) as IJsonODataServiceResource;
 
-  if not  AResource.method.Contains('DELETE') then
+  if not AResource.method.Contains('DELETE') then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
@@ -628,6 +635,8 @@ end;
 procedure TODataDialect.CreateTopSkip(var Result: string; nTop, nSkip: integer);
 begin
   // mySql/firebird;
+  FTop := nTop;
+  FSkip := nSkip;
   Result := TopCmdStmt + nTop.ToString + ' ';
   if nSkip > 0 then
     Result := Result + SkipCmdStmt + nSkip.ToString;

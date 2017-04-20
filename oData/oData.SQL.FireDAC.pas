@@ -64,10 +64,10 @@ var
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
-  iLin:Integer;
+  iLin: Integer;
 begin
   inherited;
-  iLin:=0;
+  iLin := 0;
   isArray := false;
   AJson := ABody;
   if ABody <> '' then
@@ -121,7 +121,8 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501,'Linha: '+iLin.toString+', '+ e.Message));
+        raise Exception.Create(TODataError.Create(501, 'Linha: ' + iLin.toString
+          + ', ' + e.Message));
     end;
   end;
 end;
@@ -145,7 +146,7 @@ var
   isArray: boolean;
   ji: TJsonValue;
   sKeys: string;
-  iLin:integer;
+  iLin: Integer;
 begin
   inherited;
   iLin := 0;
@@ -206,7 +207,8 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, 'Linha: '+iLin.ToString+', '+ e.Message));
+        raise Exception.Create(TODataError.Create(501, 'Linha: ' + iLin.toString
+          + ', ' + e.Message));
     end;
   end;
 end;
@@ -218,7 +220,7 @@ var
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
-  iLin:integer;
+  iLin: Integer;
 begin
   inherited;
   iLin := 0;
@@ -269,7 +271,8 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, 'Linha: '+iLin.ToString+', '+e.Message));
+        raise Exception.Create(TODataError.Create(501, 'Linha: ' + iLin.toString
+          + ', ' + e.Message));
     end;
   end;
 end;
@@ -321,6 +324,7 @@ var
   i: Integer;
   v: TValue;
   n: Integer;
+  LSql: string;
 begin
   InLineRecordCount := -1;
   freeAndNil(FQuery);
@@ -360,15 +364,21 @@ begin
           FQuery.Params[i].Value := v.AsVariant
       end;
 
+    LSql := FQuery.SQL.Text;
+    if AdapterAPI.AfterCreateSQL(LSql) then
+      FQuery.SQL.Text := LSql;
     FQuery.Open;
     CreateEntitiesSchema(FQuery, JSONResponse);
+
+    if FODataParse.oData.Debug.Equals('on') then
+       JSONResponse.AddPair(TJsonPair.Create('query',FQuery.SQL.text));
 
   except
     on e: Exception do
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, e.Message));
+        raise Exception.Create(TODataError.Create(501, e.Message+'<'+FQuery.SQL.Text+'>'));
   end;
 end;
 

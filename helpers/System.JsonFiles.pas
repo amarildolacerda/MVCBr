@@ -104,9 +104,6 @@ type
     procedure LoadValues; override;
   end;
 
-
-
-
 implementation
 
 // System.IniFiles
@@ -182,14 +179,13 @@ constructor TMemJsonFile.Create(const AFilename: string;
   const AEncoding: TEncoding);
 begin
   inherited Create;
+  FFileName := AFilename;
   FAutoSave := true;
   FJson := TJsonObject.Create;
   FEncoding := AEncoding;
 {$IFNDEF MSWINDOWS)}
-  if extractFileName(AFileName)=AFileName then
-     FFileName := TPath.Combine( TPath.GetHomePath, AFileName );
-{$ELSE}
-  FFileName := AFilename;
+  if extractFileName(AFilename) = AFilename then
+    FFileName := TPath.Combine(TPath.GetHomePath, AFilename);
 {$ENDIF}
   LoadValues;
 end;
@@ -317,20 +313,24 @@ var
 begin
   // copy from Ssytem.IniFiles .TIniFiles (embarcadero)
   try
-    if (FileName <> '') and FileExists(FileName) then
+    if (FFileName <> '') { and FileExists(FFileName) } then
     begin
-      Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
       try
-        // Load file into buffer and detect encoding
-        Size := Stream.Size - Stream.Position;
-        SetLength(Buffer, Size);
-        Stream.Read(Buffer[0], Size);
-        Size := TEncoding.GetBufferEncoding(Buffer, FEncoding);
+        Stream := TFileStream.Create(FFileName, fmOpenRead);
+        try
+          // Load file into buffer and detect encoding
+          Size := Stream.Size - Stream.Position;
+          SetLength(Buffer, Size);
+          Stream.Read(Buffer[0], Size);
+          Size := TEncoding.GetBufferEncoding(Buffer, FEncoding);
 
-        // Load strings from buffer
-        FromJson(FEncoding.GetString(Buffer, Size, Length(Buffer) - Size));
-      finally
-        Stream.Free;
+          // Load strings from buffer
+          FromJson(FEncoding.GetString(Buffer, Size, Length(Buffer) - Size));
+        finally
+          Stream.Free;
+        end;
+      except
+        Clear;
       end;
     end
     else

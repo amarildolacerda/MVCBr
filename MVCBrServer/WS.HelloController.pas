@@ -25,7 +25,7 @@ type
 
 implementation
 
-uses
+uses WS.Common,
   MVCFramework.Logger, WS.Controller;
 
 procedure TWSHelloController.Index;

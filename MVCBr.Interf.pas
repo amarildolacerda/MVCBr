@@ -101,6 +101,7 @@ type
     class procedure RegisterType<TInterface: IInterface; TImplements: Class>(const ANome: string; bSingleton: boolean = true); overload; static;
 
   end;
+  TMVCRegister = TMVCBr;  /// compatibilidade
 
   IInterfaceAdapter = interface
     ['{9075BA8D-80EE-4F4F-BE43-3B5F5BAB406F}']

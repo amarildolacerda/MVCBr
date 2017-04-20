@@ -1,9 +1,9 @@
-{//************************************************************//}
-{//         Projeto MVCBr                                      //}
-{//         tireideletra.com.br  / amarildo lacerda            //}
-{//************************************************************//}
-{// Data: 03/03/2017                                           //}
-{//************************************************************//}
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit WS.WebModule;
 
 interface
@@ -11,10 +11,11 @@ interface
 uses System.SysUtils,
   System.Classes,
   Web.HTTPApp,
-  MVCFramework;
+  MVCFramework, FireDAC.Phys.MSSQLDef, FireDAC.Stan.Intf, FireDAC.Phys, FireDAC.Phys.ODBCBase, FireDAC.Phys.MSSQL;
 
 type
   TWSWebModule = class(TWebModule)
+    FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink;
     procedure WebModuleCreate(Sender: TObject);
     procedure WebModuleDestroy(Sender: TObject);
   private
@@ -31,8 +32,8 @@ implementation
 {$R *.dfm}
 
 uses WS.Datamodule, WS.HelloController, MVCFramework.Commons,
-  Data.DB,
-  oData.ProxyBase,oData.SQL.FireDAC,oData.Dialect,oData.Dialect.Firebird,
+  Data.DB, WS.Common, oData.Dialect.MySql,oData.Dialect.MSSQL,
+  oData.ProxyBase, oData.SQL.FireDAC, oData.Dialect, oData.Dialect.Firebird,
   WS.Controller;
 
 type
@@ -44,8 +45,17 @@ type
   end;
 
 function TODataFiredacQueryRS.DialectClass: TODataDialectClass;
+var drv:string;
 begin
-  result := TODataDialectFirebird;
+  drv := WSConnectionString.ToUpper;   /// todo: checar uma forma melhor de testar o tipo de driver carregado
+  if drv.Contains('=FB;') then
+    result := TODataDialectFirebird
+  else if drv.Contains('=MYSQL;') then
+    result := TODataDialectMySQL
+  else if drv.Contains('=MSSQL;') then
+    result := TODataDialectMSSQL
+  else
+    result := TODataDialectFirebird;   /// nao achou nenhum.
 end;
 
 function TODataFiredacQueryRS.QueryClass: TDatasetClass;

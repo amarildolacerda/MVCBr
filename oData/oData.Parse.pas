@@ -16,7 +16,7 @@ type
   TTokenKind = (ptNone, ptIdentifier, ptNull, ptQuotation, ptSpace, ptComma,
     ptSlash, ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
     ptSearch,
-    ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand, ptInLineCount,
+    ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand, ptInLineCount,ptDebug,
     ptCount, ptGroupBy, ptOperNe { not equal } , ptOperLt { less than } ,
     ptOperLe { less equal } , ptOperGe { greater or equal } ,
     ptOperGt { greater than } , ptOperAnd { and } , ptOperOr { or } ,
@@ -428,6 +428,8 @@ begin
             oData.count := 'true'; // compatibilidade versão V2 com V4
         ptExpand:
           oData.Expand := k;
+        ptDebug :
+          oData.Debug := k;
       end;
     end;
 
@@ -663,6 +665,7 @@ FTokenKindArray.Add('$count', ptCount);
 FTokenKindArray.Add('$expand', ptExpand);
 FTokenKindArray.Add('groupby', ptGroupBy);
 FTokenKindArray.Add('$group', ptGroupBy);
+FTokenKindArray.Add('debug',ptDebug);
 FTokenKindArray.Add('''', ptQuotation);
 FTokenKindArray.Add('and', ptOperAnd);
 FTokenKindArray.Add('or', ptOperOr);

@@ -265,7 +265,7 @@ begin
     first;
     while Eof = false do
     begin
-      if not AEvent(self) then exit;
+      if AEvent(self) then exit;  /// TRUE - Finaliza   FALSE - Continua
       next;
     end;
   finally

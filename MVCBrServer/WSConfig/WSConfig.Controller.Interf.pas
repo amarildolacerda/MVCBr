@@ -26,7 +26,7 @@ type
     ['{ACD79195-5779-4A74-BA8C-5024A9B082A6}']
     // incluir especializações aqui
     function ConnectionString: string;
-
+    function GetPort:integer;
   end;
 
 Implementation

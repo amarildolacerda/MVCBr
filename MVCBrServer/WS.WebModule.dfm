@@ -5,4 +5,8 @@ object WSWebModule: TWSWebModule
   Actions = <>
   Height = 230
   Width = 415
+  object FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink
+    Left = 296
+    Top = 128
+  end
 end

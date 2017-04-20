@@ -20,6 +20,7 @@ uses
   MVCBr.Controller,
   // MVCBr.ApplicationController,
   WS.Controller.Interf,
+  WSConfig.Controller.Interf,
   MVCFramework, System.Generics.Collections, MVCFramework.Logger,
   MVCFramework.Commons,
   MVCFramework.SysControllers,
@@ -38,20 +39,24 @@ uses
   System.RTTI;
 
 type
-  TWSController = class(TControllerFactory, IWSController, IThisAs<TWSController> { , IModelAs<IWSViewModel> } )
+  TWSController = class(TControllerFactory, IWSController,
+    IThisAs<TWSController> { , IModelAs<IWSViewModel> } )
   private
   protected
   public
-    Procedure DoCommand(ACommand: string; const AArgs: array of TValue); override;
+    Procedure DoCommand(ACommand: string;
+      const AArgs: array of TValue); override;
     // inicializar os módulos personalizados em CreateModules
     Procedure CreateModules; virtual;
     Constructor Create; override;
     Destructor Destroy; override;
     class function New(): IController; overload;
-    class function New(const AView: IView; const AModel: IModel): IController; overload;
+    class function New(const AView: IView; const AModel: IModel)
+      : IController; overload;
     class function New(const AModel: IModel): IController; overload;
     function ThisAs: TWSController;
     procedure init; override;
+    function WSConfig:IWSConfigController;
     // function ModelAs: IWSViewModel;
   end;
 
@@ -60,15 +65,12 @@ type
 
   TMVCControllerClass = class of TMVCController;
 {$ENDIF}
-function RegisterWSController(const AClass: TMVCControllerClass): integer;
-procedure LoadWSControllers(FMVC: TMVCEngine);
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
 implementation
 
-uses WSConfigView, WSConfig.Controller.Interf,
+uses WS.Common, WSConfigView,
   WSConfig.Controller, WS.Datamodule,
-  WS.Common,
   MVCAsyncMiddleware, MVCFramework.Middleware.CORS,
   MVCgzipMiddleware, MVCBr.ApplicationController;
 
@@ -79,13 +81,16 @@ begin
     procedure(Config: TMVCConfig)
     begin
       // enable static files
-      Config[TMVCConfigKey.DocumentRoot] := ExtractFilePath(GetModuleName(HInstance)) + '\www';
+      Config[TMVCConfigKey.DocumentRoot] :=
+        ExtractFilePath(GetModuleName(HInstance)) + '\www';
       // session timeout (0 means session cookie)
       Config[TMVCConfigKey.SessionTimeout] := '0';
       // default content-type
-      Config[TMVCConfigKey.DefaultContentType] := TMVCConstants.DEFAULT_CONTENT_TYPE;
+      Config[TMVCConfigKey.DefaultContentType] :=
+        TMVCConstants.DEFAULT_CONTENT_TYPE;
       // default content charset
-      Config[TMVCConfigKey.DefaultContentCharset] := TMVCConstants.DEFAULT_CONTENT_CHARSET;
+      Config[TMVCConfigKey.DefaultContentCharset] :=
+        TMVCConstants.DEFAULT_CONTENT_CHARSET;
       // unhandled actions are permitted?
       Config[TMVCConfigKey.AllowUnhandledAction] := 'true'; // 'false';
       // default view file extension
@@ -120,7 +125,8 @@ begin
   result := New(nil, nil);
 end;
 
-class function TWSController.New(const AView: IView; const AModel: IModel): IController;
+class function TWSController.New(const AView: IView; const AModel: IModel)
+  : IController;
 var
   vm: IViewModel;
 begin
@@ -143,7 +149,16 @@ begin
   result := self;
 end;
 
-Procedure TWSController.DoCommand(ACommand: string; const AArgs: Array of TValue);
+var
+  FWSConfig: IWSConfigController;
+
+function TWSController.WSConfig: IWSConfigController;
+begin
+  result := FWSConfig;
+end;
+
+Procedure TWSController.DoCommand(ACommand: string;
+const AArgs: Array of TValue);
 begin
   inherited;
 end;
@@ -161,49 +176,12 @@ begin
   // exemplo: add( MeuModel.new(self) );
 end;
 
-var
-  FList: TThreadList<TMVCControllerClass>;
-
-procedure LoadWSControllers(FMVC: TMVCEngine);
-var
-  i: integer;
-begin
-  with FList.LockList do
-    try
-      for i := 0 to Count - 1 do
-        FMVC.AddController(Items[i]);
-    finally
-      FList.UnlockList;
-    end;
-  FMVC.AddMiddleware(TMVCgzipCallBackMiddleware.Create);
-  FMVC.AddMiddleware(TMVCAsyncCallBackMiddleware.Create);
-  FMVC.AddMiddleware(TCORSMiddleware.Create);
-
-end;
-
-function RegisterWSController(const AClass: TMVCControllerClass): integer;
-begin
-  with FList.LockList do
-    try
-      Add(AClass);
-      result := Count - 1;
-    finally
-      FList.UnlockList;
-    end;
-end;
-
-var
-  Config: IWSConfigController;
-
 initialization
 
-Config := ApplicationController.resolveController(IWSConfigController) as IWSConfigController;
-WSConnectionString := Config.ConnectionString;
-
-FList := TThreadList<TMVCControllerClass>.Create;
+FWSConfig := ApplicationController.resolveController(IWSConfigController)
+  as IWSConfigController;
+WSConnectionString := FWSConfig.ConnectionString;
 
 finalization
-
-FList.Free;
 
 end.

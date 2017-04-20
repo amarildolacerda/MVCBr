@@ -46,6 +46,9 @@ Type
     function GetResourceParams: IODataDecodeParams;
     procedure SetSearch(const Value: string);
     function GetSearch: string;
+    procedure Setdebug(const Value: string);
+    function GetDebug: string;
+
 
     property Resource: string read GetResource write SetResource;
     property ResourceParams: IODataDecodeParams read GetResourceParams;
@@ -77,7 +80,7 @@ Type
     property &Top: integer read GetTop write SetTop;
     property &SkipToken: string read GetSkipToken write SetSkipToken;
     property &Count: string read GetInLineCount write SetInLineCount;
-
+    property &Debug:string read Getdebug write Setdebug;
 
     function ToString: string;
 
@@ -106,7 +109,7 @@ Type
     function CreatePostQuery(oData: IODataDecode; AJsonBody:TJsonValue):String;
     function createPATCHQuery(oData: IODataDecode; AJsonBody:TJsonValue;AKeys:string):String;
     function GetResource(AResource: string): IInterface;overload;
-
+    function AfterCreateSQL(var SQL: string):boolean;
   end;
 
   IODataParse = interface

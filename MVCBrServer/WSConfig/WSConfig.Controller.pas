@@ -52,6 +52,7 @@ type
     procedure init; override;
     function ViewAs: IWSConfigView;
     function ConnectionString: string;
+    function GetPort:integer;
 
   end;
 
@@ -123,6 +124,12 @@ begin
   inherited;
 end;
 
+function TWSConfigController.GetPort: integer;
+begin
+  result := ViewAs.GetPort;
+
+end;
+
 /// Evento INIT chamado apos a inicializacao do controller
 procedure TWSConfigController.init;
 var
@@ -130,7 +137,8 @@ var
 begin
   inherited;
 {$IFDEF LINUX}
-  FView := TWSConfigView.new(self);
+  if not assigned(FView) then
+    FView := TWSConfigView.New(self);
 {$ELSE}
   if not assigned(FView) then
   begin
