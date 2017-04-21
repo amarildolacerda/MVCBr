@@ -91,7 +91,7 @@ begin
   else
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
       cPersistentMODEL);
-  fc.isFMX := self.isFMX;
+  fc.BaseProjectType := self.baseProjectType;
 
   fc.Templates.Clear;
   fc.Templates.assign(Templates);

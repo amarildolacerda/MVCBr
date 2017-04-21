@@ -3,12 +3,12 @@
 }
 unit MVCBr.InterfaceHelper;
 
-
 interface
 
 uses System.Rtti, System.TypInfo, System.Generics.Collections, System.SysUtils;
 
-{$ifndef BPL}
+{$IFNDEF BPL}
+
 type
   TInterfaceHelper = record
   strict private
@@ -51,11 +51,12 @@ type
     class function InvokeMethod(AIntfInTValue: TValue; const MethodName: String;
       const Args: array of TValue): TValue; overload; static;
   end;
-{$endif}
+{$ENDIF}
 
 implementation
 
-{$ifndef BPL}
+{$IFNDEF BPL}
+
 uses System.Classes,
   System.SyncObjs, DUnitX.Utils;
 
@@ -236,16 +237,22 @@ begin
     begin
       LTypes := TRttiContext.Create.GetTypes;
 
-      for LType in LTypes do
-      begin
-        if LType.TypeKind = TTypeKind.tkInterface then
+      try
+        for LType in LTypes do
         begin
-          LIntfType := (LType as TRttiInterfaceType);
-          if TIntfFlag.ifHasGuid in LIntfType.IntfFlags then
+          if TThread.Current.CheckTerminated = False then
           begin
-            FInterfaceTypes.AddOrSetValue(LIntfType.GUID, LIntfType);
+            if LType.TypeKind = TTypeKind.tkInterface then
+            begin
+              LIntfType := (LType as TRttiInterfaceType);
+              if TIntfFlag.ifHasGuid in LIntfType.IntfFlags then
+              begin
+                FInterfaceTypes.AddOrSetValue(LIntfType.GUID, LIntfType);
+              end;
+            end;
           end;
         end;
+      except
       end;
 
       Caching := False;
@@ -286,7 +293,6 @@ begin
   if LType is TRttiInterfaceType then
     Result := LType as TRttiInterfaceType;
 end;
-{$endif}
+{$ENDIF}
 
 end.
-

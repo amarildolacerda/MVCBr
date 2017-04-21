@@ -99,8 +99,10 @@ type
     class procedure RegisterInterfaced<TInterface: IInterface>(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
       overload; Static;
     class procedure RegisterType<TInterface: IInterface; TImplements: Class>(const ANome: string; bSingleton: boolean = true); overload; static;
+    class function ResolveInterfaced<TInterface:IInterface>(const ANome:string):TInterface;static;
 
   end;
+
   TMVCRegister = TMVCBr;  /// compatibilidade
 
   IInterfaceAdapter = interface
@@ -423,8 +425,8 @@ type
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true); overload;
 procedure UnregisterInterfacedClass(const ANome: string);
 
-var
-  FControllersClass: TObject;
+//var
+//  FControllersClass: TObject;
 
 implementation
 
@@ -440,12 +442,12 @@ end;
 
 class procedure TMVCBr.RegisterType<TInterface; TImplements>(const ANome: string; bSingleton: boolean = true);
 begin
-  TMVCBrIoc(FControllersClass).RegisterType<TInterface, TImplements>(bSingleton, ANome);
+  TMVCBrIoc.DefaultContainer.RegisterType<TInterface, TImplements>(bSingleton, ANome);
 end;
 
 class procedure TMVCBr.RegisterInterfaced<TInterface>(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
-  TMVCBrIoc(FControllersClass).RegisterInterfaced<TInterface>(IID, AClass, ANome, bSingleton);
+  TMVCBrIoc.DefaultContainer.RegisterInterfaced<TInterface>(IID, AClass, ANome, bSingleton);
 end;
 
 procedure UnregisterInterfacedClass(const ANome: string);
@@ -496,7 +498,7 @@ end;
 
 function TControllerAbstract.ResolveController(const ANome: string): IController;
 begin
-  result := TMVCBrIoc(FControllersClass).Resolve<IController>(ANome);
+  result := TMVCBrIoc.DefaultContainer.Resolve<IController>(ANome);
   result.Init;
 end;
 
@@ -513,7 +515,7 @@ end;
 class procedure TControllerAbstract.RevokeInstance(const AII: IInterface);
 begin
   if assigned(AII) then
-    TMVCBrIoc(FControllersClass).RevokeInstance(AII);
+    TMVCBrIoc.DefaultContainer.RevokeInstance(AII);
 end;
 
 function TControllerAbstract.ResolveController(const AIID: TGuid): IController;
@@ -526,7 +528,7 @@ var
   achei: string;
   ii: IController;
 begin
-  achei := TMVCBrIoc(FControllersClass).GetName(AIID);
+  achei := TMVCBrIoc.DefaultContainer.GetName(AIID);
   if achei = '' then
     exit;
   ii := ResolveController(achei);
@@ -539,6 +541,11 @@ begin
 end;
 
 { TMVCBr }
+class function TMVCBr.ResolveInterfaced<TInterface>(const ANome:string):TInterface;
+begin
+  result := TMVCBrIoc.DefaultContainer.Resolve<TInterface>(ANome);
+end;
+
 
 class function TMVCBr.GetGuid(const AInterface: IInterface): TGuid;
 begin
@@ -797,10 +804,10 @@ end;
 
 initialization
 
-FControllersClass := TMVCBrIoc.create;
+//FControllersClass := TMVCBrIoc.create;
 
 finalization
 
-FControllersClass.Free;
+//FControllersClass.Free;
 
 end.

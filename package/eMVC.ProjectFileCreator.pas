@@ -34,6 +34,7 @@ interface
 uses
   Windows, Classes, SysUtils,
   eMVC.OTAUtilities,
+  eMVC.FileCreator,
   ToolsApi;
 
 const
@@ -44,9 +45,9 @@ type
     FAge: TDateTime;
     FProjectName: string;
     FTemplates: TStringList;
-    FisFMX: Boolean;
+    FbaseProjectType: TbaseProjectType;
     procedure SetTemplates(const Value: TStringList);
-    procedure SetisFMX(const Value: Boolean);
+    procedure SetbaseProjectType(const Value: TbaseProjectType);
   public
     constructor Create(const ProjectName: string);
     destructor destroy; override;
@@ -54,7 +55,8 @@ type
     function GetSource: string;
     function GetAge: TDateTime;
     property Templates: TStringList read FTemplates write SetTemplates;
-    property isFMX: Boolean read FisFMX write SetisFMX;
+    property baseProjectType: TbaseProjectType read FbaseProjectType
+      write SetbaseProjectType;
   end;
 
 implementation
@@ -84,10 +86,16 @@ function TProjectFileCreator.GetSource: string;
 var
   i: integer;
 begin
-  Result := ProjectCode;
-  if isFMX then
-    Result := ProjectCodeFMX;
-
+  case baseProjectType of
+    bptVCL: Debug('Projeto: VCL');
+    bptFMX: Debug('Projeto: FMX');
+    bptPrompt: Debug('Projeto: PROMPT');
+  end;
+  case baseProjectType of
+    bptVCL: Result := ProjectCode;
+    bptFMX: Result := ProjectCodeFMX;
+    bptPrompt: Result := promptProject;
+  end;
   // usa os templates;
   for i := 0 to FTemplates.Count - 1 do
   begin
@@ -102,17 +110,15 @@ end;
 procedure TProjectFileCreator.init;
 begin
   // Parameterize the code with the current ProjectName
-  FTemplates.Add('%ModuleIdent='+ FProjectName);
-  FTemplates.Add('%Module='+ 'Main');
-  FTemplates.Add('%MdlInterf='+FProjectName+'.Interf');
-
-
+  FTemplates.Add('%ModuleIdent=' + FProjectName);
+  FTemplates.Add('%Module=' + 'Main');
+  FTemplates.Add('%MdlInterf=' + FProjectName + '.Interf');
 
 end;
 
-procedure TProjectFileCreator.SetisFMX(const Value: Boolean);
+procedure TProjectFileCreator.SetbaseProjectType(const Value: TbaseProjectType);
 begin
-  FisFMX := Value;
+  FbaseProjectType := Value;
 end;
 
 procedure TProjectFileCreator.SetTemplates(const Value: TStringList);

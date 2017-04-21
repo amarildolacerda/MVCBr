@@ -87,7 +87,7 @@ begin
   else
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent,
       cVIEWMODEL);
-  fc.isFMX := self.isFMX;
+  fc.BaseProjectType := self.baseProjectType;
   fc.Templates.Assign(self.Templates);
   fc.Templates.Add('%MdlInterf=' + getBaseName + '.ViewModel.Interf');
   fc.Templates.Add('%UnitIdent=' + FUnitIdent);

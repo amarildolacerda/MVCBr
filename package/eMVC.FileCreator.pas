@@ -58,7 +58,13 @@ const
 {$I .\inc\datamodule.inc}
 
 type
+
+  TBaseProjectType = (bptVCL, bptFMX, bptPrompt);
+
   TFileCreator = class(TInterfacedObject, IOTAFile)
+  private
+    FBaseProjectType: TBaseProjectType;
+    procedure SetBaseProjectType(const Value: TBaseProjectType);
   protected
     FAge: TDateTime;
     FCreateType: smallint;
@@ -87,7 +93,8 @@ type
     function GetSource: string;
     function GetAge: TDateTime;
     property Templates: TStringList read FTemplates write SetTemplates;
-    property isFMX: boolean read FIsFMX write SetisFMX;
+    property BaseProjectType: TBaseProjectType read FBaseProjectType
+      write SetBaseProjectType;
   end;
 
 implementation
@@ -105,8 +112,8 @@ begin
   self.FCreateType := ACreateType;
   FTemplates := TStringList.Create;
   FAge := -1; // Flag age as New File
-  FTemplates.Values['%UnitIdent'] := ModelIdent;  // sem remove os pontos
-  FModelIdent := ( ModelIdent );  // remove os pontos;
+  FTemplates.Values['%UnitIdent'] := ModelIdent; // sem remove os pontos
+  FModelIdent := (ModelIdent); // remove os pontos;
   FFormIdent := (FormIdent);
   FAncestorIdent := (AncestorIdent);
   FCreateModel := ACreateModel;
@@ -143,6 +150,12 @@ var
   c: integer;
   str: TStringList;
 begin
+  case BaseProjectType of
+    bptVCL: Debug('bptVCL');
+    bptFMX: Debug('bptFMX');
+    bptPrompt: Debug('bptPROMPT');
+  end;
+
   if Assigned(FFuncSource) then
     result := FFuncSource
   else
@@ -151,12 +164,12 @@ begin
         result := classCode;
       cVIEW:
         begin
-            result := ViewCode;
+          result := ViewCode;
           if not FCreateModel then
             result := ViewCodeNoViewModel;
 
           if FIsFMX then
-            result := stringReplace(result,'*.DFM','*.FMX',[]);
+            result := stringReplace(result, '*.DFM', '*.FMX', []);
 
           if SameText(FAncestorIdent, dataModuleAncestorName) then
           begin
@@ -166,7 +179,7 @@ begin
       cCLASS:
         result := ViewCode2;
       cMODEL:
-        if isFMX then
+        if BaseProjectType = bptFMX then
           result := ModelCodeFMX
         else
           result := ModelCode;
@@ -195,7 +208,9 @@ begin
         end;
       cCONTROLLER:
         begin
-          if (not self.FCreateModel) and (not self.FCreateView) then
+          if BaseProjectType = bptPrompt then
+            result := PromptControllerCode
+          else if (not self.FCreateModel) and (not self.FCreateView) then
             result := ControllerCodeOnly
           else if (self.FCreateModel) and (not self.FCreateView) then
             result := ControllerCodeWithoutView
@@ -212,12 +227,14 @@ begin
             else
               result := ControllerCode;
           end;
+
         end;
       cPROJECT:
-        if isFMX then
-          result := ProjectCodeFMX
-        else
-          result := ProjectCode;
+        case BaseProjectType of
+          bptVCL: result := ProjectCode;
+          bptFMX: result := ProjectCodeFMX;
+          bptPrompt: result := promptProject;
+        end;
     end;
 
   result := ClassHeader + #10#13 + result;
@@ -231,7 +248,7 @@ begin
 
   if self.FCreateModel and not self.FModelAlone then
   begin
-    result := stringReplace(result, '%ModelDef', ( ModelDef ),
+    result := stringReplace(result, '%ModelDef', (ModelDef),
       [rfReplaceAll, rfIgnoreCase]);
     result := stringReplace(result, '%ModelImpl', (ModelImpl),
       [rfReplaceAll, rfIgnoreCase]);
@@ -294,8 +311,8 @@ begin
   if FTemplates.Values['//%include'] = '' then
     FTemplates.Values['//%include'] := '{.$I ..\inc\mvcbr.inc}';
 
-  if isFMX then
-    FTemplates.Add('*.dfm='+ '*.fmx');
+  if BaseProjectType = bptFMX then
+    FTemplates.Add('*.dfm=' + '*.fmx');
 
   // usa os templates - segudna passada;
   for i := 0 to FTemplates.Count - 1 do
@@ -326,6 +343,11 @@ begin
       Free;
     end;
 
+end;
+
+procedure TFileCreator.SetBaseProjectType(const Value: TBaseProjectType);
+begin
+  FBaseProjectType := Value;
 end;
 
 procedure TFileCreator.SetisFMX(const Value: boolean);

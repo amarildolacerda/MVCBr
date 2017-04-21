@@ -48,7 +48,8 @@ type
   /// No ApplicationController fica armazenado uma lista de Controllers
   /// ativos
   /// </summary>
-  TApplicationController = class(TMVCOwnedInterfacedObject, IApplicationController)
+  TApplicationController = class(TMVCOwnedInterfacedObject,
+    IApplicationController)
   private
     /// Lista de controllers instanciados
     FControllers: IInterfaceList;
@@ -69,10 +70,14 @@ type
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
     function FindModel<TIModel: IInterface>: TIModel; overload;
 
-    function ViewEvent(AMessage: string; var AHandled: boolean): IApplicationController; overload;
-    function ViewEventOther(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;
-    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView; overload;
-    function ViewEvent<TViewInterface: IInterface>(AMessage: String; var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: string; var AHandled: boolean)
+      : IApplicationController; overload;
+    function ViewEventOther(ASender: IController; AMessage: string;
+      var AHandled: boolean): IApplicationController;
+    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
+      : IView; overload;
+    function ViewEvent<TViewInterface: IInterface>(AMessage: String;
+      var AHandled: boolean): IView; overload;
     constructor create; override;
     destructor destroy; override;
     /// This retorna o Self do ApplicationController Object Factory
@@ -86,9 +91,11 @@ type
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
     /// Executa o ApplicationController
-    procedure Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AClass: TComponentClass; AController: IController;
+      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     /// Executa
-    procedure Run(AController: IController; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AController: IController;
+      AFunc: TFunc < boolean >= nil); overload;
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
     procedure Inited;
@@ -211,7 +218,8 @@ begin
   result := rst;
 end;
 
-function TApplicationController.ForEach(AProc: TFunc<IController, boolean>): boolean;
+function TApplicationController.ForEach
+  (AProc: TFunc<IController, boolean>): boolean;
 var
   i: integer;
   LHandled: boolean;
@@ -284,7 +292,8 @@ begin
   end;
 end;
 
-procedure TApplicationController.Run(AController: IController; AFunc: TFunc<boolean>);
+procedure TApplicationController.Run(AController: IController;
+AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
 end;
@@ -294,7 +303,8 @@ begin
   FMainView := AView;
 end;
 
-function TApplicationController.ViewEvent(AMessage: string; var AHandled: boolean): IApplicationController;
+function TApplicationController.ViewEvent(AMessage: string;
+var AHandled: boolean): IApplicationController;
 begin
   result := ViewEventOther(nil, AMessage, AHandled);
 end;
@@ -331,7 +341,8 @@ begin
   end;
 end;
 
-function TApplicationController.ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView;
+function TApplicationController.ViewEvent(AView: TGuid; AMessage: String;
+var AHandled: boolean): IView;
 var
   view: IView;
   rst: IView;
@@ -354,7 +365,8 @@ begin
   AHandled := LHandled;
 end;
 
-function TApplicationController.ViewEvent<TViewInterface>(AMessage: String; var AHandled: boolean): IView;
+function TApplicationController.ViewEvent<TViewInterface>(AMessage: String;
+var AHandled: boolean): IView;
 var
   IID: TGuid;
 begin
@@ -362,7 +374,8 @@ begin
   result := ViewEvent(IID, AMessage, AHandled);
 end;
 
-function TApplicationController.ViewEventOther(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;
+function TApplicationController.ViewEventOther(ASender: IController;
+AMessage: string; var AHandled: boolean): IApplicationController;
 var
   LHandled: boolean;
   i: integer;
@@ -381,7 +394,8 @@ begin
   AHandled := LHandled;
 end;
 
-procedure TApplicationController.Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
+procedure TApplicationController.Run(AClass: TComponentClass;
+AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
   rt: boolean;
   reference: TComponent;
@@ -413,13 +427,19 @@ begin
       if AController.IndexOf(AModel) < 0 then
         AController.Add(AModel);
 
-    if supports(application.MainForm, IView, FMainView) then
+    if assigned(application.MainForm) then
     begin
-      if assigned(AController) then
-        AController.view(FMainView);
-      FMainView.ShowView(nil, false);
-      application.Run;
-    end;
+      if supports(application.MainForm, IView, FMainView) then
+      begin
+        if assigned(AController) then
+          AController.view(FMainView);
+        FMainView.ShowView(nil, false);
+        application.Run;
+      end;
+    end  {$ifdef MSWINDOWS}
+    else
+        application.Run;
+        {$endif}
 
   end;
   { if assigned(AController) then

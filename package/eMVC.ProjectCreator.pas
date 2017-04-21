@@ -1,4 +1,3 @@
-
 unit eMVC.ProjectCreator;
 // This is done to Warnings that I can't control, as Embarcadero has
 // deprecated the functions, but due to design you are still required to
@@ -9,6 +8,7 @@ interface
 
 uses
   PlatformAPI,
+  eMVC.FileCreator,
   ToolsAPI;
 
 type
@@ -44,9 +44,9 @@ type
   TNewProjectEx = class(TNewProject, IOTAProjectCreator160)
   private
     FPersonality: string;
-    FisFMX: Boolean;
+    FBaseProjectType: TBaseProjectType;
 
-    procedure SetisFMX(const Value: Boolean);
+    procedure SetBaseProjectType(const Value: TBaseProjectType);
   protected
     function GetProjectPersonality: string; override;
 
@@ -57,9 +57,9 @@ type
     procedure SetInitialOptions(const NewProject: IOTAProject);
   public
     property Personality: string read FPersonality write FPersonality;
-    property isFMX: Boolean read FisFMX write SetisFMX;
+    property BaseProjectType: TBaseProjectType read FBaseProjectType
+      write SetBaseProjectType;
   end;
-
 
   TProjectCreator = class(TNewProjectEx)
   private
@@ -71,11 +71,10 @@ type
     constructor Create(const APersonality: string); overload;
   end;
 
-
 implementation
 
 uses
-  eMVC.ProjectFileCreator,System.SysUtils;
+  eMVC.ProjectFileCreator, System.SysUtils;
 
 { TNewProject }
 
@@ -149,15 +148,21 @@ end;
 
 function TNewProjectEx.GetFrameworkType: string;
 begin
-  if isFMX then
-     result := sFrameworkTypeFMX
-  else
-     Result := sFrameworkTypeVCL;
+  case BaseProjectType of
+    bptVCL:
+      Result := sFrameworkTypeVCL;
+    bptFMX:
+      Result := sFrameworkTypeFMX;
+    bptPrompt:
+      Result := sFrameworkTypeVCL;
+  end;
 end;
 
 function TNewProjectEx.GetPlatforms: TArray<string>;
 begin
-  Result := TArray<string>.Create(cWin32Platform, cWin64Platform,cAndroidPlatform,cOSX32Platform,cWinIoT32Platform,cLinux64Platform,ciOSDevicePlatform,cWinARMPlatform );
+  Result := TArray<string>.Create(cWin32Platform, cWin64Platform,
+    cAndroidPlatform, cOSX32Platform, cWinIoT32Platform, cLinux64Platform,
+    ciOSDevicePlatform, cWinARMPlatform);
 end;
 
 function TNewProjectEx.GetPreferredPlatform: string;
@@ -165,11 +170,14 @@ begin
   Result := cWin32Platform;
 end;
 
-
-
 function TNewProjectEx.GetProjectPersonality: string;
 begin
   Result := sDelphiPersonality
+end;
+
+procedure TNewProjectEx.SetBaseProjectType(const Value: TBaseProjectType);
+begin
+  FBaseProjectType := Value;
 end;
 
 procedure TNewProjectEx.SetInitialOptions(const NewProject: IOTAProject);
@@ -183,13 +191,6 @@ begin
   end;
 
 end;
-
-
-procedure TNewProjectEx.SetisFMX(const Value: Boolean);
-begin
-  FisFMX := Value;
-end;
-
 
 
 constructor TProjectCreator.Create;
@@ -209,19 +210,17 @@ end;
 function TProjectCreator.GetFrameworkType: string;
 begin
   Result := 'VCL';
-  if isFMX then
-     result := 'FMX';
+  if BaseProjectType=bptFMX then
+    Result := 'FMX';
 end;
 
 function TProjectCreator.NewProjectSource(const ProjectName: string): IOTAFile;
 var
   fc: TProjectFileCreator;
 begin
-  fc := TProjectFileCreator.create(ProjectName);
-  fc.isFMX := self.isFMX;
+  fc := TProjectFileCreator.Create(ProjectName);
+  fc.BaseProjectType := self.BaseProjectType;
   Result := fc;
 end;
-
-
 
 end.

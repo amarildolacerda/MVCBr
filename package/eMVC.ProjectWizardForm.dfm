@@ -3330,12 +3330,17 @@ object FormAppWizard: TFormAppWizard
         TabOrder = 2
         OnClick = BitBtn4Click
       end
-      object cbFMX: TCheckBox
+      object rgTipoProjeto: TRadioGroup
         Left = 24
-        Top = 154
-        Width = 169
-        Height = 17
-        Caption = 'FMX - Firemonkey'
+        Top = 155
+        Width = 185
+        Height = 70
+        Caption = 'Tipo de Projeto'
+        ItemIndex = 0
+        Items.Strings = (
+          'VCL'
+          'FMX'
+          'Simples (No View)')
         TabOrder = 3
       end
     end

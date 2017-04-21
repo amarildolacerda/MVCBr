@@ -113,7 +113,7 @@ begin
       cController, FCreateModule, FCreateView, FModelAlone, FViewAlone,
       FViewIsForm);
 
-  fc.isFMX := self.isFMX;
+  fc.BaseProjectType := self.baseProjectType ;
 
   fc.Templates.Assign(Templates);
   fc.Templates.Add('%UnitIdent='+FUnitIdent);

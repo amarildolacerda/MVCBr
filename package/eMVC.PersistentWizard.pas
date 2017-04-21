@@ -70,7 +70,7 @@ procedure Register;
 
 implementation
 
-uses eMVC.PersistentModelConst;
+uses eMVC.PersistentModelConst, eMVC.FileCreator;
 
 { TNewMVCSetWizard }
 
@@ -180,7 +180,7 @@ begin
       end
       else
       begin
-        LCriarPathModule :=cbCreateDir.Checked;
+        LCriarPathModule := cbCreateDir.Checked;
         if cbCreateDir.Checked then
         begin
           path := path + (setname) + '\';
@@ -191,8 +191,10 @@ begin
         ChDir(extractFilePath(project));
 
         debug('Pronto para criar o Modulo');
-        Model := TPersistentModelCreator.create(GetNewPath('Models') , identProject, false);
-        Model.IsFMX := cbFMX.Checked;
+        Model := TPersistentModelCreator.create(GetNewPath('Models'),
+          identProject, false);
+        if cbFMX.Checked then
+          Model.baseProjectType := bptFMX;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);
@@ -211,8 +213,10 @@ begin
 
         debug('Criou o Model');
 
-        Model := TPersistentModelCreator.create(GetNewPath('Models'), identProject, false);
-        Model.IsFMX := cbFMX.Checked;
+        Model := TPersistentModelCreator.create(GetNewPath('Models'),
+          identProject, false);
+        if cbFMX.Checked then
+          Model.baseProjectType := bptFMX;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
         Model.Templates.Add('%intf=' + ComboBox1.Items.Names

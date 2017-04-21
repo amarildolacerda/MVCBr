@@ -39,7 +39,7 @@ begin
       result := '// Defines para o MVCBr                          ' + #10#13 +
         '//  %date                                                ' + #10#13 +
         '{$define ';
-      if IsFMX then
+      if baseProjectType=bptFMX then
         result := result+ 'FMX}'
       else
         result := result+ 'VCL}';

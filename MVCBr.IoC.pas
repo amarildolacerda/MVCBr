@@ -268,7 +268,6 @@ class function TMVCBrIoC.DefaultContainer: TMVCBrIoC;
 begin
   if FDefault = nil then
     FDefault := TMVCBrIoC.Create;
-
   result := FDefault;
 end;
 

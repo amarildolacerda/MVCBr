@@ -77,7 +77,7 @@ procedure Register;
 
 implementation
 
-uses eMVC.ModuleModelConst;
+uses eMVC.ModuleModelConst, eMVC.FileCreator;
 
 { TNewMVCSetWizard }
 
@@ -102,16 +102,16 @@ var
   begin
 
     result := GetCurrentProject.FileName;
-    {for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
-    begin
-      if pos ('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
-        .Modules[i].FileName)) > 0 then
+    { for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
       begin
-        result := (BorlandIDEServices as IOTAModuleServices).Modules[i]
-          .FileName;
-        break;
+      if pos ('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
+      .Modules[i].FileName)) > 0 then
+      begin
+      result := (BorlandIDEServices as IOTAModuleServices).Modules[i]
+      .FileName;
+      break;
       end;
-    end; }
+      end; }
   end;
 
 var
@@ -125,7 +125,7 @@ var
       result := extractFilePath(project);
       if ((result + ' ')[length(result)]) <> '\' then
         result := result + '\';
-      result := result + ASubPath+'\';
+      result := result + ASubPath + '\';
     end;
     if not directoryExists(result) then
       ForceDirectories(result);
@@ -169,7 +169,8 @@ begin
 
         Ctrl := TControllerCreator.create(GetNewPath('Controllers'),
           setname + '', false, false, false, true, true, false);
-        Ctrl.IsFMX := cbFMX.Checked;
+        if cbFMX.Checked then
+          Ctrl.baseProjectType := bptFMX;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Ctrl.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);
@@ -193,7 +194,8 @@ begin
 
         Ctrl := TControllerCreator.create(GetNewPath('Controllers'),
           setname + '', false, false, false, true, true, false);
-        Ctrl.IsFMX := cbFMX.Checked;
+        if cbFMX.Checked then
+          Ctrl.baseProjectType := bptFMX;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Ctrl.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);

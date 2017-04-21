@@ -41,6 +41,9 @@ uses
 type
 
   TBaseCreator = class(TInterfacedObject, IOTACreator, IOTAModuleCreator)
+  private
+    FbaseProjectType: TBaseProjectType;
+    procedure SetbaseProjectType(const Value: TBaseProjectType);
   protected
     FFileCreator: TFileCreator;
     FAncestorName: string;
@@ -48,10 +51,8 @@ type
     FBaseName: string;
     FUnnamed: boolean;
     FTemplates: TStringList;
-    FIsFMX: boolean;
     procedure setBaseName(ABaseName: string);
     procedure SetTemplates(const Value: TStringList);
-    procedure SetIsFMX(const Value: boolean);
   public
     constructor Create(const APath: string = ''; ABaseName: string = '';
       AUnNamed: boolean = true); virtual;
@@ -92,7 +93,8 @@ type
     property BaseName: string read getBaseName write setBaseName;
 
     property Templates: TStringList read FTemplates write SetTemplates;
-    property IsFMX: boolean read FIsFMX write SetIsFMX;
+    property baseProjectType: TBaseProjectType read FbaseProjectType
+      write SetbaseProjectType;
   end;
 
 implementation
@@ -115,7 +117,7 @@ begin
   else
   begin
     if s.indexOf('T') = 0 then
-      self.FAncestorName :=  s.substring(1,length(s))  // Copy(s, 2, length(s))
+      self.FAncestorName := s.substring(1, length(s)) // Copy(s, 2, length(s))
     else
       self.FAncestorName := s;
   end;
@@ -142,10 +144,11 @@ begin
   FBaseName := ABaseName;
 end;
 
-procedure TBaseCreator.SetIsFMX(const Value: boolean);
+procedure TBaseCreator.SetbaseProjectType(const Value: TBaseProjectType);
 begin
-  FIsFMX := Value;
+  FbaseProjectType := Value;
 end;
+
 
 procedure TBaseCreator.setPath(APath: string);
 begin
@@ -268,7 +271,7 @@ begin
   // default create the normal class
   Debug('FileCreator: ' + ModuleIdent);
   FFileCreator := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent);
-  FFileCreator.IsFMX := self.IsFMX;
+  FFileCreator.BaseProjectType := self.baseProjectType;
   FFileCreator.Templates.Assign(self.FTemplates);
   Result := FFileCreator;
 end;

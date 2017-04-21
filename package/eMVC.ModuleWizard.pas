@@ -77,7 +77,7 @@ procedure Register;
 
 implementation
 
-uses eMVC.ModuleModelConst;
+uses eMVC.ModuleModelConst, eMVC.FileCreator;
 
 { TNewMVCSetWizard }
 
@@ -201,7 +201,8 @@ begin
         debug('Pronto para criar o Modulo');
         Model := TDataModuleCreator.create(GetNewPath('Models'),
           setname + '.ModuleModel', false);
-        Model.IsFMX := cbFMX.Checked;
+        if cbFMX.Checked then
+          Model.baseProjectType := bptFMX;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
         Model.Templates.Add('%intf=' + ComboBox1.Items.Names
           [ComboBox1.ItemIndex]);
@@ -224,7 +225,8 @@ begin
 
         Model := TDataModuleCreator.create(GetNewPath('Models'),
           setname + '.ModuleModel', false);
-        Model.IsFMX := cbFMX.Checked;
+        if cbFMX.Checked then
+          Model.baseProjectType := bptFMX;
         // Model.SetAncestorName(GetAncestorX(ComboBox1.ItemIndex));
 
         Model.Templates.Add('%intf=' + ComboBox1.Items.Names

@@ -76,7 +76,7 @@ begin
   begin
     fc := TFileCreator.Create(ModuleIdent, FormIdent, AncestorIdent, cCLASS);
   end;
-  fc.isFMX := self.isFMX;
+  fc.BaseProjectType := self.baseProjectType;
   fc.Templates.Assign(self.Templates);
   fc.Templates.Values['%MdlInterf'] := FUnitBase + '.Interf';
   fc.Templates.Values['%UnitIdent'] := FUnitIdent;
