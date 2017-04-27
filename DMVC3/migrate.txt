@@ -1,3 +1,0 @@
-1. faltou    LServer.active := true;
-2. o engine não encontra contexttype com mais de um parametro:  ...;odata.minimal
-3. nova pastas para os fontes;
