@@ -52,14 +52,14 @@ type
     procedure ChangeAllValuesTo(AFieldName: string; AValue: Variant;
       AConfirm: TFunc<boolean>); overload;
     procedure ChangeAllValuesTo(AFieldName: string; AValue: Variant;
-      AConfirm: TFunc<TDataset,boolean>); overload;
+      AConfirm: TFunc<TDataset, boolean>); overload;
     procedure AppendFromJson(sJson: string);
     procedure CopyFromJson(sJosn: string);
     procedure JsonToRecord(sJson: string; AAppend: boolean); overload;
     procedure FromJsonObject(oJson: TJsonObject; AAppend: boolean); overload;
     procedure DoLoopEvent(AEvent: TProc); overload;
     procedure DoLoopEvent(AEvent: TProc<TDataset>); overload;
-    procedure ForEach(AEvent: TFunc<TDataset,boolean>);
+    procedure ForEach(AEvent: TFunc<TDataset, boolean>);
     procedure DoEventIf(AFieldName: string; AValue: Variant;
       AEvent: TProc); overload;
     procedure DoEventIf(AFieldName: string; AValue: Variant;
@@ -84,12 +84,12 @@ type
 
   TFieldHelper = class helper for TField
     function FromStream(stream: TStream): TField;
-    function ToStream(stream:TStream):TField;
+    function ToStream(stream: TStream): TField;
   end;
 
 implementation
 
-uses System.Json.Helper, System.DateUtils,
+uses System.JSON.Helper, System.DateUtils,
   SqlTimSt, FmtBcd, System.Variants,
   Soap.EncdDecd;
 
@@ -265,7 +265,12 @@ begin
     first;
     while Eof = false do
     begin
-      if AEvent(self) then exit;  /// TRUE - Finaliza   FALSE - Continua
+     { if TThread.Current.CheckTerminated then
+        break;
+        }
+      if AEvent(self) then
+        exit;
+      /// TRUE - Finaliza   FALSE - Continua
       next;
     end;
   finally
@@ -693,11 +698,11 @@ end;
 function TFieldHelper.ToStream(stream: TStream): TField;
 begin
   result := self;
-  TBlobField(Self).SaveToStream(stream);
+  TBlobField(self).SaveToStream(stream);
 end;
 
 procedure TDatasetHelper.ChangeAllValuesTo(AFieldName: string; AValue: Variant;
-  AConfirm: TFunc<TDataset, boolean>);
+AConfirm: TFunc<TDataset, boolean>);
 var
   book: TBookMark;
   fld: TField;

@@ -52,10 +52,10 @@ type
     IApplicationController)
   private
     /// Lista de controllers instanciados
-    FControllers: IInterfaceList;
+    [unsafe]FControllers: IInterfaceList;
   protected
     /// MainView para o Application
-    FMainView: IView;
+    [unsafe]FMainView: IView;
     /// singleton
     class var FApplicationController: IApplicationController;
   public

@@ -152,7 +152,7 @@ type
 
   TMVCOwnedInterfacedObject = Class(TMVCFactoryAbstract)
   private
-    FOwner: TComponent;
+    [unsafe]FOwner: TComponent;
   public
     constructor create; override;
     destructor destroy; override;
@@ -330,7 +330,7 @@ type
 
   TControllerAbstract = class(TMVCFactoryAbstract)
   protected
-    FModels: TMVCInterfacedList<IModel>;
+    [unsafe]FModels: TMVCInterfacedList<IModel>;
   public
     constructor create; virtual;
     function This: TControllerAbstract;
