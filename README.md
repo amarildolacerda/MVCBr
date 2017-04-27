@@ -4,9 +4,9 @@ Model-view-controller (MVC), em português modelo-visão-controlador, é um padr
 
 <img src="https://github.com/amarildolacerda/MVCBr/blob/master/330px-ModelViewControllerDiagram2.svg.png"></a>
 
-
 * Instalação
-  Utilizar o   MVCBr_Berlin.DPR  para instalar a Package no Delphi (Berlin);
+  Utilizar o   MVCBrPackageBerlin.groupproj  para instalar a Package no Delphi (Berlin);
+  Utilizar o   MVCBrPackageTokyo.groupproj  para instalar a Package no Delphi (Tokyo);
   
   Após a instalção da package ir no Delphi:  Novo Projeto / MVCBr / MVCBr assistente para criar projeto
   
