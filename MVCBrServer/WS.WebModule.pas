@@ -11,11 +11,10 @@ interface
 uses System.SysUtils,
   System.Classes,
   Web.HTTPApp,
-  MVCFramework, FireDAC.Phys.MSSQLDef, FireDAC.Stan.Intf, FireDAC.Phys, FireDAC.Phys.ODBCBase, FireDAC.Phys.MSSQL;
+  MVCFramework, FireDAC.Phys.MSSQLDef, FireDAC.Stan.Intf, FireDAC.Phys;
 
 type
   TWSWebModule = class(TWebModule)
-    FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink;
     procedure WebModuleCreate(Sender: TObject);
     procedure WebModuleDestroy(Sender: TObject);
   private
@@ -32,7 +31,8 @@ implementation
 {$R *.dfm}
 
 uses WS.Datamodule, WS.HelloController, MVCFramework.Commons,
-  Data.DB, WS.Common, oData.Dialect.MySql,oData.Dialect.MSSQL,
+  Data.DB, WS.Common, oData.Dialect.MySql, oData.Dialect.MSSQL,
+  oData.Dialect.PostgreSQL,
   oData.ProxyBase, oData.SQL.FireDAC, oData.Dialect, oData.Dialect.Firebird,
   WS.Controller;
 
@@ -45,17 +45,23 @@ type
   end;
 
 function TODataFiredacQueryRS.DialectClass: TODataDialectClass;
-var drv:string;
+var
+  drv: string;
 begin
-  drv := WSConnectionString.ToUpper;   /// todo: checar uma forma melhor de testar o tipo de driver carregado
+  drv := WSConnectionString.ToUpper;
+  /// todo: checar uma forma melhor de testar o tipo de driver carregado
   if drv.Contains('=FB;') then
     result := TODataDialectFirebird
   else if drv.Contains('=MYSQL;') then
     result := TODataDialectMySQL
   else if drv.Contains('=MSSQL;') then
     result := TODataDialectMSSQL
+  else if drv.Contains('=PG;') then
+    result := TODataDialectMSSQL
+    /// por Elisangela
   else
-    result := TODataDialectFirebird;   /// nao achou nenhum.
+    result := TODataDialectFirebird;
+  /// nao achou nenhum.
 end;
 
 function TODataFiredacQueryRS.QueryClass: TDatasetClass;

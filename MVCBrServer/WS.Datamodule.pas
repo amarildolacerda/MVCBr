@@ -13,16 +13,17 @@ uses
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Phys, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys.FB,
   FireDAC.Phys.FBDef, FireDAC.DatS, FireDAC.DApt.Intf,
+  FireDAC.Phys.ODBCBase, FireDAC.Phys.MSSQL,
 {$IFDEF LINUX}
   FireDAC.CONSOLEUI.Wait,
 {$ELSE}
   FireDAC.VCLUI.Wait,
   FireDAC.Phys.MSAcc,
   FireDAC.Phys.MSAccDef,
-  FireDAC.Comp.ui,
+  FireDAC.Comp.UI,
 {$ENDIF}
   FireDAC.DApt, FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Comp.Client,
-  FireDAC.Phys.IBBase, Data.DB;
+  FireDAC.Phys.IBBase, Data.DB, FireDAC.Phys.PGDef, FireDAC.Phys.PG;
 
 type
   TWSDatamodule = class(TDataModule)
@@ -60,22 +61,32 @@ var
   FDPhysFBDriverLink1: TFDPhysFBDriverLink;
   FDSchemaAdapter1: TFDSchemaAdapter;
   FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
+  FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink;
+  FDPhysPgDriverLink1: TFDPhysPgDriverLink;
+
   FDManager1: TFDManager;
 
 procedure TWSDatamodule.AfterConstruction;
 begin
   inherited;
+
+ /// inicializa a estrutura do FireDAC
   FDConnection1 := TFDConnection.create(self);
   ConnectionStrings := FDConnection1.Params.Text;
   FDPhysFBDriverLink1 := TFDPhysFBDriverLink.create(self);
   FDSchemaAdapter1 := TFDSchemaAdapter.create(self);
   FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(self);
+  FDPhysMSSQLDriverLink1:= TFDPhysMSSQLDriverLink.create(self);
+  FDPhysPgDriverLink1:= TFDPhysPgDriverLink.create(self);
+
   FDManager1 := TFDManager.create(self);
 {$IFDEF MSWINDOWS}
   FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(self);
 {$ENDIF}
+  /// conexão default - sera trocado pela configuração de usuario
   FDConnection1.ConnectionName := 'MVCBr_DB';
   FDConnection1.driverName := 'FB';
+
 end;
 
 procedure TWSDatamodule.FDManager1AfterLoadConnectionDefFile(Sender: TObject);
@@ -99,11 +110,18 @@ begin
   Connection := FDManager.AcquireConnection(ConnectionName, name);
   if Connection.Params.count = 0 then
   begin
+
+  {  /// default de inicialziação
     Connection.Params.values['driverid'] := 'FB';
     Connection.Params.values['server'] := 'localhost';
     Connection.Params.values['database'] := 'mvcbr';
     Connection.Params.values['user_name'] := 'sysdba';
     Connection.Params.values['password'] := 'masterkey';
+  }
+
+    assert(WSConnectionString<>'','Falta configurar a conexão de banco de dados');
+
+    /// pega a configuração de usuario
     if WSConnectionString <> '' then
     begin
       old := Connection.Params.Delimiter;
@@ -114,6 +132,7 @@ begin
         Connection.Params.Delimiter := old;
       end;
     end;
+
   end;
 end;
 

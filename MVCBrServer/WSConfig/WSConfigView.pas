@@ -59,6 +59,8 @@ type
     GroupBox2: TGroupBox;
     Label6: TLabel;
     WSPort: TEdit;
+    Label7: TLabel;
+    vendorlib: TEdit;
     procedure Button1Click(Sender: TObject);
   private
   protected
@@ -122,6 +124,7 @@ begin
   result.addPair('database', Database.Text);
   result.addPair('user_name', user_name.Text);
   result.addPair('password', Password.Text);
+  result.addPair('vendorlib',vendorlib.text);
 end;
 
 class function TWSConfigView.New(aController: IController): IView;
@@ -153,6 +156,10 @@ begin
   Password := TEdit.create(self);
   Password.Name := 'password';
   Password.Text := 'masterkey';
+
+  vendorlib.name := 'vendorlib';
+  vendorlib.text := '';
+
 {$ENDIF}
   /// dados do servidor
   FList.Add(WSPort);
@@ -162,6 +169,7 @@ begin
   FList.Add(Database);
   FList.Add(user_name);
   FList.Add(Password);
+  FList.Add(vendorlib);
 end;
 
 /// escreve os dados no arquivo de configuração

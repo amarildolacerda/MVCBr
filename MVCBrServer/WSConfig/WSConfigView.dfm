@@ -15,9 +15,9 @@ object WSConfigView: TWSConfigView
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 24
-    Top = 152
+    Top = 111
     Width = 329
-    Height = 169
+    Height = 210
     Caption = 'Database Config'
     TabOrder = 0
     object Label1: TLabel
@@ -54,6 +54,13 @@ object WSConfigView: TWSConfigView
       Width = 30
       Height = 13
       Caption = 'Senha'
+    end
+    object Label7: TLabel
+      Left = 23
+      Top = 161
+      Width = 47
+      Height = 13
+      Caption = 'VendorLib'
     end
     object driverid: TComboBox
       Left = 72
@@ -104,6 +111,13 @@ object WSConfigView: TWSConfigView
       Text = 'masterkey'
       TextHint = 'Senha de acesso'
     end
+    object vendorlib: TEdit
+      Left = 73
+      Top = 156
+      Width = 224
+      Height = 21
+      TabOrder = 5
+    end
   end
   object Button1: TButton
     Left = 278
@@ -118,7 +132,7 @@ object WSConfigView: TWSConfigView
     Left = 24
     Top = 8
     Width = 329
-    Height = 138
+    Height = 97
     Caption = 'Server Config'
     TabOrder = 2
     object Label6: TLabel
