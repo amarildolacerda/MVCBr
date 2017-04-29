@@ -25,3 +25,7 @@ Arquivo MVCBrServer.CONFIG
 	}
 }
 </pre>
+
+
+
+<a href="http://www.tireideletra.com.br/?p=698">Como configurar o Metadata</a>
