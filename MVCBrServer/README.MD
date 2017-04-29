@@ -1,5 +1,6 @@
 Arquivo MVCBrServer.CONFIG
 
+<pre>
 * exemplo Firebird
 { "Config":
     {"WSPort":"8080",
@@ -23,3 +24,4 @@ Arquivo MVCBrServer.CONFIG
 	 "VendorLib":"C:\\Program Files (x86)\\PostgreSQL\\9.5\bin\\libpq.dll"
 	}
 }
+</pre>
