@@ -55,7 +55,7 @@ type
     [unsafe]FControllers: IInterfaceList;
   protected
     /// MainView para o Application
-    [unsafe]FMainView: IView;
+    FMainView: IView;
     /// singleton
     class var FApplicationController: IApplicationController;
   public

@@ -142,7 +142,7 @@ begin
   if not assigned(FView) then
   begin
     Application.CreateForm(TWSConfigView, ref);
-    supports(ref, IView, FView);
+    Supports(ref, IView, FView);
 {$IFDEF FMX}
     if Application.MainForm = nil then
       Application.RealCreateForms;

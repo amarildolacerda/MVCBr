@@ -57,7 +57,7 @@ begin
   else if drv.Contains('=MSSQL;') then
     result := TODataDialectMSSQL
   else if drv.Contains('=PG;') then
-    result := TODataDialectMSSQL
+    result := TODataDialectPostgreSQL
     /// por Elisangela
   else
     result := TODataDialectFirebird;

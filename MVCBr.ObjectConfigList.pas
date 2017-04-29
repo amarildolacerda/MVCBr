@@ -216,6 +216,7 @@ type
     procedure ReadItem(ASection, AItem: string; out AValue: TValue); virtual;
     property ComponentFullPath: boolean read FComponentFullPath
       write SetComponentFullPath;
+    function ToString:String;
   end;
 
 implementation
@@ -365,6 +366,14 @@ end;
 function TObjectConfigModel.This: TObject;
 begin
   result := self;
+end;
+
+function TObjectConfigModel.ToString: String;
+begin
+   case ContentType of
+     ctIniFile: result := TConfigIniFile(FContentFile.ConfigFile).FIniFile.ToString ; { TODO: ??? }
+     ctJsonFile: result := TConfigJsonFile(FContentFile.ConfigFile).FJsonFile.ToJson ;
+   end;
 end;
 
 procedure TObjectConfigModel.WriteConfig;

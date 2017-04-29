@@ -117,14 +117,24 @@ begin
 end;
 
 function TWSConfigView.GetServer: TJsonValue;
+var j:TJsonObject;
+    str:TStringList;
 begin
-  result := TJsonObject.create();
-  result.addPair('driverid', driverid.Text);
+  str:=TStringList.create;
+  try
+    str.LoadFromFile(FList.FileName);
+    j := TJsonObject.ParseJSONValue(  str.text ) as TJsonObject;
+  finally
+    str.free;
+  end;
+  result := j.GetValue('Config');
+{  result.addPair('driverid', driverid.Text);
   result.addPair('server', Server.Text);
   result.addPair('database', Database.Text);
   result.addPair('user_name', user_name.Text);
   result.addPair('password', Password.Text);
   result.addPair('vendorlib',vendorlib.text);
+}
 end;
 
 class function TWSConfigView.New(aController: IController): IView;
@@ -157,6 +167,7 @@ begin
   Password.Name := 'password';
   Password.Text := 'masterkey';
 
+  vendorlib := TEdit.create(self);
   vendorlib.name := 'vendorlib';
   vendorlib.text := '';
 

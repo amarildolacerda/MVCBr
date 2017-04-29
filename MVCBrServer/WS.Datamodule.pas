@@ -47,46 +47,80 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 // uses FireDAC.Adpt;
-uses System.SyncObjs, WS.Common;
+uses System.JSON, System.SyncObjs, WS.Common;
 
 {$R *.dfm}
 
 var
-  ConnectionStrings: string;
+  // ConnectionStrings: string;
 {$IFDEF LINUX}
 {$ELSE}
   FDGUIxWaitCursor1: TFDGUIxWaitCursor;
 {$ENDIF}
-  FDConnection1: TFDConnection;
+  // FDConnection1: TFDConnection;
   FDPhysFBDriverLink1: TFDPhysFBDriverLink;
-  FDSchemaAdapter1: TFDSchemaAdapter;
+  // FDSchemaAdapter1: TFDSchemaAdapter;
   FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
   FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink;
   FDPhysPgDriverLink1: TFDPhysPgDriverLink;
 
-  FDManager1: TFDManager;
+  // FDManager1: TFDManager;
+  LInited: boolean = false;
+
+procedure InitConfig;
+begin
+  if not LInited then
+  begin
+    /// inicializa a estrutura do FireDAC
+    FDPhysFBDriverLink1 := TFDPhysFBDriverLink.create(WSDatamodule);
+    FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(WSDatamodule);
+    FDPhysMSSQLDriverLink1 := TFDPhysMSSQLDriverLink.create(WSDatamodule);
+    FDPhysPgDriverLink1 := TFDPhysPgDriverLink.create(WSDatamodule);
+
+{$IFDEF MSWINDOWS}
+    FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(WSDatamodule);
+{$ENDIF}
+  end;
+end;
+
+procedure SetConnectionProp(fd: TFDCustomConnection);
+var
+  LVendorLib: string;
+  LDriverID: string;
+  old: char;
+begin
+  InitConfig;
+  /// pega a configuração de usuario
+  if WSConnectionString <> '' then
+  begin
+    old := fd.Params.Delimiter;
+    try
+      fd.Params.Delimiter := ';';
+      fd.Params.DelimitedText := stringReplace( WSConnectionString,'\\','\',[rfReplaceAll]);
+    finally
+      fd.Params.Delimiter := old;
+    end;
+  end;
+
+  LVendorLib :=  fd.Params.Values['VendorLib'];
+  LDriverID := fd.Params.Values['DriverId'].ToUpper;
+
+  if not LVendorLib.IsEmpty then
+    if LDriverID.Equals('PG') then
+    begin
+      FDPhysPgDriverLink1.VendorLib := LVendorLib;
+    end
+    else if LDriverID.Equals('FB') then
+      FDPhysFBDriverLink1.VendorLib := LVendorLib
+    else if LDriverID.Equals('MYSQL') then
+      FDPhysMySQLDriverLink1.VendorLib := LVendorLib
+    else if LDriverID.Equals('MSSQL') then
+      FDPhysMSSQLDriverLink1.VendorLib := LVendorLib;
+end;
 
 procedure TWSDatamodule.AfterConstruction;
 begin
   inherited;
-
- /// inicializa a estrutura do FireDAC
-  FDConnection1 := TFDConnection.create(self);
-  ConnectionStrings := FDConnection1.Params.Text;
-  FDPhysFBDriverLink1 := TFDPhysFBDriverLink.create(self);
-  FDSchemaAdapter1 := TFDSchemaAdapter.create(self);
-  FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(self);
-  FDPhysMSSQLDriverLink1:= TFDPhysMSSQLDriverLink.create(self);
-  FDPhysPgDriverLink1:= TFDPhysPgDriverLink.create(self);
-
-  FDManager1 := TFDManager.create(self);
-{$IFDEF MSWINDOWS}
-  FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(self);
-{$ENDIF}
-  /// conexão default - sera trocado pela configuração de usuario
-  FDConnection1.ConnectionName := 'MVCBr_DB';
-  FDConnection1.driverName := 'FB';
-
 end;
 
 procedure TWSDatamodule.FDManager1AfterLoadConnectionDefFile(Sender: TObject);
@@ -101,6 +135,7 @@ var
 constructor TFDQueryAuto.create(AOwner: TComponent);
 var
   old: char;
+  LConn: String;
 begin
   inherited;
   ConnectionName := 'MVCBr_DB';
@@ -110,30 +145,11 @@ begin
   Connection := FDManager.AcquireConnection(ConnectionName, name);
   if Connection.Params.count = 0 then
   begin
-
-  {  /// default de inicialziação
-    Connection.Params.values['driverid'] := 'FB';
-    Connection.Params.values['server'] := 'localhost';
-    Connection.Params.values['database'] := 'mvcbr';
-    Connection.Params.values['user_name'] := 'sysdba';
-    Connection.Params.values['password'] := 'masterkey';
-  }
-
-    assert(WSConnectionString<>'','Falta configurar a conexão de banco de dados');
-
-    /// pega a configuração de usuario
-    if WSConnectionString <> '' then
-    begin
-      old := Connection.Params.Delimiter;
-      try
-        Connection.Params.Delimiter := ';';
-        Connection.Params.DelimitedText := WSConnectionString;
-      finally
-        Connection.Params.Delimiter := old;
-      end;
-    end;
-
+    assert(WSConnectionString <> '',
+      'Falta configurar a conexão de banco de dados');
+    SetConnectionProp(Connection);
   end;
+
 end;
 
 end.

@@ -45,7 +45,7 @@ type
     FRefModelCount: integer;
     FRefViewCount: integer;
   protected
-    [unsafe]FView: IView;
+    FView: IView;
     FID: string;
     procedure Load; virtual;
     procedure SetID(const AID: string);

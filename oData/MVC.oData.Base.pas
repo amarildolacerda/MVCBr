@@ -32,6 +32,7 @@ type
 
     [MVCHTTPMethod([httpGET])]
     [MVCPath('')]
+    [MVCPath('/')]
     [MVCDoc('Get Resources list')]
     procedure ResourceList(CTX: TWebContext);
 

@@ -218,8 +218,8 @@ end;
 
 procedure TMemJsonFile.FromJson(AJson: string);
 begin
-  FreeAndNil(FJson);
-  FJson := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
+  FreeAndNil(  FJson   );
+  FJson := TJsonObject.ParseJSONValue(StringReplace(StringReplace(AJson,#13#10,'',[rfReplaceAll]),#9,'',[rfReplaceAll])) as TJsonObject;
   FModified := false;
 end;
 
