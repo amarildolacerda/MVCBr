@@ -21,6 +21,13 @@ uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System
 
 Type
 
+
+  IWooCommerceOrders = interface
+    ['{C37E42EF-3120-4F2D-8009-CAB6C5C1D7C2}']
+    function Get(AId: string): string;
+    function List: string;
+  end;
+
   IWooCommerceProducts = interface
     ['{A4877F7A-1496-471B-9400-F22133C0092F}']
     function This: TObject;
@@ -37,6 +44,7 @@ Type
     function GetConsumerKey: string;
     function GetCOnsumerSecret: string;
     function GetProducts: IWooCommerceProducts;
+    function GetOrders: IWooCommerceOrders;
     procedure SetContent(const Value: string);
     function GetContent: string;
     property Content: string read GetContent write SetContent;
@@ -53,13 +61,15 @@ Type
     property ConsumerKey: string read GetConsumerKey write SetConsumerKey;
     property COnsumerSecret: string read GetCOnsumerSecret
       write SetConsumerSecret;
-    function GetAuth1String: string;
+    //function GetAuth1String: string;
     /// Http
     function &GET(AResource: String): string;
     function &PUT(AResource,ADados: String): string;
 
     /// WooCommerce resources
     property Products: IWooCommerceProducts read GetProducts;
+    property Orders: IWooCommerceOrders read GetOrders;
+
   end;
 
 Implementation

@@ -43,10 +43,12 @@ type
     Button3: TButton;
     LabeledEdit5: TLabeledEdit;
     Button4: TButton;
+    Button5: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     FInited: Boolean;
     function GetWooCommerceModel: IWooCommerceModel;
@@ -139,6 +141,14 @@ begin
         memo1.lines.clear;
         memo1.lines.add(Content);
      end;
+end;
+
+procedure TWooCommerceSampleView.Button5Click(Sender: TObject);
+begin
+   with GetWooCommerceModel do
+   begin
+     memo1.lines.add( orders.List );
+   end;
 end;
 
 function TWooCommerceSampleView.Controller(const aController

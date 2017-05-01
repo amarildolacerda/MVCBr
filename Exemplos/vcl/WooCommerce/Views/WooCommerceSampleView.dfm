@@ -46,9 +46,9 @@ object WooCommerceSampleView: TWooCommerceSampleView
   end
   object Memo1: TMemo
     Left = 56
-    Top = 232
+    Top = 296
     Width = 465
-    Height = 321
+    Height = 257
     Lines.Strings = (
       'Memo1')
     TabOrder = 3
@@ -111,5 +111,14 @@ object WooCommerceSampleView: TWooCommerceSampleView
     Caption = 'Alterar Pre'#231'o'
     TabOrder = 9
     OnClick = Button4Click
+  end
+  object Button5: TButton
+    Left = 56
+    Top = 211
+    Width = 75
+    Height = 25
+    Caption = 'Orders'
+    TabOrder = 10
+    OnClick = Button5Click
   end
 end

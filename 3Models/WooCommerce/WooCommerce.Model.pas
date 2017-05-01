@@ -25,12 +25,25 @@ uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System
 
 Type
 
-  TWooCommerceProduct = class(TMVCFactoryAbstract, IWooCommerceProducts)
+  // pedidos
+  TWooCommerceOrders = class(TMVCFactoryAbstract, IWooCommerceOrders)
+  const
+    base: string = '/orders';
   protected
     FModel: IWooCommerceModel;
+  public
+    class function New(const AModel: IWooCommerceModel): IWooCommerceOrders;
+    function Get(AId: string): string;
+    function List: string;
 
+  end;
+
+  // estrutura de produtos
+  TWooCommerceProducts = class(TMVCFactoryAbstract, IWooCommerceProducts)
   const
     base: string = '/products';
+  protected
+    FModel: IWooCommerceModel;
   public
     class function New(AModel: IWooCommerceModel): IWooCommerceProducts;
     function This: TObject;
@@ -46,6 +59,7 @@ Type
     FConsumerSecret: string;
     FConsumerKey: string;
     FProducts: IWooCommerceProducts;
+    FOrders: IWooCommerceOrders;
     FContent: string;
     FBaseURL: string;
     FCodeResponse: Integer;
@@ -63,6 +77,7 @@ Type
     function GetCodeResponse: Integer;
     procedure SetResourcePrefix(const Value: string);
     function GetResourcePrefix: string;
+    function GetOrders: IWooCommerceOrders;
   protected
     function &GET(AResource: String): string; virtual;
     function &PUT(AResource, ADados: String): string; virtual;
@@ -81,7 +96,7 @@ Type
     property ConsumerKey: string read GetConsumerKey write SetConsumerKey;
     property COnsumerSecret: string read GetCOnsumerSecret
       write SetConsumerSecret;
-    function GetAuth1String: string;
+    // function GetAuth1String: string;
     property Content: string read GetContent write SetContent;
     property CodeResponse: Integer read GetCodeResponse write SetCodeResponse;
     property BaseURL: string read GetBaseURL write SetBaseURL;
@@ -89,6 +104,8 @@ Type
       write SetResourcePrefix;
     /// WooCommerce methods
     property Products: IWooCommerceProducts read GetProducts;
+    property Orders: IWooCommerceOrders read GetOrders;
+
   end;
 
 Implementation
@@ -111,7 +128,8 @@ uses
 constructor TWooCommerceModel.Create(AOwner: TComponent);
 begin
   inherited;
-  FProducts := TWooCommerceProduct.New(self);
+  FProducts := TWooCommerceProducts.New(self);
+  FOrders := TWooCommerceOrders.New(self);
 end;
 
 destructor TWooCommerceModel.Destroy;
@@ -226,11 +244,11 @@ begin
   end;
 end;
 {$ENDIF}
+{ function TWooCommerceModel.GetAuth1String: string;
+  begin
 
-function TWooCommerceModel.GetAuth1String: string;
-begin
-
-end;
+  end;
+}
 
 function TWooCommerceModel.GetBaseURL: string;
 begin
@@ -255,6 +273,11 @@ end;
 function TWooCommerceModel.GetContent: string;
 begin
   result := FContent;
+end;
+
+function TWooCommerceModel.GetOrders: IWooCommerceOrders;
+begin
+    result := fOrders;
 end;
 
 function TWooCommerceModel.GetProducts: IWooCommerceProducts;
@@ -383,44 +406,66 @@ end;
 
 { TWooCommerceProduct }
 
-function TWooCommerceProduct.Count: Integer;
+function TWooCommerceProducts.Count: Integer;
 var
   j: IJsonObject;
 begin
-  FModel.Content := FModel.&GET(base + '/count');
+  FModel.&GET(base + '/count');
   j := TInterfacedJSON.New(FModel.Content);
   if not j.IsNull then
     result := j.JSONObject.I('count');
 end;
 
-function TWooCommerceProduct.Get(AId: string): string;
+function TWooCommerceProducts.Get(AId: string): string;
 begin
   result := FModel.Get(base + '/' + AId);
 end;
 
-function TWooCommerceProduct.List: string;
+function TWooCommerceProducts.List: string;
 begin
   result := FModel.Get(base);
 end;
 
-class function TWooCommerceProduct.New(AModel: IWooCommerceModel)
+class function TWooCommerceProducts.New(AModel: IWooCommerceModel)
   : IWooCommerceProducts;
 var
-  o: TWooCommerceProduct;
+  o: TWooCommerceProducts;
 begin
-  o := TWooCommerceProduct.Create;
+  o := TWooCommerceProducts.Create;
   o.FModel := AModel;
   result := o;
 end;
 
-function TWooCommerceProduct.Put(AId, AJson: string): string;
+function TWooCommerceProducts.Put(AId, AJson: string): string;
 begin
   result := FModel.Put(base + '/' + AId, AJson);
 end;
 
-function TWooCommerceProduct.This: TObject;
+function TWooCommerceProducts.This: TObject;
 begin
   result := self;
+end;
+
+{ TWooCommerceOrders }
+
+function TWooCommerceOrders.Get(AId: string): string;
+begin
+  result := FModel.Get(base + '/' + AId);
+end;
+
+function TWooCommerceOrders.List: string;
+begin
+  result := FModel.Get(base);
+end;
+
+class function TWooCommerceOrders.New(const AModel: IWooCommerceModel)
+  : IWooCommerceOrders;
+var
+  o: TWooCommerceOrders;
+begin
+  o := TWooCommerceOrders.Create();
+  o.FModel := AModel;
+  result := o;
 end;
 
 Initialization
