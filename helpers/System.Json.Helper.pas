@@ -22,6 +22,32 @@ type
 
   TMemberVisibilitySet = set of TMemberVisibility;
 
+  IJsonObject = interface
+    ['{62E97901-D27A-460E-B0AF-0640874360D7}']
+    function Parse(AJson: string): IJsonObject;
+    function JSONObject: TJSONObject;
+    function isNull: boolean;
+    function addPair(AKey, AValue: string): TJSONObject;
+    function AddChild(AKey, AJson:string): TJSONObject;
+    function ToJSON:string;
+  end;
+
+  TInterfacedJSON = class(TInterfacedObject, IJsonObject)
+  private
+    FJson: TJSONObject;
+  public
+    constructor create(AJson: string);
+    destructor destroy; override;
+    class function New(AJson: string): IJsonObject;overload;
+    class function New:IJsonObject;overload;
+    function Parse(AJson: string): IJsonObject;
+    function JSONObject: TJSONObject;
+    function isNull: boolean;
+    function addPair(AKey, AValue: string): TJSONObject;
+    function AddChild(AKey, AJson:string): TJSONObject;
+    function ToJSON:string;
+  end;
+
   TJSONObjectHelper = class helper for TJSONObject
   private
     function GetValueBase(chave: string): string;
@@ -435,11 +461,13 @@ begin
 end;
 
 {$IFDEF CompilerVersion<=30}
+
 function TJSONObjectHelper.addPair(chave: string; Value: string)
   : TJSONObject; overload;
-var pair:TJsonPair;
+var
+  pair: TJsonPair;
 begin
-  pair := TJsonPair.create(chave,value);
+  pair := TJsonPair.create(chave, Value);
   self.add(pair);
 end;
 {$ENDIF}
@@ -932,7 +960,7 @@ begin
         end;
       end;
       if assigned(APair) then
-        AList.Add(APair);
+        AList.add(APair);
     end;
   finally
     AContext.free;
@@ -1031,6 +1059,62 @@ begin
       Items[I] := Value;
       exit;
     end;
+end;
+
+{ TInterfacedJSON }
+
+function TInterfacedJSON.AddChild(AKey, AJson:string): TJSONObject;
+begin
+  result := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
+  FJson.addPair(AKey,result);
+end;
+
+function TInterfacedJSON.addPair(AKey, AValue: string): TJSONObject;
+begin
+  result := FJson.addPair(AKey, AValue);
+end;
+
+constructor TInterfacedJSON.create(AJson: string);
+begin
+  inherited create;
+  FJson := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
+end;
+
+destructor TInterfacedJSON.destroy;
+begin
+  FreeAndNil(FJson);
+  inherited;
+end;
+
+function TInterfacedJSON.isNull: boolean;
+begin
+  result := not assigned(FJson);
+end;
+
+function TInterfacedJSON.JSONObject: TJSONObject;
+begin
+  result := FJson;
+end;
+
+class function TInterfacedJSON.New: IJsonObject;
+begin
+  result := TInterfacedJSON.create('{}');
+end;
+
+class function TInterfacedJSON.New(AJson: string): IJsonObject;
+begin
+  result := TInterfacedJSON.create(AJson);
+end;
+
+function TInterfacedJSON.Parse(AJson: string): IJsonObject;
+begin
+  result := self;
+  FJson.ParseJSONValue(AJson);
+end;
+
+function TInterfacedJSON.ToJson: string;
+begin
+   result := FJson.ToJSON;
 end;
 
 initialization

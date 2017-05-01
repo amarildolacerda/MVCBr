@@ -3407,7 +3407,7 @@ object FormAppWizard: TFormAppWizard
     Top = 150
     Width = 207
     Height = 17
-    Caption = 'Cria sub-pasta por artefatos'
+    Caption = 'manter os artefatos na raiz'
     TabOrder = 5
   end
   object config: TButton

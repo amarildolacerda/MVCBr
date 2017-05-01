@@ -93,7 +93,7 @@ object FormNewSet: TFormNewSet
         Top = 123
         Width = 233
         Height = 17
-        Caption = 'criar sub-pasta para o artefato'
+        Caption = 'manter os artefatos na raiz'
         TabOrder = 1
       end
       object chFMX: TCheckBox

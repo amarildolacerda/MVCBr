@@ -1,0 +1,34 @@
+object segundoFormView: TsegundoFormView
+  Left = 0
+  Top = 0
+  Caption = 'segundoFormView'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  DesignerMasterStyle = 0
+  object Layout1: TLayout
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object Panel1: TPanel
+      Position.X = 48.000000000000000000
+      Position.Y = 40.000000000000000000
+      Size.Width = 529.000000000000000000
+      Size.Height = 73.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      object Label1: TLabel
+        Align = Contents
+        Size.Width = 529.000000000000000000
+        Size.Height = 73.000000000000000000
+        Size.PlatformDefault = False
+        Text = 'Segundo form ebedded no TLayout'
+        TabOrder = 0
+      end
+    end
+  end
+end

@@ -13,13 +13,13 @@ interface
 
 uses
 {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF} System.UITypes, System.SysUtils, System.Classes,
-  MVCBr.ApplicationController, MVCBr.Interf,
-{$IFDEF FMX}MVCBr.FMX.DataModuleDummy{$ELSE} MVCBr.VCL.DataModuleDummy{$ENDIF};
+  MVCBr.ApplicationController, MVCBr.Interf {$ifndef BPL},
+{$IFDEF FMX}MVCBr.FMX.DataModuleDummy{$ELSE} MVCBr.VCL.DataModuleDummy{$ENDIF}{$endif};
 
 type
   // TModuleFactory = class({$IFDEF BPL}TDataModule, {$ELSE} TForm,
   // {$ENDIF} IModuleModel, IModel)
-  TModuleFactory = class(TDataModuleDummy, IModuleModel, IModel)
+  TModuleFactory = class( {$IFDEF BPL}TDataModule, {$ELSE}  TDataModuleDummy,{$endif} IModuleModel, IModel)
   private
     { Private declarations }
     FController: IController;

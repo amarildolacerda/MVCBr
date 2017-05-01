@@ -206,7 +206,7 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent, mtNavigator);
+  TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent, mtNavigator, mtComponent);
   TModelTypes = set of TModelType;
 
   // IModel Interfaces

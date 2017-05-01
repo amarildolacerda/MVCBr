@@ -13,7 +13,8 @@ unit MVCBr.Component;
 
 interface
 
-uses MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController, System.Classes, System.SysUtils;
+uses MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController, System.Classes,
+  System.SysUtils;
 
 type
 
@@ -27,18 +28,19 @@ type
     procedure AfterConstruction; override;
   public
     function ApplicationControllerInternal: IApplicationController; virtual;
-    function ApplicationController:TApplicationController;virtual;
-    function This: TObject;virtual;
-    function GetID: string;virtual;
+    function ApplicationController: TApplicationController; virtual;
+    function This: TObject; virtual;
+    function GetID: string; virtual;
     function ID(const AID: String): IModel;
-    function Update: IModel;virtual;
-    function Controller(const AController: IController): IModel;virtual;
-    function GetModelTypes: TModelTypes;virtual;
-    function GetController: IController;virtual;
-    function ResolveController(const AGuidController: TGuid): IController;virtual;
-    procedure SetModelTypes(const AModelType: TModelTypes);virtual;
+    function Update: IModel; virtual;
+    function Controller(const AController: IController): IModel; virtual;
+    function GetModelTypes: TModelTypes; virtual;
+    function GetController: IController; virtual;
+    function ResolveController(const AGuidController: TGuid)
+      : IController; virtual;
+    procedure SetModelTypes(const AModelType: TModelTypes); virtual;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
-    procedure AfterInit;virtual;
+    procedure AfterInit; virtual;
 
   end;
 
@@ -49,8 +51,12 @@ implementation
 procedure TComponentFactory.AfterConstruction;
 begin
   inherited;
-  FAdapter := TModelFactory.create;
-  FAdapter.ID(Self.ClassName + '.' + Self.name);
+  if not assigned(FAdapter) then
+  begin
+    FAdapter := TModelFactory.create;
+    FAdapter.ID(Self.ClassName + '.' + Self.name);
+  end;
+  ModelTypes := [mtComponent];
 end;
 
 procedure TComponentFactory.AfterInit;
@@ -60,10 +66,11 @@ end;
 
 function TComponentFactory.ApplicationController: TApplicationController;
 begin
-    result := TApplicationController(ApplicationControllerInternal.This);
+  result := TApplicationController(ApplicationControllerInternal.This);
 end;
 
-function TComponentFactory.ApplicationControllerInternal: IApplicationController;
+function TComponentFactory.ApplicationControllerInternal
+  : IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
@@ -74,13 +81,14 @@ begin
 end;
 
 function TComponentFactory.GetController: IController;
-var vw:IView;
+var
+  vw: IView;
 begin
   result := FAdapter.GetController;
   if not assigned(result) then
-     if assigned(Owner) then
-       if supports(owner,IView,vw) then
-          result := vw.GetController;
+    if assigned(Owner) then
+      if supports(Owner, IView, vw) then
+        result := vw.GetController;
 
 end;
 
@@ -99,15 +107,15 @@ begin
   result := FAdapter.ID(AID);
 end;
 
-function TComponentFactory.ResolveController(
-  const AGuidController: TGuid): IController;
+function TComponentFactory.ResolveController(const AGuidController: TGuid)
+  : IController;
 begin
   result := GetController.ResolveController(AGuidController);
 end;
 
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
-  FAdapter.ModelTypes := AModelType;
+    FAdapter.ModelTypes := AModelType;
 end;
 
 function TComponentFactory.This: TObject;

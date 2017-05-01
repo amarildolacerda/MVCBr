@@ -29,8 +29,8 @@ object FormClassModel: TFormClassModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 114
-      Height = 300
+      Width = 117
+      Height = 299
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3264,8 +3264,6 @@ object FormClassModel: TFormClassModel
         0000}
       ExplicitLeft = 3
       ExplicitTop = 56
-      ExplicitWidth = 117
-      ExplicitHeight = 299
     end
   end
   object Notebook1: TNotebook
@@ -3284,8 +3282,6 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 136
@@ -3359,7 +3355,7 @@ object FormClassModel: TFormClassModel
         Top = 187
         Width = 233
         Height = 17
-        Caption = 'criar sub-pasta para o artefato'
+        Caption = 'manter os artefatos na raiz'
         TabOrder = 4
       end
       object RadioGroup1: TRadioGroup
@@ -3380,8 +3376,6 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label4: TLabel
         Left = 16
         Top = 11
@@ -3413,8 +3407,6 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 19
@@ -3446,8 +3438,6 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 4'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 24
         Top = 17

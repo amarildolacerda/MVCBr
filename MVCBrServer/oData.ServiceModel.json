@@ -2,6 +2,7 @@
 	"@odata.context": "http://localhost:8080/OData/OData.svc",
 	"__comment": "Services list all resource available to OData.Service",
 	"OData.Services": [{
+                        "_comments_":"Products table service",
 			"resource": "produtos",
 			"collection": "produtos",
 			"keyID": "codigo",
@@ -75,7 +76,14 @@
 			"method": "GET,POST,PATCH,PUT,DELETE"
 		}
 
-	]
+	],
+	"OData.Execute": [{
+                "_comments_":"ExecSQL for exec_procedure",
+		"resource": "exec_procedure",
+		"procedure": "exec_procedure",
+		"params": "filial,dcto,data",
+		"returnRows": true
+	}]
 
 
 }
