@@ -15,7 +15,7 @@ Unit WooCommerce.Model;
 }
 interface
 
-{ .$define INDY }
+{.$DEFINE INDY }
 
 { .$I ..\inc\mvcbr.inc }
 uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, MVCBr.Interf, MVCBr.Model,
@@ -96,7 +96,7 @@ Type
     property ConsumerKey: string read GetConsumerKey write SetConsumerKey;
     property COnsumerSecret: string read GetCOnsumerSecret
       write SetConsumerSecret;
-    // function GetAuth1String: string;
+    function GetAuth1String(RESTRequest: TObject): string;
     property Content: string read GetContent write SetContent;
     property CodeResponse: Integer read GetCodeResponse write SetCodeResponse;
     property BaseURL: string read GetBaseURL write SetBaseURL;
@@ -112,8 +112,9 @@ Implementation
 
 uses
 {$IFDEF INDY}
-  IdHttp, Rest.OAuth,
+  MVCBr.IdHTTPRestClient, Rest.OAuth,
 {$ELSE}
+  Dialogs,
   Rest.Utils,
   Rest.Types,
   Rest.Client,
@@ -142,41 +143,25 @@ end;
 function TWooCommerceModel.Get(AResource: String): string;
 var
   LURL: string;
-  OAuth: TOAuthConsumer;
-  http: TIdHttp;
-  HMAC: TOAuthSignatureMethod_HMAC_SHA1;
+  http: TIdHTTPRestClient;
+  sAuth: string;
 begin
   FCodeResponse := 0;
   FContent := '';
   LURL := FBaseURL + FResourcePrefix + AResource;
-  HMAC := TOAuthSignatureMethod_HMAC_SHA1.Create;
+  http := TIdHTTPRestClient.Create(nil);
   try
-    OAuth := TOAuthConsumer.Create(FConsumerKey, FConsumerSecret);
-    try
-      // auth1
-      with TOAuthRequest.Create(LURL) do
-        try
-          FromConsumerAndToken(OAuth, nil, LURL);
-          Sign_Request(HMAC, OAuth, nil);
-          LURL := LURL + '?' + GetString;
-        finally
-          free;
-        end;
-    finally
-      OAuth.free;
-    end;
-  finally
-    HMAC.free;
-  end;
-
-  http := TIdHttp.Create(nil);
-  try
+    http.BaseURL := FBaseURL;
+    http.ResourcePrefix := FResourcePrefix;
+    http.Resource := AResource;
     try
       try
-        http.Request.ContentType := 'application/json; charset= UTF-8';
-        FContent := http.Get(LURL);
+        sAuth := GetAuth1String(http);
+        http.Resource := AResource + '?' + sAuth;
+        http.Execute();
+        FContent := http.Content;
       finally
-        FCodeResponse := http.ResponseCode;
+        FCodeResponse := http.IdHTTP.ResponseCode;
       end;
     except
       on e: exception do
@@ -187,9 +172,46 @@ begin
   end;
   result := FContent;
 end;
+
+function TWooCommerceModel.GetAuth1String(RESTRequest: TObject): string;
+var
+  http: TIdHTTPRestClient;
+  OAuth: TOAuthConsumer;
+  HMAC: TOAuthSignatureMethod_HMAC_SHA1;
+  LURL: string;
+begin
+  http := TIdHTTPRestClient(RESTRequest);
+  // workaround to 403 - forbidden
+  //http.IdHTTP.Request.UserAgent :=
+  //  'Mozilla/5.0 (Windows NT 6.1; WOW64; rv: 12.0)Gecko / 20100101 Firefox / 12.0 ';
+
+  LURL := http.URL;
+
+  HMAC := TOAuthSignatureMethod_HMAC_SHA1.Create;
+  try
+    OAuth := TOAuthConsumer.Create(FConsumerKey, FConsumerSecret);
+    try
+      // auth1
+      with TOAuthRequest.Create(LURL) do
+        try
+          FromConsumerAndToken(OAuth, nil, LURL);
+          Sign_Request(HMAC, OAuth, nil);
+          result := GetString;
+        finally
+          free;
+        end;
+    finally
+      OAuth.free;
+    end;
+  finally
+    HMAC.free;
+  end;
+end;
+
 {$ELSE}
 
 function TWooCommerceModel.Get(AResource: String): string;
+
 var
   s: String;
   RESTRequest: TRestRequest;
@@ -218,17 +240,9 @@ begin
 
     RESTRequest.Resource := AResource;
 
-    RESTRequest.AddParameter('oauth_consumer_key', FConsumerKey);
-    RESTRequest.AddParameter('oauth_signature_method', 'HMAC-SHA1');
-    RESTRequest.AddParameter('oauth_nonce', OAuth1_FitBit.nonce);
-    RESTRequest.AddParameter('oauth_timestamp',
-      OAuth1_FitBit.timeStamp.DeQuotedString);
-    RESTRequest.AddParameter('oauth_version', '1.0');
-    s := OAuth1_FitBit.SigningClass.BuildSignature(RESTRequest, OAuth1_FitBit);
-    RESTRequest.AddParameter('oauth_signature', s);
-
     RESTRequest.Method := TRESTRequestMethod.rmGET;
 
+    GetAuth1String(RESTRequest);
     RESTRequest.Execute;
 
     FContent := RESTResponse.Content;
@@ -243,12 +257,51 @@ begin
     OAuth1_FitBit.free;
   end;
 end;
-{$ENDIF}
-{ function TWooCommerceModel.GetAuth1String: string;
-  begin
 
+function TWooCommerceModel.GetAuth1String(RESTRequest: TObject): string;
+var
+  s: string;
+  OAuth1_FitBit: TOAuth1Authenticator;
+  Rest: TRestRequest;
+begin
+  Rest := TRestRequest(RESTRequest);
+  OAuth1_FitBit := TOAuth1Authenticator.Create(self);
+  try
+    OAuth1_FitBit.ResetToDefaults;
+    OAuth1_FitBit.ConsumerKey := FConsumerKey;
+    OAuth1_FitBit.COnsumerSecret := FConsumerSecret;
+
+    if Rest.Method = TRESTRequestMethod.rmGET then
+    begin
+      // OK Funcionou
+      Rest.AddParameter('oauth_consumer_key', FConsumerKey);
+      Rest.AddParameter('oauth_signature_method', 'HMAC-SHA1');
+      Rest.AddParameter('oauth_nonce', OAuth1_FitBit.nonce);
+      Rest.AddParameter('oauth_timestamp',
+        OAuth1_FitBit.timeStamp.DeQuotedString);
+      Rest.AddParameter('oauth_version', '1.0');
+      s := OAuth1_FitBit.SigningClass.BuildSignature(Rest, OAuth1_FitBit);
+      Rest.AddParameter('oauth_signature', s);
+      result := '';
+    end
+    else
+    begin // OK funcionou
+      result := 'oauth_consumer_key=' + FConsumerKey +
+        '&oauth_signature_method=HMAC-SHA1' + '&oauth_nonce=' +
+        OAuth1_FitBit.nonce + '&oauth_timestamp=' +
+        OAuth1_FitBit.timeStamp.DeQuotedString + '&oauth_version=1.0';
+      s := OAuth1_FitBit.SigningClass.BuildSignature(Rest, OAuth1_FitBit);
+      result := result + '&oauth_signature=' + s;
+
+      Rest.Resource := Rest.Resource + '?' + result;
+
+    end;
+  finally
+    OAuth1_FitBit.free;
   end;
-}
+
+end;
+{$ENDIF}
 
 function TWooCommerceModel.GetBaseURL: string;
 begin
@@ -277,7 +330,7 @@ end;
 
 function TWooCommerceModel.GetOrders: IWooCommerceOrders;
 begin
-    result := fOrders;
+  result := FOrders;
 end;
 
 function TWooCommerceModel.GetProducts: IWooCommerceProducts;
@@ -309,9 +362,40 @@ end;
 
 {$IFDEF INDY}
 
+///  nao esta funcionado... alguma coisa com autenticacao, talves
 function TWooCommerceModel.Put(AResource, ADados: String): string;
+var
+  LURL: string;
+  http: TIdHTTPRestClient;
+  sAuth: string;
 begin
-
+  FCodeResponse := 0;
+  FContent := '';
+  LURL := FBaseURL + FResourcePrefix + AResource;
+  http := TIdHTTPRestClient.Create(nil);
+  try
+    http.BaseURL := FBaseURL;
+    http.ResourcePrefix := FResourcePrefix;
+    http.Resource := AResource;
+    http.Method := TIdHTTPRestMethod.rmPUT;
+    http.Body.text := ADados;
+    try
+      try
+        sAuth := GetAuth1String(http);
+        http.Resource := AResource + '?' + sAuth;
+        http.Execute();
+        FContent := http.Content;
+      finally
+        FCodeResponse := http.IdHTTP.ResponseCode;
+      end;
+    except
+      on e: exception do
+        self.FContent := e.message;
+    end;
+  finally
+    http.free;
+  end;
+  result := FContent;
 end;
 {$ELSE}
 
@@ -328,7 +412,7 @@ begin
   RESTResponse := TRESTResponse.Create(self);
   OAuth1_FitBit := TOAuth1Authenticator.Create(self);
   try
-    RESTClient.Authenticator := OAuth1_FitBit;
+    RESTClient.Authenticator := nil; // OAuth1_FitBit;
     RESTRequest.Response := RESTResponse;
     RESTRequest.Client := RESTClient;
 
@@ -342,15 +426,13 @@ begin
 
     RESTClient.BaseURL := FBaseURL + FResourcePrefix;
 
-    RESTRequest.Resource := AResource + '?' + 'oauth_consumer_key=' +
-      FConsumerKey + '&oauth_signature_method=HMAC-SHA1' + '&oauth_nonce=' +
-      OAuth1_FitBit.nonce + '&oauth_timestamp=' +
-      OAuth1_FitBit.timeStamp.DeQuotedString + '&oauth_version=1.0';
-    s := OAuth1_FitBit.SigningClass.BuildSignature(RESTRequest, OAuth1_FitBit);
-    RESTRequest.Resource := RESTRequest.Resource + '&oauth_signature=' + s;
+    RESTRequest.Resource := AResource;
 
     RESTRequest.Method := TRESTRequestMethod.rmPUT;
     RESTRequest.Body.Add(ADados, ctAPPLICATION_JSON);
+
+    GetAuth1String(RESTRequest);
+
     RESTRequest.Execute;
 
     FContent := RESTResponse.Content;

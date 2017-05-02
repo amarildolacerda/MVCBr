@@ -122,7 +122,8 @@ begin
 
      with TInterfacedJSON.new(Content) do
      try
-       LabeledEdit5.text := JSONObject.O('product').S('price');
+       if not isNull then
+         LabeledEdit5.text := JSONObject.O('product').S('price');
      finally
      end;
 

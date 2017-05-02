@@ -22,7 +22,7 @@ object WooCommerceSampleView: TWooCommerceSampleView
     EditLabel.Height = 13
     EditLabel.Caption = 'Consumer Key'
     TabOrder = 0
-    Text = 'ck_5e3308a628aeae400f366b7551b7031b2d938f4b'
+    Text = 'ck_408ce1ba350bccf2793e5556ec7c1d923d0dc630'
   end
   object LabeledEdit2: TLabeledEdit
     Left = 56
@@ -33,7 +33,7 @@ object WooCommerceSampleView: TWooCommerceSampleView
     EditLabel.Height = 13
     EditLabel.Caption = 'Consumer Secret'
     TabOrder = 1
-    Text = 'cs_85e0e6904977caa43c186720e24e30f99b4ade4e'
+    Text = 'cs_8af21e443187f4122a55a7bddc5b61782d8df035'
   end
   object Button1: TButton
     Left = 56
