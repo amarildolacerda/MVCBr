@@ -1,6 +1,11 @@
 program MVCBrServerService;
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   Vcl.SvcMgr,
   MVCBr.Servico in 'MVCBr.Servico.pas' {MVCBrService: TService},
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',

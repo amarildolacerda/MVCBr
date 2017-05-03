@@ -9,8 +9,8 @@ unit oData.SQL;
 interface
 
 uses System.Classes, System.SysUtils, Data.DB,
-  idURI, System.JSON, oData.ServiceModel,
-  oData.Interf, oData.Dialect,
+  idURI, oData.ServiceModel, System.JSON.Helper,
+  oData.Interf, oData.Dialect, System.JSON,
   oData.ProxyBase, oData.parse,
   MVCFramework;
 
@@ -195,7 +195,7 @@ var
   LJson: IJsonObject;
   LRowState: string;
 begin
-  LJson := TInterfacedJsonObject.New(AJsonBody);
+  LJson := TInterfacedJson.New(AJsonBody,false);
   if LJson.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
   begin
     if LRowState = cODataModified then

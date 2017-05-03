@@ -8,7 +8,7 @@ unit oData.ServiceModel;
 
 interface
 
-Uses System.Classes, System.SysUtils, System.JSON, oData.JSON,
+Uses System.Classes, System.SysUtils, System.JSON, System.Json.Helper,
   oData.Interf,
   System.Generics.Collections;
 
@@ -22,7 +22,7 @@ type
     function join: string;
   end;
 
-  TJsonODataServiceRelation = class(TInterfacedJsonObject,
+  TJsonODataServiceRelation = class(TInterfacedJson,
     IJsonODataServiceRelation)
   public
     class function New(AJson: TJsonValue): IJsonODataServiceRelation;
@@ -36,7 +36,7 @@ type
     ['{307129D3-0E66-4BDE-BC65-146A0FD434C6}']
   end;
 
-  TJsonODataServiceRelations = class(TInterfacedJsonObject,
+  TJsonODataServiceRelations = class(TInterfacedJson,
     IJsonODataServiceRelations)
   public
     class function New(AJson: TJsonValue): IJsonODataServiceRelations;
@@ -47,7 +47,7 @@ type
     ['{D010F6F6-D4D0-47DF-AD8D-701085DDA22F}']
   end;
 
-  TJsonODataServiceExpand = class(TInterfacedJsonObject,
+  TJsonODataServiceExpand = class(TInterfacedJson,
     IJsonODataServiceExpand)
   public
     class function New(AJson: TJsonValue): IJsonODataServiceExpand;
@@ -59,7 +59,7 @@ type
     ['{04CE6D28-A21A-4A21-8FFB-A9FC8C245064}']
   end;
 
-  TJsonODataServiceExpands = class(TInterfacedJsonObject,
+  TJsonODataServiceExpands = class(TInterfacedJson,
     IJsonODataServiceExpands)
     class function New(AJson: TJsonValue): IJsonODataServiceExpands;
     function expand(AName: string): IJsonODataServiceExpand;
@@ -83,7 +83,7 @@ type
     function Expands: IJsonODataServiceExpands;
   end;
 
-  TJsonODastaServiceResource = class(TInterfacedJsonObject,
+  TJsonODastaServiceResource = class(TInterfacedJson,
     IJsonODataServiceResource)
   private
     FPrimaryKey: string;

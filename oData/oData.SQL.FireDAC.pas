@@ -10,7 +10,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, Data.Db, oData.SQL, System.JSON,
-  MVCBr.Interf,
+  MVCBr.Interf,System.JSON.Helper,
   FireDAC.Comp.Client;
 
 type
@@ -72,7 +72,7 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
+    js := TInterfacedJson.New(TJSONObject.ParseJSONValue(ABody), false);
     if (not assigned(js)) or (not assigned(js.JSON)) then
       raise Exception.Create
         ('JSON string inválido, revisar o body da mensagem');
@@ -157,7 +157,7 @@ begin
     jo := TJSONObject.ParseJSONValue(ABody);
     if assigned(jo) then
     begin
-      js := TInterfacedJsonObject.New(jo, false);
+      js := TInterfacedJson.New(jo, false);
       if (not assigned(js)) or (not assigned(js.JSON)) then
         raise Exception.Create
           ('JSON string inválido, revisar o body da mensagem');
@@ -228,7 +228,7 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    js := TInterfacedJsonObject.New(TJSONObject.ParseJSONValue(ABody), false);
+    js := TInterfacedJson.New(TJSONObject.ParseJSONValue(ABody), false);
     if (not assigned(js)) or (not assigned(js.JSON)) then
       raise Exception.Create
         ('JSON string inválido, revisar o body da mensagem');

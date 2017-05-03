@@ -9,8 +9,8 @@ unit oData.Dialect;
 interface
 
 uses System.Classes, System.SysUtils, oData.ServiceModel,
-  System.JSON, System.Generics.Collections,
-  oData.JSON, oData.Interf;
+  System.JSON, System.Json.Helper, System.Generics.Collections,
+  oData.Interf;
 
 const
   cODataRowState = 'rowstate';
@@ -80,7 +80,7 @@ var
 
 implementation
 
-uses System.JSON.Helper, oData.parse, oData.Engine;
+uses oData.parse, oData.Engine;
 
 function iff(b: Boolean; t, f: string): string;
 begin
@@ -101,7 +101,7 @@ var
   cols, params: string;
 begin
   Result := '';
-  js := TInterfacedJsonObject.New(AJson as TJSONObject, false);
+  js := TInterfacedJson.New(AJson as TJSONObject, false);
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar INSERT'));
@@ -114,7 +114,7 @@ begin
     then
       continue;
 
-    if TInterfacedJsonObject.GetJsonType(p) = jtNull then
+    if TInterfacedJson.GetJsonType(p) = jtNull then
       continue;
 
     if cols <> '' then
@@ -125,7 +125,7 @@ begin
 
     cols := cols + p.JsonString.Value;
 
-    case TInterfacedJsonObject.GetJsonType(p) of
+    case TInterfacedJson.GetJsonType(p) of
       jtNumber:
         params := params + p.JsonValue.Value;
     else
@@ -156,7 +156,7 @@ var
   cols: string;
 begin
   Result := '';
-  js := TInterfacedJsonObject.New(AJson as TJSONObject, false);
+  js := TInterfacedJson.New(AJson as TJSONObject, false);
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar UPDATE'));
@@ -168,7 +168,7 @@ begin
     then
       continue;
 
-    if TInterfacedJsonObject.GetJsonType(p) = jtNull then
+    if TInterfacedJson.GetJsonType(p) = jtNull then
       continue;
 
     if cols <> '' then
@@ -176,7 +176,7 @@ begin
       cols := cols + ',';
     end;
 
-    case TInterfacedJsonObject.GetJsonType(p) of
+    case TInterfacedJson.GetJsonType(p) of
       jtNumber:
         cols := cols + p.JsonString.Value + '=' + p.JsonValue.Value;
     else
@@ -195,7 +195,7 @@ begin
   if AJson = nil then
     exit;
 
-  js := TInterfacedJsonObject.New(AJson as TJSONObject, false);
+  js := TInterfacedJson.New(AJson as TJSONObject, false);
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar Where'));
@@ -207,7 +207,7 @@ begin
       continue;
     if Result <> '' then
       Result := Result + ' and ';
-    case TInterfacedJsonObject.GetJsonType(p) of
+    case TInterfacedJson.GetJsonType(p) of
       jtNumber:
         Result := Result + p.JsonString.Value + '=' + p.JsonValue.Value;
     else
@@ -376,7 +376,7 @@ begin
       str.DelimitedText := FKeys;
       for sKeys in str do
       begin
-        js := TInterfacedJsonObject.New(AJson, false);
+        js := TInterfacedJson.New(AJson, true);
         if assigned(AJson) then
         begin
           jv := js.JSONObject.GetValue(sKeys);
@@ -384,7 +384,7 @@ begin
           begin
             if FWhere2 <> '' then
               FWhere2 := FWhere2 + ' and ';
-            case TInterfacedJsonObject.GetJsonType(jv) of
+            case TInterfacedJson.GetJsonType(jv) of
               jtNumber:
                 FWhere2 := FWhere2 + sKeys + '=' + jv.Value;
             else
@@ -649,7 +649,7 @@ var
 begin
   try
     rs := GetResource(AResource) as IJsonODataServiceResource;
-    Result := TInterfacedJsonObject.New(rs.Relation(ARelation).JSON);
+    Result := TInterfacedJson.New(rs.Relation(ARelation).JSON,false);
     if not assigned(Result) then
       raise Exception.Create('Serviços não disponível para o resource detalhe: '
         + ARelation);

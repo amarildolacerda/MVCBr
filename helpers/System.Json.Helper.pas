@@ -25,27 +25,42 @@ type
   IJsonObject = interface
     ['{62E97901-D27A-460E-B0AF-0640874360D7}']
     function Parse(AJson: string): IJsonObject;
+    function Json: TJsonValue;
     function JSONObject: TJSONObject;
+    function JsonValue: TJsonValue;
     function isNull: boolean;
+    function AsArray: TJsonArray;
     function addPair(AKey, AValue: string): TJSONObject;
-    function AddChild(AKey, AJson:string): TJSONObject;
-    function ToJSON:string;
+    function AddChild(AKey, AJson: string): TJSONObject;
+    function ToJson: string;
   end;
 
   TInterfacedJSON = class(TInterfacedObject, IJsonObject)
   private
-    FJson: TJSONObject;
+    FInstanceOwned: boolean;
+  protected
+    FJson: TJsonValue;
   public
-    constructor create(AJson: string);
+    constructor create(AJson: string); overload;
+    constructor create; overload;
     destructor destroy; override;
-    class function New(AJson: string): IJsonObject;overload;
-    class function New:IJsonObject;overload;
+    class function New(AJson: string): IJsonObject; overload;
+    class function New: IJsonObject; overload;
+    class function New(AJson: TJsonValue; AOwned: boolean): IJsonObject;
+      overload; static;
+    class function GetJsonType(AJsonValue: TJsonPair): TJsonType;
+      overload; static;
+    class function GetJsonType(AJsonValue: TJsonValue): TJsonType;
+      overload; static;
     function Parse(AJson: string): IJsonObject;
+    function Json: TJsonValue;
     function JSONObject: TJSONObject;
+    function JsonValue: TJsonValue;
+    function AsArray: TJsonArray;
     function isNull: boolean;
     function addPair(AKey, AValue: string): TJSONObject;
-    function AddChild(AKey, AJson:string): TJSONObject;
-    function ToJSON:string;
+    function AddChild(AKey, AJson: string): TJSONObject;
+    function ToJson: string;
   end;
 
   TJSONObjectHelper = class helper for TJSONObject
@@ -69,8 +84,8 @@ type
     function O(index: integer): TJSONObject; overload;
     function F(chave: string): Extended;
     function B(chave: string): boolean;
-    function A(chave: string): TJSONArray;
-    function AsArray: TJSONArray;
+    function A(chave: string): TJsonArray;
+    function AsArray: TJsonArray;
     function Contains(chave: string): boolean;
     function Find(chave: string): TJsonValue; virtual;
 
@@ -92,7 +107,7 @@ type
     // procedure FromRecord<T :record>(rec:T);
   end;
 
-  TJSONArrayHelper = class helper for TJSONArray
+  TJSONArrayHelper = class helper for TJsonArray
   public
     function Length: integer;
     function Find(AJson: string): TJSONObject;
@@ -118,7 +133,7 @@ type
     function ToRecord<T: Record >(var ARec: T): T; overload;
     class function ToRecord<T: record >(AJson: string): T; overload; static;
     class procedure GetRecordList<T: record >(AList: TJsonValuesList; ARec: T);
-    function AsArray: TJSONArray;
+    function AsArray: TJsonArray;
     function AsPair: TJsonPair;
     function Datatype: TJsonType;
     function asObject: TJSONObject;
@@ -132,7 +147,7 @@ type
   end;
 
   IJson = TJSONObject;
-  IJSONArray = TJSONArray;
+  IJSONArray = TJsonArray;
 
   TJson = TJSONObject;
 
@@ -338,7 +353,7 @@ begin
     result := jtNull
   else if AJsonValue is TJSONObject then
     result := jtObject
-  else if AJsonValue is TJSONArray then
+  else if AJsonValue is TJsonArray then
     result := jtArray
   else if (AJsonValue is TJSONNumber) then
     result := jtNumber
@@ -454,10 +469,10 @@ end;
 {$ENDIF}
 { TJSONObjectHelper }
 
-function TJSONObjectHelper.A(chave: string): TJSONArray;
+function TJSONObjectHelper.A(chave: string): TJsonArray;
 begin
   // result := TJsonArray.Create;
-  TryGetValue<TJSONArray>(chave, result);
+  TryGetValue<TJsonArray>(chave, result);
 end;
 
 {$IFDEF CompilerVersion<=30}
@@ -494,9 +509,9 @@ begin
   result := addPair(chave, S);
 end;
 
-function TJSONObjectHelper.AsArray: TJSONArray;
+function TJSONObjectHelper.AsArray: TJsonArray;
 begin
-  result := TJSONObject.ParseJSONValue(self.ToJson) as TJSONArray;
+  result := TJSONObject.ParseJSONValue(self.ToJson) as TJsonArray;
 end;
 
 function TJSONObjectHelper.B(chave: string): boolean;
@@ -888,9 +903,9 @@ begin
   (self as TJSONObject).addPair(AKey, AValue);
 end;
 
-function TJSONValueHelper.AsArray: TJSONArray;
+function TJSONValueHelper.AsArray: TJsonArray;
 begin
-  result := self as TJSONArray;
+  result := self as TJsonArray;
 end;
 
 function TJSONValueHelper.AsInteger: integer;
@@ -1063,27 +1078,71 @@ end;
 
 { TInterfacedJSON }
 
-function TInterfacedJSON.AddChild(AKey, AJson:string): TJSONObject;
+function TInterfacedJSON.AddChild(AKey, AJson: string): TJSONObject;
 begin
   result := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
-  FJson.addPair(AKey,result);
+  (FJson as TJSONObject).addPair(AKey, result);
 end;
 
 function TInterfacedJSON.addPair(AKey, AValue: string): TJSONObject;
 begin
-  result := FJson.addPair(AKey, AValue);
+  result := (FJson as TJSONObject).addPair(AKey, AValue);
+end;
+
+constructor TInterfacedJSON.create;
+begin
+  inherited create;
 end;
 
 constructor TInterfacedJSON.create(AJson: string);
 begin
   inherited create;
-  FJson := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
+  Parse(AJson);
 end;
 
 destructor TInterfacedJSON.destroy;
 begin
-  FreeAndNil(FJson);
+  if FInstanceOwned then
+    FreeAndNil(FJson);
   inherited;
+end;
+
+function TInterfacedJSON.Json: TJsonValue;
+begin
+  result := FJson;
+end;
+
+class function TInterfacedJSON.New(AJson: TJsonValue; AOwned: boolean)
+  : IJsonObject;
+var
+  jo: TInterfacedJSON;
+begin
+  jo := TInterfacedJSON.create;
+  jo.FJson := AJson;
+  jo.FInstanceOwned := AOwned;
+  result := jo;
+end;
+
+function TInterfacedJSON.AsArray: TJsonArray;
+begin
+  Json.TryGetValue<TJsonArray>(result);
+end;
+
+class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonValue): TJsonType;
+begin
+  result := TJSONObject.GetJsonType(AJsonValue);
+end;
+
+function TInterfacedJSON.JsonValue: TJsonValue;
+begin
+  result := FJson;
+end;
+
+class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonPair): TJsonType;
+var
+  j: TJsonValue;
+begin
+  result := GetJsonType(AJsonValue.JsonValue);
 end;
 
 function TInterfacedJSON.isNull: boolean;
@@ -1093,7 +1152,7 @@ end;
 
 function TInterfacedJSON.JSONObject: TJSONObject;
 begin
-  result := FJson;
+  result := FJson as TJSONObject;
 end;
 
 class function TInterfacedJSON.New: IJsonObject;
@@ -1107,14 +1166,23 @@ begin
 end;
 
 function TInterfacedJSON.Parse(AJson: string): IJsonObject;
+var
+  O: TJSONObject;
 begin
   result := self;
-  FJson.ParseJSONValue(AJson);
+  if not assigned(FJson) then
+  begin
+     FJson := TJSONObject.ParseJSONValue(AJson);
+     FInstanceOwned := false;
+     exit;
+  end;
+  O := FJson As TJSONObject;
+  O.ParseJSONValue(AJson);
 end;
 
 function TInterfacedJSON.ToJson: string;
 begin
-   result := FJson.ToJSON;
+  result := FJson.ToJson;
 end;
 
 initialization
