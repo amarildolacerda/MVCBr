@@ -1,9 +1,27 @@
-{
-  MVCBr
-  Autor: amarildo lacerda
-}
-{
-  Alterações:
+{ *************************************************************************** }
+{ }
+{ }
+{ Copyright (C) Amarildo Lacerda }
+{ }
+{ https://github.com/amarildolacerda }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
+{  Alterações:
      05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões
 }
 unit System.Json.Helper;
@@ -32,20 +50,27 @@ type
 
   IJsonObject = interface
     ['{62E97901-D27A-460E-B0AF-0640874360D7}']
+    function GetValueBase(chave: string): string;
+    procedure SetValueBase(chave: string; const Value: string);
     function Parse(AJson: string): IJsonObject;
     function Json: TJsonValue;
     function JSONObject: TJSONObject;
     function JsonValue: TJsonValue;
     function isNull: boolean;
     function AsArray: TJsonArray;
-    function addPair(AKey, AValue: string): TJSONObject;
+    function addPair(AKey, AValue: string): TJSONObject;overload;
+    function addPair(AKey:string; AValue: TJsonValue): TJSONObject;overload;
     function AddChild(AKey, AJson: string): TJSONObject;
     function ToJson: string;
+    function Contains(AKey: string): boolean;
+    property Value[chave: string]: string read GetValueBase write SetValueBase;
   end;
 
   TInterfacedJSON = class(TInterfacedObject, IJsonObject)
   private
     FInstanceOwned: boolean;
+    function GetValueBase(chave: string): string;
+    procedure SetValueBase(chave: string; const Value: string);
   protected
     FJson: TJsonValue;
   public
@@ -66,9 +91,12 @@ type
     function JsonValue: TJsonValue;
     function AsArray: TJsonArray;
     function isNull: boolean;
-    function addPair(AKey, AValue: string): TJSONObject;
+    function addPair(AKey, AValue: string): TJSONObject;overload;
+    function addPair(AKey:string; AValue: TJsonValue): TJSONObject;overload;
     function AddChild(AKey, AJson: string): TJSONObject;
     function ToJson: string;
+    function Contains(AKey: string): boolean;
+    property Value[chave: string]: string read GetValueBase write SetValueBase;
   end;
 
   TJSONObjectHelper = class helper for TJSONObject
@@ -1132,14 +1160,29 @@ begin
   result := jo;
 end;
 
+function TInterfacedJSON.addPair(AKey:string; AValue: TJsonValue): TJSONObject;
+begin
+  result := JSONObject.addPair(AKey,AValue);
+end;
+
 function TInterfacedJSON.AsArray: TJsonArray;
 begin
   Json.TryGetValue<TJsonArray>(result);
 end;
 
+function TInterfacedJSON.Contains(AKey: string): boolean;
+begin
+  result := JSONObject.Contains(AKey);
+end;
+
 class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonValue): TJsonType;
 begin
   result := TJSONObject.GetJsonType(AJsonValue);
+end;
+
+function TInterfacedJSON.GetValueBase(chave: string): string;
+begin
+  result := JSONObject.Value[chave];
 end;
 
 function TInterfacedJSON.JsonValue: TJsonValue;
@@ -1181,12 +1224,17 @@ begin
   result := self;
   if not assigned(FJson) then
   begin
-     FJson := TJSONObject.ParseJSONValue(AJson);
-     FInstanceOwned := false;
-     exit;
+    FJson := TJSONObject.ParseJSONValue(AJson);
+    FInstanceOwned := false;
+    exit;
   end;
   O := FJson As TJSONObject;
   O.ParseJSONValue(AJson);
+end;
+
+procedure TInterfacedJSON.SetValueBase(chave: string; const Value: string);
+begin
+  JSONObject.Value[chave] := Value;
 end;
 
 function TInterfacedJSON.ToJson: string;
