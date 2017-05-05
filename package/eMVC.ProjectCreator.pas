@@ -1,3 +1,8 @@
+{
+   Alterações: 05/05/2017 - Ajuste para suporte ao XE8 em GetPlataforms; por: Wolnei Simões
+}
+
+
 unit eMVC.ProjectCreator;
 // This is done to Warnings that I can't control, as Embarcadero has
 // deprecated the functions, but due to design you are still required to
@@ -160,9 +165,15 @@ end;
 
 function TNewProjectEx.GetPlatforms: TArray<string>;
 begin
+ {$if CompilerVersion<30.0}
+  Result := TArray<string>.Create(cWin32Platform, cWin64Platform,
+    cAndroidPlatform, cOSX32Platform, cWinIoT32Platform, cLinux32Platform, {cLinux64Platform,}
+    ciOSDevicePlatform{, cWinARMPlatform});
+ {$else}
   Result := TArray<string>.Create(cWin32Platform, cWin64Platform,
     cAndroidPlatform, cOSX32Platform, cWinIoT32Platform, cLinux64Platform,
     ciOSDevicePlatform, cWinARMPlatform);
+{$ifend} 
 end;
 
 function TNewProjectEx.GetPreferredPlatform: string;
