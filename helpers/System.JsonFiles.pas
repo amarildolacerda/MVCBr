@@ -22,6 +22,11 @@
 { }
 { *************************************************************************** }
 
+{
+  Alterações:
+     05/05/2017 - trocado TJsonBoolean para compatibilidade com XE8; por: Wolnei Simões
+}
+
 unit System.JsonFiles;
 
 interface
@@ -538,7 +543,11 @@ var
     else if Value.IsDate or Value.IsDateTime then
       AArray.AddPair(Ident, ISODateTimeToString(Value.AsExtended))
     else if Value.IsBoolean then
-      AArray.AddPair(Ident, TJSONBool.Create(Value.AsBoolean))
+      begin
+          if Value.AsBoolean then
+               AArray.AddPair(Ident, TJSONTrue.Create() )
+          else AArray.AddPair(Ident, TJSONFalse.Create() )
+      end
     else if Value.IsNumeric then
       AArray.AddPair(Ident, TJSONNumber.Create(Value.AsExtended))
     else

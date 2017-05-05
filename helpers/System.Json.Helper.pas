@@ -1,3 +1,11 @@
+{
+  MVCBr
+  Autor: amarildo lacerda
+}
+{
+  Alterações:
+     05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões
+}
 unit System.Json.Helper;
 
 interface
@@ -970,8 +978,9 @@ begin
       else
         if sametext(AField.FieldType.Name, 'Boolean') then
         begin
-          APair := TJsonPair.create(AFieldName,
-            TJSONBool.create(AValue.AsBoolean));
+          if AValue.AsBoolean then
+               APair := TJsonPair.create(AFieldName, TJSONTrue.create() )
+          else APair := TJsonPair.create(AFieldName, TJSONFalse.create() );
         end;
       end;
       if assigned(APair) then
