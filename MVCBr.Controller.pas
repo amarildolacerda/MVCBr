@@ -63,7 +63,11 @@ type
     function IsModel(AIModel: TGuid): boolean;
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
-    function ShowView: IView; virtual;
+    function ShowView: IView; overload;virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const AProcOnClose: TProc<IView>): IView;
+      overload; virtual;
+
     function ViewEvent(AMessage: String; var AHandled: boolean): IView;
       overload; virtual;
     function ViewEvent<TViewInterface>(AMessage: string; var AHandled: boolean)
@@ -183,6 +187,7 @@ begin
     end;
     FModels := nil;
   end;
+  FView := nil;
   ac := ApplicationController;
   if assigned(ac) then ac.remove(self);
   inherited;
@@ -353,6 +358,14 @@ end;
 procedure TControllerFactory.SetID(const AID: string);
 begin
   FID := AID;
+end;
+
+function TControllerFactory.ShowView(const AProcBeforeShow,
+  AProcOnClose: TProc<IView>): IView;
+begin
+    result := FView;
+    if assigned(result) then
+       result.ShowView(AProcBeforeShow,AProcOnClose);
 end;
 
 function TControllerFactory.ShowView: IView;

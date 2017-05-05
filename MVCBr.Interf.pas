@@ -84,26 +84,38 @@ type
   TMVCBr = record
     class function GetQualifiedName(AII: TGuid): string; static;
     class function IsSame(I1, I2: TGuid): boolean; static;
-    class function IsService<TInterface: IInterface>(Const Obj: TObject): boolean; static;
+    class function IsService<TInterface: IInterface>(Const Obj: TObject)
+      : boolean; static;
     class function GetGuid<TInterface: IInterface>: TGuid; overload; static;
     class function GetGuidString(IID: TGuid): string; static;
-    class function GetGuid(const AInterface: IInterface): TGuid; overload; static;
+    class function GetGuid(const AInterface: IInterface): TGuid;
+      overload; static;
 
-    class function InvokeCreate<TInterface: IInterface>(const AClass: TClass): TInterface; overload; static;
-    class function InvokeCreate(Const AGuid: TGuid; AClass: TClass): IInterface; overload; static;
-    class function InvokeCreate<T: class>(const Args: TArray<TValue>): T; overload; static;
-    class function InvokeMethod<T>(AInstance: TObject; AMethod: string; const Args: TArray<TValue>): T; static;
-    class procedure SetProperty(AInstance: TObject; APropertyNome: string; AValue: TValue); static;
-    class function GetProperty(AInstance: TObject; APropertyNome: string): TValue; static;
+    class function InvokeCreate<TInterface: IInterface>(const AClass: TClass)
+      : TInterface; overload; static;
+    class function InvokeCreate(Const AGuid: TGuid; AClass: TClass): IInterface;
+      overload; static;
+    class function InvokeCreate<T: class>(const Args: TArray<TValue>): T;
+      overload; static;
+    class function InvokeMethod<T>(AInstance: TObject; AMethod: string;
+      const Args: TArray<TValue>): T; static;
+    class procedure SetProperty(AInstance: TObject; APropertyNome: string;
+      AValue: TValue); static;
+    class function GetProperty(AInstance: TObject; APropertyNome: string)
+      : TValue; static;
 
-    class procedure RegisterInterfaced<TInterface: IInterface>(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
-      overload; Static;
-    class procedure RegisterType<TInterface: IInterface; TImplements: Class>(const ANome: string; bSingleton: boolean = true); overload; static;
-    class function ResolveInterfaced<TInterface:IInterface>(const ANome:string):TInterface;static;
+    class procedure RegisterInterfaced<TInterface: IInterface>
+      (const ANome: string; IID: TGuid; AClass: TInterfacedClass;
+      bSingleton: boolean = true); overload; Static;
+    class procedure RegisterType<TInterface: IInterface; TImplements: Class>
+      (const ANome: string; bSingleton: boolean = true); overload; static;
+    class function ResolveInterfaced<TInterface: IInterface>
+      (const ANome: string): TInterface; static;
 
   end;
 
-  TMVCRegister = TMVCBr;  /// compatibilidade
+  TMVCRegister = TMVCBr;
+  /// compatibilidade
 
   IInterfaceAdapter = interface
     ['{9075BA8D-80EE-4F4F-BE43-3B5F5BAB406F}']
@@ -117,7 +129,8 @@ type
     function ApplicationControllerInternal: IApplicationController;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
-    property PropertyValue[ANome: string]: TValue read GetPropertyValue write SetPropertyValue;
+    property PropertyValue[ANome: string]: TValue read GetPropertyValue
+      write SetPropertyValue;
     function GetGuid(AII: IInterface): TGuid;
   end;
 
@@ -137,9 +150,11 @@ type
     function ApplicationControllerInternal: IApplicationController; virtual;
     function GetID: string; virtual;
     procedure SetID(const AID: string); virtual;
-    class function New<TInterface: IInterface>(AClass: TClass): TInterface; overload;
+    class function New<TInterface: IInterface>(AClass: TClass)
+      : TInterface; overload;
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
-    property PropertyValue[ANome: string]: TValue read GetPropertyValue write SetPropertyValue;
+    property PropertyValue[ANome: string]: TValue read GetPropertyValue
+      write SetPropertyValue;
     function AsType<TInterface: IInterface>: TInterface;
     function GetGuid(AII: IInterface): TGuid;
   end;
@@ -152,7 +167,8 @@ type
 
   TMVCOwnedInterfacedObject = Class(TMVCFactoryAbstract)
   private
-    [unsafe]FOwner: TComponent;
+    [unsafe]
+    FOwner: TComponent;
   public
     constructor create; override;
     destructor destroy; override;
@@ -165,7 +181,8 @@ type
     FClass: TClass;
     FGuid: TGuid;
   public
-    class function New(const AGuid: TGuid; const AClass: TClass): IInterfaceAdapter;
+    class function New(const AGuid: TGuid; const AClass: TClass)
+      : IInterfaceAdapter;
   end;
 
   TMVCFactoryAbstractClass = class of TMVCFactoryAbstract;
@@ -206,7 +223,8 @@ type
   end;
 
   // uses IModel to implement Bussines rules
-  TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent, mtNavigator, mtComponent);
+  TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
+    mtNavigator, mtComponent);
   TModelTypes = set of TModelType;
 
   // IModel Interfaces
@@ -255,8 +273,10 @@ type
   // IView é uma representação para FORM
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
-    function ViewEvent(AMessage: string; var AHandled: boolean): IView; overload;
-    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: string; var AHandled: boolean): IView;
+      overload;
+    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean)
+      : IView; overload;
     function Controller(const AController: IController): IView;
     function GetController: IController;
     procedure SetController(const AController: IController);
@@ -268,7 +288,11 @@ type
     procedure SetText(Const AText: String);
     property Text: string read GetText write SetText;
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
-    function ShowView(const AProc: TProc<IView>; AShowModal: boolean): Integer; overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>): Integer; overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
+      : IView; overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const AProcOnClose: TProc<IView>): IView; overload;
     procedure Init;
   end;
 
@@ -282,14 +306,19 @@ type
   /// Main Controller for all Application  - Have a list os Controllers
   IApplicationController = interface
     ['{207C0D66-6586-4123-8817-F84AC0AF29F3}']
-    function ViewEvent(AMessage: string; var AHandled: boolean): IView; overload;
-    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: string; var AHandled: boolean): IView;
+      overload;
+    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
+      : IView; overload;
     function MainView: IView;
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController;
     function ResolveController(AGuid: TGuid): IController;
-    procedure Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
-    procedure Run(AController: IController; AFunc: TFunc < boolean >= nil); overload;
+    procedure RevokeController(AGuid: TGuid);
+    procedure Run(AClass: TComponentClass; AController: IController;
+      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AController: IController;
+      AFunc: TFunc < boolean >= nil); overload;
     function This: TObject;
     function Count: Integer;
     function Add(const AController: IController): Integer;
@@ -330,7 +359,8 @@ type
 
   TControllerAbstract = class(TMVCFactoryAbstract)
   protected
-    [unsafe]FModels: TMVCInterfacedList<IModel>;
+    [unsafe]
+    FModels: TMVCInterfacedList<IModel>;
   public
     constructor create; virtual;
     function This: TControllerAbstract;
@@ -358,7 +388,9 @@ type
     function IsModel(AIModel: TGuid): boolean;
     function ApplicationControllerInternal: IApplicationController;
     function GetView: IView; overload;
-    function ShowView: IView;
+    function ShowView: IView;overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>; Const AProcOnClose:TProc<IView>): IView;overload;
+
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
@@ -422,11 +454,12 @@ type
     ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
   end;
 
-procedure RegisterInterfacedClass(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true); overload;
+procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
+  AClass: TInterfacedClass; bSingleton: boolean = true); overload;
 procedure UnregisterInterfacedClass(const ANome: string);
 
-//var
-//  FControllersClass: TObject;
+// var
+// FControllersClass: TObject;
 
 implementation
 
@@ -435,19 +468,24 @@ uses {$IFNDEF BPL}
 {$ENDIF}
   MVCBr.ApplicationController, MVCBr.IoC;
 
-procedure RegisterInterfacedClass(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
+procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
+  AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
   TMVCBr.RegisterInterfaced<IController>(ANome, IID, AClass, bSingleton);
 end;
 
-class procedure TMVCBr.RegisterType<TInterface; TImplements>(const ANome: string; bSingleton: boolean = true);
+class procedure TMVCBr.RegisterType<TInterface; TImplements>
+  (const ANome: string; bSingleton: boolean = true);
 begin
-  TMVCBrIoc.DefaultContainer.RegisterType<TInterface, TImplements>(bSingleton, ANome);
+  TMVCBrIoc.DefaultContainer.RegisterType<TInterface, TImplements>
+    (bSingleton, ANome);
 end;
 
-class procedure TMVCBr.RegisterInterfaced<TInterface>(const ANome: string; IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
+class procedure TMVCBr.RegisterInterfaced<TInterface>(const ANome: string;
+  IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
-  TMVCBrIoc.DefaultContainer.RegisterInterfaced<TInterface>(IID, AClass, ANome, bSingleton);
+  TMVCBrIoc.DefaultContainer.RegisterInterfaced<TInterface>(IID, AClass, ANome,
+    bSingleton);
 end;
 
 procedure UnregisterInterfacedClass(const ANome: string);
@@ -496,7 +534,8 @@ begin
     end;
 end;
 
-function TControllerAbstract.ResolveController(const ANome: string): IController;
+function TControllerAbstract.ResolveController(const ANome: string)
+  : IController;
 begin
   result := TMVCBrIoc.DefaultContainer.Resolve<IController>(ANome);
   result.Init;
@@ -541,11 +580,11 @@ begin
 end;
 
 { TMVCBr }
-class function TMVCBr.ResolveInterfaced<TInterface>(const ANome:string):TInterface;
+class function TMVCBr.ResolveInterfaced<TInterface>(const ANome: string)
+  : TInterface;
 begin
   result := TMVCBrIoc.DefaultContainer.Resolve<TInterface>(ANome);
 end;
-
 
 class function TMVCBr.GetGuid(const AInterface: IInterface): TGuid;
 begin
@@ -568,7 +607,8 @@ begin
   result := GUIDToString(IID);
 end;
 
-class function TMVCBr.GetProperty(AInstance: TObject; APropertyNome: string): TValue;
+class function TMVCBr.GetProperty(AInstance: TObject;
+  APropertyNome: string): TValue;
 var
   ctx: TRttiContext;
   prp: TRttiProperty;
@@ -590,7 +630,8 @@ begin
 {$ENDIF}
 end;
 
-class function TMVCBr.InvokeCreate(const AGuid: TGuid; AClass: TClass): IInterface;
+class function TMVCBr.InvokeCreate(const AGuid: TGuid; AClass: TClass)
+  : IInterface;
 var
   Obj: TObject;
 begin
@@ -606,13 +647,15 @@ var
 begin
   ctx := TRttiContext.create;
   try
-    result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args).AsType<T>;
+    result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args)
+      .AsType<T>;
   finally
     ctx.Free();
   end;
 end;
 
-class function TMVCBr.InvokeCreate<TInterface>(const AClass: TClass): TInterface;
+class function TMVCBr.InvokeCreate<TInterface>(const AClass: TClass)
+  : TInterface;
 var
   Obj: TObject;
 begin
@@ -622,7 +665,8 @@ begin
     Obj.DisposeOf;
 end;
 
-class function TMVCBr.InvokeMethod<T>(AInstance: TObject; AMethod: string; const Args: TArray<TValue>): T;
+class function TMVCBr.InvokeMethod<T>(AInstance: TObject; AMethod: string;
+  const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
   mtd: TRttiMethod;
@@ -648,7 +692,8 @@ begin
   result := supports(Obj, GetGuid<TInterface>);
 end;
 
-class procedure TMVCBr.SetProperty(AInstance: TObject; APropertyNome: string; AValue: TValue);
+class procedure TMVCBr.SetProperty(AInstance: TObject; APropertyNome: string;
+  AValue: TValue);
 var
   ctx: TRttiContext;
   prp: TRttiProperty;
@@ -707,7 +752,8 @@ begin
   result := TMVCBr.GetProperty(self, ANome);
 end;
 
-function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+function TMVCFactoryAbstract.InvokeMethod<T>(AMethod: string;
+  const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
@@ -718,7 +764,8 @@ begin
   TMonitor.Enter(FLock);
 end;
 
-function TMVCFactoryAbstract.ApplicationControllerInternal: IApplicationController;
+function TMVCFactoryAbstract.ApplicationControllerInternal
+  : IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
@@ -753,7 +800,8 @@ end;
 
 { TMVCInterfacedList<T> }
 
-procedure TMVCInterfacedList<TInterface>.ForEach(AGuid: TGuid; AProc: TProc<TInterface>);
+procedure TMVCInterfacedList<TInterface>.ForEach(AGuid: TGuid;
+  AProc: TProc<TInterface>);
 var
   I: Integer;
   intf: TInterface;
@@ -768,7 +816,8 @@ end;
 
 { TInterfaceAdapter }
 
-class function TInterfaceAdapter.New(const AGuid: TGuid; const AClass: TClass): IInterfaceAdapter;
+class function TInterfaceAdapter.New(const AGuid: TGuid; const AClass: TClass)
+  : IInterfaceAdapter;
 var
   Obj: TInterfaceAdapter;
 begin
@@ -804,10 +853,10 @@ end;
 
 initialization
 
-//FControllersClass := TMVCBrIoc.create;
+// FControllersClass := TMVCBrIoc.create;
 
 finalization
 
-//FControllersClass.Free;
+// FControllersClass.Free;
 
 end.

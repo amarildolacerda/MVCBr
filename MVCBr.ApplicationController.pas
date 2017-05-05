@@ -52,7 +52,8 @@ type
     IApplicationController)
   private
     /// Lista de controllers instanciados
-    [unsafe]FControllers: IInterfaceList;
+    [unsafe]
+    FControllers: IInterfaceList;
   protected
     /// MainView para o Application
     FMainView: IView;
@@ -65,6 +66,7 @@ type
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController; virtual;
     function ResolveController(AGuid: TGuid): IController; virtual;
+    procedure RevokeController(AGuid: TGuid);
 
     function FindView(AGuid: TGuid): IView; virtual;
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
@@ -90,6 +92,7 @@ type
     /// Delete Remove um controller da lista
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
+
     /// Executa o ApplicationController
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
@@ -276,8 +279,13 @@ begin
 end;
 
 procedure TApplicationController.Remove(const AController: IController);
+var i:integer;
 begin
-  FControllers.Remove(AController);
+  for I := FControllers.count-1 downto 0 do
+    if (FControllers.items[i] as IController).this.Equals(  AController.this ) then
+    begin
+        delete(I);
+    end;
 end;
 
 function TApplicationController.ResolveController(AGuid: TGuid): IController;
@@ -289,6 +297,18 @@ begin
     stb.ResolveController(AGuid, result);
   finally
     stb.disposeOf;
+  end;
+end;
+
+procedure TApplicationController.RevokeController(AGuid: TGuid);
+var
+  LController: IController;
+begin
+  LController := FindController(AGuid);
+  if assigned(LController) then
+  begin
+    Remove(LController);
+    TControllerAbstract.RevokeInstance(LController);
   end;
 end;
 
@@ -436,11 +456,10 @@ begin
         FMainView.ShowView(nil, false);
         application.Run;
       end;
-    end  {$ifdef MSWINDOWS}
+    end {$IFDEF MSWINDOWS}
     else
-        application.Run;
-        {$endif}
-
+      application.Run;
+{$ENDIF}
   end;
   { if assigned(AController) then
     AController.AfterInit;

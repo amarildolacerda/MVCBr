@@ -3,7 +3,7 @@
         <ProjectGuid>{0C61FEC6-536D-44D2-88BE-FEB0C4E9FFE5}</ProjectGuid>
         <MainSource>MVCBr.dpk</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Package</AppType>
         <FrameworkType>VCL</FrameworkType>

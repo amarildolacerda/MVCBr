@@ -117,6 +117,7 @@ type
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
     function ResolveController(const IID: TGuid): IController;
       overload; virtual;
+    procedure RevokeController(IID: TGuid);
     function ResolveController<TIController>: TIController; overload;
     function GetModel<TIModel>: TIModel; overload;
     function GetModel(AII: TGuid): IModel; overload;
@@ -130,7 +131,10 @@ type
     function ShowView(const AProcBeforeShow: TProc<IView>): Integer;
       overload; virtual;
     function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
-      : Integer; overload; virtual;
+      : IView; overload; virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const AProcOnClose: TProc<IView>): IView;
+      overload; virtual;
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>): IView; overload; virtual;
     function ShowView(const IIDController: TGuid): IView; overload; virtual;
@@ -261,6 +265,11 @@ begin
   result := GetController.This.ResolveController<TIController>();
 end;
 
+procedure TFormFactory.RevokeController(IID: TGuid);
+begin
+  ApplicationController.RevokeController(IID);
+end;
+
 procedure TFormFactory.SetController(const AController: IController);
 begin
   FController := AController;
@@ -371,6 +380,18 @@ begin
 
 end;
 
+function TFormFactory.ShowView(const AProcBeforeShow, AProcOnClose
+  : TProc<IView>):IView;
+begin
+  FOnCloseProc := AProcOnClose;
+{$IFDEF LINUX}
+{$ELSE}
+  inherited OnClose := DoCloseView;
+{$ENDIF}
+  result := self;
+  ShowView(AProcBeforeShow);
+end;
+
 function TFormFactory.ShowView(const IIDController: TGuid): IView;
 begin
   result := ShowView(IIDController,
@@ -402,8 +423,13 @@ begin
 {$IFDEF LINUX}
 {$ELSE}
 {$IFDEF MSWINDOWS}
+ {$ifdef FMX}
+    Show;
+    result := 0;
+ {$else}
   if FShowModal then
     result := ord(ShowModal);
+ {$endif}
 {$ELSE}
   Show;
 {$ENDIF}
@@ -420,14 +446,8 @@ begin
   if assigned(ctrl) then
   begin
     result := ctrl.GetView;
-    if assigned(AProcBeforeShow) then
-      AProcBeforeShow(TFormFactory(result.This));
-    FOnCloseProc := AProcONClose;
-{$IFDEF LINUX}
-{$ELSE}
-    OnClose := DoCloseView;
-{$ENDIF}
-    result.ShowView();
+    if assigned(result) then
+       result.ShowView(AProcBeforeShow,AProcOnClose);
   end;
 end;
 
@@ -526,10 +546,11 @@ begin
 end;
 
 function TFormFactory.ShowView(const AProcBeforeShow: TProc<IView>;
-AShowModal: boolean): Integer;
+AShowModal: boolean): IView;
 begin
   FShowModal := AShowModal;
-  result := ShowView(AProcBeforeShow);
+  result := self;
+  ShowView(AProcBeforeShow);
 end;
 
 end.
