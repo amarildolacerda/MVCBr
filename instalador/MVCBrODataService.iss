@@ -246,7 +246,7 @@ var
 	lines		: TArrayOfString;
 	n			: longint;
 	i			: longint;
-	errcode		: integer;
+	//errcode		: integer;
 	servnamlen	: integer;
 	error		: boolean;
 begin
