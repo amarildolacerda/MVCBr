@@ -33,6 +33,12 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
+        <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
         <Cfg_2>true</Cfg_2>
         <CfgParent>Base</CfgParent>
@@ -87,6 +93,10 @@
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Keys>CompanyName=MVCBr;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=amarildolacerda;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Optimize>false</DCC_Optimize>
         <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
@@ -111,7 +121,7 @@
         <DCCReference Include="MVCBrCore.dcp"/>
         <DCCReference Include="eMVC.PersistentWizard.pas"/>
         <DCCReference Include="eMVC.ProjectCreator.pas"/>
-        <DCCReference Include="eMVC.DataModuleCreator.pas"/>
+        <DCCReference Include="eMVC.ModuleModelCreator.pas"/>
         <DCCReference Include="eMVC.BaseCreator.pas"/>
         <DCCReference Include="eMVC.FrameCreator.pas"/>
         <DCCReference Include="eMVC.FileCreator.pas"/>
@@ -143,14 +153,14 @@
         <DCCReference Include="eMVC.ModuleModelConst.pas"/>
         <DCCReference Include="eMVC.ControllerWizard.pas"/>
         <DCCReference Include="eMVC.ControllerForm.pas">
-            <Form>FormNewModuleModel</Form>
+            <Form>FormNewController</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="eMVC.ViewModelForm.pas">
             <Form>FormNewSet</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="eMVC.ModuleWizard.pas"/>
+        <DCCReference Include="eMVC.ModuleModelWizard.pas"/>
         <DCCReference Include="eMVC.ModelCreator.pas"/>
         <DCCReference Include="eMVC.ClassModelWizard.pas"/>
         <DCCReference Include="eMVC.ClassModelCreator.pas"/>
@@ -167,6 +177,10 @@
         <DCCReference Include="castalia\CastaliaSimplePasParTypes.pas"/>
         <DCCReference Include="eMVC.Config.pas">
             <Form>MVCConfig</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ModuleModelForm.pas">
+            <Form>FormNewModuleModel</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Debug">
@@ -189,7 +203,11 @@
                 <Source>
                     <Source Name="MainSource">MVCBr.dpk</Source>
                 </Source>
-                <Excluded_Packages/>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="C:\Program Files (x86)\Embarcadero\Studio\18.0\bin\designide240.bpl">Embarcadero Designer IDE Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>
                 <Platform value="Android">False</Platform>
@@ -198,6 +216,12 @@
             </Platforms>
             <Deployment Version="3">
                 <DeployFile LocalName="..\..\BPLBerlin\MVCBr.bpl" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="..\..\BPLTokyo\MVCBr.bpl" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>MVCBr.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="..\..\BPLTokyo\MVCBr.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>MVCBr.bpl</RemoteName>

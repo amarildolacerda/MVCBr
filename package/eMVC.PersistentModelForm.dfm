@@ -34,6 +34,7 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    PageIndex = 3
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -52,19 +53,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         Font.Height = -13
         Font.Name = 'Arial'
         Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label2: TLabel
-        Left = 17
-        Top = 100
-        Width = 297
-        Height = 16
-        Caption = 'Se desejar criar um diret'#243'rio para isto marcar o box'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
         ParentFont = False
       end
       object Label4: TLabel
@@ -99,7 +87,7 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       object cbFMX: TCheckBox
         Left = 19
         Top = 146
-        Width = 97
+        Width = 148
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
@@ -109,78 +97,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      object Label3: TLabel
-        Left = 9
-        Top = 15
-        Width = 110
-        Height = 16
-        Caption = 'Controller config:'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label14: TLabel
-        Left = 24
-        Top = 112
-        Width = 110
-        Height = 13
-        Caption = 'Em geral, um MVC tem:'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label15: TLabel
-        Left = 32
-        Top = 128
-        Width = 115
-        Height = 13
-        Caption = '- ao menos um controller'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label16: TLabel
-        Left = 32
-        Top = 144
-        Width = 52
-        Height = 13
-        Caption = '- um Model'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label17: TLabel
-        Left = 32
-        Top = 160
-        Width = 52
-        Height = 13
-        Caption = '- uma View'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label5: TLabel
-        Left = 32
-        Top = 179
-        Width = 228
-        Height = 13
-        Caption = 'Um Model deve ser adicionado ao seu controller'
-      end
       object cbCreateModel: TCheckBox
         Left = 24
         Top = 56
@@ -266,10 +182,12 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Top = 0
       Caption = 'Finish'
       object Label7: TLabel
-        Left = 32
+        Left = 8
         Top = 83
-        Width = 97
+        Width = 337
         Height = 20
+        Alignment = taCenter
+        AutoSize = False
         Caption = 'Parab'#233'ns....'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGreen
@@ -277,13 +195,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
         ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 32
-        Top = 112
-        Width = 91
-        Height = 13
-        Caption = 'Agora '#233' so terminar'
       end
       object Label9: TLabel
         Left = 32

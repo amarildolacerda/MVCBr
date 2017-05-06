@@ -3276,6 +3276,7 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    PageIndex = 3
     ParentFont = False
     TabOrder = 1
     object TPage

@@ -47,6 +47,8 @@ uses
   eMVC.PersistentModelForm,
   ToolsApi;
 
+{$I .\translate\translate.inc}
+
 type
   TPersistentModelWizard = class(TNotifierObject, IOTAWizard,
     IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
@@ -161,8 +163,7 @@ begin
   // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
   if project = '' then
   begin
-    eMVC.toolBox.showInfo
-      ('Não encontrei o projeto MVCBr, criar um projeto antes!');
+    eMVC.toolBox.showInfo(msgDontFindCreateProjectBefore);
     exit;
   end;
   path := extractFilePath(project);
@@ -175,8 +176,7 @@ begin
 
       if SetNameExists(setname) then
       begin
-        eMVC.toolBox.showInfo('Desculpe, o projeto "' + setname +
-          '" já existe!');
+        eMVC.toolBox.showInfo(format(msgSorryFileExists, [setname]));
       end
       else
       begin

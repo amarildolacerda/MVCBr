@@ -34,6 +34,8 @@ uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
   Graphics, Controls, Forms, Dialogs, ExtCtrls, eMVC.toolBox, StdCtrls, Buttons;
 
+{$I ./translate/translate.inc}
+
 type
   TFormNewSet = class(TForm)
     btnBack: TBitBtn;
@@ -44,11 +46,9 @@ type
     edtSetName: TEdit;
     cbCreateDir: TCheckBox;
     Label1: TLabel;
-    Label2: TLabel;
     Label4: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
     Label9: TLabel;
     listClassName: TListBox;
     cbViewInCtrl: TCheckBox;
@@ -61,6 +61,7 @@ type
     cbViewModel: TCheckBox;
     chFMX: TCheckBox;
     Image1: TImage;
+    Label2: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
@@ -68,6 +69,7 @@ type
     procedure nbPageChanged(Sender: TObject);
     procedure cbCreateModelClick(Sender: TObject);
   private
+    procedure translate;
     { Private declarations }
   public
     { Public declarations }
@@ -94,13 +96,31 @@ procedure TFormNewSet.FormCreate(Sender: TObject);
 begin
   cbCreateModel.enabled := true;
   cbCreateView.enabled := false;
-  //cbViewModel.Enabled := false;
+  // cbViewModel.Enabled := false;
   nb.PageIndex := 0;
   // this two params for future use
   ModelAlone := true;
   viewAlone := true;
-  chFMX.checked := GetFrameworkType='FMX';
+  chFMX.checked := GetFrameworkType = 'FMX';
 
+  translate;
+
+end;
+
+procedure TFormNewSet.translate;
+begin
+  caption := 'View/ViewModel - Model';
+  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  Label4.caption := wizardForm_NameForArtefact;
+  Label1.caption := wizardForm_ViewModel_Expert;
+  btnBack.caption := button_back_caption;
+  btnOKNext.caption := button_next_caption;
+  btnCancel.caption := button_cancel_caption;
+  Label7.caption := msgCongratulation;
+  cbCreateModel.caption := wizardForm_checkBox_createmodel_caption;
+  cbCreateView.caption := wizardForm_checkBox_createview_caption;
+  cbViewModel.caption := wizardForm_checkBox_createviewmodel_caption;
+  label10.caption := wizarForm_createview_tipoview_caption;
 end;
 
 procedure TFormNewSet.btnOKNextClick(Sender: TObject);
@@ -111,31 +131,30 @@ begin
       begin
         if trim(edtSetName.Text) = '' then
         begin
-          eMVC.toolBox.showInfo('Forneça um nome para a View.');
+          eMVC.toolBox.showInfo(format(msgNeedNameFor, ['View']));
           exit;
         end;
         if SetNameExists(edtSetName.Text) then
         begin
-          eMVC.toolBox.showInfo('Desculpe,A view "' + edtSetName.Text +
-            '" já existe!');
+          eMVC.toolBox.showInfo(format(msgSorryFileExists, [edtSetName.Text]));
           exit;
         end;
 
         self.Setname := trim(edtSetName.Text);
-        self.CreateSubDir := cbCreateDir.Checked;
+        self.CreateSubDir := cbCreateDir.checked;
       end;
     1:
       begin
-        self.CreateModule := cbCreateModel.Checked;
-        self.CreateView := cbCreateView.Checked;
-        self.CreateViewModule := cbViewModel.Checked;
+        self.CreateModule := cbCreateModel.checked;
+        self.CreateView := cbCreateView.checked;
+        self.CreateViewModule := cbViewModel.checked;
       end;
     // 2: begin
     // ModelAlone:= not cbModelInCtrl.Checked;
     // end;
     2:
       begin
-        viewAlone := not cbViewInCtrl.Checked;
+        viewAlone := not cbViewInCtrl.checked;
         if trim(edtClassName.Text) <> '' then
           ViewParentClass := trim(edtClassName.Text)
         else if (listClassName.ItemIndex >= 0) and
@@ -143,8 +162,7 @@ begin
           ViewParentClass := listClassName.Items[listClassName.ItemIndex]
         else
         begin
-          eMVC.toolBox.showInfo
-            ('Please give select or input a parent class for the View.');
+          eMVC.toolBox.showInfo(format(msgGiveClassFor, ['View']));
           exit;
         end;
       end;
@@ -163,12 +181,12 @@ begin
     if nb.PageIndex = nb.Pages.Count - 1 then
     begin
       btnOKNext.ModalResult := mrOK;
-      btnOKNext.Caption := '&Finalizar';
+      btnOKNext.caption := button_finish_caption;
     end
     else
     begin
       btnOKNext.ModalResult := mrNone;
-      btnOKNext.Caption := '&Próximo';
+      btnOKNext.caption := button_next_caption;
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
@@ -176,8 +194,8 @@ end;
 
 procedure TFormNewSet.cbCreateModelClick(Sender: TObject);
 begin
-  cbCreateView.Checked := not cbCreateModel.Checked;
-  cbViewModel.Checked := not cbCreateModel.Checked;
+  cbCreateView.checked := not cbCreateModel.checked;
+  cbViewModel.checked := not cbCreateModel.checked;
 end;
 
 procedure TFormNewSet.btnBackClick(Sender: TObject);
@@ -192,9 +210,9 @@ begin
       nb.PageIndex := 1;
 
     if nb.PageIndex = nb.Pages.Count - 1 then
-      btnOKNext.Caption := '&Finalizar'
+      btnOKNext.caption := button_finish_caption
     else
-      btnOKNext.Caption := '&Próximo';
+      btnOKNext.caption := button_next_caption;
   end;
 
   btnBack.visible := (nb.PageIndex > 0);

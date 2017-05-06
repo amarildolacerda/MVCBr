@@ -27,8 +27,8 @@ object MVCConfig: TMVCConfig
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 114
-      Height = 300
+      Width = 117
+      Height = 299
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3262,8 +3262,6 @@ object MVCConfig: TMVCConfig
         0000}
       ExplicitLeft = 3
       ExplicitTop = 56
-      ExplicitWidth = 117
-      ExplicitHeight = 299
     end
   end
   object Button1: TButton
@@ -3279,7 +3277,7 @@ object MVCConfig: TMVCConfig
   object GroupBox1: TGroupBox
     Left = 133
     Top = 18
-    Width = 185
+    Width = 298
     Height = 105
     Caption = 'Gerador de C'#243'digo'
     TabOrder = 2

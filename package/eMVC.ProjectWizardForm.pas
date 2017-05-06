@@ -37,6 +37,8 @@ uses
   Dialogs, ComCtrls, {$IFDEF VER130}FileCtrl, {$ENDIF}ExtCtrls, StdCtrls,
   Buttons, eMVC.toolbox;
 
+{$I ./translate/translate.inc}
+
 type
   TFormAppWizard = class(TForm)
     ScrollBox1: TScrollBox;
@@ -63,6 +65,7 @@ type
   private
     { Private declarations }
     FCanClose: Boolean;
+    procedure translate;
   public
     { Public declarations }
   end;
@@ -72,8 +75,7 @@ var
 
 implementation
 
-
-uses eMVC.Config;
+uses eMVC.config;
 
 {$R *.dfm}
 
@@ -81,17 +83,32 @@ procedure TFormAppWizard.BitBtn4Click(Sender: TObject);
 var
   dir: string;
 begin
-   dir := BrowseForFolder('Selecione a pasta para o "Application":');
-    if trim(dir) <> '' then
-    begin
-      edtPath.Text := dir;
-    end;
+  dir := BrowseForFolder('Selecione a pasta para o "Application":');
+  if trim(dir) <> '' then
+  begin
+    edtPath.Text := dir;
+  end;
 end;
 
 procedure TFormAppWizard.FormCreate(Sender: TObject);
 begin
   FCanClose := false;
   edtPath.Text := '';
+
+  translate;
+
+end;
+
+procedure TFormAppWizard.translate;
+begin
+  caption := wizardForm_caption;
+  Label3.caption := wizardForm_label_caption;
+  Label1.caption := wizardForm_label_ident;
+  Label2.caption := wizardForm_label_folder;
+  bitbtn4.caption := wizardForm_button_search;
+  cbUsarNomeProjeto.caption := wizardForm_createdir_checkbox_caption;
+  btnBack.caption := button_back_caption;
+  bitBtn3.caption := button_cancel_caption;
 end;
 
 procedure TFormAppWizard.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -120,8 +137,8 @@ end;
 
 procedure TFormAppWizard.configClick(Sender: TObject);
 begin
-   with TMVCConfig.new do
-      ShowView(nil);
+  with TMVCConfig.new do
+    ShowView(nil);
 end;
 
 procedure TFormAppWizard.BitBtn3Click(Sender: TObject);

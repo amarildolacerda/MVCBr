@@ -9,21 +9,21 @@ package MVCBr;
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DEFINE DEBUG}
+{$DEFINE RELEASE}
 {$DEFINE VCL}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'Easy MVC 1.0a'}
@@ -43,7 +43,7 @@ requires
 contains
   eMVC.PersistentWizard in 'eMVC.PersistentWizard.pas',
   eMVC.ProjectCreator in 'eMVC.ProjectCreator.pas',
-  eMVC.DataModuleCreator in 'eMVC.DataModuleCreator.pas',
+  eMVC.ModuleModelCreator in 'eMVC.ModuleModelCreator.pas',
   eMVC.BaseCreator in 'eMVC.BaseCreator.pas',
   eMVC.FrameCreator in 'eMVC.FrameCreator.pas',
   eMVC.FileCreator in 'eMVC.FileCreator.pas',
@@ -68,9 +68,9 @@ contains
   eMVC.IncludeCreator in 'eMVC.IncludeCreator.pas',
   eMVC.ModuleModelConst in 'eMVC.ModuleModelConst.pas',
   eMVC.ControllerWizard in 'eMVC.ControllerWizard.pas',
-  eMVC.ControllerForm in 'eMVC.ControllerForm.pas' {FormNewModuleModel},
+  eMVC.ControllerForm in 'eMVC.ControllerForm.pas' {FormNewController},
   eMVC.ViewModelForm in 'eMVC.ViewModelForm.pas' {FormNewSet},
-  eMVC.ModuleWizard in 'eMVC.ModuleWizard.pas',
+  eMVC.ModuleModelWizard in 'eMVC.ModuleModelWizard.pas',
   eMVC.ModelCreator in 'eMVC.ModelCreator.pas',
   eMVC.ClassModelWizard in 'eMVC.ClassModelWizard.pas',
   eMVC.ClassModelCreator in 'eMVC.ClassModelCreator.pas',
@@ -82,7 +82,8 @@ contains
   CastaliaPasLexTypes in 'castalia\CastaliaPasLexTypes.pas',
   CastaliaSimplePasPar in 'castalia\CastaliaSimplePasPar.pas',
   CastaliaSimplePasParTypes in 'castalia\CastaliaSimplePasParTypes.pas',
-  eMVC.Config in 'eMVC.Config.pas' {MVCConfig};
+  eMVC.Config in 'eMVC.Config.pas' {MVCConfig},
+  eMVC.ModuleModelForm in 'eMVC.ModuleModelForm.pas' {FormNewModuleModel};
 
 end.
 

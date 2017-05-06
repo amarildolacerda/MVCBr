@@ -36,6 +36,7 @@ uses
 
 const
 {$I .\inc\persistentmodel.inc}
+{$I .\translate\translate.inc}
 type
   TFormNewSetPersistentModel = class(TForm)
     btnBack: TBitBtn;
@@ -46,11 +47,9 @@ type
     edtSetName: TEdit;
     cbCreateDir: TCheckBox;
     Label1: TLabel;
-    Label2: TLabel;
     Label4: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
     Label9: TLabel;
     listClassName: TListBox;
     cbViewInCtrl: TCheckBox;
@@ -59,7 +58,6 @@ type
     edtClassName: TEdit;
     Label22: TLabel;
     cbCreateModel: TCheckBox;
-    Label5: TLabel;
     ComboBox1: TComboBox;
     cbFMX: TCheckBox;
     Image1: TImage;
@@ -69,6 +67,7 @@ type
     procedure listClassNameClick(Sender: TObject);
     procedure nbPageChanged(Sender: TObject);
   private
+    procedure translate;
     { Private declarations }
   public
     { Public declarations }
@@ -91,7 +90,6 @@ uses eMVC.OTAUtilities, eMVC.PersistentModelConst;
 
 {$R *.dfm}
 
-
 procedure TFormNewSetPersistentModel.FormCreate(Sender: TObject);
 var
   str: TStringList;
@@ -112,8 +110,23 @@ begin
   // this two params for future use
   ModelAlone := true;
   viewAlone := true;
-  cbFMX.checked := GetFrameworkType='FMX';
+  cbFMX.checked := GetFrameworkType = 'FMX';
 
+  translate;
+
+end;
+
+procedure TFormNewSetPersistentModel.translate;
+begin
+  caption := 'Models';
+  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  cbCreateModel.caption := wizardPersistentCreateModelFactory_caption;
+  Label1.caption := wizardPersistentModel_Expert_Caption;
+  Label4.caption := wizardForm_NameForArtefact;
+  Label7.caption := msgCongratulation;
+  btnBack.caption := button_back_caption;
+  btnOKNext.caption := button_next_caption;
+  btnCancel.caption := button_cancel_caption;
 end;
 
 procedure TFormNewSetPersistentModel.btnOKNextClick(Sender: TObject);
@@ -124,22 +137,21 @@ begin
       begin
         if trim(edtSetName.text) = '' then
         begin
-          eMVC.toolBox.showInfo('Forneça um nome para a View.');
+          eMVC.toolBox.showInfo(format(msgNeedNameFor, ['Model']));
           exit;
         end;
         if SetNameExists(edtSetName.text) then
         begin
-          eMVC.toolBox.showInfo('Desculpe,A view "' + edtSetName.text +
-            '" já existe!');
+          eMVC.toolBox.showInfo(format(msgSorryFileExists, [edtSetName.text]));
           exit;
         end;
 
         self.Setname := trim(edtSetName.text);
-        self.CreateSubDir := cbCreateDir.Checked;
+        self.CreateSubDir := cbCreateDir.checked;
       end;
     1:
       begin
-        self.CreateModule := cbCreateModel.Checked;
+        self.CreateModule := cbCreateModel.checked;
         nb.PageIndex := 2;
       end;
     // 2: begin
@@ -147,7 +159,7 @@ begin
     // end;
     2:
       begin
-        viewAlone := not cbViewInCtrl.Checked;
+        viewAlone := not cbViewInCtrl.checked;
         if trim(edtClassName.text) <> '' then
           ViewParentClass := trim(edtClassName.text)
         else if (listClassName.ItemIndex >= 0) and
@@ -175,12 +187,12 @@ begin
     if nb.PageIndex = nb.Pages.Count - 1 then
     begin
       btnOKNext.ModalResult := mrOK;
-      btnOKNext.Caption := '&Finalizar';
+      btnOKNext.caption := button_finish_caption;
     end
     else
     begin
       btnOKNext.ModalResult := mrNone;
-      btnOKNext.Caption := '&Próximo';
+      btnOKNext.caption := button_next_caption;
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
@@ -198,9 +210,9 @@ begin
       nb.PageIndex := 1;
 
     if nb.PageIndex = nb.Pages.Count - 1 then
-      btnOKNext.Caption := '&Finalizar'
+      btnOKNext.caption := button_finish_caption
     else
-      btnOKNext.Caption := '&Próximo';
+      btnOKNext.caption := button_next_caption;
   end;
 
   btnBack.visible := (nb.PageIndex > 0);

@@ -46,6 +46,8 @@ uses
   eMVC.ViewModelForm,
   ToolsApi;
 
+{$I ./translate/translate.inc}
+
 type
   TNewMVCViewModelWizard = class(TNotifierObject, IOTAWizard,
     IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
@@ -119,7 +121,7 @@ begin
   if project = '' then
   begin
     eMVC.toolBox.showInfo
-      ('Não encontrei o projeto MVCBr, criar um projeto antes!');
+      (msgDontFindCreateProjectBefore );
     exit;
   end;
   path := extractFilePath(project);
@@ -134,8 +136,7 @@ begin
 
       if SetNameExists(setname) then
       begin
-        eMVC.toolBox.showInfo('Desculpe, o projeto "' + setname +
-          '" já existe!');
+        eMVC.toolBox.showInfo(format(msgSorryFileExists, [setname]));
       end
       else
       begin

@@ -38,7 +38,7 @@ uses
   eMVC.OTAUtilities,
   eMVC.projectcreator,
   eMVC.ViewCreator,
-  eMVC.DataModuleCreator,
+  eMVC.ModuleModelCreator,
   eMVC.FrameCreator,
   eMVC.ControllerCreator,
   eMVC.ModelCreator,
@@ -337,7 +337,7 @@ begin
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := '1. Projeto MVCBr';
+  result := '1. '+wizardProjectExpertCaption;
 end;
 
 function TNewProjectWizard.GetPage: string;

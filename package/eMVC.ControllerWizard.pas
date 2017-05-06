@@ -43,11 +43,13 @@ uses
   eMVC.BaseCreator,
   eMVC.ControllerCreator,
   eMVC.ModelCreator,
-  eMVC.DataModuleCreator,
-  eMVC.NewSetDataModuleModelForm,
-  // MVCBr.ModuleModel,
+  eMVC.ModuleModelCreator,
+  eMVC.ControllerForm,
   DesignIntf,
   ToolsApi;
+
+{$I .\translate\translate.inc}
+
 
 type
   TNewMVCSetControllerWizard = class(TNotifierObject, IOTAWizard,
@@ -102,16 +104,6 @@ var
   begin
 
     result := GetCurrentProject.FileName;
-    { for i := 0 to (BorlandIDEServices as IOTAModuleServices).ModuleCount - 1 do
-      begin
-      if pos ('.dpr', lowercase((BorlandIDEServices as IOTAModuleServices)
-      .Modules[i].FileName)) > 0 then
-      begin
-      result := (BorlandIDEServices as IOTAModuleServices).Modules[i]
-      .FileName;
-      break;
-      end;
-      end; }
   end;
 
 var
@@ -133,15 +125,14 @@ var
 
 begin
   project := getProjectName;
-  // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
   if project = '' then
   begin
     eMVC.toolBox.showInfo
-      ('Não encontrei o projeto MVCBr, criar um projeto antes!');
+      (msgDontFindCreateProjectBefore);
     exit;
   end;
   path := extractFilePath(project);
-  with TFormNewModuleModel.create(nil) do
+  with TFormNewController.create(nil) do
   begin
     if showModal = mrOK then
     begin
@@ -150,8 +141,7 @@ begin
       identProject := stringReplace(setname, '.', '', [rfReplaceAll]);
       if SetNameExists(setname) then
       begin
-        eMVC.toolBox.showInfo('Desculpe, o projeto "' + setname +
-          '" já existe!');
+        eMVC.toolBox.showInfo(format(msgSorryFileExists, [setname]));
       end
       else
       begin

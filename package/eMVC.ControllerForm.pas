@@ -36,8 +36,9 @@ uses
 
 const
 {$I .\inc\persistentmodel.inc}
+{$I .\translate\translate.inc}
 type
-  TFormNewModuleModel = class(TForm)
+  TFormNewController = class(TForm)
     btnBack: TBitBtn;
     btnCancel: TBitBtn;
     ScrollBox1: TScrollBox;
@@ -46,11 +47,9 @@ type
     edtSetName: TEdit;
     cbCreateDir: TCheckBox;
     Label1: TLabel;
-    Label2: TLabel;
     Label4: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    Label8: TLabel;
     Label9: TLabel;
     listClassName: TListBox;
     cbViewInCtrl: TCheckBox;
@@ -59,7 +58,6 @@ type
     edtClassName: TEdit;
     Label22: TLabel;
     cbCreateModel: TCheckBox;
-    Label5: TLabel;
     ComboBox1: TComboBox;
     cbFMX: TCheckBox;
     Image1: TImage;
@@ -69,6 +67,7 @@ type
     procedure listClassNameClick(Sender: TObject);
     procedure nbPageChanged(Sender: TObject);
   private
+    procedure translate;
     { Private declarations }
   public
     { Public declarations }
@@ -83,7 +82,7 @@ type
   end;
 
 var
-  FormNewModuleModel: TFormNewModuleModel;
+  FormNewController: TFormNewController;
 
 implementation
 
@@ -91,8 +90,7 @@ uses eMVC.OTAUtilities, eMVC.PersistentModelConst;
 
 {$R *.dfm}
 
-
-procedure TFormNewModuleModel.FormCreate(Sender: TObject);
+procedure TFormNewController.FormCreate(Sender: TObject);
 var
   str: TStringList;
 begin
@@ -113,11 +111,24 @@ begin
   ModelAlone := true;
   viewAlone := true;
 
-  cbFMX.checked := GetFrameworkType='FMX';
-
+  cbFMX.checked := GetFrameworkType = 'FMX';
+  translate;
 end;
 
-procedure TFormNewModuleModel.btnOKNextClick(Sender: TObject);
+procedure TFormNewController.translate;
+begin
+  caption := 'Controllers';
+  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  cbCreateModel.caption := wizardController_CreateModel_caption;
+  Label1.caption := wizardController_Expert_Caption;
+  Label4.caption := wizardForm_NameForArtefact;
+  Label7.caption := msgCongratulation;
+  btnBack.caption := button_back_caption;
+  btnOKNext.caption := button_next_caption;
+  btnCancel.caption := button_cancel_caption;
+end;
+
+procedure TFormNewController.btnOKNextClick(Sender: TObject);
 begin
 
   case nb.PageIndex of
@@ -136,11 +147,11 @@ begin
         end;
 
         self.Setname := trim(edtSetName.text);
-        self.CreateSubDir := cbCreateDir.Checked;
+        self.CreateSubDir := cbCreateDir.checked;
       end;
     1:
       begin
-        self.CreateModule := cbCreateModel.Checked;
+        self.CreateModule := cbCreateModel.checked;
         nb.PageIndex := 2;
       end;
     // 2: begin
@@ -148,7 +159,7 @@ begin
     // end;
     2:
       begin
-        viewAlone := not cbViewInCtrl.Checked;
+        viewAlone := not cbViewInCtrl.checked;
         if trim(edtClassName.text) <> '' then
           ViewParentClass := trim(edtClassName.text)
         else if (listClassName.ItemIndex >= 0) and
@@ -167,8 +178,8 @@ begin
   begin
     nb.PageIndex := nb.PageIndex + 1;
 
-     if (nb.PageIndex = 2) {and not CreateModule} then
-     nb.PageIndex := 3;
+    if (nb.PageIndex = 2) { and not CreateModule } then
+      nb.PageIndex := 3;
 
     if (nb.PageIndex = 2) and not CreateView then
       nb.PageIndex := 3;
@@ -187,7 +198,7 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
-procedure TFormNewModuleModel.btnBackClick(Sender: TObject);
+procedure TFormNewController.btnBackClick(Sender: TObject);
 begin
   if nb.PageIndex > 0 then
   begin
@@ -198,7 +209,7 @@ begin
     if (nb.PageIndex = 2) and not CreateModule then
       nb.PageIndex := 1;
 
-    if (nb.PageIndex = 3)  then
+    if (nb.PageIndex = 3) then
       nb.PageIndex := 1; // 2;
 
     if nb.PageIndex = nb.Pages.Count - 1 then
@@ -210,13 +221,13 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
-procedure TFormNewModuleModel.listClassNameClick(Sender: TObject);
+procedure TFormNewController.listClassNameClick(Sender: TObject);
 begin
   if listClassName.ItemIndex >= 0 then
     edtClassName.text := listClassName.Items[listClassName.ItemIndex];
 end;
 
-procedure TFormNewModuleModel.nbPageChanged(Sender: TObject);
+procedure TFormNewController.nbPageChanged(Sender: TObject);
 begin
   if (nb.PageIndex = 2) and (trim(edtClassName.text) = '') then
   begin

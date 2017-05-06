@@ -37,6 +37,8 @@ uses
   Dialogs, ComCtrls, {$IFDEF VER130}FileCtrl, {$ENDIF}ExtCtrls, StdCtrls,
   Buttons, eMVC.toolbox, Vcl.CheckLst;
 
+{$I .\translate\translate.inc}
+
 type
   TFormClassModel = class(TForm)
     ScrollBox1: TScrollBox;
@@ -98,6 +100,7 @@ type
     function ExtractClassBase(): string;
     function GetClassImplementsParams(const intf: iInterfaceType): string;
     procedure FindInterface(var intf: iInterfaceType);
+    procedure Translate;
   public
     { Public declarations }
     FillListClassesProc: TProc;
@@ -132,6 +135,29 @@ begin
   FClassTypeList := TStringList.create;
   FCanClose := false;
   // edtPath.Text := '';
+  Translate;
+end;
+
+procedure TFormClassModel.Translate;
+begin
+  caption := wizardClassModel_Caption;
+  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+
+  Label3.caption := wizardClassModel_expert_caption;
+  edUnitButton.caption := wizardForm_button_search;
+  Label7.caption := wizardClassModel_label_unitbase;
+  Label2.caption := wizardClassModel_label_classbase;
+  Label1.caption := wizardImportClass_label_modelname;
+  Label4.caption := wizardImportClass_MakeFunc_caption;
+  Label5.caption := wizardImportClass_MakeFunc_caption;
+  checkBox1.caption := wizardForm_all;
+  cbTodosProcs.caption := wizardForm_all;
+  label6.caption := msgCongratulation;
+
+  btnBack.caption := button_back_caption;
+  btnOK.caption := button_next_caption;
+  BitBtn3.caption := button_cancel_caption;
+
 end;
 
 procedure TFormClassModel.FormDestroy(Sender: TObject);
@@ -236,7 +262,7 @@ begin
       begin
         add(clFunctions.items[i]);
         add('begin ');;
-        if  clFunctions.items[i].contains('function ') then
+        if clFunctions.items[i].contains('function ') then
           add('  result := base.' + GetFunc(i) + ';')
         else
           add('  base.' + GetFunc(i) + ';');
@@ -341,9 +367,9 @@ begin
   // btNext.visible := not (Notebook1.PageIndex = Notebook1.Pages.count-1);
 
   if (Notebook1.PageIndex < Notebook1.Pages.count - 1) then
-    btnOK.caption := 'Próximo'
+    btnOK.caption := button_next_caption
   else
-    btnOK.caption := 'Finalizar';
+    btnOK.caption := button_finish_caption;
 
   btnOK.enabled := edModelName.text <> '';
 
@@ -588,7 +614,7 @@ end;
 function TFormClassModel.ExtractClassName(const s: String): string;
 begin
   result := s;
-  if  s.contains('<') then
+  if s.contains('<') then
     result := copy(s, 1, pos('<', s) - 1);
 end;
 

@@ -44,6 +44,8 @@ uses
   DesignIntf,
   ToolsApi;
 
+{$I .\translate\translate.inc}
+
 type
   TClassModelWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
     IOTAProjectWizard{$IFDEF MENUDEBUG}, IOTAMenuWizard{$ENDIF})
@@ -463,7 +465,7 @@ begin
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := '6. Importar Classe';
+  result := '6. '+wizardClassModel_Import_caption;
 end;
 
 function TClassModelWizard.GetPage: string;

@@ -25,8 +25,8 @@ object FormNewSet: TFormNewSet
     Shape = bsBottomLine
   end
   object nb: TNotebook
-    Left = 139
-    Top = 9
+    Left = 135
+    Top = 8
     Width = 351
     Height = 248
     Font.Charset = DEFAULT_CHARSET
@@ -34,6 +34,7 @@ object FormNewSet: TFormNewSet
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    PageIndex = 3
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -52,19 +53,6 @@ object FormNewSet: TFormNewSet
         Font.Height = -13
         Font.Name = 'Arial'
         Font.Style = [fsBold]
-        ParentFont = False
-      end
-      object Label2: TLabel
-        Left = 17
-        Top = 98
-        Width = 297
-        Height = 16
-        Caption = 'Se desejar criar um diret'#243'rio para isto marcar o box'
-        Font.Charset = ANSI_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Arial'
-        Font.Style = []
         ParentFont = False
       end
       object Label4: TLabel
@@ -112,9 +100,8 @@ object FormNewSet: TFormNewSet
       object Label3: TLabel
         Left = 9
         Top = 15
-        Width = 110
+        Width = 4
         Height = 16
-        Caption = 'Controller config:'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -122,69 +109,17 @@ object FormNewSet: TFormNewSet
         Font.Style = [fsBold]
         ParentFont = False
       end
-      object Label14: TLabel
-        Left = 24
-        Top = 112
-        Width = 110
+      object Label2: TLabel
+        Left = 19
+        Top = 37
+        Width = 95
         Height = 13
-        Caption = 'Em geral, um MVC tem:'
+        Caption = 'Controller Config'
         Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
+        Font.Color = clWindowText
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label15: TLabel
-        Left = 32
-        Top = 128
-        Width = 115
-        Height = 13
-        Caption = '- ao menos um controller'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label16: TLabel
-        Left = 32
-        Top = 144
-        Width = 52
-        Height = 13
-        Caption = '- um Model'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label17: TLabel
-        Left = 32
-        Top = 160
-        Width = 52
-        Height = 13
-        Caption = '- uma View'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label18: TLabel
-        Left = 24
-        Top = 184
-        Width = 257
-        Height = 13
-        Caption = 'O n'#250'mero de Model ou View depende da necessidade'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clGreen
-        Font.Height = -11
-        Font.Name = 'MS Sans Serif'
-        Font.Style = []
+        Font.Style = [fsBold]
         ParentFont = False
       end
       object cbCreateView: TCheckBox
@@ -222,9 +157,9 @@ object FormNewSet: TFormNewSet
       object Label6: TLabel
         Left = 16
         Top = 16
-        Width = 81
+        Width = 77
         Height = 16
-        Caption = 'View Config:'
+        Caption = 'View Config'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -245,6 +180,7 @@ object FormNewSet: TFormNewSet
         Width = 134
         Height = 13
         Caption = 'Nome da classe a ser criada'
+        Visible = False
       end
       object listClassName: TListBox
         Left = 16
@@ -267,11 +203,12 @@ object FormNewSet: TFormNewSet
         Visible = False
       end
       object edtClassName: TEdit
-        Left = 16
-        Top = 160
+        Left = 17
+        Top = 157
         Width = 161
         Height = 21
         TabOrder = 2
+        Visible = False
       end
     end
     object TPage
@@ -279,10 +216,11 @@ object FormNewSet: TFormNewSet
       Top = 0
       Caption = 'Finish'
       object Label7: TLabel
-        Left = 96
-        Top = 16
-        Width = 97
+        Left = 3
+        Top = 35
+        Width = 345
         Height = 20
+        Alignment = taCenter
         Caption = 'Parabens....'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clGreen
@@ -290,13 +228,6 @@ object FormNewSet: TFormNewSet
         Font.Name = 'MS Sans Serif'
         Font.Style = [fsBold]
         ParentFont = False
-      end
-      object Label8: TLabel
-        Left = 32
-        Top = 48
-        Width = 91
-        Height = 13
-        Caption = 'Agora '#233' so terminar'
       end
       object Label9: TLabel
         Left = 32
