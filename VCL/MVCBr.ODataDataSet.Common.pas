@@ -19,18 +19,19 @@
 { }
 { *************************************************************************** }
 {
- Objetivo: base para utilizar em conjunto com um Dataset para capturar as alterações em um DeltaJSON
+  Objetivo: base para utilizar em conjunto com um Dataset para capturar as alterações em um DeltaJSON
 
- Marcações:
-      +  adicionado recurso
-      -  retirado
-      *  alteração
-      =  nao ocorreu mudança que interfira relacionamento codigo anterior.
+  Marcações:
+  +  adicionado recurso
+  -  retirado
+  *  alteração
+  =  nao ocorreu mudança que interfira relacionamento codigo anterior.
 
- Alterações:
-     23/03/2017 + procedure SetApplyUpdateDelegate( const AProc:TProc ); por: amarildo lacerda
+  Alterações:
+  23/03/2017 + procedure SetApplyUpdateDelegate( const AProc:TProc ); por: amarildo lacerda
+  06/05/2017 * alterado ModifiedDataRowToJsonObject - checar TProviderFlag.pfInUpdate; por: Ivan Cesar
 
- }
+}
 { *************************************************************************** }
 unit MVCBr.ODataDataSet.Common;
 
@@ -60,7 +61,7 @@ type
     function GetUpdateTable: string;
     procedure SetKeyFields(const AValue: string);
     procedure SetUpdateTable(const AValue: string);
-    procedure SetApplyUpdateDelegate( const AProc:TProc<TDataset> );
+    procedure SetApplyUpdateDelegate(const AProc: TProc<TDataset>);
     function UpdatesPending: Boolean;
     procedure ClearChanges;
     property Changes: TJSONArray read GetChanges;
@@ -68,9 +69,10 @@ type
     property UpdateTable: string read GetUpdateTable write SetUpdateTable;
   end;
 
-
-function ModifiedDataRowToJsonObject(ADataSet: TDataSet; AKeyFields: string): TJSONObject;
-function DeletedDataRowToJsonObject(ADataSet: TDataSet; AKeyFields: string): TJSONObject;
+function ModifiedDataRowToJsonObject(ADataSet: TDataset; AKeyFields: string)
+  : TJSONObject;
+function DeletedDataRowToJsonObject(ADataSet: TDataset; AKeyFields: string)
+  : TJSONObject;
 
 implementation
 
@@ -114,7 +116,8 @@ begin
   end;
 
   case AField.DataType of
-    TFieldType.ftSmallint, TFieldType.ftInteger, TFieldType.ftWord, TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftShortint:
+    TFieldType.ftSmallint, TFieldType.ftInteger, TFieldType.ftWord,
+      TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftShortint:
       AJsonObject.AddPair(LFieldName, TJSONNumber.Create(AField.AsInteger));
 
     TFieldType.ftLargeint:
@@ -123,7 +126,8 @@ begin
     TFieldType.ftSingle, TFieldType.ftFloat:
       AJsonObject.AddPair(LFieldName, TJSONNumber.Create(AField.AsFloat));
 
-    TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo, TFieldType.ftFixedWideChar:
+    TFieldType.ftWideString, TFieldType.ftMemo, TFieldType.ftWideMemo,
+      TFieldType.ftFixedWideChar:
       AJsonObject.AddPair(LFieldName, AField.AsWideString);
 
     TFieldType.ftString, TFieldType.ftFixedChar:
@@ -133,12 +137,14 @@ begin
       AJsonObject.AddPair(LFieldName, DateToISO8601(AField.AsDateTime));
 
     TFieldType.ftTime:
-      AJsonObject.AddPair(LFieldName, FormatDateTime('hh:nn:ss:zzz', AField.AsDateTime));
+      AJsonObject.AddPair(LFieldName, FormatDateTime('hh:nn:ss:zzz',
+        AField.AsDateTime));
 
     TFieldType.ftTimeStamp:
       begin
         LSqlTimeStamp := AField.AsSQLTimeStamp;
-        AJsonObject.AddPair(LFieldName, SQLTimeStampToStr('yyyy-mm-dd hh:nn:ss:zzz', LSqlTimeStamp));
+        AJsonObject.AddPair(LFieldName,
+          SQLTimeStampToStr('yyyy-mm-dd hh:nn:ss:zzz', LSqlTimeStamp));
       end;
 
     TFieldType.ftCurrency:
@@ -148,7 +154,8 @@ begin
       AJsonObject.AddPair(LFieldName, TJSONNumber.Create(AField.AsExtended));
 
     TFieldType.ftBCD, TFieldType.ftFMTBcd:
-      AJsonObject.AddPair(LFieldName, TJSONNumber.Create(BcdToDouble(AField.AsBcd)));
+      AJsonObject.AddPair(LFieldName,
+        TJSONNumber.Create(BcdToDouble(AField.AsBcd)));
 
     TFieldType.ftBoolean:
       begin
@@ -158,7 +165,8 @@ begin
           AJsonObject.AddPair(LFieldName, TJSONFalse.Create);
       end;
 
-    TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream, TFieldType.ftFmtMemo:
+    TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream,
+      TFieldType.ftFmtMemo:
       begin
         LMemoryStream := TMemoryStream.Create;
         try
@@ -177,45 +185,66 @@ begin
         end;
       end;
   else
-    raise ENotSupportedException.CreateFmt('O campo "%s" possui um tipo não suportado ("%s")', [LFieldName, GetEnumName(TypeInfo(TFieldType), Integer(AField.DataType))]);
+    raise ENotSupportedException.CreateFmt
+      ('O campo "%s" possui um tipo não suportado ("%s")',
+      [LFieldName, GetEnumName(TypeInfo(TFieldType),
+      Integer(AField.DataType))]);
   end;
 end;
 
-procedure CheckDataSet(const ADataSet: TDataSet);
+procedure CheckDataSet(const ADataSet: TDataset);
 begin
-  Assert(Assigned(ADataSet), 'ADataSet deve ser informado e estar instanciado.' + sLineBreak);
-  Assert(ADataSet.Active, 'O dataset não está ativo.' + slineBreak);
+  Assert(Assigned(ADataSet), 'ADataSet deve ser informado e estar instanciado.'
+    + sLineBreak);
+  Assert(ADataSet.Active, 'O dataset não está ativo.' + sLineBreak);
 end;
 
-function ModifiedDataRowToJsonObject(ADataSet: TDataSet; AKeyFields: string): TJSONObject;
+function ModifiedDataRowToJsonObject(ADataSet: TDataset; AKeyFields: string)
+  : TJSONObject;
 var
   I: Integer;
   LRowChangeType: TRowSetChangeType;
+  LFieldIsKey: Boolean;
+  LFieldModified: Boolean;
 begin
   CheckDataSet(ADataSet);
-  Assert(ADataSet.State in [dsInsert, dsEdit], 'O dataset não está em edição ou inserção.' + sLineBreak);
-  Assert(not AKeyFields.Trim.IsEmpty, 'AKeyFields deve ser informado.' + sLineBreak);
+  Assert(ADataSet.State in [dsInsert, dsEdit],
+    'O dataset não está em edição ou inserção.' + sLineBreak);
+  Assert(not AKeyFields.Trim.IsEmpty, 'AKeyFields deve ser informado.' +
+    sLineBreak);
   if ADataSet.State = dsInsert then
     LRowChangeType := rctInserted
   else
     LRowChangeType := rctModified;
-  Result := TJSONObject.Create(TJSONPair.Create(CRowStateKey, TDataRowChangeTypeName[LRowChangeType]));
+  Result := TJSONObject.Create(TJSONPair.Create(CRowStateKey,
+    TDataRowChangeTypeName[LRowChangeType]));
   for I := 0 to Pred(ADataSet.FieldCount) do
   begin
+    LFieldIsKey := MatchKeyField(ADataSet.Fields[I].FullName, AKeyFields);
+    LFieldModified := FieldIsModified(ADataSet.Fields[I]);
     if ADataSet.Fields[I].IsNull then
-      if MatchKeyField(ADataSet.Fields[I].FullName, AKeyFields) then
-        raise Exception.CreateFmt('O campo "%s" está definido como chave primária, ele não pode ser nulo.', [ADataSet.Fields[I].FullName]);
-    DataRowToJsonObject(ADataSet.Fields[I], Result);
+      if LFieldIsKey then
+        raise Exception.CreateFmt
+          ('O campo "%s" está definido como chave primária, ele não pode ser nulo.',
+          [ADataSet.Fields[I].FullName]);
+    if (not(TProviderFlag.pfInUpdate in ADataSet.Fields[I].ProviderFlags)) and
+      (not(TProviderFlag.pfInWhere in ADataSet.Fields[I].ProviderFlags)) then
+      continue;
+    if (LFieldIsKey) or (LFieldModified) then
+      DataRowToJsonObject(ADataSet.Fields[I], Result);
   end;
 end;
 
-function DeletedDataRowToJsonObject(ADataSet: TDataSet; AKeyFields: string): TJSONObject;
+function DeletedDataRowToJsonObject(ADataSet: TDataset; AKeyFields: string)
+  : TJSONObject;
 var
   I: Integer;
 begin
   CheckDataSet(ADataSet);
-  Assert(not AKeyFields.Trim.IsEmpty, 'AKeyFields deve ser informado.' + sLineBreak);
-  Result := TJSONObject.Create(TJSONPair.Create(CRowStateKey, TDataRowChangeTypeName[rctDeleted]));
+  Assert(not AKeyFields.Trim.IsEmpty, 'AKeyFields deve ser informado.' +
+    sLineBreak);
+  Result := TJSONObject.Create(TJSONPair.Create(CRowStateKey,
+    TDataRowChangeTypeName[rctDeleted]));
   for I := 0 to Pred(ADataSet.FieldCount) do
   begin
     if MatchKeyField(ADataSet.Fields[I].FullName, AKeyFields) then
