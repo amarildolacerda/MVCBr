@@ -76,7 +76,7 @@ type
     function ThisAs: TWSConfigView;
     function ViewAs: IWSConfigView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
     function GetConfig: TJsonValue;
     function GetServer: TJsonValue;
     function ConnectionString: string;
@@ -92,7 +92,7 @@ Implementation
 
 uses System.JSON.helper;
 
-function TWSConfigView.Update: IView;
+function TWSConfigView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }
@@ -187,7 +187,7 @@ end;
 procedure TWSConfigView.AfterConstruction;
 begin
   inherited;
-  FList := TObjectConfigModel.create;
+  FList := TObjectConfigModel.create(self);
   FList.FileName := ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config';
   AddControls;
   try

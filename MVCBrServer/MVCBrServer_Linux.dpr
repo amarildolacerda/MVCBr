@@ -54,81 +54,79 @@ var
 {$ENDIF}
   LHandle: THandle;
   LServer: TIdHTTPWebBrokerBridge;
-  LConfig: IWSConfigController;
-  ctrl:IWSController;
+  ini: TJsonFile;
 begin
-  LServer := TIdHTTPWebBrokerBridge.Create(nil);
+  ini := TJsonFile.Create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
   try
+    APort := ini.ReadInteger('Config', 'WSPort', 8080);
     Writeln('** MVCBrOData powered by DMVCFramework Server ** build ' +
-      DMVCFRAMEWORK_VERSION{$ifdef LINUX} +' (LINUX)'{$endif});
+      DMVCFRAMEWORK_VERSION);
     Writeln(Format('Starting HTTP Server on port %d', [APort]));
-    ctrl := applicationController.FindController(IWsController) as IWsController;
+    LServer := TIdHTTPWebBrokerBridge.Create(nil);
     try
-      LConfig := ctrl.WSConfig;
-      APort := LConfig.GetPort;
       LServer.DefaultPort := APort;
+      LServer.Active := True;
+      LogI(Format('Server started on port %s', [APort.ToString]));
       { more info about MaxConnections
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_MaxConnections.html }
-      LServer.MaxConnections := 0;//ini.ReadInteger('Config', 'MaxConnections', 0);
+      LServer.MaxConnections := ini.ReadInteger('Config', 'MaxConnections', 0);
       { more info about ListenQueue
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_ListenQueue.html }
-      LServer.ListenQueue := 200;//ini.ReadInteger('Config', 'ListenQueue', 200);
+      LServer.ListenQueue := ini.ReadInteger('Config', 'ListenQueue', 200);
       { Comment the next line to avoid the default browser startup }
-    finally
-//      ini.Free;
-    end;
-    LServer.Active := True;
-    LogI(Format('Server started on port %s', [APort.ToString]));
 {$IFDEF LINUX}
-    Writeln('Write "quit" or "exit" to shutdown the server');
-    repeat
-      // TextColor(RED);
-      // TextColor(LightRed);
-      Write('-> ');
-      // TextColor(White);
-      if lStartupCommand.IsEmpty then
-        ReadLn(lCmd)
-      else
-      begin
-        lCmd := lStartupCommand;
-        lStartupCommand := '';
-        Writeln(lCmd);
-      end;
+      Writeln('Write "quit" or "exit" to shutdown the server');
+      repeat
+        // TextColor(RED);
+        // TextColor(LightRed);
+        Write('-> ');
+        // TextColor(White);
+        if lStartupCommand.IsEmpty then
+          ReadLn(lCmd)
+        else
+        begin
+          lCmd := lStartupCommand;
+          lStartupCommand := '';
+          Writeln(lCmd);
+        end;
 
-      case HandleCommand(lCmd.ToLower, LServer, lCustomHandler) of
-        THandleCommandResult.Continue:
-          begin
-            Continue;
-          end;
-        THandleCommandResult.Break:
-          begin
-            Break;
-          end;
-        THandleCommandResult.Unknown:
-          begin
-            REPLEmit('Unknown command: ' + lCmd);
-          end;
-      end;
-    until false;
+        case HandleCommand(lCmd.ToLower, LServer, lCustomHandler) of
+          THandleCommandResult.Continue:
+            begin
+              Continue;
+            end;
+          THandleCommandResult.Break:
+            begin
+              Break;
+            end;
+          THandleCommandResult.Unknown:
+            begin
+              REPLEmit('Unknown command: ' + lCmd);
+            end;
+        end;
+      until false;
 
 {$ELSE}
-{$IFDEF WIN32}
-    // ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
-    // nil, SW_SHOWMAXIMIZED);
+    {$ifdef WIN32}
+      //ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
+      //  nil, SW_SHOWMAXIMIZED);
+    {$endif}
+      Writeln('Press ESC to stop the server');
+      LHandle := GetStdHandle(STD_INPUT_HANDLE);
+      while True do
+      begin
+        Win32Check(ReadConsoleInput(LHandle, LInputRecord, 1, LEvent));
+        if (LInputRecord.EventType = KEY_EVENT) and
+          LInputRecord.Event.KeyEvent.bKeyDown and
+          (LInputRecord.Event.KeyEvent.wVirtualKeyCode = VK_ESCAPE) then
+          Break;
+      end;
 {$ENDIF}
-    Writeln('Press ESC to stop the server');
-    LHandle := GetStdHandle(STD_INPUT_HANDLE);
-    while True do
-    begin
-      Win32Check(ReadConsoleInput(LHandle, LInputRecord, 1, LEvent));
-      if (LInputRecord.EventType = KEY_EVENT) and
-        LInputRecord.Event.KeyEvent.bKeyDown and
-        (LInputRecord.Event.KeyEvent.wVirtualKeyCode = VK_ESCAPE) then
-        Break;
+    finally
+      LServer.Free;
     end;
-{$ENDIF}
   finally
-    LServer.Free;
+    ini.Free;
   end;
 end;
 

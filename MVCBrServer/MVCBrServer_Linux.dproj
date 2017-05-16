@@ -1,14 +1,14 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{F1B9582C-12D9-4559-9FC8-9F0AE3D81158}</ProjectGuid>
+        <ProjectGuid>{9D90D139-ECB2-48D3-8ED5-3A49DCBFC3CC}</ProjectGuid>
         <ProjectVersion>18.2</ProjectVersion>
-        <FrameworkType>VCL</FrameworkType>
-        <MainSource>MVCBrServerService.dpr</MainSource>
+        <FrameworkType>None</FrameworkType>
+        <MainSource>MVCBrServer_Linux.dpr</MainSource>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Debug</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
-        <TargetedPlatforms>1</TargetedPlatforms>
-        <AppType>Application</AppType>
+        <Platform Condition="'$(Platform)'==''">Linux64</Platform>
+        <TargetedPlatforms>131</TargetedPlatforms>
+        <AppType>Console</AppType>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -28,8 +28,20 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Linux64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Linux64)'!=''">
+        <Cfg_1_Linux64>true</Cfg_1_Linux64>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win32)'!=''">
         <Cfg_1_Win32>true</Cfg_1_Win32>
+        <CfgParent>Cfg_1</CfgParent>
+        <Cfg_1>true</Cfg_1>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Cfg_1)'=='true') or '$(Cfg_1_Win64)'!=''">
+        <Cfg_1_Win64>true</Cfg_1_Win64>
         <CfgParent>Cfg_1</CfgParent>
         <Cfg_1>true</Cfg_1>
         <Base>true</Base>
@@ -39,36 +51,34 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
-        <Cfg_2_Win32>true</Cfg_2_Win32>
-        <CfgParent>Cfg_2</CfgParent>
-        <Cfg_2>true</Cfg_2>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <SanitizedProjectName>MVCBrServerService</SanitizedProjectName>
-        <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
-        <DCC_DcuOutput>.\</DCC_DcuOutput>
-        <DCC_ExeOutput>.\</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
+        <DCC_UsePackage>RESTComponents;emsclientfiredac;FireDACIBDriver;emsclient;FireDACCommon;RESTBackendComponents;soapserver;CloudService;FireDACCommonDriver;inet;FireDAC;FireDACSqliteDriver;soaprtl;soapmidas;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
+        <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
+        <SanitizedProjectName>MVCBrServer_Linux</SanitizedProjectName>
+        <DCC_Define>DMVC3;$(DCC_Define)</DCC_Define>
+        <DCC_UnitSearchPath>.\WSConfig;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <DCC_UsePackage>DBXSqliteDriver;DataSnapServerMidas;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;DataSnapFireDAC;svnui;tethering;FireDACADSDriver;DBXMSSQLDriver;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;vcldb;bindcompfmx;svn;Intraweb;DBXOracleDriver;inetdb;FmxTeeUI;emsedge;fmx;fmxdae;vclib;FireDACDBXDriver;dbexpress;IndyCore;vclx;dsnap;DataSnapCommon;DataSnapConnectors;VCLRESTComponents;vclie;bindengine;DBXMySQLDriver;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;FireDACCommonODBC;DataSnapClient;bindcompdbx;IndyIPCommon;vcl;DBXSybaseASEDriver;IndyIPServer;IndySystem;FireDACDb2Driver;dsnapcon;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;emshosting;FireDACPgDriver;ibmonitor;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;DbxCommonDriver;ibxpress;Tee;DataSnapServer;xmlrtl;DataSnapNativeClient;fmxobj;vclwinx;ibxbindings;rtl;FireDACDSDriver;DbxClientDriver;DBXSybaseASADriver;CustomIPTransport;vcldsnap;SampleListViewMultiDetailAppearancePackage;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;dbxcds;VclSmp;adortl;FireDACODBCDriver;DataSnapIndy10ServerTransport;dsnapxml;DataSnapProviderClient;dbrtl;inetdbxpress;FireDACMongoDBDriver;IndyProtocols;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
-        <DCC_UsePackage>DBXSqliteDriver;dxSkinBlueprintRS24;RestEasyObjects;DBXDb2Driver;dxPSDBTeeChartRS24;dxPSdxGaugeControlLnkRS24;vclactnband;dxSpreadSheetRS24;vclFireDAC;dxDockingRS24;fs24;tethering;dxSkinVisualStudio2013BlueRS24;dxPScxTLLnkRS24;dxBarExtItemsRS24;FireDACADSDriver;dxFireDACServerModeRS24;JvPluginSystem;dxPSTeeChartRS24;dxSkinOffice2007BlackRS24;pckUserControl_DT;FireDACMSSQLDriver;vcltouch;ACBr_NFe;ACBr_NFeDanfeFR;vcldb;JvBands;svn;dxSkinXmas2008BlueRS24;dxSkinscxSchedulerPainterRS24;JvJans;Intraweb;ACBr_NFeDanfeESCPOS;dxSkinsdxBarPainterRS24;pckUserControl_RT;dxSkinOffice2010BlackRS24;dxADOServerModeRS24;JvDotNetCtrls;dxGDIPlusRS24;dxPSdxDBTVLnkRS24;frx24;vclib;dxSkinLilianRS24;FireDACDBXDriver;ACBr_NFSeDanfseFR;dxNavBarRS24;vclx;cxTreeListRS24;dxSkinDevExpressDarkStyleRS24;dxtrmdRS24;ACBr_SATExtratoRL;RESTBackendComponents;dxRibbonRS24;VCLRESTComponents;cxExportRS24;cxPivotGridChartRS24;cxTreeListdxBarPopupMenuRS24;dxSkinOffice2013LightGrayRS24;dxTabbedMDIRS24;vclie;dxSkinVisualStudio2013LightRS24;bindengine;CloudService;ACBr_PAF;FireDACMySQLDriver;JvHMI;cxPivotGridOLAPRS24;ACBr_SATECFVirtual;pckUCDataConnector;dxSkinSharpRS24;dxSkinBlackRS24;DataSnapClient;dxPSLnksRS24;bindcompdbx;ACBr_CTeDacteRL;dxSkinCoffeeRS24;ACBr_TCP;DBXSybaseASEDriver;IndyIPServer;ACBr_CTe;dxSkinsdxRibbonPainterRS24;dxCoreRS24;IndySystem;dxSkinOffice2013DarkGrayRS24;dsnapcon;pckUCRestConn;ACBr_synapse;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;ACBr_SPEDImportar;Jcl;ACBr_SPED;ACBr_MDFe;emshosting;dxBarDBNavRS24;dxSkinDarkSideRS24;ACBr_BoletoRL;ACBr_LFD;dxSkinOffice2013WhiteRS24;DBXOdbcDriver;FireDACTDataDriver;FMXTee;dxPScxExtCommonRS24;dxPSdxLCLnkRS24;soaprtl;DbxCommonDriver;dxPScxPivotGridLnkRS24;ACBr_NFSeDanfseRL;JvManagedThreads;xmlrtl;soapmidas;DataSnapNativeClient;fmxobj;dxSkinMcSkinRS24;JvTimeFramework;rtl;dxLayoutControlRS24;DbxClientDriver;cxGridRS24;DBXSybaseASADriver;dxSkinBlueRS24;dxSpellCheckerRS24;JvSystem;cxLibraryRS24;dxSkinStardustRS24;JvStdCtrls;dxSkinCaramelRS24;ACBr_Convenio115;appanalytics;dxSkinsCoreRS24;dxDBXServerModeRS24;dxMapControlRS24;IndyIPClient;dxSkinHighContrastRS24;bindcompvcl;dxSkinTheAsphaltWorldRS24;TeeUI;frxe24;cxPageControlRS24;cxEditorsRS24;dxPsPrVwAdvRS24;dxSkinSevenClassicRS24;VclSmp;cxSchedulerRibbonStyleEventEditorRS24;JvDocking;FireDACODBCDriver;JvPascalInterpreter;JclVcl;DataSnapIndy10ServerTransport;dxSkinPumpkinRS24;dxSkinscxPCPainterRS24;dxPSPrVwRibbonRS24;ACBr_Boleto;DataSnapProviderClient;ACBr_SEF2;FireDACMongoDBDriver;dxSkinSevenRS24;JvControls;JvPrintPreview;ACBr_MDFeDamdfeFR;ACBr_NFSe;dxdborRS24;dxmdsRS24;DataSnapServerMidas;RESTComponents;cxSchedulerGridRS24;dxHttpIndyRequestRS24;cxPivotGridRS24;DBXInterBaseDriver;pckFireDacConn;ACBr_TEFD;pckUCDataSnapConn;emsclientfiredac;DataSnapFireDAC;svnui;JvGlobus;dxdbtrRS24;dxSkinMetropolisRS24;dxSkinMoneyTwinsRS24;dxPScxPCProdRS24;DBXMSSQLDriver;JvMM;ACBr_MDFeDamdfeRL;DatasnapConnectorsFreePascal;dxWizardControlRS24;bindcompfmx;dxPSdxOCLnkRS24;dxBarExtDBItemsRS24;DBXOracleDriver;dxPSdxFCLnkRS24;JvNet;inetdb;cxSchedulerTreeBrowserRS24;dxSkinOffice2016ColorfulRS24;ACBr_Diversos;JvAppFrm;ACBr_TXTComum;ACBr_GNREGuiaFR;FmxTeeUI;emsedge;FireDACIBDriver;fmx;fmxdae;dxSkinSpringTimeRS24;dxSkinValentineRS24;dxSkinLondonLiquidSkyRS24;ACBr_CTeDacteFR;dxSkinWhiteprintRS24;PkgComum;JvWizards;ACBr_Ponto;dbexpress;IndyCore;dxSkiniMaginaryRS24;dxTileControlRS24;dxSkinOffice2016DarkRS24;dsnap;DataSnapCommon;emsclient;cxDataRS24;FireDACCommon;dxSkinOffice2007PinkRS24;dxPSdxSpreadSheetLnkRS24;acntDX10Berlin;ACBr_PCNComum;JvDB;JvPageComps;DataSnapConnectors;pckUCDBXConn;ACBR_DeSTDA;dxSkinDevExpressStyleRS24;soapserver;ACBr_SAT;JclDeveloperTools;dxBarRS24;dxSkinMetropolisDarkRS24;FireDACOracleDriver;DBXMySQLDriver;JvCmp;dxPSRichEditControlLnkRS24;DBXFirebirdDriver;dxPScxCommonRS24;ACBr_Sintegra;FireDACCommonODBC;FireDACCommonDriver;ACBr_GNRE;inet;IndyIPCommon;dxSkinVS2010RS24;JvCustom;vcl;ACBr_NFeDanfeRL;dxSkinSharpPlusRS24;ACBr_SATExtratoESCPOS;dxPSdxDBOCLnkRS24;JvXPCtrls;FireDACDb2Driver;dxThemeRS24;acntDX10Berlin_R;pckUCIBXConn;dxSkinOffice2007GreenRS24;pckHistorico;TeeDB;FireDAC;dxPScxGridLnkRS24;dxPScxVGridLnkRS24;JvCore;ACBr_Comum;JvCrypt;FireDACSqliteDriver;FireDACPgDriver;ibmonitor;FireDACASADriver;dxSkinOffice2010BlueRS24;ChromeTabs_R;ACBr_GNREGuiaRL;dxServerModeRS24;JvDlgs;JvRuntimeDesign;ibxpress;Tee;DataSnapServer;ibxbindings;cxSchedulerRS24;vclwinx;FireDACDSDriver;dxSkinsdxDLPainterRS24;dxPSCoreRS24;dxSkinOffice2007BlueRS24;pckMD5;ACBr_OpenSSL;frxTee24;CustomIPTransport;vcldsnap;dxSkinGlassOceansRS24;dxRibbonCustomizationFormRS24;dxPScxSchedulerLnkRS24;ACBr_DFeComum;dxSkinSummer2008RS24;dxSkinDarkRoomRS24;bindcomp;dxSkinFoggyRS24;ACBr_Serial;DBXInformixDriver;dxorgcRS24;dxSkinOffice2010SilverRS24;frce;ACBr_BlocoX;dxRichEditControlRS24;dxSkinsdxNavBarPainterRS24;dbxcds;vclribbon;ACBr_NFCeECFVirtual;adortl;dxSkinSilverRS24;pckUCADOConn;dxSkinVisualStudio2013DarkRS24;dxComnRS24;ACBr_BoletoFR;cxVerticalGridRS24;dxFlowChartRS24;frxDB24;dsnapxml;dbrtl;inetdbxpress;IndyProtocols;dxGaugeControlRS24;dxSkinOffice2007SilverRS24;dxSkinLiquidSkyRS24;JclContainers;ACBr_MTER;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
-        <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <DCC_UsePackage>DBXSqliteDriver;dxSkinBlueprintRS24;RestEasyObjects;DBXDb2Driver;dxPSDBTeeChartRS24;dxPSdxGaugeControlLnkRS24;vclactnband;dxSpreadSheetRS24;vclFireDAC;dxDockingRS24;tethering;dxSkinVisualStudio2013BlueRS24;dxPScxTLLnkRS24;dxBarExtItemsRS24;FireDACADSDriver;dxFireDACServerModeRS24;dxPSTeeChartRS24;dxSkinOffice2007BlackRS24;pckUserControl_DT;FireDACMSSQLDriver;vcltouch;vcldb;dxSkinXmas2008BlueRS24;dxSkinscxSchedulerPainterRS24;Intraweb;dxSkinsdxBarPainterRS24;dxSkinOffice2010BlackRS24;dxADOServerModeRS24;dxGDIPlusRS24;dxPSdxDBTVLnkRS24;vclib;dxSkinLilianRS24;FireDACDBXDriver;dxNavBarRS24;vclx;cxTreeListRS24;dxSkinDevExpressDarkStyleRS24;dxtrmdRS24;RESTBackendComponents;dxRibbonRS24;VCLRESTComponents;cxExportRS24;cxPivotGridChartRS24;cxTreeListdxBarPopupMenuRS24;dxSkinOffice2013LightGrayRS24;dxTabbedMDIRS24;vclie;dxSkinVisualStudio2013LightRS24;bindengine;CloudService;FireDACMySQLDriver;cxPivotGridOLAPRS24;pckUCDataConnector;dxSkinSharpRS24;dxSkinBlackRS24;DataSnapClient;dxPSLnksRS24;bindcompdbx;dxSkinCoffeeRS24;DBXSybaseASEDriver;IndyIPServer;dxSkinsdxRibbonPainterRS24;dxCoreRS24;IndySystem;dxSkinOffice2013DarkGrayRS24;dsnapcon;pckUCRestConn;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;emshosting;dxBarDBNavRS24;dxSkinDarkSideRS24;dxSkinOffice2013WhiteRS24;DBXOdbcDriver;FireDACTDataDriver;FMXTee;dxPScxExtCommonRS24;dxPSdxLCLnkRS24;soaprtl;DbxCommonDriver;dxPScxPivotGridLnkRS24;xmlrtl;soapmidas;DataSnapNativeClient;fmxobj;dxSkinMcSkinRS24;rtl;dxLayoutControlRS24;DbxClientDriver;cxGridRS24;DBXSybaseASADriver;dxSkinBlueRS24;dxSpellCheckerRS24;cxLibraryRS24;dxSkinStardustRS24;dxSkinCaramelRS24;appanalytics;dxSkinsCoreRS24;dxDBXServerModeRS24;dxMapControlRS24;IndyIPClient;dxSkinHighContrastRS24;bindcompvcl;dxSkinTheAsphaltWorldRS24;TeeUI;cxPageControlRS24;cxEditorsRS24;dxPsPrVwAdvRS24;dxSkinSevenClassicRS24;VclSmp;cxSchedulerRibbonStyleEventEditorRS24;FireDACODBCDriver;DataSnapIndy10ServerTransport;dxSkinPumpkinRS24;dxSkinscxPCPainterRS24;dxPSPrVwRibbonRS24;DataSnapProviderClient;FireDACMongoDBDriver;dxSkinSevenRS24;dxdborRS24;dxmdsRS24;DataSnapServerMidas;RESTComponents;cxSchedulerGridRS24;dxHttpIndyRequestRS24;cxPivotGridRS24;DBXInterBaseDriver;pckFireDacConn;pckUCDataSnapConn;emsclientfiredac;DataSnapFireDAC;dxdbtrRS24;dxSkinMetropolisRS24;dxSkinMoneyTwinsRS24;dxPScxPCProdRS24;DBXMSSQLDriver;DatasnapConnectorsFreePascal;dxWizardControlRS24;bindcompfmx;dxPSdxOCLnkRS24;dxBarExtDBItemsRS24;DBXOracleDriver;dxPSdxFCLnkRS24;inetdb;cxSchedulerTreeBrowserRS24;dxSkinOffice2016ColorfulRS24;FmxTeeUI;emsedge;FireDACIBDriver;fmx;fmxdae;dxSkinSpringTimeRS24;dxSkinValentineRS24;dxSkinLondonLiquidSkyRS24;dxSkinWhiteprintRS24;PkgComum;dbexpress;IndyCore;dxSkiniMaginaryRS24;dxTileControlRS24;dxSkinOffice2016DarkRS24;dsnap;DataSnapCommon;emsclient;cxDataRS24;FireDACCommon;dxSkinOffice2007PinkRS24;dxPSdxSpreadSheetLnkRS24;DataSnapConnectors;pckUCDBXConn;dxSkinDevExpressStyleRS24;soapserver;dxBarRS24;dxSkinMetropolisDarkRS24;FireDACOracleDriver;DBXMySQLDriver;dxPSRichEditControlLnkRS24;DBXFirebirdDriver;dxPScxCommonRS24;FireDACCommonODBC;FireDACCommonDriver;inet;IndyIPCommon;dxSkinVS2010RS24;vcl;dxSkinSharpPlusRS24;dxPSdxDBOCLnkRS24;FireDACDb2Driver;dxThemeRS24;pckUCIBXConn;dxSkinOffice2007GreenRS24;pckHistorico;TeeDB;FireDAC;dxPScxGridLnkRS24;dxPScxVGridLnkRS24;FireDACSqliteDriver;FireDACPgDriver;ibmonitor;FireDACASADriver;dxSkinOffice2010BlueRS24;ChromeTabs_R;dxServerModeRS24;ibxpress;Tee;DataSnapServer;ibxbindings;cxSchedulerRS24;vclwinx;FireDACDSDriver;dxSkinsdxDLPainterRS24;dxPSCoreRS24;dxSkinOffice2007BlueRS24;pckMD5;CustomIPTransport;vcldsnap;dxSkinGlassOceansRS24;dxRibbonCustomizationFormRS24;dxPScxSchedulerLnkRS24;dxSkinSummer2008RS24;dxSkinDarkRoomRS24;bindcomp;dxSkinFoggyRS24;DBXInformixDriver;dxorgcRS24;dxSkinOffice2010SilverRS24;dxRichEditControlRS24;dxSkinsdxNavBarPainterRS24;dbxcds;vclribbon;adortl;dxSkinSilverRS24;pckUCADOConn;dxSkinVisualStudio2013DarkRS24;dxComnRS24;cxVerticalGridRS24;dxFlowChartRS24;dsnapxml;dbrtl;inetdbxpress;IndyProtocols;dxGaugeControlRS24;dxSkinOffice2007SilverRS24;dxSkinLiquidSkyRS24;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>DBXSqliteDriver;DataSnapServerMidas;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;DataSnapFireDAC;tethering;FireDACADSDriver;DBXMSSQLDriver;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;vcldb;bindcompfmx;Intraweb;DBXOracleDriver;inetdb;FmxTeeUI;emsedge;fmx;fmxdae;vclib;FireDACDBXDriver;dbexpress;IndyCore;vclx;dsnap;DataSnapCommon;DataSnapConnectors;VCLRESTComponents;vclie;bindengine;DBXMySQLDriver;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;FireDACCommonODBC;DataSnapClient;bindcompdbx;IndyIPCommon;vcl;DBXSybaseASEDriver;IndyIPServer;IndySystem;FireDACDb2Driver;dsnapcon;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;emshosting;FireDACPgDriver;ibmonitor;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;DbxCommonDriver;ibxpress;Tee;DataSnapServer;xmlrtl;DataSnapNativeClient;fmxobj;vclwinx;ibxbindings;rtl;FireDACDSDriver;DbxClientDriver;DBXSybaseASADriver;CustomIPTransport;vcldsnap;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;dbxcds;VclSmp;adortl;FireDACODBCDriver;DataSnapIndy10ServerTransport;dsnapxml;DataSnapProviderClient;dbrtl;inetdbxpress;FireDACMongoDBDriver;IndyProtocols;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
+        <BT_BuildType>Debug</BT_BuildType>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>DEBUG;$(DCC_Define)</DCC_Define>
@@ -78,14 +88,20 @@
         <DCC_DebugInfoInExe>true</DCC_DebugInfoInExe>
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Linux64)'!=''">
+        <Debugger_DebugSourcePath>C:\Fontes\MVCBr\MVCBrServer\WSConfig\;C:\Fontes\MVCBr\helpers\;$(Debugger_DebugSourcePath)</Debugger_DebugSourcePath>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Locale>1033</VerInfo_Locale>
-        <AppEnableHighDPI>true</AppEnableHighDPI>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_ExeOutput>./</DCC_ExeOutput>
+        <DCC_DcuOutput>c:\lixo\dcu</DCC_DcuOutput>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>(None)</Manifest_File>
+        <Debugger_RunParams>/D</Debugger_RunParams>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>(None)</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -93,45 +109,41 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <AppEnableHighDPI>true</AppEnableHighDPI>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="MVCBr.Servico.pas">
-            <Form>MVCBrService</Form>
-            <DesignClass>TService</DesignClass>
+        <DCCReference Include="WS.WebModule.pas">
+            <Form>WSWebModule</Form>
+            <DesignClass>TWebModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="..\MVCBr.ApplicationController.pas"/>
-        <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
+        <DCCReference Include="WS\WS.Controller.Interf.pas"/>
+        <DCCReference Include="WS\WS.Controller.pas"/>
         <DCCReference Include="..\oData\MVC.oData.Base.pas"/>
         <DCCReference Include="..\oData\oData.Collections.pas"/>
-        <DCCReference Include="..\oData\oData.Dialect.MSSQL.pas"/>
-        <DCCReference Include="..\oData\oData.Dialect.MySQL.pas"/>
+        <DCCReference Include="..\oData\oData.Dialect.Firebird.pas"/>
         <DCCReference Include="..\oData\oData.Dialect.pas"/>
         <DCCReference Include="..\oData\oData.Engine.pas"/>
         <DCCReference Include="..\oData\oData.Interf.pas"/>
-        <DCCReference Include="..\oData\oData.JSON.pas"/>
+        <DCCReference Include="..\oData\oData.ServiceModel.pas"/>
         <DCCReference Include="..\oData\oData.Parse.pas"/>
         <DCCReference Include="..\oData\oData.ProxyBase.pas"/>
-        <DCCReference Include="..\oData\oData.ServiceModel.pas"/>
-        <DCCReference Include="WSConfig\WSConfig.Controller.Interf.pas"/>
-        <DCCReference Include="WSConfig\WSConfig.Controller.pas"/>
-        <DCCReference Include="WSConfig\WSConfigView.pas">
-            <Form>WSConfigView</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="MVCAsyncMiddleware.pas"/>
-        <DCCReference Include="..\oData\oData.SQL.pas"/>
         <DCCReference Include="..\oData\oData.SQL.FireDAC.pas"/>
-        <DCCReference Include="WS\WS.Controller.Interf.pas"/>
-        <DCCReference Include="WS\WS.Controller.pas"/>
-        <DCCReference Include="WS\WS.QueryController.pas"/>
+        <DCCReference Include="..\oData\oData.SQL.pas"/>
+        <DCCReference Include="WS.Datamodule.pas">
+            <Form>WSDatamodule</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="..\oData\oData.Dialect.MySQL.pas"/>
+        <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
+        <DCCReference Include="..\oData\oData.JSON.pas"/>
+        <DCCReference Include="MVCAsyncMiddleware.pas"/>
         <DCCReference Include="WS\WS.Common.pas"/>
-        <DCCReference Include="..\oData\oData.Dialect.Firebird.pas"/>
+        <DCCReference Include="WSConfig\WSConfigView.pas"/>
+        <DCCReference Include="Models\config.Model.pas"/>
+        <DCCReference Include="Models\config.Model.Interf.pas"/>
+        <DCCReference Include="..\oData\oData.Dialect.MSSQL.pas"/>
+        <None Include="oData.ServiceModel.json"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -146,32 +158,76 @@
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>
-        <Borland.ProjectType>Application</Borland.ProjectType>
+        <Borland.ProjectType>Console</Borland.ProjectType>
         <BorlandProject>
             <Delphi.Personality>
                 <Source>
-                    <Source Name="MainSource">MVCBrServerService.dpr</Source>
+                    <Source Name="MainSource">MVCBrServer_Linux.dpr</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\WBAControllers.bpl">File C:\Fontes\BPLTokyo\WBAControllers.bpl not found</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\designide240.bpl">Embarcadero Designer IDE Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="MVCBrServerService.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">
+                    <Platform Name="OSX32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="oData.ServiceModel.json" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="MVCBrServer_Linux" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Linux64">
+                        <RemoteName>MVCBrServer_Linux</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="oData.ServiceModel.json" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Linux64">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="\MVCBrServer_Linux.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win64">
+                        <RemoteName>MVCBrServer_Linux.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule">
+                    <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule">
+                    <Platform Name="iOSSimulator">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule">
+                    <Platform Name="OSX32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="MVCBrServer_Linux.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
-                        <RemoteName>MVCBrServerService.exe</RemoteName>
+                        <RemoteName>MVCBrServer_Linux.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="oData.ServiceModel.json" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
                 <DeployClass Name="AdditionalDebugSymbols">
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Win32">
@@ -286,7 +342,6 @@
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Win32">
@@ -295,7 +350,6 @@
                 </DeployClass>
                 <DeployClass Name="DependencyFramework">
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                         <Extensions>.framework</Extensions>
                     </Platform>
@@ -304,20 +358,7 @@
                     </Platform>
                 </DeployClass>
                 <DeployClass Name="DependencyModule">
-                    <Platform Name="iOSDevice32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSDevice64">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                         <Extensions>.dylib</Extensions>
                     </Platform>
@@ -340,7 +381,6 @@
                         <Extensions>.dylib</Extensions>
                     </Platform>
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                         <Extensions>.dylib</Extensions>
                     </Platform>
@@ -363,7 +403,6 @@
                         <Operation>0</Operation>
                     </Platform>
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\Resources\StartUp\</RemoteDir>
                         <Operation>0</Operation>
                     </Platform>
                     <Platform Name="Win32">
@@ -462,35 +501,9 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectiOSDeviceResourceRules">
-                    <Platform Name="iOSDevice32">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice64">
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
-                <DeployClass Name="ProjectiOSEntitlements">
-                    <Platform Name="iOSDevice32">
-                        <RemoteDir>..\</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice64">
-                        <RemoteDir>..\</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
-                <DeployClass Name="ProjectiOSInfoPList">
-                    <Platform Name="iOSDevice32">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSDevice64">
-                        <Operation>1</Operation>
-                    </Platform>
-                    <Platform Name="iOSSimulator">
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="ProjectiOSEntitlements"/>
+                <DeployClass Name="ProjectiOSInfoPList"/>
                 <DeployClass Name="ProjectiOSResource">
                     <Platform Name="iOSDevice32">
                         <Operation>1</Operation>
@@ -502,18 +515,8 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="ProjectOSXEntitlements">
-                    <Platform Name="OSX32">
-                        <RemoteDir>..\</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
-                <DeployClass Name="ProjectOSXInfoPList">
-                    <Platform Name="OSX32">
-                        <RemoteDir>Contents</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectOSXEntitlements"/>
+                <DeployClass Name="ProjectOSXInfoPList"/>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -538,7 +541,6 @@
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="OSX32">
-                        <RemoteDir>Contents\MacOS</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Win32">
@@ -578,14 +580,16 @@
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME).app"/>
+                <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSSimulator" Name="$(PROJECTNAME).app"/>
             </Deployment>
             <Platforms>
+                <Platform value="Linux64">True</Platform>
                 <Platform value="Win32">True</Platform>
-                <Platform value="Win64">False</Platform>
+                <Platform value="Win64">True</Platform>
             </Platforms>
+            <ModelSupport>False</ModelSupport>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
     </ProjectExtensions>
