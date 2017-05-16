@@ -14,7 +14,7 @@
 </head>
 <body>
 <table class="container"><tr><td class="navigation">
-<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><a href="GVClasses.png" class="navigation">Diagrama de hierarquia de Classes</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
 <div style="clear: both"></div>
 
 <script>
@@ -36,7 +36,7 @@ MVCBr
 <li><a class="bold" href="MVCBr.ObjectConfigList.IConfigFile.html">IConfigFile</a><li><a class="bold" href="System.Json.Helper.IJsonObject.html">IJsonObject</a><li><a class="bold" href="MVCBr.ObjectConfigList.IObjectConfigListComum.html">IObjectConfigListComum</a><ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.ObjectConfigList.IDBObjectConfigList.html">IDBObjectConfigList</a><li><a class="bold" href="MVCBr.ObjectConfigList.IObjectConfigList.html">IObjectConfigList</a></ul>
 </li>
-<li><a class="bold" href="MVCBr.ObjectConfigList.IObjectConfigListItem.html">IObjectConfigListItem</a><li><a class="bold" href="oData.Client.Builder.IODataClientBuilder.html">IODataClientBuilder</a><li><a class="bold" href="MVCBr.PageView.IPageView.html">IPageView</a><li><a class="bold" href="MVCBr.DatabaseModel.Interf.IQueryModel.html">IQueryModel</a></ul>
+<li><a class="bold" href="MVCBr.ObjectConfigList.IObjectConfigListItem.html">IObjectConfigListItem</a><li><a class="bold" href="oData.Client.Builder.IODataClientBuilder.html">IODataClientBuilder</a><li><a class="bold" href="MVCBr.ODataDataSet.Common.IODataDataSet.html">IODataDataSet</a><li><a class="bold" href="MVCBr.PageView.IPageView.html">IPageView</a><li><a class="bold" href="MVCBr.DatabaseModel.Interf.IQueryModel.html">IQueryModel</a></ul>
 </li>
 <li>IModel<ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.PageView.IPageViews.html">IPageViews</a></ul>
@@ -56,14 +56,20 @@ MVCBr
 <li>TControllerAbstract<ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.Controller.TControllerFactory.html">TControllerFactory</a></ul>
 </li>
-<li>TDataModuleDummy<ul class="hierarchylevel">
-<li><a class="bold" href="MVCBr.ModuleModel.TModuleFactory.html">TModuleFactory</a></ul>
+<li>TFDMemTable<ul class="hierarchylevel">
+<li><a class="bold" href="MVCBr.ODataFDMemTable.TODataFDMemTable.html">TODataFDMemTable</a></ul>
+</li>
+<li>TFDQuery<ul class="hierarchylevel">
+<li><a class="bold" href="WS.Datamodule.TFDQueryAuto.html">TFDQueryAuto</a></ul>
 </li>
 <li>TForm<ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.FormView.TFormFactory.html">TFormFactory</a><li><a class="bold" href="oData.Comp.Editor.TODataPropertyDlg.html">TODataPropertyDlg</a></ul>
 </li>
 <li>TInterfacedObject<ul class="hierarchylevel">
-<li><a class="bold" href="MVCBr.ObjectConfigList.TConfigIniFile.html">TConfigIniFile</a><li><a class="bold" href="MVCBr.ObjectConfigList.TConfigJsonFile.html">TConfigJsonFile</a><li><a class="bold" href="System.Json.Helper.TInterfacedJSON.html">TInterfacedJSON</a><li><a class="bold" href="MVCBr.ObjectConfigList.TObjectConfigListItem.html">TObjectConfigListItem</a><li><a class="bold" href="oData.ProxyBase.TODataBase.html">TODataBase</a><ul class="hierarchylevel">
+<li><a class="bold" href="MVCBr.ObjectConfigList.TConfigIniFile.html">TConfigIniFile</a><li><a class="bold" href="MVCBr.ObjectConfigList.TConfigJsonFile.html">TConfigJsonFile</a><li><a class="bold" href="System.Json.Helper.TInterfacedJSON.html">TInterfacedJSON</a><li><a class="bold" href="System.JsonFiles.TMemJsonFile.html">TMemJsonFile</a><ul class="hierarchylevel">
+<li><a class="bold" href="System.JsonFiles.TJsonFile.html">TJsonFile</a></ul>
+</li>
+<li><a class="bold" href="MVCAsyncMiddleware.TMVCAsyncCallBackMiddleware.html">TMVCAsyncCallBackMiddleware</a><li><a class="bold" href="MVCgzipMiddleware.TMVCgzipCallBackMiddleware.html">TMVCgzipCallBackMiddleware</a><li><a class="bold" href="MVCBr.ObjectConfigList.TObjectConfigListItem.html">TObjectConfigListItem</a><li><a class="bold" href="oData.ProxyBase.TODataBase.html">TODataBase</a><ul class="hierarchylevel">
 <li><a class="bold" href="oData.SQL.TODataSQL.html">TODataSQL</a><ul class="hierarchylevel">
 <li><a class="bold" href="oData.SQL.FireDAC.TODataFiredacQuery.html">TODataFiredacQuery</a></ul>
 </li>
@@ -71,8 +77,11 @@ MVCBr
 </li>
 <li><a class="bold" href="oData.Client.Builder.TODataClientBuilder.html">TODataClientBuilder</a><li><a class="bold" href="oData.Collections.TODataDictionay.html">TODataDictionay</a><li><a class="bold" href="oData.Parse.TODataParse.html">TODataParse</a><li><a class="bold" href="MVCBr.DatabaseModel.TQueryModelFactory.html">TQueryModelFactory</a></ul>
 </li>
+<li>TLayout<ul class="hierarchylevel">
+<li><a class="bold" href="MVCBr.FMX.LayoutViewManager.TLayoutTabItem.html">TLayoutTabItem</a></ul>
+</li>
 <li>TMVCController<ul class="hierarchylevel">
-<li><a class="bold" href="MVC.oData.Base.TODataController.html">TODataController</a></ul>
+<li><a class="bold" href="MVC.oData.Base.TODataController.html">TODataController</a><li><a class="bold" href="WS.HelloController.TWSHelloController.html">TWSHelloController</a><li><a class="bold" href="WS.QueryController.TWSQueryController.html">TWSQueryController</a></ul>
 </li>
 <li>TMVCFactoryAbstract<ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.PageView.TPageView.html">TPageView</a><li><a class="bold" href="MVCBr.View.TViewFactory.html">TViewFactory</a><ul class="hierarchylevel">
@@ -96,22 +105,28 @@ MVCBr
 </ul>
 </li>
 <li>TObject<ul class="hierarchylevel">
-<li><a class="bold" href="System.Json.Helper.TJSONArrayHelper.html">TJSONArrayHelper</a><li><a class="bold" href="System.Json.Helper.TJSONObjectHelper.html">TJSONObjectHelper</a><li><a class="bold" href="System.Json.Helper.TJSONPairHelper.html">TJSONPairHelper</a><li><a class="bold" href="System.Json.Helper.TJsonRecord.html">TJsonRecord</a><li><a class="bold" href="System.Json.Helper.TJSONValueHelper.html">TJSONValueHelper</a><li>TList<ul class="hierarchylevel">
+<li><a class="bold" href="Data.DB.Helper.TDatasetHelper.html">TDatasetHelper</a><li><a class="bold" href="Data.DB.Helper.TFieldHelper.html">TFieldHelper</a><li><a class="bold" href="Data.DB.Helper.TFieldsHelper.html">TFieldsHelper</a><li><a class="bold" href="System.Json.Helper.TJSONArrayHelper.html">TJSONArrayHelper</a><li><a class="bold" href="System.Json.Helper.TJSONObjectHelper.html">TJSONObjectHelper</a><li><a class="bold" href="System.Json.Helper.TJSONPairHelper.html">TJSONPairHelper</a><li><a class="bold" href="System.Json.Helper.TJsonRecord.html">TJsonRecord</a><li><a class="bold" href="System.Json.Helper.TJSONValueHelper.html">TJSONValueHelper</a><li>TList<ul class="hierarchylevel">
 <li>TObjectList<ul class="hierarchylevel">
 <li><a class="bold" href="System.Json.Helper.TJsonValuesList.html">TJsonValuesList</a></ul>
 </li>
 </ul>
 </li>
-<li>TPersistent<ul class="hierarchylevel">
+<li><a class="bold" href="MVCSupportZLib.TMVCSupportZLib.html">TMVCSupportZLib</a><li>TPersistent<ul class="hierarchylevel">
 <li>TComponent<ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.Component.TComponentFactory.html">TComponentFactory</a><ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.PageView.TCustomPageViewFactory.html">TCustomPageViewFactory</a><ul class="hierarchylevel">
-<li><a class="bold" href="MVCBr.FMX.PageView.TFMXPageViewManager.html">TFMXPageViewManager</a><li><a class="bold" href="MVCBr.VCL.PageView.TVCLPageViewManager.html">TVCLPageViewManager</a></ul>
+<li><a class="bold" href="MVCBr.FMX.LayoutViewManager.TFMXLayoutViewManager.html">TFMXLayoutViewManager</a><li><a class="bold" href="MVCBr.FMX.PageView.TFMXPageViewManager.html">TFMXPageViewManager</a><li><a class="bold" href="MVCBr.VCL.PageView.TVCLPageViewManager.html">TVCLPageViewManager</a></ul>
 </li>
 <li><a class="bold" href="MVCBr.ObjectConfigList.TObjectConfigModelCustom.html">TObjectConfigModelCustom</a><ul class="hierarchylevel">
 <li><a class="bold" href="MVCBr.ObjectConfigList.TDBObjectConfigModel.html">TDBObjectConfigModel</a><li><a class="bold" href="MVCBr.ObjectConfigList.TObjectConfigModel.html">TObjectConfigModel</a></ul>
 </li>
 </ul>
+</li>
+<li>TDataModule<ul class="hierarchylevel">
+<li><a class="bold" href="MVCBr.FMX.DataModuleDummy.TDataModuleDummy.html">TDataModuleDummy</a><ul class="hierarchylevel">
+<li><a class="bold" href="MVCBr.ModuleModel.TModuleFactory.html">TModuleFactory</a></ul>
+</li>
+<li><a class="bold" href="WS.Datamodule.TWSDatamodule.html">TWSDatamodule</a></ul>
 </li>
 <li><a class="bold" href="MVCBr.IdHTTPFiredacAdapter.TIdHTTPFireDACAdapter.html">TIdHTTPFireDACAdapter</a><li><a class="bold" href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a><li><a class="bold" href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html">TODataDatasetAdapter</a></ul>
 </li>
@@ -121,6 +136,12 @@ MVCBr
 </li>
 <li>TODataDialect<ul class="hierarchylevel">
 <li><a class="bold" href="oData.Dialect.Firebird.TODataDialectFirebird.html">TODataDialectFirebird</a><li><a class="bold" href="oData.Dialect.MySQL.TODataDialectMySQL.html">TODataDialectMySQL</a></ul>
+</li>
+<li>TService<ul class="hierarchylevel">
+<li><a class="bold" href="MVCBr.Servico.TMVCBrService.html">TMVCBrService</a></ul>
+</li>
+<li>TWebModule<ul class="hierarchylevel">
+<li><a class="bold" href="WS.WebModule.TWSWebModule.html">TWSWebModule</a></ul>
 </li>
 </ul>
 tireideletra.com.br

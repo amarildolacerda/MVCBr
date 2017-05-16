@@ -59,8 +59,7 @@ begin
   else if drv.Contains('=ORA') then
     result := TODataDialectOracle
   else if drv.Contains('=PG;') then
-    result := TODataDialectPostgreSQL
-    /// por Elisangela
+    result := TODataDialectPostgreSQL /// por Elisângela
   else
     result := TODataDialectFirebird;
   /// nao achou nenhum.
@@ -99,7 +98,7 @@ begin
       // view path
       Config[TMVCConfigKey.ViewPath] := 'templates';
       // Enable STOMP messaging controller
-      Config[TMVCConfigKey.Messaging] := 'false';
+      //Config[TMVCConfigKey.Messaging] := 'false';
       // Enable Server Signature in response
       Config[TMVCConfigKey.ExposeServerSignature] := 'true';
       // Define a default URL for requests that don't map to a route or a file (useful for client side web app)
