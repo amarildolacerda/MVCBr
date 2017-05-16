@@ -1,3 +1,6 @@
+{
+   Suporte ao dialeto PostgreSQL
+}
 {//************************************************************//}
 {//         Projeto MVCBr                                      //}
 {//         tireideletra.com.br  / amarildo lacerda            //}
@@ -7,10 +10,11 @@
 
 {
   Coder:
-     28/04/2017 - Elisangela - @JaguariMirim
+     28/04/2017 - Elisângela - @JaguariMirim
 
   Alterações:
-
+      - 16/05/2017 introduzido TopCmdAfterAtEndOfStmt por suporte a $top e $skip por indicação
+        da Elisângela;
 }
 
 
@@ -25,6 +29,8 @@ type
   private
     function TopCmdAfterSelectStmt(nTop, nSkip: integer): string; override;
     function TopCmdAfterFromStmt(nTop, nSkip: integer): string; override;
+    function TopCmdAfterAtEndOfStmt(nTop, nSkip: integer): string; override;
+
     function TopCmdStmt: string; override;
     function SkipCmdStmt: string; override;
   public
@@ -47,10 +53,16 @@ begin
   result := ' offset ';
 end;
 
-function TODataDialectPostgreSQL.TopCmdAfterFromStmt(nTop,
+function TODataDialectPostgreSQL.TopCmdAfterAtEndOfStmt(nTop,
   nSkip: integer): string;
 begin
    CreateTopSkip(result,nTop,nSkip);
+end;
+
+function TODataDialectPostgreSQL.TopCmdAfterFromStmt(nTop,
+  nSkip: integer): string;
+begin
+  result := '';
 end;
 
 function TODataDialectPostgreSQL.TopCmdAfterSelectStmt(nTop,

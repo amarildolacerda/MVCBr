@@ -47,12 +47,15 @@ Type
       AResource: IJsonODataServiceResource; FCollectionFinal: string;
       var FLastFields: string; child: IODataDecode; FKeys: string); virtual;
     procedure CreateFilter(AFilter: string; var FWhere: string); virtual;
+
+    // $top / $skip support
     function TopCmdAfterSelectStmt(nTop, nSkip: integer): string; virtual;
     function TopCmdAfterFromStmt(nTop, nSkip: integer): string; virtual;
     function TopCmdAfterAtEndOfStmt(nTop, nSkip: integer): string; virtual;
     function TopCmdStmt: string; virtual;
     function SkipCmdStmt: string; virtual;
     procedure CreateTopSkip(var Result: string; nTop, nSkip: integer); virtual;
+
     function AfterCreateSQL(var SQL: string): Boolean; virtual;
     procedure &and(var Result: string); virtual;
     procedure &or(var Result: string); virtual;
