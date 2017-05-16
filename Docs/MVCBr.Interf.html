@@ -1,0 +1,238 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.Interf</title>
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Vari√°veis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Fun√ß√µes e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script>
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</p></td><td class="content">
+MVCBr
+<h1 class="unit">Unit MVCBr.Interf</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Descri√ß√£o</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Fun√ß√µes e Procedimentos</a></td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Vari√°veis</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="description">Descri√ß√£o</h2>
+<p>
+Como organizar: - Um aplicativo sÛ pode ter um <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> - Um Controler pode estar ligando a 0 ou 1 view... e pode conter uma lista de Models; - Todo Controller dever· se auto registrar no <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> - Cada Controller È um Observable - Cada Model È um Observer - O controller pode enviar Update para os Models e para o View - O View pode receber Update do Controller e Enviar UpdateByView para o Controller - O Model pode receber Update do Controller e Enviar UpdateByModel para o Controller - Toda View conhece seu Controller - Todo Model conhece seu Controller - Um view pode ter somente um controller
+
+<p>Agenda: - One Aplicattion have only one <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> - One Controller contains View and Models (Zero or 1 View) ( Zero or more Models ) - every Controller need self register on ApplicationControler
+
+<p>- With Controller is an Observable - may dispach events for any Models - with Model is an Observer - may receive events from Controller (Observable) - with Model Know what is his controller (perhaps only one) - with Model can send event update for his controller that can send update for controller's view - with view have only one controller and can send update for his controller
+
+<p>- <a class="normal" href="MVCBr.ApplicationController.html#ApplicationController">ApplicationController</a> have a list of controllers</p>
+<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>System.Classes</li><li>System.SysUtils</li><li>System.Generics.Collections</li><li>System.TypInfo</li><li>System.RTTI</li></ul><h2 class="overview">Vis√£o Geral</h2>
+<a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Nome</th>
+<th class="itemdesc">Descri√ß√£o</th>
+</tr>
+<tr class="list">
+<td class="itemname">record&nbsp;<a class="bold" href="MVCBr.Interf.TMVCBr.html"><code>TMVCBr</code></a></td>
+<td class="itemdesc">MVCBr Utils Record para implementas utilidades de RTTI e outras Class Functions</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IMVCBase.html"><code>IMVCBase</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TMVCFactoryAbstract.html"><code>TMVCFactoryAbstract</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TMVCInterfacedList.html"><code>TMVCInterfacedList</code></a></td>
+<td class="itemdesc">InterfacedList que sera herdado na classes base com controle Threadsafe</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IThis.html"><code>IThis</code></a></td>
+<td class="itemdesc">uses <code>IThis</code> in base Classes</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IThisAs.html"><code>IThisAs</code></a></td>
+<td class="itemdesc">uses <code>IThisAs</code> in higher Classes</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModelBase.html"><code>IModelBase</code></a></td>
+<td class="itemdesc">Base para implementar <a class="normal" href="MVCBr.Interf.IModel.html">IModel</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModel.html"><code>IModel</code></a></td>
+<td class="itemdesc"><code>IModel</code> representa a interface onde implementa as regras de negÛcio</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModelAs.html"><code>IModelAs</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewBase.html"><code>IViewBase</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IView.html"><code>IView</code></a></td>
+<td class="itemdesc"><code>IView</code> È uma representaÁ„o para FORM</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewAs.html"><code>IViewAs</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IApplicationController.html"><code>IApplicationController</code></a></td>
+<td class="itemdesc">Main Controller for all Application - Have a list os Controllers</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IControllerBase.html"><code>IControllerBase</code></a></td>
+<td class="itemdesc">Controller for an Unit</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IControllerAs.html"><code>IControllerAs</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.Interf.TControllerAbstract.html"><code>TControllerAbstract</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IController.html"><code>IController</code></a></td>
+<td class="itemdesc"><code>IController</code> manter associaÁ„o entre o <a class="normal" href="MVCBr.Interf.IView.html">IView</a> e <a class="normal" href="MVCBr.Interf.IModel.html">IModel</a></td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModelAs.html"><code>IViewModelAs</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModelBase.html"><code>IViewModelBase</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IViewModel.html"><code>IViewModel</code></a></td>
+<td class="itemdesc"><code>IViewModel</code> associa o FORM com o o seu <a class="normal" href="MVCBr.Interf.IViewModelBase.html#Model">MODEL</a></td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IPersistentModelBase.html"><code>IPersistentModelBase</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IPersistentModel.html"><code>IPersistentModel</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.INavigatorModelBase.html"><code>INavigatorModelBase</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.INavigatorModel.html"><code>INavigatorModel</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IValidateModel.html"><code>IValidateModel</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.Interf.IModuleModel.html"><code>IModuleModel</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="PasDoc-FuncsProcs"></a><h3 class="summary">Fun√ß√µes e Procedimentos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Interf.html#RegisterInterfacedClass">RegisterInterfacedClass</a></b>(const ANome: string; IID: TGUID; AClass: <a  href="MVCBr.Interf.html#TControllerClass">TControllerClass</a>; bSingleton:Boolean=true);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Interf.html#UnregisterInterfacedClass">UnregisterInterfacedClass</a></b>(const ANome: string);</code></td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="MVCBr.Interf.html#TModelType">TModelType</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="MVCBr.Interf.html#TModelTypes">TModelTypes</a></b> = set of <a  href="MVCBr.Interf.html#TModelType">TModelType</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="MVCBr.Interf.html#TControllerClass">TControllerClass</a></b> = class of <a  href="MVCBr.Interf.TControllerAbstract.html">TControllerAbstract</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Descri√ß√£o</h2>
+<h3 class="detail">Fun√ß√µes e Procedimentos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="RegisterInterfacedClass"></a><code>procedure <b>RegisterInterfacedClass</b>(const ANome: string; IID: TGUID; AClass: <a  href="MVCBr.Interf.html#TControllerClass">TControllerClass</a>; bSingleton:Boolean=true);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="UnregisterInterfacedClass"></a><code>procedure <b>UnregisterInterfacedClass</b>(const ANome: string);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Tipos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TModelType"></a><code><b>TModelType</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+uses <a class="normal" href="MVCBr.Interf.IModel.html">IModel</a> to implement Bussines rules</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+mtCommon: &nbsp;</li>
+<li>
+mtViewModel: &nbsp;</li>
+<li>
+mtModule: &nbsp;</li>
+<li>
+mtValidate: &nbsp;</li>
+<li>
+mtPersistent: &nbsp;</li>
+<li>
+mtNavigator: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TModelTypes"></a><code><b>TModelTypes</b> = set of <a  href="MVCBr.Interf.html#TModelType">TModelType</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TControllerClass"></a><code><b>TControllerClass</b> = class of <a  href="MVCBr.Interf.TControllerAbstract.html">TControllerAbstract</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>
