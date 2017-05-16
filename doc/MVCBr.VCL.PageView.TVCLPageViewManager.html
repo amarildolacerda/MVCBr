@@ -98,12 +98,20 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoPageChange">DoPageChange</a></b>(Sender: TObject);</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoFormCloseQuery">DoFormCloseQuery</a></b>(Sender: TObject; var canClose: boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#TabsheetIndexOf">TabsheetIndexOf</a></b>(tab: TObject): integer;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>Procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean); override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetActivePage">SetActivePage</a></b>(Const Tab: TObject); override;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetActivePage">SetActivePage</a></b>(Const tab: TObject); override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -151,7 +159,8 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AfterCreateComplete">AfterCreateComplete</a></b>: TNotifyEvent read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FAfterCreateComplete">FAfterCreateComplete</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetAfterCreateComplete">SetAfterCreateComplete</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AfterCreateComplete">AfterCreateComplete</a></b>: TNotifyEvent read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FAfterCreateComplete">FAfterCreateComplete</a>
+      write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetAfterCreateComplete">SetAfterCreateComplete</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
@@ -257,6 +266,22 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="DoFormCloseQuery"></a><code>procedure <b>DoFormCloseQuery</b>(Sender: TObject; var canClose: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="TabsheetIndexOf"></a><code>function <b>TabsheetIndexOf</b>(tab: TObject): integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean); override;</code></td>
 </tr>
@@ -266,7 +291,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="SetActivePage"></a><code>procedure <b>SetActivePage</b>(Const Tab: TObject); override;</code></td>
+<td class="itemcode"><a name="SetActivePage"></a><code>procedure <b>SetActivePage</b>(Const tab: TObject); override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -356,7 +381,8 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="AfterCreateComplete"></a><code>property <b>AfterCreateComplete</b>: TNotifyEvent read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FAfterCreateComplete">FAfterCreateComplete</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetAfterCreateComplete">SetAfterCreateComplete</a>;</code></td>
+<td class="itemcode"><a name="AfterCreateComplete"></a><code>property <b>AfterCreateComplete</b>: TNotifyEvent read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FAfterCreateComplete">FAfterCreateComplete</a>
+      write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetAfterCreateComplete">SetAfterCreateComplete</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

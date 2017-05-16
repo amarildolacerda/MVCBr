@@ -35,7 +35,9 @@ MVCBr
 <tr>
 <td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Funções e Procedimentos</a></td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
-&nbsp;<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
+<p>
+Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões</p>
+<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
 <ul class="useslist"><li>System.Classes</li><li>System.Types</li><li>System.SysUtils</li><li>System.TypInfo</li><li>System.Json</li><li>System.Generics.collections</li><li>System.Classes.Helper</li><li>RegularExpressions</li><li>DBXJsonReflect</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
 <table class="classestable wide_list">
@@ -45,6 +47,14 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJsonRecord.html"><code>TJsonRecord</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Interface&nbsp;<a class="bold" href="System.Json.Helper.IJsonObject.html"><code>IJsonObject</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TInterfacedJSON.html"><code>TInterfacedJSON</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
 <tr class="list2">
@@ -116,13 +126,13 @@ MVCBr
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#TMemberVisibilitySet">TMemberVisibilitySet</a></b> = set of TMemberVisibility;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJson">IJson</a></b> = TJSONObject;</code></td>
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJson">IJson</a></b> = TJsonObject;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJSONArray">IJSONArray</a></b> = TJSONArray;</code></td>
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJSONArray">IJSONArray</a></b> = TJsonArray;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJson">TJson</a></b> = TJSONObject;</code></td>
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJson">TJson</a></b> = TJsonObject;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -255,21 +265,21 @@ jtNull: &nbsp;</li>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="IJson"></a><code><b>IJson</b> = TJSONObject;</code></td>
+<td class="itemcode"><a name="IJson"></a><code><b>IJson</b> = TJsonObject;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="IJSONArray"></a><code><b>IJSONArray</b> = TJSONArray;</code></td>
+<td class="itemcode"><a name="IJSONArray"></a><code><b>IJSONArray</b> = TJsonArray;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TJson"></a><code><b>TJson</b> = TJSONObject;</code></td>
+<td class="itemcode"><a name="TJson"></a><code><b>TJson</b> = TJsonObject;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

@@ -56,13 +56,17 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.Dialect.Firebird.TODataDialectFirebird.html#TopCmdStmt">TopCmdStmt</a></b>: string; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="oData.Dialect.Firebird.TODataDialectFirebird.html#TopCmdAfterAtEndOfStmt">TopCmdAfterAtEndOfStmt</a></b>(nTop, nSkip: integer): string; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.Dialect.Firebird.TODataDialectFirebird.html#SkipCmdStmt">SkipCmdStmt</a></b>: string; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="oData.Dialect.Firebird.TODataDialectFirebird.html#TopCmdStmt">TopCmdStmt</a></b>: string; override;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="oData.Dialect.Firebird.TODataDialectFirebird.html#SkipCmdStmt">SkipCmdStmt</a></b>: string; override;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.Dialect.Firebird.TODataDialectFirebird.html#createGETQuery">createGETQuery</a></b>(oData: IODataDecode; AFilter: string; const AInLineCount: Boolean = false): string; override;</code></td>
 </tr>
@@ -81,6 +85,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="TopCmdAfterFromStmt"></a><code>function <b>TopCmdAfterFromStmt</b>(nTop, nSkip: integer): string; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="TopCmdAfterAtEndOfStmt"></a><code>function <b>TopCmdAfterAtEndOfStmt</b>(nTop, nSkip: integer): string; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

@@ -56,12 +56,13 @@ Count=1
 Item_0=tireideletra.com.br
 
 [IncludeDirectories]
-Count=5
+Count=6
 Item_0=..\..\MVCBr
 Item_1=..\OData
 Item_2=..\VCL
 Item_3=..\FMX
 Item_4=..\helpers
+Item_5=..\MVCBrServer
 
 [Files]
 Count=49

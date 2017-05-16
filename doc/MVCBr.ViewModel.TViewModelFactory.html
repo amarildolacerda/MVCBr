@@ -41,9 +41,8 @@ MVCBr
 <p class="declaration">
 <code>type TViewModelFactory = class(<a class="normal" href="MVCBr.Model.TModelFactory.html">TModelFactory</a>, IViewModel)</code></p>
 <h2 class="description">Descrição</h2>
-<div class="nodescription">no description available, TModelFactory description follows</div><div class="nodescription">no description available, TMVCInterfacedObject description follows</div><a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
-<ul class="hierarchy"><li class="ancestor">TMVCFactoryAbstract</li>
-<li class="ancestor"><a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a></li>
+<div class="nodescription">no description available, TModelFactory description follows</div><a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TMVCOwnedInterfacedObject</li>
 <li class="ancestor"><a class="normal" href="MVCBr.Model.TModelFactory.html">TModelFactory</a></li>
 <li class="thisitem">TViewModelFactory</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
@@ -60,12 +59,12 @@ MVCBr
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#Create">Create</a></b>; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>constructor <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#create">create</a></b>; override;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -73,7 +72,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#AfterInit">AfterInit</a></b>; virtual;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#AfterInit">AfterInit</a></b>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -85,7 +84,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#This">This</a></b>: TObject; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ViewModel.TViewModelFactory.html#This">This</a></b>: TObject; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -121,8 +120,8 @@ MVCBr
 <h3 class="detail">Métodos</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -130,7 +129,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="create"></a><code>constructor <b>create</b>; override;</code></td>
+<td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -146,7 +145,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AfterInit"></a><code>procedure <b>AfterInit</b>; virtual;</code></td>
+<td class="itemcode"><a name="AfterInit"></a><code>procedure <b>AfterInit</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -170,7 +169,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject; virtual;</code></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

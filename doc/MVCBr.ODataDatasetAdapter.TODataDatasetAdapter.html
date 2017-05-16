@@ -76,7 +76,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a></b>: TODataBuilder;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a></b>: TODataCustomBuilder;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -89,6 +89,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBeforeOpenDelegate">FBeforeOpenDelegate</a></b>: TProc&lt;TDataset&gt;;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnGetParams">FOnGetParams</a></b>: <a  href="MVCBr.ODataDatasetAdapter.html#TODataGetResourceParams">TODataGetResourceParams</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FParams">FParams</a></b>: TParams;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -123,7 +131,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a></b>(const Value: TODataBuilder);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a></b>(const Value: TODataCustomBuilder);</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -136,6 +144,14 @@ MVCBr
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateFieldByProperties">CreateFieldByProperties</a></b>(FDataset: TDataset; AJSONProp: TJsonValue; FFieldList: TStrings);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnGetParams">SetOnGetParams</a></b>(const Value: <a  href="MVCBr.ODataDatasetAdapter.html#TODataGetResourceParams">TODataGetResourceParams</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetParams">SetParams</a></b>(const Value: TParams);</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -155,57 +171,61 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FillDatasetFromJSONValue">FillDatasetFromJSONValue</a></b>(ARootElement: string; ADataset: TDataset; AJSON: TJsonValue; AResponseType: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>; ADelegate: TProc&lt;TDataset&gt;; FFieldList: TStrings; AKeys: String); virtual;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#DoGetParams">DoGetParams</a></b>(var AURI: string); virtual;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FillDatasetFromJSONValue">FillDatasetFromJSONValue</a></b>(ARootElement: string; ADataset: TDataset; AJSON: TJsonValue; AResponseType: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a>; ADelegate: TProc&lt;TDataset&gt;; FFieldList: TStrings; AKeys: String); virtual;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#DatasetFromJsonObject">DatasetFromJsonObject</a></b>(FDataset: TDataset; AJSON: TJsonValue; FFieldList: TStrings);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateDatasetFromJson">CreateDatasetFromJson</a></b>(AJSON: string);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateFieldsFromJson">CreateFieldsFromJson</a></b>(FDataset: TDataset; AJSONArray: TJsonValue); static;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#CreateFieldsFromJsonRow">CreateFieldsFromJsonRow</a></b>(FDataset: TDataset; AJSON: TJsonObject); static;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#AddChanges">AddChanges</a></b>(ATypeChange: TRowSetChangeType; AJsonRow: TJsonValue);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#AddRowSet">AddRowSet</a></b>(ATypeChange: TRowSetChangeType; ADataset: TDataset);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#UpdatesPending">UpdatesPending</a></b>: boolean;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ClearChanges">ClearChanges</a></b>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ApplyUpdates">ApplyUpdates</a></b>(AProc: TFunc&lt;TJsonArray, boolean&gt;; AMethod: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a> = rmPATCH); overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ApplyUpdates">ApplyUpdates</a></b>; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResourceName">ResourceName</a></b>: string;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResourceKeys">ResourceKeys</a></b>: string;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#BeforeOpenDelegate">BeforeOpenDelegate</a></b>(AProc: TProc&lt;TDataset&gt;);</code></td>
 </tr>
@@ -218,7 +238,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Builder">Builder</a></b>: TODataBuilder read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Builder">Builder</a></b>: TODataCustomBuilder read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
@@ -230,27 +250,31 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseJSON">ResponseJSON</a></b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#Params">Params</a></b>: TParams read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FParams">FParams</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetParams">SetParams</a>;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseJSON">ResponseJSON</a></b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
 <td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#RootElement">RootElement</a></b>: string read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FRootElement">FRootElement</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetRootElement">SetRootElement</a>;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseType">ResponseType</a></b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a> default pureJSON;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseType">ResponseType</a></b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a> default pureJSON;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#OnBeforeApplyUpdates">OnBeforeApplyUpdates</a></b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnBeforeApplyUpdate">FOnBeforeApplyUpdate</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnBeforeApplyUpdate">SetOnBeforeApplyUpdate</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#OnBeforeApplyUpdates">OnBeforeApplyUpdates</a></b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnBeforeApplyUpdate">FOnBeforeApplyUpdate</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnBeforeApplyUpdate">SetOnBeforeApplyUpdate</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#OnAfterApplyUpdates">OnAfterApplyUpdates</a></b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnAfterApplyUpdate">FOnAfterApplyUpdate</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnAfterApplyUpdate">SetOnAfterApplyUpdate</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#OnAfterApplyUpdates">OnAfterApplyUpdates</a></b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnAfterApplyUpdate">FOnAfterApplyUpdate</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnAfterApplyUpdate">SetOnAfterApplyUpdate</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#OnGetParams">OnGetParams</a></b>: <a  href="MVCBr.ODataDatasetAdapter.html#TODataGetResourceParams">TODataGetResourceParams</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnGetParams">FOnGetParams</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnGetParams">SetOnGetParams</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -314,7 +338,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FBuilder"></a><code><b>FBuilder</b>: TODataBuilder;</code></td>
+<td class="itemcode"><a name="FBuilder"></a><code><b>FBuilder</b>: TODataCustomBuilder;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -339,6 +363,22 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="FBeforeOpenDelegate"></a><code><b>FBeforeOpenDelegate</b>: TProc&lt;TDataset&gt;;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnGetParams"></a><code><b>FOnGetParams</b>: <a  href="MVCBr.ODataDatasetAdapter.html#TODataGetResourceParams">TODataGetResourceParams</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FParams"></a><code><b>FParams</b>: TParams;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -403,7 +443,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetBuilder"></a><code>procedure <b>SetBuilder</b>(const Value: TODataBuilder);</code></td>
+<td class="itemcode"><a name="SetBuilder"></a><code>procedure <b>SetBuilder</b>(const Value: TODataCustomBuilder);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -428,6 +468,22 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="CreateFieldByProperties"></a><code>class procedure <b>CreateFieldByProperties</b>(FDataset: TDataset; AJSONProp: TJsonValue; FFieldList: TStrings);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetOnGetParams"></a><code>procedure <b>SetOnGetParams</b>(const Value: <a  href="MVCBr.ODataDatasetAdapter.html#TODataGetResourceParams">TODataGetResourceParams</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetParams"></a><code>procedure <b>SetParams</b>(const Value: TParams);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -460,6 +516,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DoGetParams"></a><code>procedure <b>DoGetParams</b>(var AURI: string); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -590,7 +654,7 @@ Array's <code>changes</code></p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="Builder"></a><code>property <b>Builder</b>: TODataBuilder read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a>;</code></td>
+<td class="itemcode"><a name="Builder"></a><code>property <b>Builder</b>: TODataCustomBuilder read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FBuilder">FBuilder</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetBuilder">SetBuilder</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -614,8 +678,15 @@ Array's <code>changes</code></p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="ResponseJSON"></a><code>property <b>ResponseJSON</b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+<td class="itemcode"><a name="Params"></a><code>property <b>Params</b>: TParams read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FParams">FParams</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetParams">SetParams</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ResponseJSON"></a><code>property <b>ResponseJSON</b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -631,8 +702,7 @@ Array's <code>changes</code></p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="ResponseType"></a><code>property <b>ResponseType</b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a> default pureJSON;</code></td>
+<td class="itemcode"><a name="ResponseType"></a><code>property <b>ResponseType</b>: <a  href="MVCBr.ODataDatasetAdapter.html#TAdapterResponserType">TAdapterResponserType</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseType">FResponseType</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseType">SetResponseType</a> default pureJSON;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -640,8 +710,7 @@ Array's <code>changes</code></p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="OnBeforeApplyUpdates"></a><code>property <b>OnBeforeApplyUpdates</b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnBeforeApplyUpdate">FOnBeforeApplyUpdate</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnBeforeApplyUpdate">SetOnBeforeApplyUpdate</a>;</code></td>
+<td class="itemcode"><a name="OnBeforeApplyUpdates"></a><code>property <b>OnBeforeApplyUpdates</b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnBeforeApplyUpdate">FOnBeforeApplyUpdate</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnBeforeApplyUpdate">SetOnBeforeApplyUpdate</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -649,8 +718,15 @@ Array's <code>changes</code></p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="OnAfterApplyUpdates"></a><code>property <b>OnAfterApplyUpdates</b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnAfterApplyUpdate">FOnAfterApplyUpdate</a>
-      write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnAfterApplyUpdate">SetOnAfterApplyUpdate</a>;</code></td>
+<td class="itemcode"><a name="OnAfterApplyUpdates"></a><code>property <b>OnAfterApplyUpdates</b>: TNotifyEvent read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnAfterApplyUpdate">FOnAfterApplyUpdate</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnAfterApplyUpdate">SetOnAfterApplyUpdate</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="OnGetParams"></a><code>property <b>OnGetParams</b>: <a  href="MVCBr.ODataDatasetAdapter.html#TODataGetResourceParams">TODataGetResourceParams</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FOnGetParams">FOnGetParams</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetOnGetParams">SetOnGetParams</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

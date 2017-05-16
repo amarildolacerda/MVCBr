@@ -63,7 +63,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>: TMVCInterfacedList&lt;<a  href="MVCBr.PageView.IPageView.html">IPageView</a>&gt;;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>:  IInterfaceList;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
@@ -83,14 +83,6 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetAfterViewCreate">SetAfterViewCreate</a></b>(const Value: TNotifyEvent);</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>destructor <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#destroy">destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -122,6 +114,14 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; virtual;</code></td>
 </tr>
 <tr class="list">
@@ -146,15 +146,23 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewItem">NewItem</a></b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#PageViewIndexOf">PageViewIndexOf</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): Integer;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewItem">NewItem</a></b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -232,7 +240,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="FList"></a><code><b>FList</b>: TMVCInterfacedList&lt;<a  href="MVCBr.PageView.IPageView.html">IPageView</a>&gt;;</code></td>
+<td class="itemcode"><a name="FList"></a><code><b>FList</b>:  IInterfaceList;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -273,26 +281,12 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="destroy"></a><code>destructor <b>destroy</b>; override;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="SetPageContainer"></a><code>procedure <b>SetPageContainer</b>(const Value: TComponent); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+<p>
+TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPageView</a>&gt;;</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -338,6 +332,22 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="Notification"></a><code>procedure <b>Notification</b>(AComponent: TComponent; AOperation: TOperation); override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -393,6 +403,14 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PageViewIndexOf"></a><code>function <b>PageViewIndexOf</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="NewItem"></a><code>function <b>NewItem</b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -410,6 +428,14 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

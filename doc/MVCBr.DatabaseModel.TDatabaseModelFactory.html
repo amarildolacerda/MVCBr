@@ -44,8 +44,7 @@ MVCBr
 <p>
 Classe base para implementação de acesso a banco de dados Onde T: representa a classe de conexão Q: a classe de query (TDataset type)</p>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
-<ul class="hierarchy"><li class="ancestor">TMVCFactoryAbstract</li>
-<li class="ancestor"><a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a></li>
+<ul class="hierarchy"><li class="ancestor">TMVCOwnedInterfacedObject</li>
 <li class="ancestor"><a class="normal" href="MVCBr.Model.TModelFactory.html">TModelFactory</a></li>
 <li class="ancestor"><a class="normal" href="MVCBr.PersistentModel.TPersistentModelFactory.html">TPersistentModelFactory</a></li>
 <li class="ancestor"><a class="normal" href="MVCBr.DatabaseModel.Interf.TDatabaseModelAbstract.html">TDatabaseModelAbstract</a></li>
@@ -69,11 +68,11 @@ Classe base para implementação de acesso a banco de dados Onde T: representa a c
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>constructor <b><a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html#create">create</a></b>(); override;</code></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html#Create">Create</a></b>(); override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>destructor <b><a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html#destroy">destroy</a></b>; override;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -81,7 +80,7 @@ Classe base para implementação de acesso a banco de dados Onde T: representa a c
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html#This">This</a></b>: <a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html">TDatabaseModelFactory</a>&lt;T, Q&gt;; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html#This">This</a></b>: <a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html">TDatabaseModelFactory</a>&lt;T, Q&gt;; reintroduce; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -126,7 +125,7 @@ Classe base para implementação de acesso a banco de dados Onde T: representa a c
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="create"></a><code>constructor <b>create</b>(); override;</code></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(); override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -134,7 +133,7 @@ Classe base para implementação de acesso a banco de dados Onde T: representa a c
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="destroy"></a><code>destructor <b>destroy</b>; override;</code></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -152,7 +151,7 @@ retorna interface base</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="This"></a><code>function <b>This</b>: <a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html">TDatabaseModelFactory</a>&lt;T, Q&gt;; overload;</code></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: <a  href="MVCBr.DatabaseModel.TDatabaseModelFactory.html">TDatabaseModelFactory</a>&lt;T, Q&gt;; reintroduce; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>

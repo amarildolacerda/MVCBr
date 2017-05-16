@@ -39,13 +39,12 @@ MVCBr
 <a  href="MVCBr.View.html">MVCBr.View</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TViewFactory = class(<a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a>, IView)</code></p>
+<code>type TViewFactory = class(TMVCFactoryAbstract, IView)</code></p>
 <h2 class="description">Descrição</h2>
 <p>
  <code>TViewFactory</code> é um Factory abstrato a ser utilizado com finalidades genericas sem ligação direta com um visualizador </p>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
 <ul class="hierarchy"><li class="ancestor">TMVCFactoryAbstract</li>
-<li class="ancestor"><a class="normal" href="MVCBr.Model.TMVCInterfacedObject.html">TMVCInterfacedObject</a></li>
 <li class="thisitem">TViewFactory</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
 <table class="summary wide_list">
@@ -86,27 +85,35 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: string;var AHandled: boolean): IView; overload; virtual;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.View.TViewFactory.html#Init">Init</a></b>; virtual;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: string;var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: TJsonValue;var AHandled: boolean): IView; overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>Procedure <b><a  href="MVCBr.View.TViewFactory.html#DoCommand">DoCommand</a></b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProc: TProc&lt;IView&gt;): Integer; overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(): IView; overload; virtual;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProc: TProc&lt;IView&gt;; AShowModal: boolean): IView; overload; virtual;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProc: TProc&lt;IView&gt;; AShowModal: boolean): Integer; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#ShowView">ShowView</a></b>(const AProcBeforeShow: TProc&lt;IView&gt;; const AProcAfterShow:TProc&lt;IView&gt;) : IView; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -122,7 +129,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#Update">Update</a></b>: IView; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.View.TViewFactory.html#UpdateView">UpdateView</a></b>: IView; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -148,9 +155,7 @@ MVCBr
 <td class="itemcode"><a name="FText"></a><code><b>FText</b>: string;</code></td>
 </tr>
 <tr><td colspan="2">
-<p>
-FView: IView;</p>
-</td></tr>
+&nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -212,6 +217,14 @@ FView: IView;</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: string;var AHandled: boolean): IView; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -252,7 +265,15 @@ FView: IView;</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProc: TProc&lt;IView&gt;; AShowModal: boolean): Integer; overload; virtual;</code></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProc: TProc&lt;IView&gt;; AShowModal: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProcBeforeShow: TProc&lt;IView&gt;; const AProcAfterShow:TProc&lt;IView&gt;) : IView; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -284,7 +305,7 @@ FView: IView;</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: IView; virtual;</code></td>
+<td class="itemcode"><a name="UpdateView"></a><code>function <b>UpdateView</b>: IView; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

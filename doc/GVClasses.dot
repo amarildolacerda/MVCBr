@@ -2,8 +2,12 @@ DiGraph Classes {
   IConfigFile -> IInterface
   IConfigFile [href="MVCBr.ObjectConfigList.IConfigFile.html"]
   IJsonObject -> IInterface
-  IJsonObject [href="oData.JSON.IJsonObject.html"]
-  IObjectConfigList -> IInterface
+  IJsonObject [href="System.Json.Helper.IJsonObject.html"]
+  IObjectConfigListComum -> IInterface
+  IObjectConfigListComum [href="MVCBr.ObjectConfigList.IObjectConfigListComum.html"]
+  IDBObjectConfigList -> IObjectConfigListComum
+  IDBObjectConfigList [href="MVCBr.ObjectConfigList.IDBObjectConfigList.html"]
+  IObjectConfigList -> IObjectConfigListComum
   IObjectConfigList [href="MVCBr.ObjectConfigList.IObjectConfigList.html"]
   IObjectConfigListItem -> IInterface
   IObjectConfigListItem [href="MVCBr.ObjectConfigList.IObjectConfigListItem.html"]
@@ -43,8 +47,8 @@ DiGraph Classes {
   TConfigIniFile [href="MVCBr.ObjectConfigList.TConfigIniFile.html"]
   TConfigJsonFile -> TInterfacedObject
   TConfigJsonFile [href="MVCBr.ObjectConfigList.TConfigJsonFile.html"]
-  TInterfacedJsonObject -> TInterfacedObject
-  TInterfacedJsonObject [href="oData.JSON.TInterfacedJsonObject.html"]
+  TInterfacedJSON -> TInterfacedObject
+  TInterfacedJSON [href="System.Json.Helper.TInterfacedJSON.html"]
   TObjectConfigListItem -> TInterfacedObject
   TObjectConfigListItem [href="MVCBr.ObjectConfigList.TObjectConfigListItem.html"]
   TODataBase -> TInterfacedObject
@@ -63,16 +67,18 @@ DiGraph Classes {
   TQueryModelFactory [href="MVCBr.DatabaseModel.TQueryModelFactory.html"]
   TODataController -> TMVCController
   TODataController [href="MVC.oData.Base.TODataController.html"]
-  TMVCInterfacedObject -> TMVCFactoryAbstract
-  TMVCInterfacedObject [href="MVCBr.Model.TMVCInterfacedObject.html"]
-  TApplicationController -> TMVCInterfacedObject
+  TPageView -> TMVCFactoryAbstract
+  TPageView [href="MVCBr.PageView.TPageView.html"]
+  TViewFactory -> TMVCFactoryAbstract
+  TViewFactory [href="MVCBr.View.TViewFactory.html"]
+  TViewFactoryAdapter -> TViewFactory
+  TViewFactoryAdapter [href="MVCBr.FormView.TViewFactoryAdapter.html"]
+  TApplicationController -> TMVCOwnedInterfacedObject
   TApplicationController [href="MVCBr.ApplicationController.TApplicationController.html"]
-  TModelFactory -> TMVCInterfacedObject
+  TModelFactory -> TMVCOwnedInterfacedObject
   TModelFactory [href="MVCBr.Model.TModelFactory.html"]
   TNavigatorModelFactory -> TModelFactory
   TNavigatorModelFactory [href="MVCBr.NavigatorModel.TNavigatorModelFactory.html"]
-  TObjectConfigModel -> TModelFactory
-  TObjectConfigModel [href="MVCBr.ObjectConfigList.TObjectConfigModel.html"]
   TPersistentModelFactory -> TModelFactory
   TPersistentModelFactory [href="MVCBr.PersistentModel.TPersistentModelFactory.html"]
   TDatabaseModelAbstract -> TPersistentModelFactory
@@ -85,12 +91,6 @@ DiGraph Classes {
   TValidateModelFactory [href="MVCBr.ValidateModel.TValidateModelFactory.html"]
   TViewModelFactory -> TModelFactory
   TViewModelFactory [href="MVCBr.ViewModel.TViewModelFactory.html"]
-  TViewFactory -> TMVCInterfacedObject
-  TViewFactory [href="MVCBr.View.TViewFactory.html"]
-  TViewFactoryAdapter -> TViewFactory
-  TViewFactoryAdapter [href="MVCBr.FormView.TViewFactoryAdapter.html"]
-  TPageView -> TMVCFactoryAbstract
-  TPageView [href="MVCBr.PageView.TPageView.html"]
   TJSONArrayHelper -> TObject
   TJSONArrayHelper [href="System.Json.Helper.TJSONArrayHelper.html"]
   TJSONObjectHelper -> TObject
@@ -115,6 +115,12 @@ DiGraph Classes {
   TFMXPageViewManager [href="MVCBr.FMX.PageView.TFMXPageViewManager.html"]
   TVCLPageViewManager -> TCustomPageViewFactory
   TVCLPageViewManager [href="MVCBr.VCL.PageView.TVCLPageViewManager.html"]
+  TObjectConfigModelCustom -> TComponentFactory
+  TObjectConfigModelCustom [href="MVCBr.ObjectConfigList.TObjectConfigModelCustom.html"]
+  TDBObjectConfigModel -> TObjectConfigModelCustom
+  TDBObjectConfigModel [href="MVCBr.ObjectConfigList.TDBObjectConfigModel.html"]
+  TObjectConfigModel -> TObjectConfigModelCustom
+  TObjectConfigModel [href="MVCBr.ObjectConfigList.TObjectConfigModel.html"]
   TIdHTTPFireDACAdapter -> TComponent
   TIdHTTPFireDACAdapter [href="MVCBr.IdHTTPFiredacAdapter.TIdHTTPFireDACAdapter.html"]
   TIdHTTPRestClient -> TComponent
