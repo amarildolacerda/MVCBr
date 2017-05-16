@@ -64,22 +64,28 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DesignOnlyPackage>true</DesignOnlyPackage>
-        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DCC_Define>BPL;VCL;$(DCC_Define)</DCC_Define>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <GenPackage>true</GenPackage>
         <GenDll>true</GenDll>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <SanitizedProjectName>MVCBrVCL</SanitizedProjectName>
-        <DCC_DcuOutput>c:\lixo\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <EnabledSysJars>android-support-v4.dex.jar;cloud-messaging.dex.jar;fmx.dex.jar;google-analytics-v2.dex.jar;google-play-billing.dex.jar;google-play-licensing.dex.jar;google-play-services.dex.jar</EnabledSysJars>
@@ -131,6 +137,14 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_DebugInformation>2</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>true</DCC_LocalDebugSymbols>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_Description>MVCBr VCL</DCC_Description>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -167,10 +181,14 @@
                     <Source Name="MainSource">MVCBrVCL.dpk</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLBerlin\MVCBrVCL.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrVCL.bpl">MVCBr VCL</Excluded_Packages>
                     <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFMX.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrOData.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\QRD_DESIGN.bpl">(untitled)</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">

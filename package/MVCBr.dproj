@@ -51,8 +51,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_DcuOutput>c:\lixo\dcu</DCC_DcuOutput>
-        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_Define>VCL;$(DCC_Define)</DCC_Define>
         <DesignOnlyPackage>true</DesignOnlyPackage>
         <DCC_F>false</DCC_F>
@@ -69,6 +68,7 @@
         <DCC_N>false</DCC_N>
         <SanitizedProjectName>MVCBr</SanitizedProjectName>
         <DCC_Framework>VCL;$(DCC_Framework)</DCC_Framework>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>rtl;xmlrtl;$(DCC_UsePackage)</DCC_UsePackage>
@@ -96,6 +96,11 @@
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Keys>CompanyName=MVCBr;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=amarildolacerda;LegalTrademarks=;OriginalFilename=;ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName)</VerInfo_Keys>
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_DebugInformation>2</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>true</DCC_LocalDebugSymbols>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_Description>MVCBr 1.0</DCC_Description>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_Optimize>false</DCC_Optimize>
@@ -204,9 +209,15 @@
                     <Source Name="MainSource">MVCBr.dpk</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\Embarcadero\Studio\18.0\bin\designide240.bpl">Embarcadero Designer IDE Package</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrVCL.bpl">MVCBr VCL</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBr.bpl">MVCBr 1.0</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFMX.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrOData.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\QRD_DESIGN.bpl">(untitled)</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

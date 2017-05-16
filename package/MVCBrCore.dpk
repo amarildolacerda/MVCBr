@@ -12,21 +12,22 @@ package MVCBrCore;
 {$LOCALSYMBOLS ON}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
 {$RANGECHECKS OFF}
-{$REFERENCEINFO ON}
+{$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DEFINE DEBUG}
+{$DEFINE RELEASE}
 {$DEFINE BPL}
 {$DEFINE VCL}
 {$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'MVCBr Core '}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
@@ -34,10 +35,7 @@ requires
   rtl,
   vcl,
   fmx,
-  dbrtl,
-  FireDAC,
-  FireDACCommonDriver,
-  FireDACCommon;
+  dbrtl;
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
@@ -45,9 +43,6 @@ contains
   MVCBr.Controller in '..\MVCBr.Controller.pas',
   MVCBr.DatabaseModel.Interf in '..\MVCBr.DatabaseModel.Interf.pas',
   MVCBr.DatabaseModel in '..\MVCBr.DatabaseModel.pas',
-  MVCBr.FireDAC.Model in '..\MVCBr.FireDAC.Model.pas',
-  MVCBr.FireDACModel.Interf in '..\MVCBr.FireDACModel.Interf.pas',
-  MVCBr.FireDACModel in '..\MVCBr.FireDACModel.pas',
   MVCBr.FormView in '..\MVCBr.FormView.pas',
   MVCBr.Interf in '..\MVCBr.Interf.pas',
   MVCBr.InterfaceHelper in '..\MVCBr.InterfaceHelper.pas',
@@ -55,11 +50,15 @@ contains
   MVCBr.Model in '..\MVCBr.Model.pas',
   MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
   MVCBr.NavigatorModel in '..\MVCBr.NavigatorModel.pas',
-  MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   MVCBr.PageView in '..\MVCBr.PageView.pas',
   MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
   MVCBr.ValidateModel in '..\MVCBr.ValidateModel.pas',
   MVCBr.View in '..\MVCBr.View.pas',
-  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas';
+  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
+  MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
+  MVCBr.Comum in '..\MVCBr.Comum.pas',
+  System.JsonFiles in '..\helpers\System.JsonFiles.pas',
+  MVCBr.VCL.DataModuleDummy in '..\MVCBr.VCL.DataModuleDummy.pas' {DataModuleDummy: TDataModule};
 
 end.
+

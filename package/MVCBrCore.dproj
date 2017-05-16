@@ -64,23 +64,29 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
-        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
         <DCC_Define>BPL;VCL;$(DCC_Define)</DCC_Define>
         <GenDll>true</GenDll>
         <GenPackage>true</GenPackage>
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <SanitizedProjectName>MVCBrCore</SanitizedProjectName>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <DCC_DcuOutput>c:\lixo\dcu</DCC_DcuOutput>
+        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
-        <DesignOnlyPackage>true</DesignOnlyPackage>
         <DCC_UsePackage>FireDAC;FireDACCommonDriver;FireDACCommon;$(DCC_UsePackage)</DCC_UsePackage>
+        <DesignOnlyPackage>true</DesignOnlyPackage>
+        <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <EnabledSysJars>android-support-v4.dex.jar;cloud-messaging.dex.jar;fmx.dex.jar;google-analytics-v2.dex.jar;google-play-billing.dex.jar;google-play-licensing.dex.jar;google-play-services.dex.jar</EnabledSysJars>
@@ -132,6 +138,14 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <DCC_MapFile>3</DCC_MapFile>
+        <DCC_DebugInformation>2</DCC_DebugInformation>
+        <DCC_LocalDebugSymbols>true</DCC_LocalDebugSymbols>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_Description>MVCBr Core </DCC_Description>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -140,17 +154,11 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
-        <DCCReference Include="FireDAC.dcp"/>
-        <DCCReference Include="FireDACCommonDriver.dcp"/>
-        <DCCReference Include="FireDACCommon.dcp"/>
         <DCCReference Include="..\MVCBr.ApplicationController.pas"/>
         <DCCReference Include="..\MVCBr.Component.pas"/>
         <DCCReference Include="..\MVCBr.Controller.pas"/>
         <DCCReference Include="..\MVCBr.DatabaseModel.Interf.pas"/>
         <DCCReference Include="..\MVCBr.DatabaseModel.pas"/>
-        <DCCReference Include="..\MVCBr.FireDAC.Model.pas"/>
-        <DCCReference Include="..\MVCBr.FireDACModel.Interf.pas"/>
-        <DCCReference Include="..\MVCBr.FireDACModel.pas"/>
         <DCCReference Include="..\MVCBr.FormView.pas"/>
         <DCCReference Include="..\MVCBr.Interf.pas"/>
         <DCCReference Include="..\MVCBr.InterfaceHelper.pas"/>
@@ -158,12 +166,19 @@
         <DCCReference Include="..\MVCBr.Model.pas"/>
         <DCCReference Include="..\MVCBr.ModuleModel.pas"/>
         <DCCReference Include="..\MVCBr.NavigatorModel.pas"/>
-        <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
         <DCCReference Include="..\MVCBr.PageView.pas"/>
         <DCCReference Include="..\MVCBr.PersistentModel.pas"/>
         <DCCReference Include="..\MVCBr.ValidateModel.pas"/>
         <DCCReference Include="..\MVCBr.View.pas"/>
         <DCCReference Include="..\MVCBr.ViewModel.pas"/>
+        <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
+        <DCCReference Include="..\MVCBr.Comum.pas"/>
+        <DCCReference Include="..\helpers\System.JsonFiles.pas"/>
+        <DCCReference Include="..\MVCBr.VCL.DataModuleDummy.pas">
+            <Form>DataModuleDummy</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -185,9 +200,15 @@
                     <Source Name="MainSource">MVCBrCore.dpk</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="C:\Program Files (x86)\Embarcadero\Studio\18.0\bin\designide240.bpl">Embarcadero Designer IDE Package</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrVCL.bpl">MVCBr VCL</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBr.bpl">MVCBr 1.0</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFMX.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrOData.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\QRD_DESIGN.bpl">(untitled)</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
@@ -198,10 +219,16 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule"/>
                 <DeployFile LocalName="..\..\BPLBerlin\MVCBrCore.bpl" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\MVCBrCore.bpl" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>MVCBrCore.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule"/>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule"/>
+                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule"/>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="OSX32">
                         <Operation>1</Operation>
