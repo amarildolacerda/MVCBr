@@ -23,7 +23,8 @@ uses
   FireDAC.Comp.UI,
 {$ENDIF}
   FireDAC.DApt, FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Comp.Client,
-  FireDAC.Phys.IBBase, Data.DB, FireDAC.Phys.PGDef, FireDAC.Phys.PG;
+  FireDAC.Phys.IBBase, Data.DB, FireDAC.Phys.PGDef, FireDAC.Phys.PG,
+  FireDAC.Phys.OracleDef, FireDAC.Phys.Oracle;
 
 type
   TWSDatamodule = class(TDataModule)
@@ -63,6 +64,7 @@ var
   FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
   FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink;
   FDPhysPgDriverLink1: TFDPhysPgDriverLink;
+  FDPhysOracleDriverLink1: TFDPhysOracleDriverLink;
 
   // FDManager1: TFDManager;
   LInited: boolean = false;
@@ -76,6 +78,7 @@ begin
     FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(WSDatamodule);
     FDPhysMSSQLDriverLink1 := TFDPhysMSSQLDriverLink.create(WSDatamodule);
     FDPhysPgDriverLink1 := TFDPhysPgDriverLink.create(WSDatamodule);
+    FDPhysOracleDriverLink1:= TFDPhysOracleDriverLink.create(WSDatamodule);
 
 {$IFDEF MSWINDOWS}
     FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(WSDatamodule);
@@ -114,6 +117,8 @@ begin
       FDPhysFBDriverLink1.VendorLib := LVendorLib
     else if LDriverID.Equals('MYSQL') then
       FDPhysMySQLDriverLink1.VendorLib := LVendorLib
+    else if LDriverID.Equals('ORA') then
+      FDPhysOracleDriverLink1.VendorLib := LVendorLib
     else if LDriverID.Equals('MSSQL') then
       FDPhysMSSQLDriverLink1.VendorLib := LVendorLib;
 end;

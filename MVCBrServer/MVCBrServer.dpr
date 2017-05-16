@@ -17,10 +17,12 @@ uses
   WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
-  MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
+  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
+  WS.Common in 'WS\WS.Common.pas',
+  WSConfigView in 'WSConfig\WSConfigView.pas',
+  config.Model in 'Models\config.Model.pas',
+  config.Model.Interf in 'Models\config.Model.Interf.pas',
   oData.Collections in '..\oData\oData.Collections.pas',
-  oData.Dialect.Firebird in '..\oData\oData.Dialect.Firebird.pas',
-  oData.Dialect in '..\oData\oData.Dialect.pas',
   oData.Engine in '..\oData\oData.Engine.pas',
   oData.Interf in '..\oData\oData.Interf.pas',
   oData.ServiceModel in '..\oData\oData.ServiceModel.pas',
@@ -28,16 +30,15 @@ uses
   oData.ProxyBase in '..\oData\oData.ProxyBase.pas',
   oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas',
   oData.SQL in '..\oData\oData.SQL.pas',
-  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
+  oData.Dialect in '..\oData\oData.Dialect.pas',
+  oData.Dialect.Firebird in '..\oData\oData.Dialect.Firebird.pas',
   oData.Dialect.MySQL in '..\oData\oData.Dialect.MySQL.pas',
+  oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas',
+  oData.Dialect.PostgreSQL in '..\oData\oData.Dialect.PostgreSQL.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
-  oData.JSON in '..\oData\oData.JSON.pas',
+  MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
   MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
-  WS.Common in 'WS\WS.Common.pas',
-  WSConfigView in 'WSConfig\WSConfigView.pas',
-  config.Model in 'Models\config.Model.pas',
-  config.Model.Interf in 'Models\config.Model.Interf.pas',
-  oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas';
+  oData.Dialect.Oracle in '..\oData\oData.Dialect.Oracle.pas';
 
 {$R *.res}
 

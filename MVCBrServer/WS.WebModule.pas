@@ -32,7 +32,7 @@ implementation
 
 uses WS.Datamodule, WS.HelloController, MVCFramework.Commons,
   Data.DB, WS.Common, oData.Dialect.MySql, oData.Dialect.MSSQL,
-  oData.Dialect.PostgreSQL,
+  oData.Dialect.PostgreSQL, oData.Dialect.Oracle,
   oData.ProxyBase, oData.SQL.FireDAC, oData.Dialect, oData.Dialect.Firebird,
   WS.Controller;
 
@@ -56,6 +56,8 @@ begin
     result := TODataDialectMySQL
   else if drv.Contains('=MSSQL;') then
     result := TODataDialectMSSQL
+  else if drv.Contains('=ORA') then
+    result := TODataDialectOracle
   else if drv.Contains('=PG;') then
     result := TODataDialectPostgreSQL
     /// por Elisangela

@@ -111,10 +111,15 @@
         </DCCReference>
         <DCCReference Include="WS\WS.Controller.Interf.pas"/>
         <DCCReference Include="WS\WS.Controller.pas"/>
-        <DCCReference Include="..\oData\MVC.oData.Base.pas"/>
+        <DCCReference Include="WS.Datamodule.pas">
+            <Form>WSDatamodule</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="WS\WS.Common.pas"/>
+        <DCCReference Include="WSConfig\WSConfigView.pas"/>
+        <DCCReference Include="Models\config.Model.pas"/>
+        <DCCReference Include="Models\config.Model.Interf.pas"/>
         <DCCReference Include="..\oData\oData.Collections.pas"/>
-        <DCCReference Include="..\oData\oData.Dialect.Firebird.pas"/>
-        <DCCReference Include="..\oData\oData.Dialect.pas"/>
         <DCCReference Include="..\oData\oData.Engine.pas"/>
         <DCCReference Include="..\oData\oData.Interf.pas"/>
         <DCCReference Include="..\oData\oData.ServiceModel.pas"/>
@@ -122,19 +127,15 @@
         <DCCReference Include="..\oData\oData.ProxyBase.pas"/>
         <DCCReference Include="..\oData\oData.SQL.FireDAC.pas"/>
         <DCCReference Include="..\oData\oData.SQL.pas"/>
-        <DCCReference Include="WS.Datamodule.pas">
-            <Form>WSDatamodule</Form>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
+        <DCCReference Include="..\oData\oData.Dialect.pas"/>
+        <DCCReference Include="..\oData\oData.Dialect.Firebird.pas"/>
         <DCCReference Include="..\oData\oData.Dialect.MySQL.pas"/>
-        <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
-        <DCCReference Include="..\oData\oData.JSON.pas"/>
-        <DCCReference Include="MVCAsyncMiddleware.pas"/>
-        <DCCReference Include="WS\WS.Common.pas"/>
-        <DCCReference Include="WSConfig\WSConfigView.pas"/>
-        <DCCReference Include="Models\config.Model.pas"/>
-        <DCCReference Include="Models\config.Model.Interf.pas"/>
         <DCCReference Include="..\oData\oData.Dialect.MSSQL.pas"/>
+        <DCCReference Include="..\oData\oData.Dialect.PostgreSQL.pas"/>
+        <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
+        <DCCReference Include="..\oData\MVC.oData.Base.pas"/>
+        <DCCReference Include="MVCAsyncMiddleware.pas"/>
+        <DCCReference Include="..\oData\oData.Dialect.Oracle.pas"/>
         <None Include="oData.ServiceModel.json"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
