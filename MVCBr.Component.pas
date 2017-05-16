@@ -24,9 +24,11 @@ type
   TComponentFactory = class(TComponent, IModel)
   private
     FAdapter: IModel;
+    procedure initBase;
   protected
-    procedure AfterConstruction; override;
   public
+    constructor Create(AOwner:TComponent);override;
+    procedure AfterConstruction; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
     function This: TObject; virtual;
@@ -51,12 +53,7 @@ implementation
 procedure TComponentFactory.AfterConstruction;
 begin
   inherited;
-  if not assigned(FAdapter) then
-  begin
-    FAdapter := TModelFactory.create;
-    FAdapter.ID(Self.ClassName + '.' + Self.name);
-  end;
-  ModelTypes := [mtComponent];
+  initBase;
 end;
 
 procedure TComponentFactory.AfterInit;
@@ -80,6 +77,12 @@ begin
   result := FAdapter.Controller(AController);
 end;
 
+constructor TComponentFactory.create(AOwner: TComponent);
+begin
+  inherited;
+  initBase;
+end;
+
 function TComponentFactory.GetController: IController;
 var
   vw: IView;
@@ -99,12 +102,22 @@ end;
 
 function TComponentFactory.GetModelTypes: TModelTypes;
 begin
-  result := FAdapter.ModelTypes;
+  result := FAdapter.GetModelTypes;
 end;
 
 function TComponentFactory.ID(const AID: String): IModel;
 begin
   result := FAdapter.ID(AID);
+end;
+
+procedure TComponentFactory.initBase;
+begin
+  if not assigned(FAdapter) then
+  begin
+    FAdapter := TModelFactory.create;
+    FAdapter.ID(Self.ClassName + '.' + Self.name);
+    SetModelTypes( [mtComponent] );
+  end;
 end;
 
 function TComponentFactory.ResolveController(const AGuidController: TGuid)
@@ -115,7 +128,8 @@ end;
 
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
-    FAdapter.ModelTypes := AModelType;
+  if assigned(FAdapter) then
+    FAdapter.SetModelTypes( AModelType );
 end;
 
 function TComponentFactory.This: TObject;

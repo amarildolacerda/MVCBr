@@ -47,7 +47,7 @@ end;
 constructor TFireDACModel.Create;
 begin
   inherited;
-  ModelTypes := [mtPersistent];
+  SetModelTypes ( [mtPersistent] );
   Connection(TFDConnection.Create(nil));
 end;
 

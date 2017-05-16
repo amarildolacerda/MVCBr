@@ -40,25 +40,24 @@ type
   private
     FID: string;
     FModelTypes: TModelTypes;
-    function GetModelTypes: TModelTypes;
-    procedure SetModelTypes(const AModelTypes: TModelTypes);
-  private
     FController: IController;
-    procedure SetID(const AID:string);
-    procedure AfterConstruction ;override;
+  protected
+    function GetModelTypes: TModelTypes;virtual;
+    procedure SetModelTypes(const AModelTypes: TModelTypes);virtual;
+    procedure SetID(const AID:string);override;
+    procedure AfterInit; virtual;
   public
-    constructor create; virtual;
-    destructor destroy; override;
+    constructor Create; override;
+    destructor Destroy; override;
+    procedure AfterConstruction ;override;
+    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure SetController(const AController:IController);virtual;
     function GetController: IController;
-    function Controller(const AController: IController): IModel; virtual;
+    function Controller(const AController: IController): IModel;overload; virtual;
     function This: TObject; virtual;
-    function GetID: string; virtual;
-    function ID(const AID: String): IModel;
-    function Update: IModel;virtual;
-    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes
-      default [mtCommon];
-    procedure AfterInit; virtual;
+    function GetID: string; override;
+    function ID(const AID: String): IModel;virtual;
+    function Update: IModel;overload;virtual;
   end;
 
 implementation

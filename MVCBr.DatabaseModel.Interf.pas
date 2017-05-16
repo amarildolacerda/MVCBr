@@ -58,7 +58,7 @@ type
     function GetConnectionString: string;virtual;
   public
     // Na herança é necessario indicar o retorno para THIS
-    function This: TDatabaseModelAbstract; virtual;
+    function This: TDatabaseModelAbstract;reintroduce; overload;virtual;
     function GetConnection<T:Class>():T;
     property ConnectionString:string read GetConnectionString write SetConnectionString;
   end;

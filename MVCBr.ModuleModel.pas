@@ -25,12 +25,6 @@ type
     FController: IController;
     FID: string;
     FModelTypes: TModelTypes;
-    FClientHeight: integer;
-    FClientWidth: integer;
-    FColor: TColor;
-    procedure SetClientHeight(const Value: integer);
-    procedure SetClientWidth(const Value: integer);
-    procedure SetColor(const Value: TColor);
   protected
     function This: TObject; virtual;
     function GetID: string; virtual;
@@ -46,15 +40,10 @@ type
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
-    destructor destroy; override;
+    destructor Destroy; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
 
-  published
-    /// stub compatibility
-    // property ClientHeight:integer read FClientHeight write SetClientHeight;
-    // property ClientWidth:integer read FClientWidth write SetClientWidth;
-    // property Color:TColor read FColor write SetColor;
   end;
 
 implementation
@@ -119,20 +108,7 @@ begin
   FID := AID;
 end;
 
-procedure TModuleFactory.SetClientHeight(const Value: integer);
-begin
-  FClientHeight := Value;
-end;
 
-procedure TModuleFactory.SetClientWidth(const Value: integer);
-begin
-  FClientWidth := Value;
-end;
-
-procedure TModuleFactory.SetColor(const Value: TColor);
-begin
-  FColor := Value;
-end;
 
 procedure TModuleFactory.SetModelTypes(const AModelType: TModelTypes);
 begin

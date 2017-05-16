@@ -65,7 +65,7 @@ type
 
     FContainerInfo: TDictionary<string, TObject>;
     class var FDefault: TMVCBrIoC;
-    class destructor ClassDestroy;
+    class procedure ClassDestroy;
   protected
     function GetInterfaceKey<TInterface>(const AName: string = ''): string;
     function InternalResolve<TInterface: IInterface>(out AInterface: TInterface;
@@ -104,9 +104,7 @@ type
       : TInterface;
     function GetName(AGuid: TGuid): string;
 
-    { procedure RegisterController(AII: TGuid; AClass: TControllerClass;
-      AName: String;bSingleton:boolean);
-    } procedure RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
+    procedure RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
       AClass: TInterfacedClass; AName: String; bSingleton: boolean); overload;
 
     // Returns true if we have such a service.
@@ -129,8 +127,8 @@ type
   TClassActivator = class
   private
     class var FRttiCtx: TRttiContext;
-    class constructor Create;
   public
+    constructor Create;
     class function CreateInstance(const AClass: TClass): IInterface;
   end;
 
@@ -140,7 +138,7 @@ implementation
 
 { TActivator }
 
-class constructor TClassActivator.Create;
+constructor TClassActivator.Create;
 begin
   TClassActivator.FRttiCtx := TRttiContext.Create;
 end;
@@ -247,7 +245,7 @@ begin
   end;
 end;
 
-class destructor TMVCBrIoC.ClassDestroy;
+class procedure TMVCBrIoC.ClassDestroy;
 begin
   if FDefault <> nil then
     FDefault.Free;
@@ -280,7 +278,6 @@ begin
     for o in FContainerInfo.Values do
       if o <> nil then
         o.Free;
-
     FContainerInfo.Free;
   end;
   inherited;
@@ -581,5 +578,11 @@ begin
   if result then
     IID := InterfaceEntry.IID;
 end;
+
+
+initialization
+
+finalization
+  TMVCBrIoC.ClassDestroy;
 
 end.

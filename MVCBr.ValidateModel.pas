@@ -36,7 +36,7 @@ Type
   protected
     FController:IController;
   public
-    function Controller(const AController: IController): IValidateModel;
+    function Controller(const AController: IController): IValidateModel;reintroduce; virtual;
 
   end;
 

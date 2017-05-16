@@ -48,13 +48,14 @@ type
     FView: IView;
     FID: string;
     procedure Load; virtual;
-    procedure SetID(const AID: string);
+    procedure SetID(const AID: string);override;
+  public
     procedure AfterConstruction; override;
 
   public
 
     constructor Create; override;
-    destructor destroy; override;
+    destructor Destroy; override;
 {$IFDEF FMX}
     procedure Embedded(AControl: TLayout); virtual;
 {$ENDIF}
@@ -73,7 +74,7 @@ type
     function ViewEvent<TViewInterface>(AMessage: string; var AHandled: boolean)
       : IView; overload;
     function ID(const AID: string): IController; virtual;
-    function GetID: String; virtual;
+    function GetID: String; override;
     function GetModelByID(const AID: String): IModel; virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
@@ -435,7 +436,7 @@ begin
       for i := 0 to FModels.Count - 1 do
         (FModels.Items[i] as IModel).Update;
       if assigned(FView) then
-        FView.Update;
+        FView.UpdateView;
     finally
       dec(FRefModelCount);
     end;
@@ -449,7 +450,7 @@ begin
   begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
     try
-      FView.Update;
+      FView.UpdateView;
     finally
       dec(FRefModelCount);
     end;

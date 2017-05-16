@@ -48,7 +48,7 @@ end;
 constructor TFireDACModel.Create;
 begin
   inherited;
-  ModelTypes := [mtPersistent];
+  SetModelTypes( [mtPersistent] );
   with TStringList.Create do
     try
       Assign(GetConnection.Params);

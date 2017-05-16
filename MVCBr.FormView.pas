@@ -1,9 +1,10 @@
-///
-/// MVCBr.FormView - implements base class of FormView
-/// Auth: amarildo lacerda
-/// Date: jan/2017
 
 {
+
+ MVCBr.FormView - implements base class of FormView
+ Auth: amarildo lacerda
+ Date: jan/2017
+
   Changes:
   29-mar-2017
   + MainViewEvent  - send ViewEvent to MainView   by: amarildo lacerda
@@ -55,7 +56,7 @@ type
     function ShowView(const AProc: TProc<IView>): Integer; override;
     function Form: {$IFDEF LINUX} TComponent {$ELSE} TForm{$ENDIF};
     function ThisAs: TViewFactoryAdapter;
-    function This: TObject;
+    function This: TObject;override;
   end;
 
   /// <summary>
@@ -142,7 +143,7 @@ type
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
     function GetViewModel: IViewModel; virtual;
     /// Evento para atualizar os dados da VIEW
-    function Update: IView; virtual;
+    function UpdateView: IView; virtual;
 
     property Text: string read GetText write SetText;
 
@@ -456,7 +457,7 @@ begin
   result := self;
 end;
 
-function TFormFactory.Update: IView;
+function TFormFactory.UpdateView: IView;
 begin
   result := self;
 end;
@@ -512,6 +513,7 @@ end;
 
 function TViewFactoryAdapter.ShowView(const AProc: TProc<IView>): Integer;
 begin
+  result := 0;
   FOnProc := AProc;
 {$IFDEF LINUX}
 {$ELSE}

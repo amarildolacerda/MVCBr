@@ -24,8 +24,8 @@ type
     FJoin: string;
     FGroupBy: string;
   public
-    constructor create; virtual;
-    destructor destroy; override;
+    constructor Create; virtual;
+    destructor Destroy; override;
     function This: TQueryModelFactory<T>;
     function Query:T;
     procedure DoChange; virtual;
@@ -53,12 +53,12 @@ type
     FConnection: T;
   public
     function GetOwned:TComponent;
-    constructor create(); override;
-    destructor destroy; override;
+    constructor Create(); override;
+    destructor Destroy; override;
     // retorna interface base
     function ThisIntf: IDatabaseModel;
     // retorna o modelo abstract de herança para a classe
-    function This: TDatabaseModelFactory<T, Q>; overload;
+    function This: TDatabaseModelFactory<T, Q>; reintroduce; overload;
     // retorna a conexão ativa
     function GetConnection: T;
     // Seta a conexão ativa

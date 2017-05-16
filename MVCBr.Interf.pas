@@ -142,14 +142,16 @@ type
     FLock: TObject;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
+  protected
+      procedure SetID(const AID: string); virtual;
+
   public
     Function Lock: TMVCFactoryAbstract;
     procedure UnLock;
-    constructor create; virtual;
-    destructor destroy; override;
+    constructor Create; virtual;
+    destructor Destroy; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function GetID: string; virtual;
-    procedure SetID(const AID: string); virtual;
     class function New<TInterface: IInterface>(AClass: TClass)
       : TInterface; overload;
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
@@ -170,8 +172,8 @@ type
     [unsafe]
     FOwner: TComponent;
   public
-    constructor create; override;
-    destructor destroy; override;
+    constructor Create; override;
+    destructor Destroy; override;
     function GetOwner: TComponent; virtual;
     procedure SetOwner(const AOwner: TComponent); virtual;
   end;
@@ -225,7 +227,7 @@ type
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
     mtNavigator, mtComponent);
-  TModelTypes = set of TModelType;
+
 
   // IModel Interfaces
   IModel = interface;
@@ -241,6 +243,7 @@ type
   end;
 
   // IModel representa a interface onde implementa as regras de negócio
+  TModelTypes = set of TModelType;
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     function Controller(const AController: IController): IModel;
@@ -265,7 +268,7 @@ type
     function This: TObject;
     function ShowView(const AProc: TProc<IView>): Integer; overload;
     function ShowView(): IView; overload;
-    function Update: IView;
+    function UpdateView: IView;
   end;
 
   IViewModel = interface;
@@ -362,7 +365,7 @@ type
     [unsafe]
     FModels: TMVCInterfacedList<IModel>;
   public
-    constructor create; virtual;
+    constructor Create; override;
     function This: TControllerAbstract;
     function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
     function GetModel(const IID: TGuid): IModel; overload; virtual;

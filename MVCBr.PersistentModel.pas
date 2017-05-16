@@ -11,7 +11,7 @@ Type
   protected
     FController:IController;
   public
-    function Controller(const AController: IController): IPersistentModel;
+    function Controller(const AController: IController): IPersistentModel;reintroduce;virtual;
 
   end;
 

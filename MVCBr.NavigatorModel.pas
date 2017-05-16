@@ -11,7 +11,7 @@ Type
   protected
     FController:IController;
   public
-    function Controller(const AController: IController): INavigatorModel;
+    function Controller(const AController: IController): INavigatorModel;reintroduce;virtual;
 
   end;
 

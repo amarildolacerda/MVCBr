@@ -36,15 +36,15 @@ type
   protected
     FView: IView;
     FModel: IModel;
-    procedure AfterConstruction;override;
   public
-    constructor create; override;
+    constructor Create; override;
+    procedure AfterConstruction;override;
     class function New(const AView: IView; const AModel: IModel)
       : IViewModel; virtual;
-    procedure AfterInit; virtual;
-    function Update(const AView: IView): IViewModel; overload; virtual;
+    procedure AfterInit; override;
+    function Update(const AView: IView): IViewModel;overload; virtual;
     function Update(const AModel: IModel): IViewModel; overload; virtual;
-    function This: TObject; virtual;
+    function This: TObject; override;
     function View(const AView: IView = nil): IViewModel; virtual;
     function Model(const AModel: IModel = nil): IViewModel; virtual;
     function Controller(const AController: IController): IViewModel;
@@ -59,7 +59,7 @@ implementation
 procedure TViewModelFactory.AfterConstruction;
 begin
   inherited;
-  ModelTypes := [mtViewModel];
+  SetModelTypes( [mtViewModel] );
 
 end;
 
@@ -106,7 +106,7 @@ function TViewModelFactory.Update(const AModel: IModel): IViewModel;
 begin
   result := self;
   if Assigned(FView) then
-    FView.Update;
+    FView.UpdateView;
 end;
 
 function TViewModelFactory.Update(const AView: IView): IViewModel;

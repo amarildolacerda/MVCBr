@@ -64,10 +64,10 @@ type
     function GetText: string;
     procedure SetTab(const Value: TObject);
     function GetTab: TObject;
-    procedure SetID(const Value: String);
     procedure SetView(const Value: IView);
   protected
     FClassType: TClass;
+    procedure SetID(const Value: String);override;
   public
     function GetOwner: TCustomPageViewFactory;
     function This: TPageView;
@@ -91,8 +91,6 @@ type
   protected
     FPageContainer: TComponent;
     FList:  IInterfaceList;// TMVCInterfacedList<IPageView>;
-    procedure AfterConstruction; override;
-    destructor destroy; override;
     procedure SetPageContainer(const Value: TComponent); virtual;
     function GetPageContainer: TComponent; virtual;
     /// ligação para o PageControl component
@@ -106,7 +104,8 @@ type
     procedure Notification(AComponent: TComponent;
       AOperation: TOperation); override;
   public
-
+    destructor Destroy; override;
+    procedure AfterConstruction; override;
     function NewTab(APageView: IPageView): TObject; virtual;
     function GetPageTabClass: TComponentClass; virtual;
     function GetPageContainerClass: TComponentClass; virtual;
@@ -420,7 +419,6 @@ end;
 function TCustomPageViewFactory.PageViewIndexOf(APageView: IPageView): Integer;
 var
   i: Integer;
-  LPageView: IPageView;
 begin
   result := -1;
   if not assigned(APageView) then exit;

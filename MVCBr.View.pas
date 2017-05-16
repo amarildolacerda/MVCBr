@@ -70,7 +70,7 @@ type
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
     function GetModel(AII:TGuid):IModel;
 
-    function Update: IView; virtual;
+    function UpdateView: IView; virtual;
     function GetController: IController;
     function ViewModel(const AModel: IViewModel): IView;
     property Text: string read GetText write SetText;
@@ -186,7 +186,7 @@ begin
   result := self;
 end;
 
-function TViewFactory.Update: IView;
+function TViewFactory.UpdateView: IView;
 begin
   result := self;
 end;

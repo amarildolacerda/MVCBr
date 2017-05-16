@@ -1,3 +1,11 @@
+{
+  Application Controller - Singleton central para os controller
+  Alterações:
+  12/04/2017 - por: amarildo lacerda
+  + Introduzido Fucntion Default para Singleton
+  + Incluido   class var FApplicationController
+}
+
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -23,13 +31,6 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-{
-  Application Controller - Singleton central para os controller
-  Alterações:
-  12/04/2017 - por: amarildo lacerda
-  + Introduzido Fucntion Default para Singleton
-  + Incluido   class var FApplicationController
-}
 
 unit MVCBr.ApplicationController;
 
@@ -60,31 +61,19 @@ type
     /// singleton
     class var FApplicationController: IApplicationController;
   public
+
+    constructor Create; override;
+    destructor Destroy; override;
+
     class function Default: IApplicationController;
     /// Loop que chama AProc para cada um dos controllers da lista
     function MainView: IView; virtual;
     procedure SetMainView(AView: IView);
+
+    /// Controllers methods
     function FindController(AGuid: TGuid): IController; virtual;
     function ResolveController(AGuid: TGuid): IController; virtual;
     procedure RevokeController(AGuid: TGuid);
-
-    function FindView(AGuid: TGuid): IView; virtual;
-    function FindModel(AGuid: TGuid): IModel; overload; virtual;
-    function FindModel<TIModel: IInterface>: TIModel; overload;
-
-    function ViewEvent(AMessage: string; var AHandled: boolean)
-      : IApplicationController; overload;
-    function ViewEventOther(ASender: IController; AMessage: string;
-      var AHandled: boolean): IApplicationController;
-    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
-      : IView; overload;
-    function ViewEvent<TViewInterface: IInterface>(AMessage: String;
-      var AHandled: boolean): IView; overload;
-    constructor create; override;
-    destructor destroy; override;
-    /// This retorna o Self do ApplicationController Object Factory
-    function This: TObject;
-    function ThisAs: TApplicationController;
     /// Count retorna a quantidade de controllers empilhados na lista
     function Count: integer;
     /// Add Adiciona um controller a lista de controller instaciados
@@ -93,16 +82,38 @@ type
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
 
+    ///  Views Methods
+    function FindView(AGuid: TGuid): IView; virtual;
+    function ViewEvent(AMessage: string; var AHandled: boolean)
+      : IApplicationController; overload;
+    function ViewEventOther(ASender: IController; AMessage: string;
+      var AHandled: boolean): IApplicationController;
+    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
+      : IView; overload;
+    function ViewEvent<TViewInterface: IInterface>(AMessage: String;
+      var AHandled: boolean): IView; overload;
+
+    ///  Models Methods
+    function FindModel(AGuid: TGuid): IModel; overload; virtual;
+    function FindModel<TIModel: IInterface>: TIModel; overload;
+
+
+    /// This retorna o Self do ApplicationController Object Factory
+    function This: TObject;
+    function ThisAs: TApplicationController;
+
     /// Executa o ApplicationController
     procedure Run(AClass: TComponentClass; AController: IController;
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     /// Executa
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
+
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
     procedure Inited;
     /// Envia evnet de Update a todos os controllers da lista
+
     procedure UpdateAll;
     /// envia event de Update a um Controller que contenha a IInterface
     procedure Update(const AIID: TGuid);
@@ -138,16 +149,16 @@ begin
   result := FControllers.Count;
 end;
 
-constructor TApplicationController.create;
+constructor TApplicationController.Create;
 begin
-  inherited create;
-  FControllers := TInterfaceList.create;
+  inherited Create;
+  FControllers := TInterfaceList.Create;
 end;
 
 class function TApplicationController.Default: IApplicationController;
 begin
   if not assigned(FApplicationController) then
-    FApplicationController := TApplicationController.create;
+    FApplicationController := TApplicationController.Create;
   result := FApplicationController;
 end;
 
@@ -156,7 +167,7 @@ begin
   FControllers.Delete(idx);
 end;
 
-destructor TApplicationController.destroy;
+destructor TApplicationController.Destroy;
 begin
   // FreeAndNil(FControllers);
   inherited;
@@ -171,6 +182,7 @@ begin
   ForEach(
     function(ACtrl: IController): boolean
     begin
+      result := false;
       if supports(ACtrl.This, AGuid, rst) then
         result := true;
     end);
@@ -185,6 +197,7 @@ begin
   ForEach(
     function(ACtrl: IController): boolean
     begin
+      result := false;
       ACtrl.GetModel(AGuid, rst);
       if assigned(rst) then
         result := true;
@@ -213,6 +226,7 @@ begin
     var
       r: IView;
     begin
+      result := false;
       r := ACtrl.GetView;
       if assigned(r) then
         if supports(r.This, AGuid, rst) then
@@ -244,8 +258,6 @@ begin
 end;
 
 procedure TApplicationController.ForEach(AProc: TProc<IController>);
-var
-  i: integer;
 begin
   ForEach(
     function(AController: IController): boolean
@@ -279,12 +291,13 @@ begin
 end;
 
 procedure TApplicationController.Remove(const AController: IController);
-var i:integer;
+var
+  i: integer;
 begin
-  for I := FControllers.count-1 downto 0 do
-    if (FControllers.items[i] as IController).this.Equals(  AController.this ) then
+  for i := FControllers.Count - 1 downto 0 do
+    if (FControllers.Items[i] as IController).This.Equals(AController.This) then
     begin
-        delete(I);
+      Delete(i);
     end;
 end;
 
@@ -292,7 +305,7 @@ function TApplicationController.ResolveController(AGuid: TGuid): IController;
 var
   stb: TControllerAbstract;
 begin
-  stb := TControllerAbstract.create;
+  stb := TControllerAbstract.Create;
   try
     stb.ResolveController(AGuid, result);
   finally
@@ -372,6 +385,7 @@ begin
   ForEach(
     function(AController: IController): boolean
     begin
+      result := false;
       view := AController.GetView;
       if assigned(view) then
         if supports(view.This, AView) then
@@ -398,7 +412,6 @@ function TApplicationController.ViewEventOther(ASender: IController;
 AMessage: string; var AHandled: boolean): IApplicationController;
 var
   LHandled: boolean;
-  i: integer;
 begin
   result := self;
   ForEach(
@@ -419,8 +432,6 @@ AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
   rt: boolean;
   reference: TComponent;
-  Controller: TObject;
-  LContrInterf: IController;
 begin
 
 {$IFDEF LINUX}
@@ -438,7 +449,7 @@ begin
     begin
       application.CreateForm(AClass, reference);
       if not supports(reference, IView) then
-        raise Exception.create('Não é uma classe que implementa IView');
+        raise Exception.Create('Não é uma classe que implementa IView');
       FMainView := reference as IView;
       AController.view(FMainView);
     end;

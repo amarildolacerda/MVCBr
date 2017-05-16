@@ -36,9 +36,12 @@ unit MVCBr.ObjectConfigList;
 interface
 
 uses System.Classes, System.SysUtils, System.RTTI,
-  System.JsonFiles, System.IniFiles,
+  System.JsonFiles, System.IniFiles, Data.DB,
 {$IFDEF LINUX} {$ELSE}VCL.StdCtrls, VCL.Controls, {$ENDIF} MVCBr.Model,
+  MVCBr.Component,
   System.Generics.Collections;
+
+{$I translate/MVCBr.Translate.inc}
 
 type
 
@@ -67,11 +70,11 @@ type
   end;
 {$ENDIF}
 
-  TObjectConfigContentType = (ctIniFile, ctJsonFile);
+  TObjectConfigContentType = (ctIniFile, ctJsonFile, ctDataset);
   IObjectConfigListItem = interface;
 
-  IObjectConfigList = interface
-    ['{302562A0-2A11-43F6-A249-4BD42E1133F2}']
+  IObjectConfigListComum = interface
+    ['{372B1554-E8BF-493A-AC15-1E7D415B3640}']
     function This: TObject;
     procedure ReadConfig;
     procedure WriteConfig;
@@ -79,14 +82,28 @@ type
 {$IFDEF LINUX} TComponent {$ELSE} TControl{$ENDIF}); overload;
     procedure Add(AControl: {$IFDEF LINUX} TComponent
 {$ELSE} TControl{$ENDIF}); overload;
-    procedure SetFileName(const Value: string);
-    function GetFileName: string;
-    property FileName: string read GetFileName write SetFileName;
     function Count: integer;
     function GetItems(idx: integer): IObjectConfigListItem;
     procedure SetItems(idx: integer; const Value: IObjectConfigListItem);
     property Items[idx: integer]: IObjectConfigListItem read GetItems
       write SetItems;
+  end;
+
+  IObjectConfigList = interface(IObjectConfigListComum)
+    ['{302562A0-2A11-43F6-A249-4BD42E1133F2}']
+    procedure SetFileName(const Value: string);
+    function GetFileName: string;
+    property FileName: string read GetFileName write SetFileName;
+  end;
+
+  IDBObjectConfigList = interface(IObjectConfigListComum)
+    ['{7D11135B-D9E7-44FB-BF40-4DB182C85ECD}']
+    procedure SetDataset(const Value: TDataset);
+    function GetDataset: TDataset;
+    property Dataset: TDataset read GetDataset write SetDataset;
+    function GetGroupID: string;
+    procedure SetGroupID(const Value: string);
+    property GroupID: string read GetGroupID write SetGroupID;
   end;
 
   TObjectConfigListItem = class;
@@ -146,7 +163,7 @@ type
     FIniFile: TIniFile;
   public
     constructor create(AFileName: string);
-    destructor destroy; override;
+    destructor Destroy; override;
     function ReadString(const Section, Ident, Default: string): string;
     procedure WriteString(const Section, Ident, Value: String);
     procedure WriteDateTime(const Section, Ident: string; Value: TDateTime);
@@ -163,9 +180,10 @@ type
   TConfigJsonFile = class(TInterfacedObject, IConfigFile)
   private
     FJsonFile: TJsonFile;
+  protected
   public
-    constructor create(AFileName: string);
-    destructor destroy; override;
+    constructor create(AFileName: string); overload; virtual;
+    destructor Destroy; override;
     function ReadString(const Section, Ident, Default: string): string;
     procedure WriteString(const Section, Ident, Value: String);
     procedure WriteDateTime(const Section, Ident: string; Value: TDateTime);
@@ -179,31 +197,27 @@ type
     function ConfigFile: TObject;
   end;
 
-  TObjectConfigModel = class(TModelFactory, IObjectConfigList)
+  TObjectConfigModelCustom = class(TComponentFactory)
   private
     FList: TInterfaceList;
-    FFileName: string;
     FProcRead: TProc<IObjectConfigListItem>;
     FProcWrite: TProc<IObjectConfigListItem>;
-    FContentFile: IConfigFile;
-    FContentType: TObjectConfigContentType;
     FComponentFullPath: boolean;
     function GetItems(idx: integer): IObjectConfigListItem;
     procedure SetItems(idx: integer; const Value: IObjectConfigListItem);
-    Function GetContentFile: IConfigFile;
-    procedure SetFileName(const Value: string);
-    function GetFileName: string;
-    procedure SetContentType(const Value: TObjectConfigContentType);
+    Function GetContentFile: IConfigFile; virtual;
     procedure SetComponentFullPath(const Value: boolean);
+    function GetComponentFullPath:boolean;
+  protected
+    procedure ReadConfig; virtual; abstract;
+    procedure WriteConfig; virtual; abstract;
+    procedure WriteItem(ASection, AItem: string; AValue: TValue); virtual;
+    procedure ReadItem(ASection, AItem: string; out AValue: TValue); virtual;
+
   public
-    constructor create;
-    destructor destroy; override;
-    function This: TObject;
-    class function new: IObjectConfigList;
-    property ContentType: TObjectConfigContentType read FContentType
-      write SetContentType;
-    procedure ReadConfig; virtual;
-    procedure WriteConfig; virtual;
+    constructor Create(AOwner: TComponent); overload; override;
+    destructor Destroy; override;
+    function This: TObject;override;
     function Count: integer;
     property Items[idx: integer]: IObjectConfigListItem read GetItems
       write SetItems;
@@ -211,15 +225,80 @@ type
 {$IFDEF LINUX} TComponent {$ELSE} TControl{$ENDIF}); overload; virtual;
     procedure Add(AControl: {$IFDEF LINUX} TComponent
 {$ELSE} TControl{$ENDIF}); overload; virtual;
-    property FileName: string read GetFileName write SetFileName;
-    procedure WriteItem(ASection, AItem: string; AValue: TValue); virtual;
-    procedure ReadItem(ASection, AItem: string; out AValue: TValue); virtual;
-    property ComponentFullPath: boolean read FComponentFullPath
+    property ComponentFullPath: boolean read GetComponentFullPath
       write SetComponentFullPath;
-    function ToString:String;
+
   end;
 
+  TObjectConfigModel = Class(TObjectConfigModelCustom, IObjectConfigList)
+  private
+    FFileName: string;
+    FContentFile: IConfigFile;
+    FContentType: TObjectConfigContentType;
+  protected
+    procedure SetFileName(const Value: string);
+    function GetFileName: string;
+    Function GetContentFile: IConfigFile; override;
+    procedure SetContentType(const Value: TObjectConfigContentType);
+  public
+    constructor Create(AOwner: TComponent); override;
+    class function new: IObjectConfigList; static;
+    property FileName: string read GetFileName write SetFileName;
+    property ContentType: TObjectConfigContentType read FContentType
+      write SetContentType;
+    procedure WriteConfig; override;
+    procedure ReadConfig; override;
+    procedure WriteItem(ASection, AItem: string; AValue: TValue); override;
+    procedure ReadItem(ASection, AItem: string; out AValue: TValue); override;
+    function ToString: String; override;
+  end;
+
+  TDBConfigColumnNames = record
+    ColumnIdent: string;
+    ColumnSection: string;
+    ColumnItem: string;
+    ColumnValue: string;
+  end;
+
+  TDBObjectConfigModel = class(TObjectConfigModelCustom, IObjectConfigListComum,
+    IDBObjectConfigList)
+  private
+    FGroupID: string;
+    FDataset: TDataset;
+    FColumnNames: TDBConfigColumnNames;
+    procedure SetDataset(const Value: TDataset);
+    function GetDataset: TDataset;
+    function GetGroupID: string;
+    procedure SetGroupID(const Value: string);
+    procedure SetColumnNames(const Value: TDBConfigColumnNames);
+    function FilterBuilder(ASection: string; AItem: string): string;
+  protected
+    procedure WriteConfig; override;
+    procedure ReadConfig; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    class function new: IDBObjectConfigList; static;
+    procedure WriteItem(ASection, AItem: string; AValue: TValue); override;
+    procedure ReadItem(ASection, AItem: string; out AValue: TValue); override;
+  published
+    property Dataset: TDataset read GetDataset write SetDataset;
+    property GroupID: string read GetGroupID write SetGroupID;
+
+    property ColumnNames: TDBConfigColumnNames read FColumnNames
+      write SetColumnNames;
+  end;
+
+procedure Register;
+
 implementation
+
+uses MVCBr.Comum;
+
+procedure Register;
+begin
+  RegisterComponents(mvcbr_pkg_component_title,
+    [TObjectConfigModel, TDBObjectConfigModel]);
+end;
 
 type
   TValueHelper = record helper for TValue
@@ -229,17 +308,16 @@ type
 
   { TObjectConfig }
 
-function TObjectConfigModel.Count: integer;
+function TObjectConfigModelCustom.Count: integer;
 begin
   result := FList.Count;
 end;
 
-constructor TObjectConfigModel.create;
+constructor TObjectConfigModelCustom.create(AOwner: TComponent);
 begin
+  inherited;
   FComponentFullPath := false;
-  FContentType := ctJsonFile;
   FList := TInterfaceList.create;
-  FFileName := paramStr(0) + '.config';
 
   FProcRead := procedure(sender: IObjectConfigListItem)
     var
@@ -257,7 +335,14 @@ begin
 
 end;
 
-destructor TObjectConfigModel.destroy;
+constructor TObjectConfigModel.create(AOwner: TComponent);
+begin
+  inherited create(AOwner);
+  FContentType := ctJsonFile;
+  FFileName := paramStr(0) + '.config';
+end;
+
+destructor TObjectConfigModelCustom.Destroy;
 begin
   FList.DisposeOf;
   inherited;
@@ -269,27 +354,25 @@ begin
 end;
 
 {$D+}
-Function TObjectConfigModel.GetContentFile: IConfigFile;
+
+function TObjectConfigModelCustom.GetComponentFullPath: boolean;
 begin
-  if not assigned(FContentFile) then
-    case ContentType of
-      ctIniFile:
-        FContentFile := TConfigIniFile.create(FFileName);
-      ctJsonFile:
-        FContentFile := TConfigJsonFile.create(FFileName);
-    end;
-  result := FContentFile;
+  result := FComponentFullPath;
+end;
+
+Function TObjectConfigModelCustom.GetContentFile: IConfigFile;
+begin
 end;
 {$D-}
 
-function TObjectConfigModel.GetItems(idx: integer): IObjectConfigListItem;
+function TObjectConfigModelCustom.GetItems(idx: integer): IObjectConfigListItem;
 begin
   result := FList.Items[idx] as IObjectConfigListItem;
 end;
 
 class function TObjectConfigModel.new: IObjectConfigList;
 begin
-  result := TObjectConfigModel.create;
+  result := TObjectConfigModel.create(nil);
 end;
 
 procedure TObjectConfigModel.ReadConfig;
@@ -315,7 +398,7 @@ begin
       AValue := ReadString(ASection, AItem, AValue.AsString);
 end;
 
-procedure TObjectConfigModel.Add(AControl: {$IFDEF LINUX} TComponent
+procedure TObjectConfigModelCustom.Add(AControl: {$IFDEF LINUX} TComponent
 {$ELSE} TControl{$ENDIF});
 var
   LItem: string;
@@ -327,8 +410,14 @@ begin
   RegisterControl('Config', LItem, AControl);
 end;
 
-procedure TObjectConfigModel.RegisterControl(ASection: string; AText: string;
-  AControl: {$IFDEF LINUX} TComponent
+procedure TObjectConfigModelCustom.ReadItem(ASection, AItem: string;
+  out AValue: TValue);
+begin
+  /// inherits
+end;
+
+procedure TObjectConfigModelCustom.RegisterControl(ASection: string;
+  AText: string; AControl: {$IFDEF LINUX} TComponent
 {$ELSE} TControl{$ENDIF});
 var
   obj: TObjectConfigListItem;
@@ -340,7 +429,7 @@ begin
   FList.Add(obj);
 end;
 
-procedure TObjectConfigModel.SetComponentFullPath(const Value: boolean);
+procedure TObjectConfigModelCustom.SetComponentFullPath(const Value: boolean);
 begin
   FComponentFullPath := Value;
 end;
@@ -357,23 +446,32 @@ begin
   FFileName := Value;
 end;
 
-procedure TObjectConfigModel.SetItems(idx: integer;
+procedure TObjectConfigModelCustom.SetItems(idx: integer;
   const Value: IObjectConfigListItem);
 begin
   FList.Items[idx] := Value;
 end;
 
-function TObjectConfigModel.This: TObject;
+function TObjectConfigModelCustom.This: TObject;
 begin
   result := self;
 end;
 
 function TObjectConfigModel.ToString: String;
 begin
-   case ContentType of
-     ctIniFile: result := TConfigIniFile(FContentFile.ConfigFile).FIniFile.ToString ; { TODO: ??? }
-     ctJsonFile: result := TConfigJsonFile(FContentFile.ConfigFile).FJsonFile.ToJson ;
-   end;
+  case ContentType of
+    ctIniFile:
+      result := TConfigIniFile(FContentFile.ConfigFile).FIniFile.ToString;
+    { TODO: ??? }
+    ctJsonFile:
+      result := TConfigJsonFile(FContentFile.ConfigFile).FJsonFile.ToJson;
+  end;
+end;
+
+procedure TObjectConfigModelCustom.WriteItem(ASection, AItem: string;
+  AValue: TValue);
+begin
+  // inherits
 end;
 
 procedure TObjectConfigModel.WriteConfig;
@@ -390,11 +488,11 @@ begin
       UpdateFile;
     end
   else
-     with TIniFile(GetContentFile.ConfigFile) do
-     begin
-       //FileName := self.FFileName;
-       UpdateFile;
-     end;
+    with TIniFile(GetContentFile.ConfigFile) do
+    begin
+      // FileName := self.FFileName;
+      UpdateFile;
+    end;
 end;
 
 procedure TObjectConfigModel.WriteItem(ASection, AItem: string; AValue: TValue);
@@ -490,7 +588,7 @@ begin
   FIniFile := TIniFile.create(AFileName);
 end;
 
-destructor TConfigIniFile.destroy;
+destructor TConfigIniFile.Destroy;
 begin
   FIniFile.free;
   inherited;
@@ -556,7 +654,7 @@ begin
   FJsonFile := TJsonFile.create(AFileName);
 end;
 
-destructor TConfigJsonFile.destroy;
+destructor TConfigJsonFile.Destroy;
 begin
   FJsonFile.free;
   inherited;
@@ -612,6 +710,132 @@ end;
 procedure TConfigJsonFile.WriteString(const Section, Ident, Value: String);
 begin
   FJsonFile.WriteString(Section, Ident, Value);
+end;
+
+{ TDBObjectConfigModel }
+
+constructor TDBObjectConfigModel.create(AOwner: TComponent);
+begin
+  inherited;
+  FGroupID := msgocl_SectionGroup;
+  FColumnNames.ColumnIdent := msgocl_ColumanNames_File;
+  FColumnNames.ColumnSection := msgocl_ColumanNames_Section;
+  FColumnNames.ColumnItem := msgocl_ColumanNames_Item;
+  FColumnNames.ColumnValue := msgocl_ColumanNames_Value;
+end;
+
+function TDBObjectConfigModel.GetDataset: TDataset;
+begin
+  result := FDataset;
+end;
+
+function TDBObjectConfigModel.GetGroupID: string;
+begin
+  result := FGroupID;
+end;
+
+class function TDBObjectConfigModel.new: IDBObjectConfigList;
+begin
+  result := TDBObjectConfigModel.create(nil);
+end;
+
+procedure TDBObjectConfigModel.ReadConfig;
+var
+  i: integer;
+begin
+  inherited;
+  if csDesigning in ComponentState then
+    exit;
+  assert(assigned(FDataset), msgocl_AssertDataSet);
+  if not FDataset.active then
+    FDataset.active := true;
+  for i := 0 to FList.Count - 1 do
+    FProcRead(FList.Items[i] as IObjectConfigListItem);
+
+end;
+
+procedure TDBObjectConfigModel.ReadItem(ASection, AItem: string;
+  out AValue: TValue);
+begin
+  FDataset.Filter := FilterBuilder(ASection, AItem);
+  FDataset.Filtered := true;
+  if not FDataset.eof then
+  begin
+    with FDataset do
+      if AValue.isBoolean then
+        AValue := FieldByname(msgocl_ColumanNames_Value).AsBoolean
+      else if AValue.isDatetime then
+        AValue := FieldByname(msgocl_ColumanNames_Value).asDateTime
+      else
+        AValue := FieldByname(msgocl_ColumanNames_Value).AsString;
+  end;
+end;
+
+function TDBObjectConfigModel.FilterBuilder(ASection: string;
+  AItem: string): string;
+begin
+  result := format(' %s = %s and %s = %s and %s = %s ',
+    [msgocl_ColumanNames_File, quotedStr(FGroupID), msgocl_ColumanNames_Section,
+    quotedStr(ASection), msgocl_ColumanNames_Item, quotedStr(AItem)]);
+end;
+
+procedure TDBObjectConfigModel.SetColumnNames(const Value
+  : TDBConfigColumnNames);
+begin
+  FColumnNames := Value;
+end;
+
+procedure TDBObjectConfigModel.SetDataset(const Value: TDataset);
+begin
+  FDataset := Value;
+end;
+
+procedure TDBObjectConfigModel.SetGroupID(const Value: string);
+begin
+  FGroupID := Value;
+end;
+
+procedure TDBObjectConfigModel.WriteConfig;
+begin
+  inherited;
+  if csDesigning in ComponentState then
+    exit;
+
+  if FDataset.State in dsEditModes then
+    FDataset.post;
+end;
+
+procedure TDBObjectConfigModel.WriteItem(ASection, AItem: string;
+  AValue: TValue);
+begin
+  FDataset.Filter := FilterBuilder(ASection, AItem);
+  FDataset.Filtered := true;
+  if FDataset.eof then
+  begin
+    FDataset.append;
+    FDataset.FieldByname(msgocl_ColumanNames_File).AsString := FGroupID;
+    FDataset.FieldByname(msgocl_ColumanNames_Section).AsString := ASection;
+    FDataset.FieldByname(msgocl_ColumanNames_Item).AsString := AItem;
+  end
+  else
+    FDataset.edit;
+  FDataset.FieldByname(msgocl_ColumanNames_Value).Value := AValue.AsVariant;
+  if FDataset.State in dsEditModes then
+    FDataset.post;
+end;
+
+{ TObjectConfigModel }
+
+function TObjectConfigModel.GetContentFile: IConfigFile;
+begin
+  if not assigned(FContentFile) then
+    case ContentType of
+      ctIniFile:
+        FContentFile := TConfigIniFile.create(FFileName);
+      ctJsonFile:
+        FContentFile := TConfigJsonFile.create(FFileName);
+    end;
+  result := FContentFile;
 end;
 
 end.
