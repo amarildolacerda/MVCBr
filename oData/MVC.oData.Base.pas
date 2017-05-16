@@ -113,11 +113,8 @@ function TODataController.CreateJson(CTX: TWebContext; const AValue: string)
   : TJsonObject;
 begin
   CTX.Response.SetCustomHeader('OData-Version', '4.0');
-{$IFDEF DMVC2}
-  CTX.Response.ContentType := 'application/json;odata.metadata=minimal';
-{$ELSE}
+//  CTX.Response.ContentType := 'application/json;odata.metadata=minimal';  // AL - DMVC3, nao consegue buscar conector se houver mais 1 item na lista
   CTX.Response.ContentType := 'application/json';
-{$ENDIF}
   result := TJsonObject.create as TJsonObject;
   result.addPair('@odata.context', AValue);
   result.addPair('StartsAt', DateToISO8601(now));
