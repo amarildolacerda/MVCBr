@@ -10,7 +10,7 @@ interface
 
 Uses System.Classes, System.SysUtils, System.JSON, System.JSON.Helper;
 
-//type    /// passou para  System.DB.Helper
+//type
 //  IJsonObject = System.JSON.Helper.IJsonObject;
 //  TInterfacedJsonObject = System.JSON.Helper.TInterfacedJSON;
 

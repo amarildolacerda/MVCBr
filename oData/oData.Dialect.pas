@@ -9,7 +9,7 @@ unit oData.Dialect;
 interface
 
 uses System.Classes, System.SysUtils, oData.ServiceModel,
-  System.JSON, System.Json.Helper, System.Generics.Collections,
+  System.JSON, System.JSON.Helper, System.Generics.Collections,
   oData.Interf;
 
 const
@@ -49,10 +49,11 @@ Type
     procedure CreateFilter(AFilter: string; var FWhere: string); virtual;
     function TopCmdAfterSelectStmt(nTop, nSkip: integer): string; virtual;
     function TopCmdAfterFromStmt(nTop, nSkip: integer): string; virtual;
+    function TopCmdAfterAtEndOfStmt(nTop, nSkip: integer): string; virtual;
     function TopCmdStmt: string; virtual;
     function SkipCmdStmt: string; virtual;
     procedure CreateTopSkip(var Result: string; nTop, nSkip: integer); virtual;
-    function AfterCreateSQL(var SQL: string):boolean; virtual;
+    function AfterCreateSQL(var SQL: string): Boolean; virtual;
     procedure &and(var Result: string); virtual;
     procedure &or(var Result: string); virtual;
   public
@@ -261,9 +262,10 @@ begin
     Result := '(' + Result + ') or ';
 end;
 
-function TODataDialect.AfterCreateSQL(var SQL: string):boolean;
+function TODataDialect.AfterCreateSQL(var SQL: string): Boolean;
 begin
-   result := false;  /// nao alterou nada.
+  Result := false;
+  /// nao alterou nada.
 end;
 
 procedure TODataDialect.&and(var Result: string);
@@ -626,6 +628,9 @@ begin
       FFields := '*';
     /// se nao foi indicado nenhum field - usa *
     Result := stringReplace(Result, '{%fields}', FFields, []);
+    if (ATop > 0) or (ASkip > 0) then
+      Result := Result + TopCmdAfterAtEndOfStmt(ATop, ASkip);
+
   finally
     oData.Unlock;
   end;
@@ -649,7 +654,7 @@ var
 begin
   try
     rs := GetResource(AResource) as IJsonODataServiceResource;
-    Result := TInterfacedJson.New(rs.Relation(ARelation).JSON,false);
+    Result := TInterfacedJson.New(rs.Relation(ARelation).JSON, false);
     if not assigned(Result) then
       raise Exception.Create('Serviços não disponível para o resource detalhe: '
         + ARelation);
@@ -662,6 +667,12 @@ function TODataDialect.SkipCmdStmt: string;
 begin
   // mysql
   Result := ' ,';
+end;
+
+function TODataDialect.TopCmdAfterAtEndOfStmt(nTop, nSkip: integer): string;
+begin
+  Result := '';
+  // CreateTopSkip(Result, nTop, nSkip);
 end;
 
 function TODataDialect.TopCmdAfterFromStmt(nTop, nSkip: integer): string;
