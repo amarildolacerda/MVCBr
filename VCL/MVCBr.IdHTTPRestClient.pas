@@ -77,11 +77,15 @@ begin
   inherited;
   FMethod := rmGET;
   FIdHTTP := TIdCustomHTTP.Create(self);
+  /// workaroud   403 - Forbidden
+  FIdHTTP.Request.UserAgent :=
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv: 12.0)Gecko / 20100101 Firefox / 12.0 ';
+
   FBody := TStringList.Create;
   if (csDesigning in ComponentState) and (FAccept = '') then
   begin
     FAcceptCharset := 'UTF-8';
-    FAccept := 'application/json; odata.metadata=minimal'; // , text/plain, text/html';
+    FAccept := 'application/json';//; odata.metadata=minimal'; // , text/plain, text/html';
     FAcceptEncoding := 'gzip';
     FTimeout := 360000;
   end;
@@ -111,6 +115,7 @@ end;
 function TIdHTTPRestClient.Execute(AProc: TProc): boolean;
 var
   streamSource: TStringStream;
+  i:integer;
 begin
   result := false;
   streamSource := TStringStream.Create;
@@ -125,7 +130,8 @@ begin
     IdHTTP.ReadTimeout := FTimeout;
     IdHTTP.ConnectTimeout := 60000;
     if assigned(FBody) and (FBody.Count > 0) then
-      streamSource.WriteString(FBody.text);
+     for I := 0 to FBody.count-1 do
+      streamSource.WriteString(FBody[i]);
     streamSource.Position := 0;
     case FMethod of
       rmGET:
