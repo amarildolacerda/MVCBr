@@ -4,4 +4,8 @@ rmdir .\_history /s /q
 del .\_recovery\*.* /s
 rmdir .\_recovery /s /q
 del *.o /s /q
+del *.apk /s /q
+del *.stat /s /q
+del *.identcache /s /q
+del *.map /s /q
 
