@@ -100,7 +100,6 @@ type
     function ToJson: string;
     procedure FromJson(AJson: string);
 
-  published
   end;
 
   TJsonFile = class(TMemJsonFile)
@@ -318,7 +317,7 @@ var
 begin
   // copy from Ssytem.IniFiles .TIniFiles (embarcadero)
   try
-    if (FFileName <> '') { and FileExists(FFileName) } then
+    if (FFileName <> '')  and FileExists(FFileName)  then
     begin
       try
         Stream := TFileStream.Create(FFileName, fmOpenRead);
@@ -337,9 +336,7 @@ begin
       except
         Clear;
       end;
-    end
-    else
-      Clear;
+    end;
   finally
     Modified := false;
   end;
@@ -397,11 +394,8 @@ end;
 
 function TMemJsonFile.ReadBool(const Section, Ident: string;
   Default: boolean): boolean;
-var
-  j: TJsonObject;
 begin
-  // result := ReadValue(Section,Ident,Default);
-
+   result := false;
 end;
 
 function TMemJsonFile.ReadDatetime(const Section, Ident: string;
@@ -409,7 +403,6 @@ function TMemJsonFile.ReadDatetime(const Section, Ident: string;
 var
   v: Variant;
 begin
-  result := Default;
   v := ReadValue(Section, Ident, ISODateTimeToString(Default));
   result := ISOStrToDateTime(v);
 end;
@@ -419,7 +412,6 @@ function TMemJsonFile.ReadFloat(const Section, Ident: string;
 var
   v: Variant;
 begin
-  result := Default;
   v := ReadValue(Section, Ident, Default);
   result := StrToFloatDef(v, 0);
 end;

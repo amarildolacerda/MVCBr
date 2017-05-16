@@ -21,8 +21,8 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-{  Alterações:
-     05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões
+{ Alterações:
+  05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões
 }
 unit System.Json.Helper;
 
@@ -37,7 +37,8 @@ type
 
   TJsonRecord<T: Record > = class
   public
-    class function ToJson(O: T): string;
+    class function ToJson(O: T; const AIgnoreEmpty: boolean = true;
+      const AProcBefore: TProc < TJsonObject >= nil): string;
     class procedure FromJson(O: T; AJson: string);
   end;
 
@@ -48,19 +49,23 @@ type
 
   TMemberVisibilitySet = set of TMemberVisibility;
 
+  TInterfacedJSON = class;
+
   IJsonObject = interface
     ['{62E97901-D27A-460E-B0AF-0640874360D7}']
+    function This: TInterfacedJSON;
     function GetValueBase(chave: string): string;
     procedure SetValueBase(chave: string; const Value: string);
     function Parse(AJson: string): IJsonObject;
     function Json: TJsonValue;
-    function JSONObject: TJSONObject;
+    function JSONObject: TJsonObject;
     function JsonValue: TJsonValue;
     function isNull: boolean;
     function AsArray: TJsonArray;
-    function addPair(AKey, AValue: string): TJSONObject;overload;
-    function addPair(AKey:string; AValue: TJsonValue): TJSONObject;overload;
-    function AddChild(AKey, AJson: string): TJSONObject;
+    function addPair(AKey, AValue: string): TJsonObject; overload;
+    function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
+    function AddChild(AKey, AJson: string): TJsonObject;
+    function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
     function ToJson: string;
     function Contains(AKey: string): boolean;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
@@ -77,6 +82,7 @@ type
     constructor create(AJson: string); overload;
     constructor create; overload;
     destructor destroy; override;
+    function This: TInterfacedJSON; virtual;
     class function New(AJson: string): IJsonObject; overload;
     class function New: IJsonObject; overload;
     class function New(AJson: TJsonValue; AOwned: boolean): IJsonObject;
@@ -87,19 +93,20 @@ type
       overload; static;
     function Parse(AJson: string): IJsonObject;
     function Json: TJsonValue;
-    function JSONObject: TJSONObject;
+    function JSONObject: TJsonObject;
     function JsonValue: TJsonValue;
     function AsArray: TJsonArray;
     function isNull: boolean;
-    function addPair(AKey, AValue: string): TJSONObject;overload;
-    function addPair(AKey:string; AValue: TJsonValue): TJSONObject;overload;
-    function AddChild(AKey, AJson: string): TJSONObject;
+    function addPair(AKey, AValue: string): TJsonObject; overload;
+    function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
+    function AddChild(AKey, AJson: string): TJsonObject;
+    function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
     function ToJson: string;
     function Contains(AKey: string): boolean;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
   end;
 
-  TJSONObjectHelper = class helper for TJSONObject
+  TJSONObjectHelper = class helper for TJsonObject
   private
     function GetValueBase(chave: string): string;
     procedure SetValueBase(chave: string; const Value: string);
@@ -110,14 +117,14 @@ type
 {$ENDIF}
     class function GetTypeAsString(AType: TJsonType): string; static;
     class function GetJsonType(AJsonValue: TJsonValue): TJsonType; static;
-    class function Stringify(so: TJSONObject): string;
-    class function Parse(const dados: string): TJSONObject;
+    class function Stringify(so: TJsonObject): string;
+    class function Parse(const dados: string): TJsonObject;
     constructor create(AKey, AValue: String); overload;
     function V(chave: String): variant;
     function S(chave: string): string;
     function I(chave: string): integer;
-    function O(chave: string): TJSONObject; overload;
-    function O(index: integer): TJSONObject; overload;
+    function O(chave: string): TJsonObject; overload;
+    function O(index: integer): TJsonObject; overload;
     function F(chave: string): Extended;
     function B(chave: string): boolean;
     function A(chave: string): TJsonArray;
@@ -127,17 +134,17 @@ type
 
 {$IFNDEF BPL}
     function asObject: System.TObject;
-    class function FromRecord<T>(rec: T): TJSONObject;
+    class function FromRecord<T>(rec: T): TJsonObject;
 {$ENDIF}
     class function FromObject<T>(AObject: T;
       AVisibility: TMemberVisibilitySet = [mvPublic, mvPublished])
-      : TJSONObject; overload;
+      : TJsonObject; overload;
 {$IFDEF CompilerVersion<=30}
-    function addPair(chave: string; Value: string): TJSONObject; overload;
+    function addPair(chave: string; Value: string): TJsonObject; overload;
 {$ENDIF}
-    function addPair(chave: string; Value: integer): TJSONObject; overload;
-    function addPair(chave: string; Value: Double): TJSONObject; overload;
-    function addPair(chave: string; Value: TDatetime): TJSONObject; overload;
+    function addPair(chave: string; Value: integer): TJsonObject; overload;
+    function addPair(chave: string; Value: Double): TJsonObject; overload;
+    function addPair(chave: string; Value: TDatetime): TJsonObject; overload;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
     function Coalesce(chave: string; Value: string): TJsonPair;
     // procedure FromRecord<T :record>(rec:T);
@@ -146,7 +153,7 @@ type
   TJSONArrayHelper = class helper for TJsonArray
   public
     function Length: integer;
-    function Find(AJson: string): TJSONObject;
+    function Find(AJson: string): TJsonObject;
   end;
 
   TJsonValuesList = class(TObjectList<TJsonPair>)
@@ -172,20 +179,20 @@ type
     function AsArray: TJsonArray;
     function AsPair: TJsonPair;
     function Datatype: TJsonType;
-    function asObject: TJSONObject;
+    function asObject: TJsonObject;
     function AsInteger: integer;
     function AsString: string;
   end;
 
   TJSONPairHelper = class helper for TJsonPair
   public
-    function asObject: TJSONObject;
+    function asObject: TJsonObject;
   end;
 
-  IJson = TJSONObject;
+  IJson = TJsonObject;
   IJSONArray = TJsonArray;
 
-  TJson = TJSONObject;
+  TJson = TJsonObject;
 
 function ReadJsonString(const dados: string; chave: string): string;
 function ReadJsonInteger(const dados: string; chave: string): integer;
@@ -209,14 +216,14 @@ uses db, System.Rtti, System.DateUtils (*{$ifndef BPL}, Rest.JSON{$endif}*);
 
 class procedure TJsonRecord<T>.FromJson(O: T; AJson: string);
 var
-  js: TJSONObject;
+  js: TJsonObject;
   AContext: TRttiContext;
   AField: TRttiField;
   ARecord: TRttiRecordType;
   AFldName: String;
   AValue: TValue;
 begin
-  js := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
+  js := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
   try
     AContext := TRttiContext.create;
     try
@@ -237,7 +244,8 @@ begin
   end;
 end;
 
-class function TJsonRecord<T>.ToJson(O: T): string;
+class function TJsonRecord<T>.ToJson(O: T; const AIgnoreEmpty: boolean = true;
+  const AProcBefore: TProc < TJsonObject >= nil): string;
 var
   AContext: TRttiContext;
   AField: TRttiField;
@@ -246,9 +254,11 @@ var
   AValue: TValue;
   ArrFields: TArray<TRttiField>;
   I: integer;
-  js: TJSONObject;
+  js: TJsonObject;
 begin
-  js := TJSONObject.create;
+  js := TJsonObject.create;
+  if assigned(AProcBefore) then
+    AProcBefore(js);
   AContext := TRttiContext.create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
@@ -290,6 +300,8 @@ begin
                   end;
               end
           else
+            if (AIgnoreEmpty) and AValue.AsString.IsEmpty then
+              continue;
             js.addPair(AFldName, AValue.AsString)
           end;
       except
@@ -387,7 +399,7 @@ var
 begin
   if AJsonValue is TJSONNull then
     result := jtNull
-  else if AJsonValue is TJSONObject then
+  else if AJsonValue is TJsonObject then
     result := jtObject
   else if AJsonValue is TJsonArray then
     result := jtArray
@@ -416,7 +428,7 @@ end;
 
 function JSONParse(const dados: string): IJson;
 begin
-  result := TJSONObject.ParseJSONValue(dados) as IJson;
+  result := TJsonObject.ParseJSONValue(dados) as IJson;
 end;
 
 function JSONstringify(so: IJson): string;
@@ -514,7 +526,7 @@ end;
 {$IFDEF CompilerVersion<=30}
 
 function TJSONObjectHelper.addPair(chave: string; Value: string)
-  : TJSONObject; overload;
+  : TJsonObject; overload;
 var
   pair: TJsonPair;
 begin
@@ -523,18 +535,18 @@ begin
 end;
 {$ENDIF}
 
-function TJSONObjectHelper.addPair(chave: string; Value: integer): TJSONObject;
+function TJSONObjectHelper.addPair(chave: string; Value: integer): TJsonObject;
 begin
   result := addPair(chave, TJSONNumber.create(Value));
 end;
 
-function TJSONObjectHelper.addPair(chave: string; Value: Double): TJSONObject;
+function TJSONObjectHelper.addPair(chave: string; Value: Double): TJsonObject;
 begin
   result := addPair(chave, TJSONNumber.create(Value));
 end;
 
 function TJSONObjectHelper.addPair(chave: string; Value: TDatetime)
-  : TJSONObject;
+  : TJsonObject;
 var
   S: string;
 begin
@@ -547,7 +559,7 @@ end;
 
 function TJSONObjectHelper.AsArray: TJsonArray;
 begin
-  result := TJSONObject.ParseJSONValue(self.ToJson) as TJsonArray;
+  result := TJsonObject.ParseJSONValue(self.ToJson) as TJsonArray;
 end;
 
 function TJSONObjectHelper.B(chave: string): boolean;
@@ -594,40 +606,40 @@ begin
     TryGetValue<integer>(chave, result);
 end;
 
-function TJSONObjectHelper.O(index: integer): TJSONObject;
+function TJSONObjectHelper.O(index: integer): TJsonObject;
 var
   pair: TJsonPair;
 begin
-  result := TJSONObject(Get(index));
+  result := TJsonObject(Get(index));
 end;
 
-function TJSONObjectHelper.O(chave: string): TJSONObject;
+function TJSONObjectHelper.O(chave: string): TJsonObject;
 var
   V: TJsonValue;
 begin
   V := GetValue(chave);
-  result := V as TJSONObject;
+  result := V as TJsonObject;
   // TryGetValue<TJSONObject>(chave, result);
 end;
 
-class function TJSONObjectHelper.Parse(const dados: string): TJSONObject;
+class function TJSONObjectHelper.Parse(const dados: string): TJsonObject;
 begin
-  result := TJSONObject.ParseJSONValue(dados) as TJSONObject;
+  result := TJsonObject.ParseJSONValue(dados) as TJsonObject;
 end;
 
 {$IFNDEF BPL}
 
-class function TJSONObjectHelper.FromRecord<T>(rec: T): TJSONObject;
+class function TJSONObjectHelper.FromRecord<T>(rec: T): TJsonObject;
 var
   m: TJSONMarshal;
   js: TJsonValue;
 begin
-  result := TJSONObject.FromObject<T>(rec);
+  result := TJsonObject.FromObject<T>(rec);
 end;
 {$ENDIF}
 
 class function TJSONObjectHelper.FromObject<T>(AObject: T;
-  AVisibility: TMemberVisibilitySet): TJSONObject;
+  AVisibility: TMemberVisibilitySet): TJsonObject;
 var
   typ: TRttiType;
   ctx: TRttiContext;
@@ -640,7 +652,7 @@ var
   LAttr: TCustomAttribute;
   LContinue: boolean;
 begin
-  result := TJSONObject.create;
+  result := TJsonObject.create;
   ctx := TRttiContext.create;
   typ := ctx.GetType(TypeInfo(T));
   P := @AObject;
@@ -718,7 +730,7 @@ begin
   end;
 end;
 
-class function TJSONObjectHelper.Stringify(so: TJSONObject): string;
+class function TJSONObjectHelper.Stringify(so: TJsonObject): string;
 begin
   result := so.ToJson;
 end;
@@ -727,7 +739,7 @@ class function TJSONValueHelper.ToRecord<T>(AJson: string): T;
 var
   j: TJsonValue;
 begin
-  j := TJSONObject.ParseJSONValue(AJson);
+  j := TJsonObject.ParseJSONValue(AJson);
   try
     result := (j).ToRecord<T>;
   finally
@@ -743,13 +755,13 @@ var
   AJsonValue: TJsonPair;
   AValue: TValue;
   AFieldName: String;
-  j: TJSONObject;
+  j: TJsonObject;
 begin
   AContext := TRttiContext.create;
   try
 
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
-    j := self as TJSONObject;
+    j := self as TJsonObject;
     for AField in ARecord.GetFields do
     begin
       try
@@ -805,12 +817,12 @@ var
   AJsonValue: TJsonPair;
   AValue: TValue;
   AFieldName: String;
-  j: TJSONObject;
+  j: TJsonObject;
 begin
   AContext := TRttiContext.create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
-    j := self as TJSONObject;
+    j := self as TJsonObject;
     for AField in ARecord.GetFields do
     begin
       try
@@ -887,19 +899,19 @@ end;
 {$ENDIF}
 { TJSONArrayHelper }
 
-function TJSONArrayHelper.Find(AJson: string): TJSONObject;
+function TJSONArrayHelper.Find(AJson: string): TJsonObject;
 var
-  j: TJSONObject;
+  j: TJsonObject;
   it: TJsonValue;
   P: TJsonPair;
   r: boolean;
-  tmp: TJSONObject;
+  tmp: TJsonObject;
 begin
   result := nil;
-  j := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
+  j := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
   for it in self do
   begin
-    tmp := it as TJSONObject;
+    tmp := it as TJsonObject;
     r := true;
     for P in j do
     begin
@@ -936,7 +948,7 @@ end;
 
 procedure TJSONValueHelper.addPair(AKey, AValue: string);
 begin
-  (self as TJSONObject).addPair(AKey, AValue);
+  (self as TJsonObject).addPair(AKey, AValue);
 end;
 
 function TJSONValueHelper.AsArray: TJsonArray;
@@ -949,9 +961,9 @@ begin
   TryGetValue<integer>(result);
 end;
 
-function TJSONValueHelper.asObject: TJSONObject;
+function TJSONValueHelper.asObject: TJsonObject;
 begin
-  result := self as TJSONObject;
+  result := self as TJsonObject;
 end;
 
 function TJSONValueHelper.AsPair: TJsonPair;
@@ -964,7 +976,7 @@ var
   P: TJsonPair;
 begin
   result := '';
-  for P in (self as TJSONObject) do
+  for P in (self as TJsonObject) do
   begin
     if result > '' then
       result := result + ';';
@@ -974,7 +986,7 @@ end;
 
 function TJSONValueHelper.Datatype: TJsonType;
 begin
-  result := TJSONObject.GetJsonType(self);
+  result := TJsonObject.GetJsonType(self);
 end;
 
 class procedure TJSONValueHelper.GetRecordList<T>
@@ -986,7 +998,7 @@ var
   AJsonValue: TJsonPair;
   AValue: TValue;
   AFieldName: String;
-  j: TJSONObject;
+  j: TJsonObject;
   APair: TJsonPair;
 begin
   AContext := TRttiContext.create;
@@ -1007,8 +1019,9 @@ begin
         if sametext(AField.FieldType.Name, 'Boolean') then
         begin
           if AValue.AsBoolean then
-               APair := TJsonPair.create(AFieldName, TJSONTrue.create() )
-          else APair := TJsonPair.create(AFieldName, TJSONFalse.create() );
+            APair := TJsonPair.create(AFieldName, TJSONTrue.create())
+          else
+            APair := TJsonPair.create(AFieldName, TJSONFalse.create());
         end;
       end;
       if assigned(APair) then
@@ -1025,14 +1038,14 @@ var
   APair: TJsonPair;
 begin
   APair := TJsonPair.create(AKey, AValue);
-  result := TJSONObject.create(APair);
+  result := TJsonObject.create(APair);
 end;
 
 { TJSONPairHelper }
 
-function TJSONPairHelper.asObject: TJSONObject;
+function TJSONPairHelper.asObject: TJsonObject;
 begin
-  result := (self.JsonValue) as TJSONObject;
+  result := (self.JsonValue) as TJsonObject;
 end;
 
 function ISOTimeToString(ATime: TTime): string;
@@ -1074,9 +1087,9 @@ end;
 
 function JSONStoreError(msg: string): TJsonValue;
 var
-  js: TJSONObject;
+  js: TJsonObject;
 begin
-  js := TJSONObject.create;
+  js := TJsonObject.create;
   js.addPair('error', msg);
   js.addPair('ok', 'false');
   result := js;
@@ -1115,15 +1128,21 @@ end;
 
 { TInterfacedJSON }
 
-function TInterfacedJSON.AddChild(AKey, AJson: string): TJSONObject;
+function TInterfacedJSON.addArray(AKey: string; AValue: TJsonArray): TJsonArray;
 begin
-  result := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
-  (FJson as TJSONObject).addPair(AKey, result);
+  result := AValue;
+  JSONObject.addPair(AKey, AValue);
 end;
 
-function TInterfacedJSON.addPair(AKey, AValue: string): TJSONObject;
+function TInterfacedJSON.AddChild(AKey, AJson: string): TJsonObject;
 begin
-  result := (FJson as TJSONObject).addPair(AKey, AValue);
+  result := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
+  (FJson as TJsonObject).addPair(AKey, result);
+end;
+
+function TInterfacedJSON.addPair(AKey, AValue: string): TJsonObject;
+begin
+  result := (FJson as TJsonObject).addPair(AKey, AValue);
 end;
 
 constructor TInterfacedJSON.create;
@@ -1160,9 +1179,9 @@ begin
   result := jo;
 end;
 
-function TInterfacedJSON.addPair(AKey:string; AValue: TJsonValue): TJSONObject;
+function TInterfacedJSON.addPair(AKey: string; AValue: TJsonValue): TJsonObject;
 begin
-  result := JSONObject.addPair(AKey,AValue);
+  result := JSONObject.addPair(AKey, AValue);
 end;
 
 function TInterfacedJSON.AsArray: TJsonArray;
@@ -1177,7 +1196,7 @@ end;
 
 class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonValue): TJsonType;
 begin
-  result := TJSONObject.GetJsonType(AJsonValue);
+  result := TJsonObject.GetJsonType(AJsonValue);
 end;
 
 function TInterfacedJSON.GetValueBase(chave: string): string;
@@ -1199,12 +1218,13 @@ end;
 
 function TInterfacedJSON.isNull: boolean;
 begin
-  result := not assigned(FJson);
+  result := (not assigned(FJson)) or (FJson.Null);
+
 end;
 
-function TInterfacedJSON.JSONObject: TJSONObject;
+function TInterfacedJSON.JSONObject: TJsonObject;
 begin
-  result := FJson as TJSONObject;
+  result := FJson as TJsonObject;
 end;
 
 class function TInterfacedJSON.New: IJsonObject;
@@ -1219,22 +1239,27 @@ end;
 
 function TInterfacedJSON.Parse(AJson: string): IJsonObject;
 var
-  O: TJSONObject;
+  O: TJsonObject;
 begin
   result := self;
   if not assigned(FJson) then
   begin
-    FJson := TJSONObject.ParseJSONValue(AJson);
+    FJson := TJsonObject.ParseJSONValue(AJson);
     FInstanceOwned := false;
     exit;
   end;
-  O := FJson As TJSONObject;
+  O := FJson As TJsonObject;
   O.ParseJSONValue(AJson);
 end;
 
 procedure TInterfacedJSON.SetValueBase(chave: string; const Value: string);
 begin
   JSONObject.Value[chave] := Value;
+end;
+
+function TInterfacedJSON.This: TInterfacedJSON;
+begin
+  result := self;
 end;
 
 function TInterfacedJSON.ToJson: string;
