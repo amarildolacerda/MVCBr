@@ -5,18 +5,17 @@ uses
   System.SysUtils,
   MVCFramework.Logger,
   MVCFramework.Commons,
-{$IFDEF LINUX}
+  {$IFDEF LINUX}
   MVCFramework.REPLCommandsHandlerU,
-{$ELSE}
+  {$ELSE}
   Winapi.Windows,
-{$ENDIF }
+  {$ENDIF }
   Web.WebReq,
   Web.WebBroker,
   System.JsonFiles,
   IdHTTPWebBrokerBridge,
   MVCBr.ApplicationController,
-  WSConfig.Controller.Interf,
-  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule} ,
+  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
@@ -30,7 +29,7 @@ uses
   oData.ProxyBase in '..\oData\oData.ProxyBase.pas',
   oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas',
   oData.SQL in '..\oData\oData.SQL.pas',
-  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule} ,
+  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
   oData.Dialect.MySQL in '..\oData\oData.Dialect.MySQL.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   oData.JSON in '..\oData\oData.JSON.pas',
@@ -39,7 +38,9 @@ uses
   WSConfigView in 'WSConfig\WSConfigView.pas',
   config.Model in 'Models\config.Model.pas',
   config.Model.Interf in 'Models\config.Model.Interf.pas',
-  oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas';
+  oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas',
+  WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
+  WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas';
 
 {$R *.res}
 
