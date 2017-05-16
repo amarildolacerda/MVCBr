@@ -123,6 +123,7 @@ begin
      with TInterfacedJSON.new(Content) do
      try
        if not isNull then
+        if JSONObject.Contains('product') then
          LabeledEdit5.text := JSONObject.O('product').S('price');
      finally
      end;

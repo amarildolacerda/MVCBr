@@ -37,7 +37,7 @@ type
     procedure Button1Click(Sender: TObject);
   private
     FInited: Boolean;
-    procedure ParametersApply(AView:IView);
+    procedure ParametersApply(ATexto: string);
   protected
     procedure Init;
     function Controller(const aController: IController): IView; override;
@@ -74,14 +74,18 @@ begin
   result.Controller(aController);
 end;
 
-procedure TNewMVCAppParametersView.ParametersApply(AView: IView);
+procedure TNewMVCAppParametersView.ParametersApply(ATexto: string);
 begin
-  Memo1.lines.text := (AView as IParametrosView).GetWhereString;
+  Memo1.lines.text := ATexto;
 end;
 
 procedure TNewMVCAppParametersView.Button1Click(Sender: TObject);
 begin
-  ShowView(IParametrosController, nil, ParametersApply);
+  ShowView(IParametrosController, nil,
+    procedure(AView: IView)
+    begin
+      ParametersApply((AView as IParametrosView).GetWhereString);
+    end);
 end;
 
 function TNewMVCAppParametersView.Controller(const aController

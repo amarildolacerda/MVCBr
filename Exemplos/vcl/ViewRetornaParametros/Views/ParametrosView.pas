@@ -27,7 +27,9 @@ type
   IParametrosView = interface(IView)
     ['{838227AC-E658-4193-91B9-25790379DF49}']
     // incluir especializacoes aqui
+
     function GetWhereString: string;
+
   end;
 
   /// Object Factory que implementa a interface da VIEW
