@@ -51,7 +51,7 @@ type
     function ThisAs: TGrupoView;
     function ViewAs: IGrupoView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 implementation
@@ -60,11 +60,11 @@ implementation
 
 uses Usuarios.Controller ;//IUsuariosController
 
-function TGrupoView.Update: IView;
+function TGrupoView.UpdateView: IView;
 begin
   result := self;
   if assigned(FViewModel) then
-    FViewModel.Update(self as IView);
+    FViewModel.UpdateView(self as IView);
   { codigo para atualizar a View vai aqui... }
 
   if assigned(FTabGrupo) then

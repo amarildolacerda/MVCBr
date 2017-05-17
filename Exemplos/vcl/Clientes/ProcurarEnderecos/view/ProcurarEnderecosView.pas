@@ -33,18 +33,18 @@ type
     function ThisAs: TProcurarEnderecosView;
     function ViewAs: IProcurarEnderecosView;
     function ShowView(const AProc: TProc<IView>): integer;
-    function Update: IView;
+    function UpdateView: IView;OVerride;
   end;
 
 implementation
 
 {$R *.dfm}
 
-function TProcurarEnderecosView.Update: IView;
+function TProcurarEnderecosView.UpdateView: IView;
 begin
   result := self;
   if assigned(FViewModel) then
-    FViewModel.Update(self as IView);
+    FViewModel.UpdateView(self as IView);
   { codigo para atualizar a View vai aqui... }
 end;
 

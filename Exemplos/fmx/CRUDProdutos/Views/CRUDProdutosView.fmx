@@ -80,6 +80,8 @@ object CRUDProdutosView: TCRUDProdutosView
     Top = 160
   end
   object ODataDatasetBuilder1: TODataDatasetBuilder
+    Dataset = ODataFDMemTable1
+    Params = <>
     BaseURL = 'http://localhost:8080'
     ServicePrefix = '/OData'
     Service = '/OData.svc'
@@ -92,7 +94,6 @@ object CRUDProdutosView: TCRUDProdutosView
     TopRows = 0
     SkipRows = 0
     Count = False
-    Dataset = ODataFDMemTable1
     Left = 120
     Top = 232
   end

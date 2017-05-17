@@ -46,7 +46,7 @@ type
     function ThisAs: TNewMVCAppView;
     function ViewAs: INewMVCAppView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 implementation
@@ -56,11 +56,11 @@ implementation
 uses Config.Controller.Interf;
 
 
-function TNewMVCAppView.Update: IView;
+function TNewMVCAppView.UpdateView: IView;
 begin
   result := self;
   if assigned(FViewModel) then
-    FViewModel.Update(self as IView);
+    FViewModel.UpdateView(self as IView);
   { codigo para atualizar a View vai aqui... }
 end;
 

@@ -16,14 +16,14 @@ uses
   AppPageControl.ViewModel.Interf in 'viewmodel\AppPageControl.ViewModel.Interf.pas',
   AppPageControl.ViewModel in 'viewmodel\AppPageControl.ViewModel.pas',
   AppPageControlView in 'view\AppPageControlView.pas' {AppPageControlView},
-  MVCBr.VCL.PageControl in '..\..\..\VCL\MVCBr.VCL.PageControl.pas',
   MVCBr.PageView in '..\..\..\MVCBr.PageView.pas',
   MVCBr.Component in '..\..\..\MVCBr.Component.pas',
   Editor.Controller.Interf in 'Editor\Editor.Controller.Interf.pas',
   Editor.Controller in 'Editor\Editor.Controller.pas',
   EditorView in 'Editor\EditorView.pas' {EditorView},
   Editor.ViewModel in 'Editor\Editor.ViewModel.pas',
-  Editor.ViewModel.Interf in 'Editor\Editor.ViewModel.Interf.pas';
+  Editor.ViewModel.Interf in 'Editor\Editor.ViewModel.Interf.pas',
+  MVCBr.VCL.PageView in '..\..\..\VCL\MVCBr.VCL.PageView.pas';
 
 {$R *.res}
 

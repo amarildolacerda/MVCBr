@@ -42,7 +42,7 @@ type
     class function New(const AView: IView; const AModel: IModel)
       : IViewModel; virtual;
     procedure AfterInit; override;
-    function Update(const AView: IView): IViewModel;overload; virtual;
+    function UpdateView(const AView: IView): IViewModel;overload; virtual;
     function Update(const AModel: IModel): IViewModel; overload; virtual;
     function This: TObject; override;
     function View(const AView: IView = nil): IViewModel; virtual;
@@ -109,7 +109,7 @@ begin
     FView.UpdateView;
 end;
 
-function TViewModelFactory.Update(const AView: IView): IViewModel;
+function TViewModelFactory.UpdateView(const AView: IView): IViewModel;
 begin
   result := self;
   if Assigned(FModel) then

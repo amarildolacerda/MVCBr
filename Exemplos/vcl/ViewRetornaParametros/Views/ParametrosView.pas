@@ -55,7 +55,7 @@ type
     function ThisAs: TParametrosView;
     function ViewAs: IParametrosView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
     function GetWhereString: string;
   end;
 
@@ -63,7 +63,7 @@ Implementation
 
 {$R *.DFM}
 
-function TParametrosView.Update: IView;
+function TParametrosView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

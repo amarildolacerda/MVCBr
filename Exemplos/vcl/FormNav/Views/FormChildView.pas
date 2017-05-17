@@ -40,11 +40,11 @@ type
     function ThisAs:TFormChildView;
     function ViewAs:IFormChildView;
     function ShowView(const AProc: TProc<IView>): integer;override;
-    function Update: IView;override;
+    function UpdateView: IView;override;
   end;
 Implementation
 {$R *.DFM}
-function TFormChildView.Update:IView;
+function TFormChildView.UpdateView:IView;
 begin
   result := self;
   {codigo para atualizar a View vai aqui...}

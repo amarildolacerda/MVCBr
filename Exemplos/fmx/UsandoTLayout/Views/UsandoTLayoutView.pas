@@ -48,7 +48,7 @@ type
     function ThisAs: TUsandoTLayoutView;
     function ViewAs: IUsandoTLayoutView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -57,7 +57,7 @@ Implementation
 
 uses segundoForm.Controller.Interf;
 
-function TUsandoTLayoutView.Update: IView;
+function TUsandoTLayoutView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

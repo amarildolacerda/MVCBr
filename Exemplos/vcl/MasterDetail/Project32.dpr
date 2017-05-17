@@ -4,7 +4,6 @@ uses
   Vcl.Forms,
   MVCBr.ApplicationController,
   masterDetailView in 'masterDetailView.pas' {Form61},
-  masterDetail.Controller.Interf in 'Controllers\masterDetail.Controller.Interf.pas',
   masterDetail.Controller in 'Controllers\masterDetail.Controller.pas';
 
 {$R *.res}

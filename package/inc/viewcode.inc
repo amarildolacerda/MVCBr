@@ -38,15 +38,15 @@ ViewDef = '                                   '#13#10 +
   '    function ThisAs:T%FormIdent;                      ' + #13#10 +
   '    function ViewAs:I%FormIdent;                      ' + #13#10 +
   '    function ShowView(const AProc: TProc<IView>): integer;override;' + #13#10
-  + '    function Update: IView;override;                      ' + #13#10 +
+  + '    function UpdateView: IView;override;                      ' + #13#10 +
   '    procedure Init;override;                               '+#13#10+
   '  end;                                                    ' + #13#10 +
   '                                                          ' + #13#10;
 
-ViewImpl = 'function T%FormIdent.Update:IView;             ' + #13#10 +
+ViewImpl = 'function T%FormIdent.UpdateView:IView;             ' + #13#10 +
   'begin                                                     ' + #13#10 +
   '  result := self;                                         ' + #13#10 +
-  '  if assigned(FViewModel) then FViewModel.update(self as IView);' + #13#10 +
+  '  if assigned(FViewModel) then FViewModel.updateView(self as IView);' + #13#10 +
   '  {codigo para atualizar a View vai aqui...}              ' + #13#10 +
   'end;                                                      ' + #13#10 +
   '                                                          ' + #13#10 +
@@ -169,13 +169,13 @@ ViewCodeNoViewModel =
   '    function ThisAs:T%FormIdent;                      ' + #13#10 +
   '    function ViewAs:I%FormIdent;                      ' + #13#10 +
   '    function ShowView(const AProc: TProc<IView>): integer;override;' + #13#10
-  + '    function Update: IView;override;                      ' + #13#10 +
+  + '    function UpdateView: IView;override;                      ' + #13#10 +
   '  end;                                                    ' + #13#10 +
   '                                                          ' + #13#10 +
   'Implementation ' + #13#10 +
   '{$R *.DFM}                                                ' + #13#10 +
   '                                                          ' + #13#10 +
-  'function T%FormIdent.Update:IView;             ' + #13#10 +
+  'function T%FormIdent.UpdateView:IView;             ' + #13#10 +
   'begin                                                     ' + #13#10 +
   '  result := self;                                         ' + #13#10 +
   '  {codigo para atualizar a View vai aqui...}              ' + #13#10 +

@@ -87,8 +87,10 @@ object RestODataAppView: TRestODataAppView
     Top = 160
   end
   object ODataDatasetBuilder1: TODataDatasetBuilder
+    Dataset = ODataFDMemTable1
+    Params = <>
     BaseURL = 'http://localhost:8080'
-    ServicePreffix = '/OData'
+    ServicePrefix = '/OData'
     Service = '/OData.svc'
     ResourceName = 'produtos'
     Resource = <
@@ -99,7 +101,6 @@ object RestODataAppView: TRestODataAppView
     TopRows = 0
     SkipRows = 0
     Count = False
-    Dataset = ODataFDMemTable1
     Left = 112
     Top = 232
   end

@@ -62,7 +62,7 @@ type
     function ThisAs: TWooCommerceSampleView;
     function ViewAs: IWooCommerceSampleView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -71,7 +71,7 @@ Implementation
 uses System.Json.Helper;
 
 
-function TWooCommerceSampleView.Update: IView;
+function TWooCommerceSampleView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

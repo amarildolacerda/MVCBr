@@ -50,7 +50,7 @@ type
     function ThisAs: TTabControlNavView;
     function ViewAs: ITabControlNavView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -59,7 +59,7 @@ Implementation
 
 uses EditorView;
 
-function TTabControlNavView.Update: IView;
+function TTabControlNavView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

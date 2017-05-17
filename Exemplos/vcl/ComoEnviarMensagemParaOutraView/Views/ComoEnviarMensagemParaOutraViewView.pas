@@ -55,7 +55,7 @@ type
     function ThisAs: TComoEnviarMensagemParaOutraViewView;
     function ViewAs: IComoEnviarMensagemParaOutraViewView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
 
     function ViewEvent(AMessage: string; var AHandled: Boolean): IView; override;
 
@@ -66,7 +66,7 @@ Implementation
 uses Filha.Controller.Interf;
 {$R *.DFM}
 
-function TComoEnviarMensagemParaOutraViewView.Update: IView;
+function TComoEnviarMensagemParaOutraViewView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

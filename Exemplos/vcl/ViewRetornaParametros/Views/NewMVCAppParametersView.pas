@@ -48,7 +48,7 @@ type
     function ThisAs: TNewMVCAppParametersView;
     function ViewAs: INewMVCAppParametersView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -57,7 +57,7 @@ Implementation
 
 uses ParametrosView, Parametros.Controller.Interf;
 
-function TNewMVCAppParametersView.Update: IView;
+function TNewMVCAppParametersView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

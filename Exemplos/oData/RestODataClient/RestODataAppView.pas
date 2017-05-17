@@ -71,14 +71,14 @@ type
     function ThisAs: TRestODataAppView;
     function ViewAs: IRestODataAppView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
 
 {$R *.DFM}
 
-function TRestODataAppView.Update: IView;
+function TRestODataAppView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

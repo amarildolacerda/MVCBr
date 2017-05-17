@@ -48,6 +48,10 @@ object FormChildSampleView: TFormChildSampleView
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
   end
   object Button3: TButton

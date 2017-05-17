@@ -22,7 +22,8 @@ uses
   MVCBr.View, MVCBr.FormView, AppPageControl.ViewModel.Interf, MVCBr.Controller,
   VCL.Controls, VCL.ComCtrls, MVCBr.PageView, Vcl.StdActns, Vcl.ExtActns,
   AppPageControl.controller.Interf,
-  System.Actions, Vcl.ActnList, Vcl.ToolWin, System.ImageList, Vcl.ImgList;
+  System.Actions, Vcl.ActnList, Vcl.ToolWin, System.ImageList, Vcl.ImgList,
+  MVCBr.Component, MVCBr.VCL.PageView;
 
 type
   /// Interface para a VIEW
@@ -53,6 +54,7 @@ type
     ToolButton1: TToolButton;
     Action1: TAction;
     ImageList1: TImageList;
+    VCLPageViewManager1: TVCLPageViewManager;
     procedure Action1Execute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
@@ -67,20 +69,20 @@ type
     function ThisAs: TAppPageControlView;
     function ViewAs: IAppPageControlView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 implementation
 
 {$R *.dfm}
 
-uses MVCBr.VCL.PageControl, Editor.Controller.Interf;
+uses Editor.Controller.Interf;
 
-function TAppPageControlView.Update: IView;
+function TAppPageControlView.UpdateView: IView;
 begin
   result := self;
   if assigned(FViewModel) then
-    FViewModel.Update(self as IView);
+    FViewModel.UpdateView(self as IView);
   { codigo para atualizar a View vai aqui... }
 end;
 

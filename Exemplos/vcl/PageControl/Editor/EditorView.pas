@@ -46,18 +46,18 @@ type
     function ThisAs: TEditorView;
     function ViewAs: IEditorView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 implementation
 
 {$R *.dfm}
 
-function TEditorView.Update: IView;
+function TEditorView.UpdateView: IView;
 begin
   result := self;
   if assigned(FViewModel) then
-    FViewModel.Update(self as IView);
+    FViewModel.UpdateView(self as IView);
   { codigo para atualizar a View vai aqui... }
 end;
 

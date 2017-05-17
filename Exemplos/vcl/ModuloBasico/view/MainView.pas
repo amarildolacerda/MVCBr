@@ -35,18 +35,18 @@ type
     function ThisAs: TMainView;
     function ViewAs: IMainView;
     function ShowView(const AProc: TProc<IView>): integer;
-    function Update: IView;
+    function UpdateView: IView;
   end;
 
 implementation
 
 {$R *.dfm}
 
-function TMainView.Update: IView;
+function TMainView.UpdateView: IView;
 begin
   result := self;
   if assigned(FViewModel) then
-    FViewModel.Update(self as IView);
+    FViewModel.UpdateView(self as IView);
   { codigo para atualizar a View vai aqui... }
 end;
 

@@ -43,7 +43,7 @@ type
     function ThisAs:TsegundoFormView;
     function ViewAs:IsegundoFormView;
     function ShowView(const AProc: TProc<IView>): integer;override;
-    function Update: IView;override;
+    function UpdateView: IView;override;
 
         function GetLayout: TObject;
 
@@ -51,7 +51,7 @@ type
   end;
 Implementation
 {$R *.fmx}
-function TsegundoFormView.Update:IView;
+function TsegundoFormView.UpdateView:IView;
 begin
   result := self;
   {codigo para atualizar a View vai aqui...}

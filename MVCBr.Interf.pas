@@ -416,7 +416,7 @@ type
     function This: TObject;
     function View(const AView: IView = nil): IViewModel;
     function Model(const AModel: IModel = nil): IViewModel;
-    function Update(const AView: IView): IViewModel; overload;
+    function UpdateView(const AView: IView): IViewModel; overload;
     function Update(const AModel: IModel): IViewModel; overload;
   end;
 

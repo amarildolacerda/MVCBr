@@ -44,7 +44,7 @@ type
     function ThisAs: TdBowserView;
     function ViewAs: IdBowserView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
     procedure GoToURL(AURL:String);
   end;
 
@@ -52,7 +52,7 @@ Implementation
 
 {$R *.DFM}
 
-function TdBowserView.Update: IView;
+function TdBowserView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

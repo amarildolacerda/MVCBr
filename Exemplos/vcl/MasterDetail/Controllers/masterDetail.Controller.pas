@@ -15,10 +15,13 @@ interface
 uses
   System.SysUtils, {$IFDEF LINUX} {$ELSE}{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF} System.Classes, MVCBr.Interf,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
-  masterDetail.Controller.Interf,
   System.RTTI;
 
 type
+  ImaterDetailController = interface(IController)
+    ['{508936C2-E68B-4FAF-9CB7-18FBC82284F3}']
+  end;
+
   TmaterDetailController = class(TControllerFactory, ImaterDetailController, IThisAs<TmaterDetailController> { , IModelAs<ImaterDetailViewModel> } )
   protected
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue); override;

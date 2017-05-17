@@ -61,14 +61,14 @@ type
     function ThisAs: TCRUDProdutosView;
     function ViewAs: ICRUDProdutosView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
 
 {$R *.DFM}
 
-function TCRUDProdutosView.Update: IView;
+function TCRUDProdutosView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

@@ -62,14 +62,14 @@ type
     function ThisAs: TRestClientSampleView;
     function ViewAs: IRestClientSampleView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
 
 {$R *.DFM}
 
-function TRestClientSampleView.Update: IView;
+function TRestClientSampleView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

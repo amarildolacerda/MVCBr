@@ -39,11 +39,11 @@ type
     function ThisAs:TEditorView;
     function ViewAs:IEditorView;
     function ShowView(const AProc: TProc<IView>): integer;override;
-    function Update: IView;override;
+    function UpdateView: IView;override;
   end;
 Implementation
 {$R *.fmx}
-function TEditorView.Update:IView;
+function TEditorView.UpdateView:IView;
 begin
   result := self;
   {codigo para atualizar a View vai aqui...}

@@ -87,7 +87,7 @@ type
     function ThisAs: TeFinPriceView;
     function ViewAs: IeFinPriceView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -107,13 +107,13 @@ end;
 
 procedure TeFinPriceView.UpdateKBBounds;
 var
-  LFocused: TControl;
+  //LFocused: TControl;
   LFocusRect: TRectF;
 begin
   FNeedOffset := False;
   if Assigned(Focused) then
   begin
-    LFocused := TControl(Focused.GetObject);
+    LFocused := TControl(Focused.getObject);
     LFocusRect := LFocused.AbsoluteRect;
     LFocusRect.Offset(ScrollBox1.ViewportPosition);
     if (LFocusRect.IntersectsWith(TRectF.Create(FKBBounds))) and
@@ -139,7 +139,7 @@ begin
     MoveControl := Layout1;
 end;
 
-function TeFinPriceView.Update: IView;
+function TeFinPriceView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

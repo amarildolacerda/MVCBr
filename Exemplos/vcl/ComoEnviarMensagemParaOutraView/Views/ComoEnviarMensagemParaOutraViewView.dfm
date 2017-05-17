@@ -24,10 +24,16 @@ object ComoEnviarMensagemParaOutraViewView: TComoEnviarMensagemParaOutraViewView
       Caption = 'TabSheet1'
       ExplicitLeft = 0
       ExplicitTop = 64
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
     object TabSheet2: TTabSheet
       Caption = 'TabSheet2'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
     end
   end
   object Button1: TButton

@@ -58,7 +58,7 @@ type
     function ThisAs: TFormChildSampleView;
     function ViewAs: IFormChildSampleView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -68,7 +68,7 @@ Implementation
 uses  FormChild.Controller.Interf,RegrasNegocios.Model.Interf,
   embededForm.Controller.Interf, embededFormView;
 
-function TFormChildSampleView.Update: IView;
+function TFormChildSampleView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }
@@ -101,18 +101,21 @@ begin
 end;
 
 procedure TFormChildSampleView.Button3Click(Sender: TObject);
+var h:boolean;
 begin
-   applicationController.ViewEvent( 'generic message to all VIEW' );
+   applicationController.ViewEvent( 'generic message to all VIEW', h );
 end;
 
 procedure TFormChildSampleView.Button4Click(Sender: TObject);
+var h:Boolean;
 begin
-   ApplicationController.ViewEvent(IEmbededFormView,'Message to: EmbededFormView');
+   ApplicationController.ViewEvent(IEmbededFormView,'Message to: EmbededFormView',h);
 end;
 
 procedure TFormChildSampleView.Button5Click(Sender: TObject);
+var h:boolean;
 begin
-  ResolveController<IEmbededFormController>.ViewEvent('Message via controller');
+  ResolveController<IEmbededFormController>.ViewEvent('Message via controller',h);
 end;
 
 function TFormChildSampleView.Controller(const aController: IController): IView;

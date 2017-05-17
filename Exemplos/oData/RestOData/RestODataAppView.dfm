@@ -86,7 +86,6 @@ object RestODataAppView: TRestODataAppView
     Resource = 
       '/produtos?$select=codigo,descricao,grupo,unidade,preco&$filter=g' +
       'rupo eq '#39'1'#39
-    ResourcePreffix = '/OData/OData.svc'
     AcceptCharset = 'UTF-8'
     Accept = 'application/json, text/plain, text/html'
     AcceptEncoding = 'gzip'
@@ -97,8 +96,9 @@ object RestODataAppView: TRestODataAppView
   object ODataBuilder1: TODataBuilder
     RestClient = IdHTTPRestClient1
     BaseURL = 'http://localhost:8080'
-    ServicePreffix = '/OData'
+    ServicePrefix = '/OData'
     Service = '/OData.svc'
+    ResourceName = 'produtos'
     Resource = <
       item
         Resource = 'produtos'
@@ -114,6 +114,7 @@ object RestODataAppView: TRestODataAppView
     Builder = ODataBuilder1
     Active = False
     Dataset = FDMemTable1
+    Params = <>
     ResponseJSON = IdHTTPRestClient1
     RootElement = 'value'
     Left = 64

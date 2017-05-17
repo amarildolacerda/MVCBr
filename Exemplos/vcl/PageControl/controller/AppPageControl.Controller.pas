@@ -26,7 +26,7 @@ interface
 uses
   System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, MVCBr.Interf,
-  MVCBr.PageView, MVCBr.VCL.PageControl,
+  MVCBr.PageView,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
   System.RTTI, AppPageControl.Controller.Interf,
   Editor.Controller.Interf,
@@ -62,6 +62,8 @@ type
 
 implementation
 
+uses MVCBr.VCL.PageView;
+
 /// Creator para a classe Controller
 procedure TAppPageControlController.AddView(AViewController: TGuid);
 begin
@@ -71,7 +73,7 @@ end;
 Constructor TAppPageControlController.Create;
 begin
   inherited;
-  FPageView := TVCLPageViewFactory.New(self);
+  FPageView := TVCLPageViewManager.New(self);
   /// Inicializar as Views...
   add(TAppPageControlViewModel.New(self).ID('{AppPageControl.ViewModel}'));
   /// Inicializar os modulos

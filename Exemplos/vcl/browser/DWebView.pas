@@ -53,7 +53,7 @@ type
     function ThisAs: TDWebView;
     function ViewAs: IDWebView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
@@ -61,7 +61,7 @@ Implementation
 {$R *.DFM}
 uses DBowser.Controller.Interf, wConfig;
 
-function TDWebView.Update: IView;
+function TDWebView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

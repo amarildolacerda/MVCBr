@@ -105,7 +105,7 @@ type
     function ThisAs: TtabelaPriceView;
     function ViewAs: ItabelaPriceView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
     function GetLayout: TObject;
 
     function ViewEvent(AMessage: string; var AHandled: Boolean): IView;
@@ -129,7 +129,7 @@ type
     property Value: Double read GetValue write SetValue;
   end;
 
-function TtabelaPriceView.Update: IView;
+function TtabelaPriceView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

@@ -46,16 +46,16 @@ type
     function ThisAs: TembededFormView;
     function ViewAs: IembededFormView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function ViewEvent(AMessage:string):IView;override;
+    function ViewEvent(AMessage:string; var AHandled: boolean):IView;override;
 
-    function Update: IView; override;
+    function UpdateView: IView; override;
   end;
 
 Implementation
 
 {$R *.DFM}
 
-function TembededFormView.Update: IView;
+function TembededFormView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }
@@ -66,7 +66,7 @@ begin
   result := self;
 end;
 
-function TembededFormView.ViewEvent(AMessage: string): IView;
+function TembededFormView.ViewEvent(AMessage: string; var AHandled: boolean): IView;
 begin
     memo1.Lines.Add(AMessage);
 end;

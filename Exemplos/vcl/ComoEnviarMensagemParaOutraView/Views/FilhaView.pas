@@ -48,7 +48,7 @@ type
     function ThisAs: TFilhaView;
     function ViewAs: IFilhaView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function Update: IView; override;
+    function UpdateView: IView; override;
 
 
     function ViewEvent( AMessage:string;var AHandled:boolean):IView;override;
@@ -59,7 +59,7 @@ Implementation
 
 {$R *.DFM}
 
-function TFilhaView.Update: IView;
+function TFilhaView.UpdateView: IView;
 begin
   result := self;
   { codigo para atualizar a View vai aqui... }

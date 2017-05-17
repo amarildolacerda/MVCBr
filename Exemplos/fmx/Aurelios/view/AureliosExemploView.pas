@@ -39,14 +39,14 @@ type
     function ThisAs:TAureliosExemploView;
     function ViewAs:IAureliosExemploView;
     function ShowView(const AProc: TProc<IView>): integer;override;
-    function Update: IView;override;
+    function UpdateView: IView;override;
   end;
 implementation
 {$R *.fmx}
-function TAureliosExemploView.Update:IView;
+function TAureliosExemploView.UpdateView:IView;
 begin
   result := self;
-  if assigned(FViewModel) then FViewModel.update(self as IView);
+  if assigned(FViewModel) then FViewModel.updateView(self as IView);
   {codigo para atualizar a View vai aqui...}
 end;
 function TAureliosExemploView.ViewAs:IAureliosExemploView;
