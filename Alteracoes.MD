@@ -1,11 +1,12 @@
 16/05/2017 - AL
-   - retirado varios warnnings
-   + adicionado suporte a Oracle no OData
-   * alterado $top $skip para o PostgreSQL, como novo metodo para tratar final SELECT
-   = renomeado update para updateview
-   + iniciado TDbObjectListModel - suporte a configuração em BD
-   = alterado class base para TObjectListModel Custom
-   * atualizado a pasta DOCS (alterado de doc para docs)
+   - retirado varios warnnings;
+   + adicionado suporte a Oracle no OData;
+   * alterado $top $skip para o PostgreSQL, como novo metodo para tratar final SELECT;
+   = renomeado update para updateview;
+   + iniciado TDbObjectListModel - suporte a configuração em BD;
+   = alterado class base para TObjectListModel Custom;
+   * atualizado a pasta DOCS (alterado de doc para docs);
+   + adicionado ferramenta para gerar Metadata por reverso do BD (ver sub-pasta no MVCBrServer);
 
 05/05/2017 - AL
    + implementado ShowView com parametro BeforeOpen e OnClose Proc para controller e View;
