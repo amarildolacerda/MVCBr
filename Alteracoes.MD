@@ -3,7 +3,8 @@
    + adicionado suporte a Oracle no OData;
    * alterado $top $skip para o PostgreSQL, como novo metodo para tratar final SELECT;
    = renomeado update para updateview;
-   + iniciado TDbObjectListModel - suporte a configuração em BD;
+   + iniciado TDbObjectListModel 
+   - suporte a configuração em BD;
    = alterado class base para TObjectListModel Custom;
    * atualizado a pasta DOCS (alterado de doc para docs);
    + adicionado ferramenta para gerar Metadata por reverso do BD (ver sub-pasta no MVCBrServer);
