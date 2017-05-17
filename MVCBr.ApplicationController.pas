@@ -40,6 +40,7 @@ uses
 {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms,
 {$ENDIF}{$ENDIF}
   System.Classes,
+  System.JSON,
   System.Generics.Collections,
   System.SysUtils, MVCBr.Interf;
 
@@ -82,7 +83,7 @@ type
     procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
 
-    ///  Views Methods
+    /// Views Methods
     function FindView(AGuid: TGuid): IView; virtual;
     function ViewEvent(AMessage: string; var AHandled: boolean)
       : IApplicationController; overload;
@@ -92,11 +93,12 @@ type
       : IView; overload;
     function ViewEvent<TViewInterface: IInterface>(AMessage: String;
       var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean)
+      : IView; overload;
 
-    ///  Models Methods
+    /// Models Methods
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
     function FindModel<TIModel: IInterface>: TIModel; overload;
-
 
     /// This retorna o Self do ApplicationController Object Factory
     function This: TObject;
@@ -396,6 +398,29 @@ begin
         end;
     end);
   result := rst;
+  AHandled := LHandled;
+end;
+
+function TApplicationController.ViewEvent(AMessage: TJsonValue;
+var AHandled: boolean): IView;
+var
+  LHandled: boolean;
+  AView: IView;
+begin
+  AView := nil;
+  ForEach(
+    function(AController: IController): boolean
+    begin
+      result := false;
+      if supports(AController.This, IController) then
+      begin
+        AController.GetView.ViewEvent(AMessage, result);
+        if result then
+          AView := AController.GetView;
+      end;
+      LHandled := result;
+    end);
+  result := AView;
   AHandled := LHandled;
 end;
 

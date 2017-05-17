@@ -287,9 +287,9 @@ type
     function GetViewModel: IViewModel;
     procedure SetViewModel(const AViewModel: IViewModel);
     function GetID: string;
-    function GetText: String;
-    procedure SetText(Const AText: String);
-    property Text: string read GetText write SetText;
+    function GetTitle: String;
+    procedure SetTitle(Const AText: String);
+    property Title: string read GetTitle write SetTitle;
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
     function ShowView(const AProcBeforeShow: TProc<IView>): Integer; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
@@ -313,6 +313,8 @@ type
       overload;
     function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
       : IView; overload;
+    function ViewEvent(AMessage: TJsonValue;
+      var AHandled: boolean): IView; overload;
     function MainView: IView;
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController;

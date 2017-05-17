@@ -49,8 +49,8 @@ type
     FController: IController;
     FViewModel: IViewModel;
     procedure SetController(const AController: IController);
-    function GetText: String;
-    procedure SetText(Const AText: String);
+    function GetTitle: String;
+    procedure SetTitle(Const AText: String);
   protected
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
@@ -73,7 +73,7 @@ type
     function UpdateView: IView; virtual;
     function GetController: IController;
     function ViewModel(const AModel: IViewModel): IView;
-    property Text: string read GetText write SetText;
+    property Text: string read GetTitle write SetTitle;
 
   end;
 
@@ -107,7 +107,7 @@ begin
   result := FController.GetModel(AII,result);
 end;
 
-function TViewFactory.GetText: String;
+function TViewFactory.GetTitle: String;
 begin
   result := FText;
 end;
@@ -147,7 +147,7 @@ begin
   FController := AController;
 end;
 
-procedure TViewFactory.SetText(const AText: String);
+procedure TViewFactory.SetTitle(const AText: String);
 begin
   FText := AText;
 end;

@@ -187,7 +187,7 @@ end;
 
 function TCustomPageViewFactory.AddView(AView: IView): IPageView;
 begin
-  result := NewItem(AView.Text);
+  result := NewItem(AView.Title);
   result.This.View := AView;
   DoViewCreate(AView.This);
   Init(result);

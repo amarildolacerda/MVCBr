@@ -1,9 +1,8 @@
-
 {
 
- MVCBr.FormView - implements base class of FormView
- Auth: amarildo lacerda
- Date: jan/2017
+  MVCBr.FormView - implements base class of FormView
+  Auth: amarildo lacerda
+  Date: jan/2017
 
   Changes:
   29-mar-2017
@@ -56,7 +55,7 @@ type
     function ShowView(const AProc: TProc<IView>): Integer; override;
     function Form: {$IFDEF LINUX} TComponent {$ELSE} TForm{$ENDIF};
     function ThisAs: TViewFactoryAdapter;
-    function This: TObject;override;
+    function This: TObject; override;
   end;
 
   /// <summary>
@@ -75,8 +74,6 @@ type
 {$ENDIF}
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
-    function GetText: string;
-    procedure SetText(const Value: string);
   protected
     FOnCloseProc: TProc<IView>;
     FController: IController;
@@ -91,6 +88,8 @@ type
     procedure SetShowModal(const AShowModal: boolean);
     /// Retorna se a apresentação do formulário é ShowModal
     function GetShowModal: boolean;
+    function GetTitle: string;virtual;
+    procedure SetTitle(const Value: string);virtual;
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
@@ -125,6 +124,8 @@ type
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
+    function GetView<TIView: IInterface>: TIView; overload;
+    function FindView(AGuid: TGuid): IView;
     /// Apresenta o VIEW para o usuario
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>; const AProcONClose: TProc<IView>)
@@ -134,8 +135,7 @@ type
     function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
       : IView; overload; virtual;
     function ShowView(const AProcBeforeShow: TProc<IView>;
-      const AProcOnClose: TProc<IView>): IView;
-      overload; virtual;
+      const AProcONClose: TProc<IView>): IView; overload; virtual;
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>): IView; overload; virtual;
     function ShowView(const IIDController: TGuid): IView; overload; virtual;
@@ -145,7 +145,7 @@ type
     /// Evento para atualizar os dados da VIEW
     function UpdateView: IView; virtual;
 
-    property Text: string read GetText write SetText;
+    property Text: string read GetTitle write SetTitle;
 
   published
 {$IFDEF LINUX}
@@ -215,6 +215,16 @@ begin
   result := FController.This.GetModel<TIModel>;
 end;
 
+function TFormFactory.GetView<TIView>: TIView;
+var AGuid:TGuid;
+    AView:IView;
+begin
+    AGuid := TMVCBr.GetGuid<TIView>;
+    AView := FindView(AGuid);
+    if assigned(AView) then
+       result := TIView(AView);
+end;
+
 function TFormFactory.GetPropertyValue(ANome: string): TValue;
 begin
   result := TMVCBr.GetProperty(self, ANome);
@@ -225,7 +235,7 @@ begin
   result := FShowModal;
 end;
 
-function TFormFactory.GetText: string;
+function TFormFactory.GetTitle: string;
 begin
 {$IFDEF LINUX}
   result := FCaption;
@@ -311,6 +321,11 @@ begin
 
 end;
 
+function TFormFactory.FindView(AGuid: TGuid): IView;
+begin
+  result := ApplicationController.FindView(AGuid);
+end;
+
 function TFormFactory.ViewEvent(AMessage: TJsonValue;
   var AHandled: boolean): IView;
 begin
@@ -360,7 +375,7 @@ begin
   FShowModal := AShowModal;
 end;
 
-procedure TFormFactory.SetText(const Value: string);
+procedure TFormFactory.SetTitle(const Value: string);
 begin
 {$IFDEF LINUX}
   FCaption := Value;
@@ -381,10 +396,10 @@ begin
 
 end;
 
-function TFormFactory.ShowView(const AProcBeforeShow, AProcOnClose
-  : TProc<IView>):IView;
+function TFormFactory.ShowView(const AProcBeforeShow,
+  AProcONClose: TProc<IView>): IView;
 begin
-  FOnCloseProc := AProcOnClose;
+  FOnCloseProc := AProcONClose;
 {$IFDEF LINUX}
 {$ELSE}
   inherited OnClose := DoCloseView;
@@ -424,13 +439,13 @@ begin
 {$IFDEF LINUX}
 {$ELSE}
 {$IFDEF MSWINDOWS}
- {$ifdef FMX}
-    Show;
-    result := 0;
- {$else}
+{$IFDEF FMX}
+  Show;
+  result := 0;
+{$ELSE}
   if FShowModal then
     result := ord(ShowModal);
- {$endif}
+{$ENDIF}
 {$ELSE}
   Show;
 {$ENDIF}
@@ -448,7 +463,7 @@ begin
   begin
     result := ctrl.GetView;
     if assigned(result) then
-       result.ShowView(AProcBeforeShow,AProcOnClose);
+      result.ShowView(AProcBeforeShow, AProcONClose);
   end;
 end;
 

@@ -1153,6 +1153,8 @@ end;
 constructor TInterfacedJSON.create(AJson: string);
 begin
   inherited create;
+  if AJson='' then
+     AJson := '{}';
   Parse(AJson);
 end;
 
