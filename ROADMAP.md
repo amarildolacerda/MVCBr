@@ -18,3 +18,5 @@ $expand param -> gerar detail para um master
                    ]
            } 
   </pre>
+
+- Utilizar o mesmo recurso ja existente para as sub-tabelas e aplica para os filhos $expand
