@@ -189,7 +189,10 @@ procedure TfrmPrincipal.ExtrairDiretorioPacote(NomePacote: string);
       while (iRet = 0) do
       begin
         iRet := FindNext(oDirList);
-        if (oDirList.Name = '.')  or (oDirList.Name = '..') or (oDirList.Name = '__history') then
+        if (oDirList.Name = '.')  or {}
+          (oDirList.Name = '..') or {}
+          (oDirList.Name = '__history') or{}
+          (oDirList.Name = '__recovery')then
           Continue;
 
         //if oDirList.Attr = faDirectory then
@@ -207,8 +210,9 @@ procedure TfrmPrincipal.ExtrairDiretorioPacote(NomePacote: string);
   end;
 
 begin
-   sDirPackage := '';
-   FindDirPackage(sDirRoot + 'Packages', NomePacote);
+//   sDirPackage := '';
+//   FindDirPackage(sDirRoot + 'package', NomePacote);
+   sDirPackage := sDirRoot + 'package\';
 end;
 
 // retornar o path do aplicativo
@@ -293,20 +297,40 @@ procedure TfrmPrincipal.CopiarArquivosToLib;
   procedure Copiar(const Extensao : string);
   var
     ListArquivos: TStringDynArray;
-    Arquivo : string;
-    i: integer;
-  begin
-    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'Source', Extensao ,TSearchOption.soAllDirectories ) ;
-    for i := Low(ListArquivos) to High(ListArquivos) do
+
+    procedure Mover(var AListArquivos : TStringDynArray);
+    var
+      Arquivo : string;
+      i: integer;
     begin
-      Arquivo :=  ExtractFileName(ListArquivos[i]);
-      CopyFile(PWideChar(ListArquivos[i]), PWideChar(IncludeTrailingPathDelimiter(sDirLibrary)+ Arquivo) ,True);
+      for i := Low(AListArquivos) to High(AListArquivos) do
+      begin
+        Arquivo :=  ExtractFileName(AListArquivos[i]);
+        CopyFile(PWideChar(AListArquivos[i]), PWideChar(IncludeTrailingPathDelimiter(sDirLibrary)+ Arquivo) ,True);
+      end;
     end;
+  begin
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) , Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'VCL', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'FMX', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'helpers', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'oData', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'DMVC\sources', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'DMVC\lib\loggerpro', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'DMVC\lib\dmustache', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
   end;
 
 begin
   // remover os path com o segundo parametro
-  FindDirs(IncludeTrailingPathDelimiter(sDirRoot) + 'Source', False);
+  FindDirs(IncludeTrailingPathDelimiter(sDirRoot) , False);
 
   Copiar('*.dcr');
   Copiar('*.res');
@@ -376,43 +400,79 @@ var
 begin
   ADirRoot := IncludeTrailingPathDelimiter(ADirRoot);
 
-  iRet := FindFirst(ADirRoot + '*.*', faDirectory, oDirList);
-  if iRet = 0 then
+  with oMVCBr.Installations[iVersion] do
   begin
-     try
-       repeat
-          if ((oDirList.Attr and faDirectory) <> 0) and
-              (oDirList.Name <> '.')                and
-              (oDirList.Name <> '..')               and
-              (oDirList.Name <> '__history')        then
-          begin
-             with oMVCBr.Installations[iVersion] do
-             begin
-               if bAdicionar then
-               begin
-                 AddToLibrarySearchPath(ADirRoot + oDirList.Name, tPlatform);
-                 AddToLibraryBrowsingPath(ADirRoot + oDirList.Name, tPlatform);
-               end
-               else
-                 RemoveFromLibrarySearchPath(ADirRoot + oDirList.Name, tPlatform);
-             end;
+    if bAdicionar then
+    begin
+     AddToLibrarySearchPath(ADirRoot , tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'VCL' , tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'FMX', tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'helpers', tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'oData', tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'DMVC\sources', tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
 
-             //-- Procura subpastas
-             FindDirs(ADirRoot + oDirList.Name, bAdicionar);
-          end;
-          iRet := FindNext(oDirList);
-       until iRet <> 0;
-     finally
-       SysUtils.FindClose(oDirList)
-     end;
+
+     AddToLibraryBrowsingPath(ADirRoot , tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'VCL' , tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'FMX', tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'helpers', tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'oData', tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'DMVC\sources', tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
+    end
+    else
+    begin
+     RemoveFromLibrarySearchPath(ADirRoot , tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'VCL' , tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'FMX', tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'helpers', tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'oData', tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\sources', tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
+    end;
   end;
+
+//  iRet := FindFirst(ADirRoot + '*.*', faDirectory, oDirList);
+//  if iRet = 0 then
+//  begin
+//     try
+//       repeat
+//          if ((oDirList.Attr and faDirectory) <> 0) and
+//              (oDirList.Name <> '.')                and
+//              (oDirList.Name <> '..')               and
+//              (oDirList.Name <> '__history')         then
+//          begin
+//             with oMVCBr.Installations[iVersion] do
+//             begin
+//               if bAdicionar then
+//               begin
+//                 AddToLibrarySearchPath(ADirRoot + oDirList.Name, tPlatform);
+//                 AddToLibraryBrowsingPath(ADirRoot + oDirList.Name, tPlatform);
+//               end
+//               else
+//                 RemoveFromLibrarySearchPath(ADirRoot + oDirList.Name, tPlatform);
+//             end;
+//
+//             //-- Procura subpastas
+//             FindDirs(ADirRoot + oDirList.Name, bAdicionar);
+//          end;
+//          iRet := FindNext(oDirList);
+//       until iRet <> 0;
+//     finally
+//       SysUtils.FindClose(oDirList)
+//     end;
+//  end;
 end;
 
 // adicionar o paths ao library path do delphi
 procedure TfrmPrincipal.AddLibrarySearchPath;
 begin
-  FindDirs(IncludeTrailingPathDelimiter(sDirRoot) + 'Source');
-
+  FindDirs(IncludeTrailingPathDelimiter(sDirRoot));
+  
   // --
   with oMVCBr.Installations[iVersion] do
   begin
@@ -435,7 +495,7 @@ begin
   sVersao  := AnsiUpperCase(oMVCBr.Installations[iVersion].VersionNumberStr);
   sDirRoot := IncludeTrailingPathDelimiter(edtDirDestino.Text);
 
-  sTipo := 'Binary\';
+  sTipo := 'Lib\';
 
   if edtPlatform.ItemIndex = 0 then // Win32
   begin
@@ -602,7 +662,7 @@ procedure TfrmPrincipal.btnInstalarMVCBrClick(Sender: TObject);
 var
   iDpk: Integer;
   bRunOnly: Boolean;
-  NomePacote: String;
+  NomePacote: TStringList;
   Cabecalho: String;
 
   procedure MostrarMensagemInstalado(const aMensagem: String; const aErro: String = '');
@@ -639,11 +699,13 @@ var
 begin
   FCountErros := 0;
 
-  btnInstalarfMVCBr.Enabled := False;
+  NomePacote := TStringList.Create;
+//  btnInstalarfMVCBr.Enabled := False;
   wizPgInstalacao.EnableButton(bkNext, False);
   wizPgInstalacao.EnableButton(bkBack, False);
   wizPgInstalacao.EnableButton(TJvWizardButtonKind(bkCancel), False);
   try
+
     Cabecalho := 'Caminho: ' + edtDirDestino.Text + sLineBreak +
                  'Versão do delphi: ' + edtDelphiVersion.Text + ' (' + IntToStr(iVersion)+ ')' + sLineBreak +
                  'Plataforma: ' + edtPlatform.Text + '(' + IntToStr(Integer(tPlatform)) + ')' + sLineBreak +
@@ -655,7 +717,7 @@ begin
 
     // setar barra de progresso
     pgbInstalacao.Position := 0;
-    pgbInstalacao.Max := 5;
+    pgbInstalacao.Max := 10;
 
     // Seta a plataforna selecionada
     SetPlatformSelected;
@@ -684,26 +746,33 @@ begin
     lstMsgInstalacao.Items.Add('COMPILANDO OS PACOTES...');
 
 
-
-    NomePacote := 'frce.dpk';
+    NomePacote.Add('MVCBrCore.dpk');
+    NomePacote.Add('MVCBr.dpk');
+    NomePacote.Add('MVCBrVCL.dpk');
+    NomePacote.Add('MVCBrFMX.dpk');
+    NomePacote.Add('MVCBrOData.dpk');
+    NomePacote.Add('MVCBrFireDAC.dpk');
 
     // Busca diretório do pacote
-    ExtrairDiretorioPacote(NomePacote);
-
-    if (IsDelphiPackage(NomePacote)) then
+    for iDpk := 0 to NomePacote.Count -1 do
     begin
-      WriteToTXT(AnsiString(PathArquivoLog), AnsiString(''));
+      ExtrairDiretorioPacote(NomePacote[iDpk]);
 
-      if oMVCBr.Installations[iVersion].CompilePackage(sDirPackage + NomePacote, sDirLibrary, sDirLibrary) then
+      if (IsDelphiPackage(NomePacote[iDpk])) then
       begin
-        lstMsgInstalacao.Items.Add(Format('Pacote "%s" compilado com sucesso.', [NomePacote]));
-        lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
-      end
-      else
-      begin
-        Inc(FCountErros);
-        lstMsgInstalacao.Items.Add(Format('Erro ao compilar o pacote "%s".', [NomePacote]));
-        lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
+        WriteToTXT(AnsiString(PathArquivoLog), AnsiString(''));
+
+        if oMVCBr.Installations[iVersion].CompilePackage(sDirPackage + NomePacote[iDpk], sDirLibrary, sDirLibrary) then
+        begin
+          lstMsgInstalacao.Items.Add(Format('Pacote "%s" compilado com sucesso.', [NomePacote[iDpk]]));
+          lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
+        end
+        else
+        begin
+          Inc(FCountErros);
+          lstMsgInstalacao.Items.Add(Format('Erro ao compilar o pacote "%s".', [NomePacote[iDpk]]));
+          lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
+        end;
       end;
     end;
 
@@ -720,32 +789,35 @@ begin
         lstMsgInstalacao.Items.Add('INSTALANDO OS PACOTES...');
         lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
 
-        // Busca diretório do pacote
-        ExtrairDiretorioPacote(NomePacote);
-
-        if IsDelphiPackage(NomePacote) then
+        for iDpk := 0 to NomePacote.Count -1 do
         begin
-          // instalar somente os pacotes de designtime
-          GetDPKFileInfo(sDirPackage + NomePacote, bRunOnly);
-          if not bRunOnly then
-          begin
-            WriteToTXT(AnsiString(PathArquivoLog), AnsiString(''));
+          // Busca diretório do pacote
+          ExtrairDiretorioPacote(NomePacote[iDpk]);
 
-            if oMVCBr.Installations[iVersion].InstallPackage(sDirPackage + NomePacote, sDirLibrary, sDirLibrary) then
+          if IsDelphiPackage(NomePacote[iDpk]) then
+          begin
+            // instalar somente os pacotes de designtime
+            GetDPKFileInfo(sDirPackage + NomePacote[iDpk], bRunOnly);
+            if not bRunOnly then
             begin
-              lstMsgInstalacao.Items.Add(Format('Pacote "%s" instalado com sucesso.', [NomePacote]));
-              lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
-            end
-            else
-            begin
-              Inc(FCountErros);
-              lstMsgInstalacao.Items.Add(Format('Ocorreu um erro ao instalar o pacote "%s".', [NomePacote]));
-              lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
+              WriteToTXT(AnsiString(PathArquivoLog), AnsiString(''));
+
+              if oMVCBr.Installations[iVersion].InstallPackage(sDirPackage + NomePacote[iDpk], sDirLibrary, sDirLibrary) then
+              begin
+                lstMsgInstalacao.Items.Add(Format('Pacote "%s" instalado com sucesso.', [NomePacote[iDpk]]));
+                lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
+              end
+              else
+              begin
+                Inc(FCountErros);
+                lstMsgInstalacao.Items.Add(Format('Ocorreu um erro ao instalar o pacote "%s".', [NomePacote[iDpk]]));
+                lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
+              end;
             end;
           end;
+          pgbInstalacao.Position := pgbInstalacao.Position + 1;
+          Application.ProcessMessages;
         end;
-        pgbInstalacao.Position := pgbInstalacao.Position + 1;
-        Application.ProcessMessages;
 
         CopiarArquivosToLib;
       end
@@ -764,6 +836,7 @@ begin
     end;
 
   finally
+    NomePacote.Free;
     btnInstalarMVCBr.Enabled := True;
     wizPgInstalacao.EnableButton(bkBack, True);
     wizPgInstalacao.EnableButton(bkNext, FCountErros = 0);
@@ -962,13 +1035,13 @@ begin
   // se não fazer o checkout
   if IsCheckOutJaFeito(edtDirDestino.Text) then
   begin
-    lblInfoObterFontes.Caption := 'Clique em "Atualizar" para efetuar a atualização do repositório MVCBr.';
+//    lblInfoObterFontes.Caption := 'Clique em "Atualizar" para efetuar a atualização do repositório MVCBr.';
     btnSVNCheckoutUpdate.Caption := 'Atualizar...';
     btnSVNCheckoutUpdate.Tag := -1;
   end
   else
   begin
-    lblInfoObterFontes.Caption := 'Clique em "Download" para efetuar o download do repositório MVCBr.';
+//    lblInfoObterFontes.Caption := 'Clique em "Download" para efetuar o download do repositório MVCBr.';
     btnSVNCheckoutUpdate.Caption := 'Download...';
     btnSVNCheckoutUpdate.Tag := 1;
   end;

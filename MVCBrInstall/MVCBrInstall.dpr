@@ -1,24 +1,14 @@
 {******************************************************************************}
-{ Projeto: FortesReport Community Edition                                      }
-{ É um poderoso gerador de relatórios disponível como um pacote de componentes }
-{ para Delphi. Em FortesReport, os relatórios são constituídos por bandas que  }
-{ têm funções específicas no fluxo de impressão. Você definir agrupamentos     }
-{ subníveis e totais simplesmente pela relação hierárquica entre as bandas.    }
-{ Além disso possui uma rica paleta de Componentes                             }
+{ Projeto: MVCBr                                                               }
 {                                                                              }
-{ Direitos Autorais Reservados(c) Copyright © 1999-2015 Fortes Informática     }
-{                                                                              }
-{ Colaboradores nesse arquivo: Ronaldo Moreira                                 }
-{                              Márcio Martins                                  }
-{                              Régys Borges da Silveira                        }
+{ Colaboradores nesse arquivo: Régys Borges da Silveira                        }
 {                              Juliomar Marchetti                              }
 {                                                                              }
 {  Você pode obter a última versão desse arquivo na pagina do Projeto          }
-{  localizado em                                                               }
-{ https://github.com/fortesinformatica/fortesreport-ce                         }
+{ localizado em                                                                }
+{ https://github.com/amarildolacerda/MVCBr                                     }
 {                                                                              }
-{  Para mais informações você pode consultar o site www.fortesreport.com.br ou }
-{  no Yahoo Groups https://groups.yahoo.com/neo/groups/fortesreport/info       }
+{  Para mais informações você pode fazer parte do grupo do Telegram        }
 {                                                                              }
 {  Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la }
 { sob os termos da Licença Pública Geral Menor do GNU conforme publicada pela  }
@@ -57,7 +47,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.Title := 'Instalação do FortesReport Community Edition';
+  Application.Title := 'Instalação do MVCBr';
   Application.CreateForm(TfrmPrincipal, frmPrincipal);
   Application.Run;
 end.
