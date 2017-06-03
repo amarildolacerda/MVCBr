@@ -71,6 +71,7 @@ type
 Implementation
 
 {$R *.DFM}
+uses MVCBr.Common;
 
 function TRestODataAppView.Update: IView;
 begin
