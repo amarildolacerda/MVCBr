@@ -99,7 +99,7 @@ begin
 
   if not canClose then
     abort;
-  pgIndex := PageViewIndexOf(LPageView);
+  //pgIndex := PageViewIndexOf(LPageView);
   if (pgIndex >= 0) and assigned(LPageView) then
   begin
     i := TabsheetIndexOf(LPageView.This.tab);
@@ -107,7 +107,6 @@ begin
     begin
       TForm(LPageView.This.View.This).OnCloseQuery := nil;
       LPageView.This.tab.Free;
-
     end;
   end;
 end;
@@ -157,8 +156,9 @@ begin
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
         begin
-          TControllerFactory.RevokeInstance(PageView.This.View.GetController);
+          //TControllerFactory.RevokeInstance(PageView.This.View.GetController);
           // apaga a instancia da lista de controller instaciados.
+          PageView.This.View.GetController.RevokeInstance;
         end;
 
       end;
