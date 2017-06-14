@@ -142,7 +142,7 @@ var
   form: TForm;
   ref: TVCLPageViewManager;
 begin
-  // chamado quando a tabsheet é apagada.
+  // chamado quando a tabsheet Ã© apagada.
   ref := TVCLPageViewManager(PageView.This.GetOwner);
   if assigned(ref) and assigned(ref.OnQueryClose) then
     TVCLPageViewManager(ref).OnQueryClose(PageView, ACanClose);
@@ -157,7 +157,7 @@ begin
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
         begin
-          TControllerFactory.RevokeInstance(PageView.This.View.GetController);
+         // TControllerFactory.RevokeInstance(PageView.This.View.GetController);
           // apaga a instancia da lista de controller instaciados.
         end;
 
