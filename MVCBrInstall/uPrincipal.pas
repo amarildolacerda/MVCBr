@@ -28,6 +28,13 @@
 {                                                                              }
 {******************************************************************************}
 
+{
+   Alterações:
+      15/06/2017  * alterado para pegar somente o trunk do git. por: amarildo lacerda
+
+
+}
+
 
 unit uPrincipal;
 
@@ -1064,7 +1071,7 @@ begin
     end;
 
     // checkout
-    TSVN_Class.SVNTortoise_CheckOut(edtURL.Text, edtDirDestino.Text, ckbFecharTortoise.Checked );
+    TSVN_Class.SVNTortoise_CheckOut(edtURL.Text+'/trunk', edtDirDestino.Text, ckbFecharTortoise.Checked );
   end
   else
   begin
