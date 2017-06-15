@@ -170,7 +170,6 @@
         <DCCReference Include="..\VCL\MVCBr.ODataDatasetAdapter.pas"/>
         <DCCReference Include="..\VCL\MVCBr.ODataReg.pas"/>
         <DCCReference Include="..\VCL\MVCBr.ODataDatasetBuilder.pas"/>
-        <DCCReference Include="..\VCL\MVCBr.Common.pas"/>
         <DCCReference Include="..\VCL\MVCBr.ODataFDMemTable.pas"/>
         <DCCReference Include="..\helpers\System.Classes.Helper.pas"/>
         <BuildConfiguration Include="Release">
@@ -204,16 +203,16 @@
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libcgunwind.1.0.dylib" Class="DependencyModule"/>
-                <DeployFile LocalName="..\..\BPLTokyo\MVCBrOData.bpl" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule"/>
+                <DeployFile LocalName="..\..\BPLBerlin\MVCBrOData.bpl" Configuration="Debug" Class="ProjectOutput"/>
+                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule"/>
+                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule"/>
+                <DeployFile LocalName="c:\fontes\BPLTokyo\MVCBrOData.bpl" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>MVCBrOData.bpl</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule"/>
-                <DeployFile LocalName="..\..\BPLBerlin\MVCBrOData.bpl" Configuration="Debug" Class="ProjectOutput"/>
-                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule"/>
-                <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule"/>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="OSX32">
                         <Operation>1</Operation>

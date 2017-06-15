@@ -32,7 +32,7 @@ unit eMVC.toolBox;
 interface
 
 uses Winsock,
-  SysUtils, Contnrs, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  SysUtils, Contnrs, {WinTypes, WinProcs,} Messages, Classes, Graphics, Controls,
   wininet, shellAPI, windows, jpeg, extctrls, Forms, Dialogs, StdCtrls,
   inifiles, ShDocVw, registry, eMVC.CopyfileForm, MMSystem, shlobj;
 

@@ -51,7 +51,6 @@ contains
   MVCBr.ODataDatasetAdapter in '..\VCL\MVCBr.ODataDatasetAdapter.pas',
   MVCBr.ODataReg in '..\VCL\MVCBr.ODataReg.pas',
   MVCBr.ODataDatasetBuilder in '..\VCL\MVCBr.ODataDatasetBuilder.pas',
-  MVCBr.Common in '..\VCL\MVCBr.Common.pas',
   MVCBr.ODataFDMemTable in '..\VCL\MVCBr.ODataFDMemTable.pas',
   System.Classes.Helper in '..\helpers\System.Classes.Helper.pas';
 
