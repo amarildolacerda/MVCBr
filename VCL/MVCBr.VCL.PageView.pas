@@ -1,4 +1,4 @@
-unit MVCBr.VCL.PageView;
+﻿unit MVCBr.VCL.PageView;
 
 interface
 
@@ -157,8 +157,9 @@ begin
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
         begin
-         // TControllerFactory.RevokeInstance(PageView.This.View.GetController);
+          //TControllerFactory.RevokeInstance(PageView.This.View.GetController);
           // apaga a instancia da lista de controller instaciados.
+          PageView.This.View.GetController.RevokeInstance;
         end;
 
       end;

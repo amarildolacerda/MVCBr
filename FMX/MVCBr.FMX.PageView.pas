@@ -127,7 +127,8 @@ begin
         if ACanClose then
         // with PageView.This.View.GetController do
         begin
-          TControllerAbstract.RevokeInstance(PageView.This.View.GetController);
+          //TControllerAbstract.RevokeInstance(PageView.This.View.GetController);
+          PageView.This.View.GetController.RevokeInstance;
         end;
       end;
 end;
