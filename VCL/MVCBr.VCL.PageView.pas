@@ -157,9 +157,7 @@ begin
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
         begin
-          //TControllerFactory.RevokeInstance(PageView.This.View.GetController);
-          // apaga a instancia da lista de controller instaciados.
-          PageView.This.View.GetController.RevokeInstance;
+          TControllerAbstract.RevokeInstance(  PageView.This.View.GetController  );
         end;
 
       end;
