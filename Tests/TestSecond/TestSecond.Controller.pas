@@ -5,7 +5,7 @@
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
-{ // Data: 08/04/2017 12:03:20                                  // }
+{ // Data: 15/06/2017 21:47:37                                  // }
 { //************************************************************// }
 /// <summary>
 /// O controller possui as seguintes características:
@@ -24,16 +24,17 @@ interface
 
 { .$I ..\inc\mvcbr.inc }
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
+  System.SysUtils, {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   System.Classes, MVCBr.Interf,
-  TestViewView,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
-  System.RTTI, TestSecond.Controller.Interf;
+  System.RTTI, TestSecond.Controller.Interf,
+  TestSecondView;
 
 type
   TTestSecondController = class(TControllerFactory, ITestSecondController,
     IThisAs<TTestSecondController>)
   protected
+    FContador:integer;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
   public
@@ -49,15 +50,29 @@ type
     function ThisAs: TTestSecondController;
     /// Init após criado a instância é chamado para concluir init
     procedure init; override;
+    function GetStubInt:integer;
+    procedure IncContador;
+  end;
+
+
+  TTestSecondController2 = class(TTestSecondController,ITestSecondController2)
+   public
+       function GetStubInt2:integer;
+
   end;
 
 implementation
+
+uses Test.Model;
 
 /// Creator para a classe Controller
 Constructor TTestSecondController.Create;
 begin
   inherited;
+  FContador := 1;
   /// Inicializar as Views...
+  add(TTestModel.new(self));
+
   View(TTestSecondView.New(self));
   /// Inicializar os modulos
   CreateModules; // < criar os modulos persolnizados
@@ -109,6 +124,16 @@ begin
   inherited;
 end;
 
+function TTestSecondController.GetStubInt: integer;
+begin
+  result := FContador;
+end;
+
+procedure TTestSecondController.IncContador;
+begin
+  inc(FContador);
+end;
+
 /// Evento INIT chamado apos a inicializacao do controller
 procedure TTestSecondController.init;
 var
@@ -132,6 +157,15 @@ Procedure TTestSecondController.CreateModules;
 begin
   // adicionar os seus MODELs aqui
   // exemplo: add( MeuModel.new(self) );
+
+
+end;
+
+{ TTestSecondController2 }
+
+function TTestSecondController2.GetStubInt2: integer;
+begin
+  result := FContador;
 end;
 
 initialization
@@ -141,6 +175,8 @@ initialization
 /// Registrar Interface e ClassFactory para o MVCBr
 RegisterInterfacedClass(TTestSecondController.ClassName, ITestSecondController,
   TTestSecondController);
+RegisterInterfacedClass(TTestSecondController2.ClassName, ITestSecondController2,
+  TTestSecondController2);
 
 finalization
 

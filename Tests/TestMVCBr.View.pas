@@ -12,10 +12,10 @@ unit TestMVCBr.View;
 interface
 
 uses
-  TestFramework, system.SysUtils, system.Classes, Forms, MVCBr.Interf,
+  TestFramework, system.SysUtils, system.Classes, VCL.Forms, MVCBr.Interf,
   MVCBr.Model,
   TestMVCBr.TestForm, MVCBr.Controller,
-  TestViewView,
+  TestSecondView,
   MVCBr.View, system.Rtti;
 
 type
@@ -37,7 +37,7 @@ type
 
   TestTFormFactory = class(TTestCase)
   strict private
-    FFormFactory: ITestViewView;
+    FFormFactory: ITestSecondView;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -59,7 +59,7 @@ type
 
 implementation
 
-uses testSecondView, testSecond.Controller.Interf, TestView.Controller.Interf, MVCBr.ApplicationController, TestView.Controller, system.Json, test.Controller.Interf, test.Model.Interf;
+uses  testSecond.Controller.Interf, TestView.Controller.Interf, MVCBr.ApplicationController, TestView.Controller, system.Json, test.Controller.Interf, test.Model.Interf;
 
 procedure TestTViewFactory.SetUp;
 var
@@ -105,7 +105,7 @@ procedure TestTViewFactory.TestUpdate;
 var
   ReturnValue: IView;
 begin
-  ReturnValue := FViewFactory.Update;
+  ReturnValue := FViewFactory.UpdateView;
   checkNotNull(ReturnValue);
   // TODO: Validate method results
 end;
@@ -123,7 +123,7 @@ procedure TestTFormFactory.SetUp;
 var
   Controller: IController;
 begin
-  FFormFactory := TTestViewView.create(nil);
+  FFormFactory := TTestSecondView.create(nil);
   Controller := TTestViewController.New(FFormFactory,nil);
 end;
 
@@ -156,7 +156,7 @@ Type
 
 procedure TestTFormFactory.TestInterfaceStubInt;
 var
-  itf: ITestViewView;
+  itf: ITestSecondView;
 begin
   itf := FFormFactory;
   CheckTrue(itf.getStubInt = 1, 'Não obteve dados na interface');
@@ -168,8 +168,8 @@ var
 begin
   // TODO: Setup method call parameters
   FFormFactory.PropertyValue['isShowModal'] := true;
-  CheckTrue(TTestViewView(FFormFactory.This).isShowModal, 'Não alterou o ShowModal');
-  ReturnValue := TTestViewView(FFormFactory.This).InvokeMethod<Boolean>
+  CheckTrue(TTestSecondView(FFormFactory.This).isShowModal, 'Não alterou o ShowModal');
+  ReturnValue := TTestSecondView(FFormFactory.This).InvokeMethod<Boolean>
     ('GetShowModalStub', []);
   CheckTrue(ReturnValue, 'Não funcionou RTTI');
   // TODO: Validate method results
@@ -208,7 +208,7 @@ procedure TestTFormFactory.TestResolveController;
 var
   i: ITestController;
 begin
-  i := TTestViewView(FFormFactory.this).ResolveController<ITestController>;
+  i := TTestSecondView(FFormFactory.this).ResolveController<ITestController>;
   checkNotNull(i, 'Não retornou a interface do controller');
   CheckTrue(i.This.InheritsFrom(TControllerFactory),
     'Não herdou de TControllerFactory');
@@ -220,7 +220,7 @@ var
   AProc: TProc<IView>;
 begin
   // TODO: Setup method call parameters
-  TTestViewView(FFormFactory.This).isShowModal := false;
+  TTestSecondView(FFormFactory.This).isShowModal := false;
   ReturnValue := FFormFactory.ShowView(AProc);
 
   // TODO: Validate method results
@@ -230,14 +230,14 @@ procedure TestTFormFactory.TestUpdate;
 var
   ReturnValue: IView;
 begin
-  ReturnValue := FFormFactory.Update;
+  ReturnValue := FFormFactory.UpdateView;
   checkNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
 procedure TestTFormFactory.TestEnviarEventoParaUmView;
 var
-  inf: ITestViewView;
+  inf: ITestSecondView;
   LHandled: Boolean;
 begin
   inf := FFormFactory;
@@ -266,7 +266,7 @@ end;
 
 procedure TestTFormFactory.TestEnviarEventoJSONparaUmView;
 var
-  inf: ITestViewView;
+  inf: ITestSecondView;
   LHandled: Boolean;
 begin
   inf := FFormFactory;

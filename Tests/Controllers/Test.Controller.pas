@@ -22,6 +22,7 @@ type
   TTestController = class(TControllerFactory, ITestController,
     IThisAs<TTestController> { , IModelAs<ITestViewModel> } )
   protected
+    FContador:integer;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
   public
@@ -38,7 +39,7 @@ type
     // function ModelAs: ITestViewModel;
 
     function GetStubInt:Integer;
-
+    procedure IncContador;
   end;
 
 implementation
@@ -46,6 +47,7 @@ implementation
 Constructor TTestController.Create;
 begin
   inherited;
+  FContador := 1;
   // add(TTestViewModel.New(self).ID('{Test.ViewModel}')); CreateModules; //< criar os modulos persolnizados
 end;
 
@@ -96,7 +98,12 @@ end;
 
 function TTestController.GetStubInt: Integer;
 begin
-   result := 1;
+   result := FContador;
+end;
+
+procedure TTestController.IncContador;
+begin
+   inc(FContador);
 end;
 
 procedure TTestController.init;

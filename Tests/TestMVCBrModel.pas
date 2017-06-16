@@ -131,7 +131,7 @@ end;
 
 procedure TestTModelFactory.TestAfterInit;
 begin
-   FModelFactory.AfterInit;
+   //FModelFactory.AfterInit;
   // TODO: Validate method results
 end;
 

@@ -56,12 +56,13 @@ type
     procedure TestUpdateByModel;
     procedure TestUpdateByView;
     procedure TestResolveController;
+    procedure TestRevokeController;
   end;
 
 implementation
 
 
-uses test.Controller.interf;
+uses test.Controller.interf, TestSecond.Controller.Interf;
 
 procedure TestTControllerFactory.SetUp;
 begin
@@ -144,6 +145,30 @@ var ctrl:ITestController;
 begin
   ctrl :=  FControllerFactory.ResolveController<ITestController>;
   CheckNotNull(ctrl,'Não inicializou o controller');
+end;
+
+procedure TestTControllerFactory.TestRevokeController;
+var AController:ITestSecondController2;
+    ARefCount:integer;
+begin
+   ApplicationController.RevokeController(ITestSecondController2);
+   AController := ApplicationController.resolveController(ITestSecondController2) as ITestSecondController2;
+   ARefCount := AController.this.RefCount;
+
+   CheckTrue(AController.GetStubInt=1,'Contador não foi incilizado com 1');
+   AController.IncContador;
+   CheckTrue(AController.GetStubInt=2,'Contador não foi incrementado para 2');
+
+//   AController := nil ; // mata o controller
+   ApplicationController.RevokeController(ITestSecondController2);
+   AController := ApplicationController.resolveController(ITestSecondController2) as ITestSecondController2;
+   checkTrue(AController.this.refCount=ARefCount,'Contador de referencia não se manteve');
+
+
+   CheckTrue(AController.GetStubInt2=1,'Instancia nao foi reinicializada');
+   AController := nil ; // mata o controller
+
+
 end;
 
 procedure TestTControllerFactory.TestBeforeInit;

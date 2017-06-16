@@ -609,7 +609,8 @@ begin
     if achei = '' then
       exit;
     ii := ResolveController(achei);
-    supports(ii.This, AIID, ref);
+    if ii<>nil then
+       supports(ii.This, AIID, ref);
   end;
 end;
 

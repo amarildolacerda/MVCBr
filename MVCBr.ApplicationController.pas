@@ -317,13 +317,14 @@ end;
 
 procedure TApplicationController.RevokeController(AGuid: TGuid);
 var
-  LController: IController;
+  AController: IController;
 begin
-  LController := FindController(AGuid);
-  if assigned(LController) then
+  AController := FindController(AGuid);
+  if assigned(AController) then
   begin
-    Remove(LController);
-    TControllerAbstract.RevokeInstance(LController);
+    Remove(AController);
+    TControllerAbstract.RevokeInstance(AController);
+    AController := nil;
   end;
 end;
 

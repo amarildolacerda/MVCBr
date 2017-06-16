@@ -18,24 +18,20 @@ uses
   DUnitTestRunner,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
-  MVCBr.Model in '..\MVCBr.Model.pas',
-  MVCBr.InterfaceHelper in '..\MVCBr.InterfaceHelper.pas',
-  MVCBr.Interf in '..\MVCBr.Interf.pas',
   TestMVCBr.View in 'TestMVCBr.View.pas',
-  MVCBr.View in '..\MVCBr.View.pas',
   TestMVCBrInterf in 'TestMVCBrInterf.pas',
   Test.Controller.Interf in 'Controllers\Test.Controller.Interf.pas',
   Test.Controller in 'Controllers\Test.Controller.pas',
-  TestView.Controller.Interf in 'Controllers\TestView.Controller.Interf.pas',
-  TestView.Controller in 'Controllers\TestView.Controller.pas',
-  TestViewView in 'Views\TestViewView.pas' {TestViewView},
   TestView.ViewModel in 'ViewModels\TestView.ViewModel.pas',
   TestView.ViewModel.Interf in 'ViewModels\TestView.ViewModel.Interf.pas',
   Test.Model in 'Models\Test.Model.pas',
   Test.Model.Interf in 'Models\Test.Model.Interf.pas',
-  TestSecond.Controller.Interf in 'Controllers\TestSecond.Controller.Interf.pas',
-  TestSecond.Controller in 'Controllers\TestSecond.Controller.pas',
-  TestSecondView in 'Views\TestSecondView.pas' {TestSecondView};
+  TestView.Controller.Interf in 'TestView\TestView.Controller.Interf.pas',
+  TestView.Controller in 'TestView\TestView.Controller.pas',
+  TestViewView in 'TestView\TestViewView.pas' {TestViewView},
+  TestSecond.Controller.Interf in 'TestSecond\TestSecond.Controller.Interf.pas',
+  TestSecond.Controller in 'TestSecond\TestSecond.Controller.pas',
+  TestSecondView in 'TestSecond\TestSecondView.pas' {TestSecondView};
 
 {$R *.RES}
 
