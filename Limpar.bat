@@ -12,6 +12,10 @@ del .\exemplos\*.apk /s
 del .\*.otares /s /q
 del .\*.vlb /s /q
 rmdir win32 /s /q
+rmdir lib /s /q
+del *.ini
+del *.log
+del log*.txt
 
 
 del .\vcl\__history\*.* /s /q

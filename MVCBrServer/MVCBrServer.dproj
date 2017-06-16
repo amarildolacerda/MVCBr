@@ -56,7 +56,7 @@
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <Icns_MainIcns>$(BDS)\bin\delphi_PROJECTICNS.icns</Icns_MainIcns>
         <SanitizedProjectName>MVCBrServer</SanitizedProjectName>
-        <DCC_UnitSearchPath>.\WSConfig;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>.\WSConfig;..\oData;..\helpers;..\dmvc\sources;..\DMVC\lib\delphistompclient;..\DMVC\lib\loggerpro;..\DMVC\lib\dmustache;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -83,8 +83,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
-        <DCC_ExeOutput>./</DCC_ExeOutput>
-        <DCC_DcuOutput>c:\lixo\dcu</DCC_DcuOutput>
+        <DCC_ExeOutput>../bin</DCC_ExeOutput>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>(None)</Manifest_File>
         <Debugger_RunParams>/D</Debugger_RunParams>
@@ -155,9 +154,7 @@
                 <Source>
                     <Source Name="MainSource">MVCBrServer.dpr</Source>
                 </Source>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WBAControllers.bpl">(untitled)</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule">

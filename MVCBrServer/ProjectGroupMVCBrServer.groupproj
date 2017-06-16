@@ -1,0 +1,84 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{4BF467B2-E6CA-4420-BD94-C3B55F51DC72}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MVCBrServer_ISAPI.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="MVCBrServer.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="MVCBrServer_Linux.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="MVCBrServerService.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="GeradorMetadata\MetadataGenerator.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MVCBrServer_ISAPI">
+        <MSBuild Projects="MVCBrServer_ISAPI.dproj"/>
+    </Target>
+    <Target Name="MVCBrServer_ISAPI:Clean">
+        <MSBuild Projects="MVCBrServer_ISAPI.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrServer_ISAPI:Make">
+        <MSBuild Projects="MVCBrServer_ISAPI.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrServer">
+        <MSBuild Projects="MVCBrServer.dproj"/>
+    </Target>
+    <Target Name="MVCBrServer:Clean">
+        <MSBuild Projects="MVCBrServer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrServer:Make">
+        <MSBuild Projects="MVCBrServer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrServer_Linux">
+        <MSBuild Projects="MVCBrServer_Linux.dproj"/>
+    </Target>
+    <Target Name="MVCBrServer_Linux:Clean">
+        <MSBuild Projects="MVCBrServer_Linux.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrServer_Linux:Make">
+        <MSBuild Projects="MVCBrServer_Linux.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrServerService">
+        <MSBuild Projects="MVCBrServerService.dproj"/>
+    </Target>
+    <Target Name="MVCBrServerService:Clean">
+        <MSBuild Projects="MVCBrServerService.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrServerService:Make">
+        <MSBuild Projects="MVCBrServerService.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MetadataGenerator">
+        <MSBuild Projects="GeradorMetadata\MetadataGenerator.dproj"/>
+    </Target>
+    <Target Name="MetadataGenerator:Clean">
+        <MSBuild Projects="GeradorMetadata\MetadataGenerator.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MetadataGenerator:Make">
+        <MSBuild Projects="GeradorMetadata\MetadataGenerator.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MVCBrServer_ISAPI;MVCBrServer;MVCBrServer_Linux;MVCBrServerService;MetadataGenerator"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MVCBrServer_ISAPI:Clean;MVCBrServer:Clean;MVCBrServer_Linux:Clean;MVCBrServerService:Clean;MetadataGenerator:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MVCBrServer_ISAPI:Make;MVCBrServer:Make;MVCBrServer_Linux:Make;MVCBrServerService:Make;MetadataGenerator:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
