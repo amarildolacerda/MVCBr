@@ -1,3 +1,9 @@
+15/06/2017 - AL
+   + atualizado o DMVC para RC5 versao 3.0
+   + ataulizado o LoggerPro
+   * correção para subir com GetIt
+   + adicionado o instalado na raiz
+   
 24/05/2017 - AL
    * correção de bug quando execute ResolveController para o MainForm
 23/05/2017 - AL
