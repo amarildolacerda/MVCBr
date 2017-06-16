@@ -103,6 +103,7 @@ type
     function Resolve<TInterface: IInterface>(const name: string = '')
       : TInterface;
     function GetName(AGuid: TGuid): string;
+    function GetGuid(AName: string): TGuid;
 
     procedure RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
       AClass: TInterfacedClass; AName: String; bSingleton: boolean); overload;
@@ -214,9 +215,9 @@ begin
     key := pInfo.name.ToString + '_' + newName;
 {$ELSE}
   if newName = '' then
-    key := string(pInfo.name{$ifdef LINUX}.toString{$endif})
+    key := string(pInfo.name{$IFDEF LINUX}.ToString{$ENDIF})
   else
-    key := string(pInfo.name{$ifdef LINUX}.toString{$endif}) + '_' + newName;
+    key := string(pInfo.name{$IFDEF LINUX}.ToString{$ENDIF}) + '_' + newName;
 {$ENDIF}
   key := LowerCase(key);
 
@@ -292,13 +293,26 @@ begin
 {$IFDEF ANDROID}
   result := pInfo.name.ToString;
 {$ELSE}
-  result := string(pInfo.name{$ifdef LINUX}.toString{$endif});
+  result := string(pInfo.name{$IFDEF LINUX}.ToString{$ENDIF});
 {$ENDIF}
   if (AName <> '') then
     result := result + '_' + AName;
 
   // All keys are stored in lower case form.
   result := LowerCase(result);
+end;
+
+function TMVCBrIoC.GetGuid(AName: string): TGuid;
+var
+  LName: string;
+  rogo: TIoCRegistration<IController>;
+begin
+  for LName in FContainerInfo.keys do
+    if LName.ToUpper.Equals(AName.ToUpper) then
+    begin
+      rogo := TIoCRegistration<IController>(FContainerInfo.items[LName]);
+      result := rogo.Guid;
+    end;
 end;
 
 function TMVCBrIoC.GetName(AGuid: TGuid): string;
@@ -579,10 +593,10 @@ begin
     IID := InterfaceEntry.IID;
 end;
 
-
 initialization
 
 finalization
-  TMVCBrIoC.ClassDestroy;
+
+TMVCBrIoC.ClassDestroy;
 
 end.

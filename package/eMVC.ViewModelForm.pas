@@ -110,7 +110,7 @@ end;
 procedure TFormNewSet.translate;
 begin
   caption := 'View/ViewModel - Model';
-  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
   Label4.caption := wizardForm_NameForArtefact;
   Label1.caption := wizardForm_ViewModel_Expert;
   btnBack.caption := button_back_caption;

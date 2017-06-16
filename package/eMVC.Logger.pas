@@ -86,15 +86,11 @@ end;
 
 procedure TLogger.doWrite(info: string);
 begin
- try
   if (log_on) and (trim(info) <> '') then
   begin
     iMemo.Insert(0, info);
     iMemo.SaveToFile(iFilename);
   end;
- except
-    // quando nao tem direito de escrita.. nao consegue realizar a operação.
- end;
   info := '';
 end;
 
@@ -103,7 +99,7 @@ var
   dir, ext: string;
   dd, mm, yy: word;
 begin
-  log_on := true;
+  log_on := false;
   debug := false;
 
   dir := extractFilePath(application.ExeName) + 'log';

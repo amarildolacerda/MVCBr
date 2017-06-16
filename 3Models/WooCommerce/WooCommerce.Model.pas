@@ -15,42 +15,40 @@ Unit WooCommerce.Model;
 }
 interface
 
-{.$DEFINE INDY }
+{$DEFINE INDY}
 
 { .$I ..\inc\mvcbr.inc }
-uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, MVCBr.Interf, MVCBr.Model,
+uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes,
+  MVCBr.Interf, MVCBr.Model,
   WooCommerce.Model.Interf, // %Interf,
   MVCBr.Controller,
   MVCBr.Component;
 
 Type
 
-  // pedidos
-  TWooCommerceOrders = class(TMVCFactoryAbstract, IWooCommerceOrders)
-  const
-    base: string = '/orders';
+  TWooCommerceAbstract = class(TMVCFactoryAbstract, IWooCommerce)
   protected
+    FBase: string;
     FModel: IWooCommerceModel;
   public
-    class function New(const AModel: IWooCommerceModel): IWooCommerceOrders;
-    function Get(AId: string): string;
-    function List: string;
+    function This: TObject; virtual;
+    function List: string; virtual;
+    function Get(AId: string): string; virtual;
+    function Count: Integer; virtual;
+    function Put(AId: string; AJson: string): string; virtual;
+  end;
 
+  // pedidos
+  TWooCommerceOrders = class(TWooCommerceAbstract, IWooCommerceOrders)
+  public
+    class function New(const AModel: IWooCommerceModel): IWooCommerceOrders;
   end;
 
   // estrutura de produtos
-  TWooCommerceProducts = class(TMVCFactoryAbstract, IWooCommerceProducts)
-  const
-    base: string = '/products';
+  TWooCommerceProducts = class(TWooCommerceAbstract, IWooCommerceProducts)
   protected
-    FModel: IWooCommerceModel;
   public
     class function New(AModel: IWooCommerceModel): IWooCommerceProducts;
-    function This: TObject;
-    function Count: Integer;
-    function Get(AId: string): string;
-    function Put(AId: string; AJson: string): string;
-    function List: string;
   end;
 
   TWooCommerceModel = class(TComponentFactory, IWooCommerceModel,
@@ -112,7 +110,7 @@ Implementation
 
 uses
 {$IFDEF INDY}
-  MVCBr.IdHTTPRestClient, Rest.OAuth,
+  MVCBr.HTTPRestClient, Rest.OAuth,
 {$ELSE}
   Dialogs,
   Rest.Utils,
@@ -143,13 +141,13 @@ end;
 function TWooCommerceModel.Get(AResource: String): string;
 var
   LURL: string;
-  http: TIdHTTPRestClient;
+  http: THTTPRestClient;
   sAuth: string;
 begin
   FCodeResponse := 0;
   FContent := '';
   LURL := FBaseURL + FResourcePrefix + AResource;
-  http := TIdHTTPRestClient.Create(nil);
+  http := THTTPRestClient.Create(nil);
   try
     http.BaseURL := FBaseURL;
     http.ResourcePrefix := FResourcePrefix;
@@ -161,7 +159,7 @@ begin
         http.Execute();
         FContent := http.Content;
       finally
-        FCodeResponse := http.IdHTTP.ResponseCode;
+        FCodeResponse := http.ResponseCode;
       end;
     except
       on e: exception do
@@ -175,15 +173,15 @@ end;
 
 function TWooCommerceModel.GetAuth1String(RESTRequest: TObject): string;
 var
-  http: TIdHTTPRestClient;
+  http: THTTPRestClient;
   OAuth: TOAuthConsumer;
   HMAC: TOAuthSignatureMethod_HMAC_SHA1;
   LURL: string;
 begin
-  http := TIdHTTPRestClient(RESTRequest);
+  http := THTTPRestClient(RESTRequest);
   // workaround to 403 - forbidden
-  //http.IdHTTP.Request.UserAgent :=
-  //  'Mozilla/5.0 (Windows NT 6.1; WOW64; rv: 12.0)Gecko / 20100101 Firefox / 12.0 ';
+  // http.IdHTTP.Request.UserAgent :=
+  // 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv: 12.0)Gecko / 20100101 Firefox / 12.0 ';
 
   LURL := http.URL;
 
@@ -362,22 +360,22 @@ end;
 
 {$IFDEF INDY}
 
-///  nao esta funcionado... alguma coisa com autenticacao, talves
+/// nao esta funcionado... alguma coisa com autenticacao, talves
 function TWooCommerceModel.Put(AResource, ADados: String): string;
 var
   LURL: string;
-  http: TIdHTTPRestClient;
+  http: THTTPRestClient;
   sAuth: string;
 begin
   FCodeResponse := 0;
   FContent := '';
   LURL := FBaseURL + FResourcePrefix + AResource;
-  http := TIdHTTPRestClient.Create(nil);
+  http := THTTPRestClient.Create(nil);
   try
     http.BaseURL := FBaseURL;
     http.ResourcePrefix := FResourcePrefix;
     http.Resource := AResource;
-    http.Method := TIdHTTPRestMethod.rmPUT;
+    http.Method := THTTPRestMethod.rmPUT;
     http.Body.text := ADados;
     try
       try
@@ -386,7 +384,7 @@ begin
         http.Execute();
         FContent := http.Content;
       finally
-        FCodeResponse := http.IdHTTP.ResponseCode;
+        FCodeResponse := http.ResponseCode;
       end;
     except
       on e: exception do
@@ -488,24 +486,14 @@ end;
 
 { TWooCommerceProduct }
 
-function TWooCommerceProducts.Count: Integer;
+function TWooCommerceAbstract.Count: Integer;
 var
   j: IJsonObject;
 begin
-  FModel.&GET(base + '/count');
+  FModel.&GET(FBase + '/count');
   j := TInterfacedJSON.New(FModel.Content);
   if not j.IsNull then
     result := j.JSONObject.I('count');
-end;
-
-function TWooCommerceProducts.Get(AId: string): string;
-begin
-  result := FModel.Get(base + '/' + AId);
-end;
-
-function TWooCommerceProducts.List: string;
-begin
-  result := FModel.Get(base);
 end;
 
 class function TWooCommerceProducts.New(AModel: IWooCommerceModel)
@@ -515,29 +503,25 @@ var
 begin
   o := TWooCommerceProducts.Create;
   o.FModel := AModel;
+  o.FBase := '/products';
   result := o;
 end;
 
-function TWooCommerceProducts.Put(AId, AJson: string): string;
+function TWooCommerceAbstract.Put(AId, AJson: string): string;
 begin
-  result := FModel.Put(base + '/' + AId, AJson);
-end;
-
-function TWooCommerceProducts.This: TObject;
-begin
-  result := self;
+  result := FModel.Put(FBase + '/' + AId, AJson);
 end;
 
 { TWooCommerceOrders }
 
-function TWooCommerceOrders.Get(AId: string): string;
+function TWooCommerceAbstract.Get(AId: string): string;
 begin
-  result := FModel.Get(base + '/' + AId);
+  result := FModel.Get(FBase + '/' + AId);
 end;
 
-function TWooCommerceOrders.List: string;
+function TWooCommerceAbstract.List: string;
 begin
-  result := FModel.Get(base);
+  result := FModel.Get(FBase);
 end;
 
 class function TWooCommerceOrders.New(const AModel: IWooCommerceModel)
@@ -547,7 +531,15 @@ var
 begin
   o := TWooCommerceOrders.Create();
   o.FModel := AModel;
+  o.FBase := '/orders';
   result := o;
+end;
+
+{ TWooCommerceAbstract }
+
+function TWooCommerceAbstract.This: TObject;
+begin
+  result := self;
 end;
 
 Initialization

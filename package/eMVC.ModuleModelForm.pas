@@ -222,7 +222,7 @@ end;
 procedure TFormNewModuleModel.Translate;
 begin
   Caption := 'Module Model';
-  cbCreateDir.Caption := wizardForm_createdir_checkbox_caption;
+  cbCreateDir.Caption := wizardForm_groupdir_checkbox_caption;
   cbCreateModel.Caption := wizardMuduleFactoryCreate_caption;
   Label1.Caption := wizardForm_module_title_caption;
   Label4.Caption := wizardForm_NameForArtefact;

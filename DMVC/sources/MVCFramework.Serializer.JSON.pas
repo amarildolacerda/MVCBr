@@ -357,8 +357,8 @@ begin
     if (not IsIgnoredAttribute(AIgnoredFields, FieldName)) and (not IsIgnoredComponent(ADataSet.Owner, ADataSet.Fields[I].Name)) then
     begin
       case ANameCase of
-        ncUpperCase: FieldName := UpperCase(ADataSet.Fields[I].FieldName);
-        ncLowerCase: FieldName := LowerCase(ADataSet.Fields[I].FieldName);
+        ncUpperCase: FieldName := UpperCase(FieldName);
+        ncLowerCase: FieldName := LowerCase(FieldName);
       end;
       if ADataSet.Fields[I].IsNull then
         AJSONObject.AddPair(FieldName, TJSONNull.Create)
@@ -665,17 +665,17 @@ begin
   begin
     for Field in ADataSet.Fields do
     begin
-      Name := GetNameAs(ADataSet.Owner, Field.Name, Field.FieldName);
+      name := GetNameAs(ADataSet.Owner, Field.Name, Field.FieldName);
 
-      if (IsIgnoredAttribute(AIgnoredFields, Name)) or (IsIgnoredComponent(ADataSet.Owner, Field.Name)) then
+      if (IsIgnoredAttribute(AIgnoredFields, name)) or (IsIgnoredComponent(ADataSet.Owner, Field.Name)) then
         Continue;
 
       case GetNameCase(ADataSet, ANameCase) of
-        ncLowerCase: Name := LowerCase(Field.FieldName);
-        ncUpperCase: Name := UpperCase(Field.FieldName);
+        ncLowerCase: name := LowerCase(Field.FieldName);
+        ncUpperCase: name := UpperCase(Field.FieldName);
       end;
 
-      Jv := AJSONObject.Get(Name).JsonValue;
+      Jv := AJSONObject.Get(name).JsonValue;
       if not Assigned(Jv) then
         Continue;
 
@@ -928,8 +928,8 @@ var
 begin
   Result := EmptyStr;
 
-  if not Assigned(AObject) then
-    Exit;
+  if AObject = nil then
+    Exit('null');
 
   if AObject is TJSONValue then
     Exit(TJSONValue(AObject).ToJSON);

@@ -39,14 +39,14 @@ requires
   FireDAC,
   FireDACCommonDriver,
   FireDACCommon,
-  MVCBrVCL,
   DbxCommonDriver,
   RESTComponents,
   DataSnapFireDAC,
-  MVCBrCore;
+  MVCBrCore,
+  MVCBrVCL;
 
 contains
   MVCBr.FireDACReg in '..\VCL\MVCBr.FireDACReg.pas',
-  MVCBr.IdHTTPFiredacAdapter in '..\VCL\MVCBr.IdHTTPFiredacAdapter.pas';
+  MVCBr.HTTPFiredacAdapter in '..\VCL\MVCBr.HTTPFiredacAdapter.pas';
 
 end.

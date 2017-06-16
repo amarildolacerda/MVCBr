@@ -1,0 +1,869 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.FormView: Classe TCustomFormFactory</title>
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script>
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</p></td><td class="content">
+MVCBr
+<a name="TCustomFormFactory"></a><h1 class="cio">Classe TCustomFormFactory</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="MVCBr.FormView.html">MVCBr.FormView</a></p>
+<h2 class="declaration">Declaração</h2>
+<p class="declaration">
+<code>type TCustomFormFactory = class(TForm, IMVCBrBase, IView)</code></p>
+<h2 class="description">Descrição</h2>
+<p>
+ <a class="normal" href="MVCBr.FormView.TFormFactory.html">TFormFactory</a> é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr </p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TForm</li>
+<li class="thisitem">TCustomFormFactory</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FEventRef">FEventRef</a></b>: Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FID">FID</a></b>: string;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnClose">FOnClose</a></b>: TCloseEvent;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewEvent">FOnViewEvent</a></b>: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnCommandEvent">FOnCommandEvent</a></b>: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewUpdate">FOnViewUpdate</a></b>: TNotifyEvent;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewInit">FOnViewInit</a></b>: TNotifyEvent;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnCloseProc">FOnCloseProc</a></b>: TProc&lt;IView&gt;;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FController">FController</a></b>: IController;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FShowModal">FShowModal</a></b>: boolean;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnClose">SetOnClose</a></b>(const Value: TCloseEvent);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetPropertyValue">GetPropertyValue</a></b>(ANome: string): TValue;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetPropertyValue">SetPropertyValue</a></b>(ANome: string; const Value: TValue);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewEvent">SetOnViewEvent</a></b>(const Value: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnCommandEvent">SetOnCommandEvent</a></b>(const Value: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a>);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewUpdate">SetOnViewUpdate</a></b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewInit">SetOnViewInit</a></b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#DoCloseView">DoCloseView</a></b>(Sender: TObject; var ACloseAction: TCloseAction);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetController">SetController</a></b>(const AController: IController);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Controller">Controller</a></b>(const AController: IController): IView; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetShowModal">SetShowModal</a></b>(const AShowModal: boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetShowModal">GetShowModal</a></b>: boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetTitle">GetTitle</a></b>: string; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetTitle">SetTitle</a></b>(const Value: string); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Init">Init</a></b>; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ApplicationControllerInternal">ApplicationControllerInternal</a></b>: IApplicationController;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ApplicationController">ApplicationController</a></b>: <a  href="MVCBr.ApplicationController.TApplicationController.html">TApplicationController</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Create">Create</a></b>(AOwner: TComponent); override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetGuid">GetGuid</a></b>(AII: IInterface): TGuid;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: string; var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: TJsonValue; var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#MainViewEvent">MainViewEvent</a></b>(AMessage: string; var AHandled: boolean) : IView; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ViewEventOther">ViewEventOther</a></b>(AMessage: string; var AHandled: boolean): IView;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#DoCommand">DoCommand</a></b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetID">GetID</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetController">GetController</a></b>: IController; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#This">This</a></b>: TObject; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#InvokeMethod">InvokeMethod</a></b>&lt;T&gt;(AMethod: string; const Args: TArray&lt;TValue&gt;): T;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ResolveController">ResolveController</a></b>(const IID: TGuid): IController; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#RevokeController">RevokeController</a></b>(IID: TGuid);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ResolveController">ResolveController</a></b>&lt;TIController&gt;: TIController; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetModel">GetModel</a></b>&lt;TIModel&gt;: TIModel; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetModel">GetModel</a></b>(AII: TGuid): IModel; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetView">GetView</a></b>&lt;TIView: IInterface&gt;: TIView; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#FindView">FindView</a></b>(AGuid: TGuid): IView;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(const IIDController: TGuid; const AProcBeforeShow: TProc&lt;IView&gt;; const AProcONClose: TProc&lt;IView&gt;) : IView; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(const AProcBeforeShow: TProc&lt;IView&gt;): Integer; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(const AProcBeforeShow: TProc&lt;IView&gt;; AShowModal: boolean) : IView; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(const AProcBeforeShow: TProc&lt;IView&gt;; const AProcONClose: TProc&lt;IView&gt;): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(const IIDController: TGuid; const AProcBeforeShow: TProc&lt;IView&gt;): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(const IIDController: TGuid): IView; overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#ShowView">ShowView</a></b>(): IView; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetViewModel">SetViewModel</a></b>(const AViewModel: IViewModel); virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetViewModel">GetViewModel</a></b>: IViewModel; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#UpdateView">UpdateView</a></b>: IView; virtual;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#isShowModal">isShowModal</a></b>: boolean read <a  href="MVCBr.FormView.TCustomFormFactory.html#GetShowModal">GetShowModal</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetShowModal">SetShowModal</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#PropertyValue">PropertyValue</a></b>[ANome:string]: TValue read <a  href="MVCBr.FormView.TCustomFormFactory.html#GetPropertyValue">GetPropertyValue</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetPropertyValue">SetPropertyValue</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Text">Text</a></b>: string read <a  href="MVCBr.FormView.TCustomFormFactory.html#GetTitle">GetTitle</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetTitle">SetTitle</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#OnClose">OnClose</a></b>: TCloseEvent read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnClose">FOnClose</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnClose">SetOnClose</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#OnViewInit">OnViewInit</a></b>: TNotifyEvent read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewInit">FOnViewInit</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewInit">SetOnViewInit</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#OnViewEvent">OnViewEvent</a></b>: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a> read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewEvent">FOnViewEvent</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewEvent">SetOnViewEvent</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#OnViewCommand">OnViewCommand</a></b>: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a> read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnCommandEvent">FOnCommandEvent</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnCommandEvent">SetOnCommandEvent</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.FormView.TCustomFormFactory.html#OnViewUpdate">OnViewUpdate</a></b>: TNotifyEvent read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewUpdate">FOnViewUpdate</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewUpdate">SetOnViewUpdate</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FEventRef"></a><code><b>FEventRef</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FID"></a><code><b>FID</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnClose"></a><code><b>FOnClose</b>: TCloseEvent;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnViewEvent"></a><code><b>FOnViewEvent</b>: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnCommandEvent"></a><code><b>FOnCommandEvent</b>: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnViewUpdate"></a><code><b>FOnViewUpdate</b>: TNotifyEvent;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnViewInit"></a><code><b>FOnViewInit</b>: TNotifyEvent;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="FOnCloseProc"></a><code><b>FOnCloseProc</b>: TProc&lt;IView&gt;;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="FController"></a><code><b>FController</b>: IController;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="FShowModal"></a><code><b>FShowModal</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetOnClose"></a><code>procedure <b>SetOnClose</b>(const Value: TCloseEvent);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetPropertyValue"></a><code>function <b>GetPropertyValue</b>(ANome: string): TValue;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetPropertyValue"></a><code>procedure <b>SetPropertyValue</b>(ANome: string; const Value: TValue);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetOnViewEvent"></a><code>procedure <b>SetOnViewEvent</b>(const Value: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetOnCommandEvent"></a><code>procedure <b>SetOnCommandEvent</b>(const Value: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a>);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetOnViewUpdate"></a><code>procedure <b>SetOnViewUpdate</b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetOnViewInit"></a><code>procedure <b>SetOnViewInit</b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="DoCloseView"></a><code>procedure <b>DoCloseView</b>(Sender: TObject; var ACloseAction: TCloseAction);</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+FViewModel:IViewModel;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="SetController"></a><code>procedure <b>SetController</b>(const AController: IController);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="Controller"></a><code>function <b>Controller</b>(const AController: IController): IView; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="SetShowModal"></a><code>procedure <b>SetShowModal</b>(const AShowModal: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="GetShowModal"></a><code>function <b>GetShowModal</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Retorna se a apresentação do formulário é ShowModal</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="GetTitle"></a><code>function <b>GetTitle</b>: string; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="SetTitle"></a><code>procedure <b>SetTitle</b>(const Value: string); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AfterConstruction"></a><code>procedure <b>AfterConstruction</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ApplicationControllerInternal"></a><code>function <b>ApplicationControllerInternal</b>: IApplicationController;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ApplicationController"></a><code>function <b>ApplicationController</b>: <a  href="MVCBr.ApplicationController.TApplicationController.html">TApplicationController</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(AOwner: TComponent); override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetGuid"></a><code>function <b>GetGuid</b>(AII: IInterface): TGuid;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: string; var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: TJsonValue; var AHandled: boolean): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="MainViewEvent"></a><code>function <b>MainViewEvent</b>(AMessage: string; var AHandled: boolean) : IView; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEventOther"></a><code>function <b>ViewEventOther</b>(AMessage: string; var AHandled: boolean): IView;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DoCommand"></a><code>Procedure <b>DoCommand</b>(ACommand: string; const AArgs: array of TValue); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetID"></a><code>function <b>GetID</b>: string;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetController"></a><code>function <b>GetController</b>: IController; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Retorna o <a class="normal" href="MVCBr.FormView.TCustomFormFactory.html#Controller">controller</a> ao qual a VIEW esta conectada</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Retorna o SELF</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="InvokeMethod"></a><code>function <b>InvokeMethod</b>&lt;T&gt;(AMethod: string; const Args: TArray&lt;TValue&gt;): T;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Executa um method genérico do FORM/VIEW</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ResolveController"></a><code>function <b>ResolveController</b>(const IID: TGuid): IController; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RevokeController"></a><code>procedure <b>RevokeController</b>(IID: TGuid);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ResolveController"></a><code>function <b>ResolveController</b>&lt;TIController&gt;: TIController; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetModel"></a><code>function <b>GetModel</b>&lt;TIModel&gt;: TIModel; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetModel"></a><code>function <b>GetModel</b>(AII: TGuid): IModel; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetView"></a><code>function <b>GetView</b>&lt;TIView: IInterface&gt;: TIView; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(AGuid: TGuid): IView;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const IIDController: TGuid; const AProcBeforeShow: TProc&lt;IView&gt;; const AProcONClose: TProc&lt;IView&gt;) : IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Apresenta o VIEW para o usuario</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProcBeforeShow: TProc&lt;IView&gt;): Integer; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProcBeforeShow: TProc&lt;IView&gt;; AShowModal: boolean) : IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const AProcBeforeShow: TProc&lt;IView&gt;; const AProcONClose: TProc&lt;IView&gt;): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const IIDController: TGuid; const AProcBeforeShow: TProc&lt;IView&gt;): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(const IIDController: TGuid): IView; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ShowView"></a><code>function <b>ShowView</b>(): IView; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SetViewModel"></a><code>procedure <b>SetViewModel</b>(const AViewModel: IViewModel); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetViewModel"></a><code>function <b>GetViewModel</b>: IViewModel; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="UpdateView"></a><code>function <b>UpdateView</b>: IView; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Evento para atualizar os dados da VIEW</p>
+</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="isShowModal"></a><code>property <b>isShowModal</b>: boolean read <a  href="MVCBr.FormView.TCustomFormFactory.html#GetShowModal">GetShowModal</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetShowModal">SetShowModal</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="PropertyValue"></a><code>property <b>PropertyValue</b>[ANome:string]: TValue read <a  href="MVCBr.FormView.TCustomFormFactory.html#GetPropertyValue">GetPropertyValue</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetPropertyValue">SetPropertyValue</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+Obter ou Alterar o valor de uma propriedade do ObjetoClass (VIEW)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Text"></a><code>property <b>Text</b>: string read <a  href="MVCBr.FormView.TCustomFormFactory.html#GetTitle">GetTitle</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetTitle">SetTitle</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OnClose"></a><code>property <b>OnClose</b>: TCloseEvent read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnClose">FOnClose</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnClose">SetOnClose</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OnViewInit"></a><code>property <b>OnViewInit</b>: TNotifyEvent read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewInit">FOnViewInit</a> write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewInit">SetOnViewInit</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OnViewEvent"></a><code>property <b>OnViewEvent</b>: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a> read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewEvent">FOnViewEvent</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewEvent">SetOnViewEvent</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OnViewCommand"></a><code>property <b>OnViewCommand</b>: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a> read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnCommandEvent">FOnCommandEvent</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnCommandEvent">SetOnCommandEvent</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="OnViewUpdate"></a><code>property <b>OnViewUpdate</b>: TNotifyEvent read <a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewUpdate">FOnViewUpdate</a>
+      write <a  href="MVCBr.FormView.TCustomFormFactory.html#SetOnViewUpdate">SetOnViewUpdate</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>

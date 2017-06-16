@@ -3,11 +3,11 @@ unit MVCBr.FireDACReg;
 interface
 
 Uses System.Classes,
-  System.SysUtils, DB, MVCBr.IdHTTPFireDACAdapter,
+  System.SysUtils, DB, MVCBr.HTTPFireDACAdapter,
   DesignIntf, DesignEditors;
 
 type
-  TIDHTTPDatasetAdapterCompEditor = class(TComponentEditor)
+  THTTPDatasetAdapterCompEditor = class(TComponentEditor)
     function GetVerbCount: integer; override;
     function GetVerb(Index: integer): string; override;
     procedure ExecuteVerb(Index: integer); override;
@@ -27,21 +27,21 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('MVCBr', [ TIdHTTPFireDACAdapter]);
-  RegisterComponentEditor(TIdHTTPFireDACAdapter,TIDHTTPDatasetAdapterCompEditor);
+  RegisterComponents('MVCBr', [ THTTPFireDACAdapter]);
+  RegisterComponentEditor(THTTPFireDACAdapter,THTTPDatasetAdapterCompEditor);
 
 end;
 
 { TIDHTTPDatasetAdapterCompEditor }
 
-constructor TIDHTTPDatasetAdapterCompEditor.Create(AComponent: TComponent;
+constructor THTTPDatasetAdapterCompEditor.Create(AComponent: TComponent;
   ADesigner: IDesigner);
 begin
   inherited;
 
 end;
 
-procedure TIDHTTPDatasetAdapterCompEditor.Edit;
+procedure THTTPDatasetAdapterCompEditor.Edit;
 begin
   inherited;
 
@@ -49,17 +49,17 @@ end;
 
 
 
-procedure TIDHTTPDatasetAdapterCompEditor.ExecuteVerb(Index: integer);
+procedure THTTPDatasetAdapterCompEditor.ExecuteVerb(Index: integer);
 begin
 
-  if assigned(Component) and Component.InheritsFrom(TIdHTTPFireDACAdapter) then
+  if assigned(Component) and Component.InheritsFrom(THTTPFireDACAdapter) then
     case index of
       0:
-        TIdHTTPFireDACAdapter(Component).Execute;
+        THTTPFireDACAdapter(Component).Execute;
     end;
 end;
 
-function TIDHTTPDatasetAdapterCompEditor.GetVerb(Index: integer): string;
+function THTTPDatasetAdapterCompEditor.GetVerb(Index: integer): string;
 begin
   case index of
     0:
@@ -67,7 +67,7 @@ begin
   end;
 end;
 
-function TIDHTTPDatasetAdapterCompEditor.GetVerbCount: integer;
+function THTTPDatasetAdapterCompEditor.GetVerbCount: integer;
 begin
   result := 1;
 end;

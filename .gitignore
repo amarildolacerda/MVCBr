@@ -55,6 +55,8 @@
 
 # Delphi history and backups
 __history/
+__recovery/
+win32/
 *.~*
 *.ppu
 *.o

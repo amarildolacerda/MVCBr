@@ -35,7 +35,7 @@ unit MVCBr.ODataDatasetBuilder;
 interface
 
 uses system.Classes, system.SysUtils, Data.db,
-  oData.Comp.Client, MVCBr.idHTTPRestClient,
+  oData.Comp.Client, MVCBr.HTTPRestClient,
   MVCBr.ODataDatasetAdapter;
 
 type
@@ -49,7 +49,7 @@ type
     FOldBeforePost: TDatasetNotifyEvent;
     FOldAfterPost: TDatasetNotifyEvent;
     FOldBeforeDelete: TDatasetNotifyEvent;
-    FRestClient: TIdHTTPRestClient;
+    FRestClient: THTTPRestClient;
     FDataset: TDataset;
     FAdapter: TODataDatasetAdapter;
     FOnGetParams: TODataGetResourceParams;
@@ -60,7 +60,7 @@ type
     procedure SetFilter(const Value: string); override;
 
     procedure SetDataset(const Value: TDataset); virtual;
-    procedure SetRestClient(const Value: TIdHTTPRestClient); virtual;
+    procedure SetRestClient(const Value: THTTPRestClient); virtual;
     procedure SetAdapter(const Value: TODataDatasetAdapter); virtual;
     procedure ClearChanges; virtual;
     procedure DoBeforeOpen(sender: TDataset); virtual;
@@ -74,7 +74,7 @@ type
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     procedure ApplyUpdates(); virtual;
-    property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
+    property RestClient: THTTPRestClient read FRestClient write SetRestClient;
     property Adapter: TODataDatasetAdapter read FAdapter write SetAdapter;
     function Execute: Boolean; override;
     function Builder: TODataCustomBuilder; virtual;
@@ -149,7 +149,7 @@ begin
   FAdapter := TODataDatasetAdapter.create(self);
   FAdapter.RootElement := 'value';
   FAdapter.Builder := self; // TODataBuilder.create(FAdapter);
-  RestClient := TIdHTTPRestClient.create(self);
+  RestClient := THTTPRestClient.create(self);
   with RestClient do
   begin
     AcceptCharset := 'UTF-8';
@@ -337,7 +337,7 @@ begin
     FAdapter.Params := Value;
 end;
 
-procedure TODataDatasetBuilder.SetRestClient(const Value: TIdHTTPRestClient);
+procedure TODataDatasetBuilder.SetRestClient(const Value: THTTPRestClient);
 begin
   FRestClient := Value;
   FAdapter.Builder.RestClient := Value;

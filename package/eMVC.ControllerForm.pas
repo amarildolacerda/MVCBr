@@ -118,7 +118,7 @@ end;
 procedure TFormNewController.translate;
 begin
   caption := 'Controllers';
-  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
   cbCreateModel.caption := wizardController_CreateModel_caption;
   Label1.caption := wizardController_Expert_Caption;
   Label4.caption := wizardForm_NameForArtefact;

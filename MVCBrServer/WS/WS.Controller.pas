@@ -63,7 +63,7 @@ type
 {$IFDEF DMVC2}
 {$ELSE}
 
-  TMVCControllerClass = class of TMVCController;
+  TMVCControllerClass =  TMVCControllerClazz;  {class of TMVCController}
 {$ENDIF}
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
@@ -76,6 +76,7 @@ uses WS.Common, WSConfigView,
 
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 begin
+
 
   result := TMVCEngine.Create(ASender,
     procedure(Config: TMVCConfig)

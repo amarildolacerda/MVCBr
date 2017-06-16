@@ -35,7 +35,8 @@ requires
   rtl,
   vcl,
   fmx,
-  dbrtl;
+  dbrtl,
+  DesignIDE;
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
@@ -56,9 +57,8 @@ contains
   MVCBr.View in '..\MVCBr.View.pas',
   MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
-  MVCBr.Comum in '..\MVCBr.Comum.pas',
   System.JsonFiles in '..\helpers\System.JsonFiles.pas',
-  MVCBr.VCL.DataModuleDummy in '..\MVCBr.VCL.DataModuleDummy.pas' {DataModuleDummy: TDataModule};
+  MVCBr.Common in '..\VCL\MVCBr.Common.pas';
 
 end.
 

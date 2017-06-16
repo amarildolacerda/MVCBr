@@ -1,0 +1,1 @@
+{"@odata.context":"http://localhost:8080/OData/OData.svc","__comment":"Services list all resource available to OData.Service","OData.Services":[{"resource":"CN_ESTADO_MENSAGEM","collection":"CN_ESTADO_MENSAGEM","keyID":"GID_ESTADO","maxpagesize":100,"fields":"GID_ESTADO,NOME,INATIVO,CONCLUIDO,\"DATA\"","method":"GET,POST,PATCH,PUT,DELETE"}]}

@@ -23,7 +23,7 @@ VersionInfoVersion=1.0
 VersionInfoCompany=MVCBr
 TerminalServicesAware=False
 UsePreviousAppDir=False
-OutputDir=C:\Git\MVCBr\instalador
+OutputDir=..\MVCBrServerInstall
 OutputBaseFilename=MVCBrODataSetup
 
 [Run]

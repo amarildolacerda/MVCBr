@@ -57,7 +57,7 @@ unit SynMustache;
 interface
 
 uses
-  {$ifdef HASINLINE}
+  {$ifdef HASINLINENOTX86}
   {$ifdef MSWINDOWS}Windows,{$endif} // for Lock/UnLock inlining
   {$endif}
   Variants,
@@ -1209,7 +1209,7 @@ var i,helper: Integer;
         case nam[j] of
         ' ':  break; // allows {{helper1 helper2 value}} recursive calls
         ',': begin // {{helper value,123,"constant"}}
-          CSVToRawUTF8DynArray(Pointer(nam),names); // TODO: handle 123,"a,b,c"
+          CSVToRawUTF8DynArray(Pointer(nam),names,',',true); // TODO: handle 123,"a,b,c"
           valArr.InitFast;
           for k := 0 to High(names) do
             valArr.AddItem(GetValueCopyFromContext(names[k]));

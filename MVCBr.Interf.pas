@@ -73,7 +73,8 @@ unit MVCBr.Interf;
 interface
 
 uses System.Classes, System.SysUtils, System.Generics.Collections,
-  System.JSON, {$IFDEF FMX} FMX.layouts, {$ENDIF}
+  System.JSON, {$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
+{$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   System.TypInfo, System.RTTI;
 
 type
@@ -143,7 +144,7 @@ type
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
   protected
-      procedure SetID(const AID: string); virtual;
+    procedure SetID(const AID: string); virtual;
 
   public
     Function Lock: TMVCFactoryAbstract;
@@ -228,7 +229,6 @@ type
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
     mtNavigator, mtComponent);
 
-
   // IModel Interfaces
   IModel = interface;
 
@@ -244,6 +244,7 @@ type
 
   // IModel representa a interface onde implementa as regras de negócio
   TModelTypes = set of TModelType;
+
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     function Controller(const AController: IController): IModel;
@@ -313,8 +314,8 @@ type
       overload;
     function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
       : IView; overload;
-    function ViewEvent(AMessage: TJsonValue;
-      var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean)
+      : IView; overload;
     function MainView: IView;
     procedure SetMainView(AView: IView);
     function FindController(AGuid: TGuid): IController;
@@ -369,6 +370,7 @@ type
   public
     constructor Create; override;
     function This: TControllerAbstract;
+    function ResolveMainForm(const AIID: TGuid; out ref): boolean; virtual;
     function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
     function GetModel(const IID: TGuid): IModel; overload; virtual;
     function GetModel<TModelInterface>(): TModelInterface; overload;
@@ -393,8 +395,9 @@ type
     function IsModel(AIModel: TGuid): boolean;
     function ApplicationControllerInternal: IApplicationController;
     function GetView: IView; overload;
-    function ShowView: IView;overload;
-    function ShowView(const AProcBeforeShow: TProc<IView>; Const AProcOnClose:TProc<IView>): IView;overload;
+    function ShowView: IView; overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      Const AProcOnClose: TProc<IView>): IView; overload;
 
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
@@ -501,7 +504,7 @@ end;
 
 { TControllerAbstract }
 
-constructor TControllerAbstract.create;
+constructor TControllerAbstract.Create;
 begin
   inherited;
 end;
@@ -541,9 +544,17 @@ end;
 
 function TControllerAbstract.ResolveController(const ANome: string)
   : IController;
+var
+  achei: boolean;
+  IID: TGuid;
 begin
-  result := TMVCBrIoc.DefaultContainer.Resolve<IController>(ANome);
-  result.Init;
+  IID := TMVCBrIoc.DefaultContainer.GetGuid(ANome);
+  achei := ResolveMainForm(IID, result);
+  if not achei then
+  begin
+    result := TMVCBrIoc.DefaultContainer.Resolve<IController>(ANome);
+    result.Init;
+  end;
 end;
 
 function TControllerAbstract.ResolveController<TInterface>: TInterface;
@@ -554,6 +565,26 @@ begin
   pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   ResolveController(IID, result);
+end;
+
+function TControllerAbstract.ResolveMainForm(const AIID: TGuid;
+  out ref): boolean;
+var
+  AView: IView;
+  AController: IController;
+begin
+  result := false;
+{$IFDEF LINUX}
+{$ELSE}
+  if assigned(Application.MainForm) then
+  begin
+    if supports(Application.MainForm, IView, AView) then
+    begin
+      AController := AView.GetController;
+      result := supports(AController.This, AIID, ref);
+    end;
+  end;
+{$ENDIF}
 end;
 
 class procedure TControllerAbstract.RevokeInstance(const AII: IInterface);
@@ -572,11 +603,14 @@ var
   achei: string;
   ii: IController;
 begin
-  achei := TMVCBrIoc.DefaultContainer.GetName(AIID);
-  if achei = '' then
-    exit;
-  ii := ResolveController(achei);
-  supports(ii.This, AIID, ref);
+  if not ResolveMainForm(AIID, ref) then
+  begin
+    achei := TMVCBrIoc.DefaultContainer.GetName(AIID);
+    if achei = '' then
+      exit;
+    ii := ResolveController(achei);
+    supports(ii.This, AIID, ref);
+  end;
 end;
 
 function TControllerAbstract.This: TControllerAbstract;
@@ -618,7 +652,7 @@ var
   ctx: TRttiContext;
   prp: TRttiProperty;
 begin
-  ctx := TRttiContext.create;
+  ctx := TRttiContext.Create;
   try
     prp := ctx.GetType(AInstance.ClassType).GetProperty(APropertyNome);
     if assigned(prp) then
@@ -640,7 +674,7 @@ class function TMVCBr.InvokeCreate(const AGuid: TGuid; AClass: TClass)
 var
   Obj: TObject;
 begin
-  Obj := AClass.create;
+  Obj := AClass.Create;
   supports(Obj, AGuid, result);
   if not assigned(result) then
     Obj.DisposeOf;
@@ -650,7 +684,7 @@ class function TMVCBr.InvokeCreate<T>(const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
 begin
-  ctx := TRttiContext.create;
+  ctx := TRttiContext.Create;
   try
     result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args)
       .AsType<T>;
@@ -664,7 +698,7 @@ class function TMVCBr.InvokeCreate<TInterface>(const AClass: TClass)
 var
   Obj: TObject;
 begin
-  Obj := AClass.create;
+  Obj := AClass.Create;
   supports(Obj, GetGuid<TInterface>, result);
   if not assigned(result) then
     Obj.DisposeOf;
@@ -677,7 +711,7 @@ var
   mtd: TRttiMethod;
   Value: TValue;
 begin
-  ctx := TRttiContext.create;
+  ctx := TRttiContext.Create;
   try
     mtd := ctx.GetType(AInstance.ClassInfo).GetMethod(AMethod);
     Value := mtd.Invoke(AInstance, Args); // .AsType<T>;
@@ -703,7 +737,7 @@ var
   ctx: TRttiContext;
   prp: TRttiProperty;
 begin
-  ctx := TRttiContext.create;
+  ctx := TRttiContext.Create;
   try
     prp := ctx.GetType(AInstance.ClassType).GetProperty(APropertyNome);
     if assigned(prp) then
@@ -728,15 +762,15 @@ end;
 var
   LFactoryCount: Integer = 0;
 
-constructor TMVCFactoryAbstract.create;
+constructor TMVCFactoryAbstract.Create;
 begin
   inherited;
-  FLock := TObject.create;
+  FLock := TObject.Create;
   inc(LFactoryCount);
   FID := ClassName + '_' + intToStr(LFactoryCount);
 end;
 
-destructor TMVCFactoryAbstract.destroy;
+destructor TMVCFactoryAbstract.Destroy;
 begin
   FLock.DisposeOf;
   inherited;
@@ -766,7 +800,7 @@ end;
 function TMVCFactoryAbstract.Lock: TMVCFactoryAbstract;
 begin
   result := self;
-  TMonitor.Enter(FLock);
+  System.TMonitor.Enter(FLock);
 end;
 
 function TMVCFactoryAbstract.ApplicationControllerInternal
@@ -781,7 +815,7 @@ var
   Obj: TObject;
 begin
   IID := TMVCBr.GetGuid<TInterface>();
-  Obj := AClass.create;
+  Obj := AClass.Create;
   if not supports(Obj, IID, result) then
     Obj.DisposeOf;
 end;
@@ -800,7 +834,7 @@ end;
 
 procedure TMVCFactoryAbstract.UnLock;
 begin
-  TMonitor.exit(FLock);
+  System.TMonitor.exit(FLock);
 end;
 
 { TMVCInterfacedList<T> }
@@ -826,7 +860,7 @@ class function TInterfaceAdapter.New(const AGuid: TGuid; const AClass: TClass)
 var
   Obj: TInterfaceAdapter;
 begin
-  Obj := TInterfaceAdapter.create;
+  Obj := TInterfaceAdapter.Create;
   Obj.FClass := AClass;
   Obj.FGuid := AGuid;
   result := Obj;
@@ -834,13 +868,13 @@ end;
 
 { TMVCInterfacedObject }
 
-constructor TMVCOwnedInterfacedObject.create;
+constructor TMVCOwnedInterfacedObject.Create;
 begin
   inherited;
-  FOwner := TComponent.create(nil);
+  FOwner := TComponent.Create(nil);
 end;
 
-destructor TMVCOwnedInterfacedObject.destroy;
+destructor TMVCOwnedInterfacedObject.Destroy;
 begin
   FOwner.DisposeOf;
   inherited;

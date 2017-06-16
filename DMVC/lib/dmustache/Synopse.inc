@@ -206,6 +206,7 @@
   {$define DELPHI5ORFPC}
   {$define USETYPEINFO}  // will use SynFPCTypInfo.pas wrapper
   {$define HASINLINE}
+  {$define HASINLINENOTX86}
   {$define NODELPHIASM}   // ignore low-level System.@LStrFromPCharLen calls
   {$define HASAESNI}
   {$define HASTTHREADSTART}
@@ -389,11 +390,13 @@
       {$endif}
     {$endif LINUX}
     {$if CompilerVersion >= 17}
+      {$define ISDELPHI2005ANDUP} // Delphi 2005 or newer
     {$ifend}
     {$if CompilerVersion >= 18}
       {$define ISDELPHI2006ANDUP} // Delphi 2006 or newer
       {$define HASNEWFILEAGE}
       {$define HASINLINE}
+      {$define HASINLINENOTX86}
       {$define HASREGION}
       {$define HASFASTMM4}
     {$ifend}
@@ -462,6 +465,12 @@
     {$ifend}
     {$if CompilerVersion >= 32.0}
       {$define ISDELPHI102}
+      {$ifdef CPUX64}
+      {$ifdef VER320withoutAprilUpdate}
+        {$undef HASINLINE} // circumvent Delphi 10.2 Tokyo Win64 compiler bug
+        {$define HASINLINENOTX86}
+      {$endif}
+      {$endif}
     {$ifend}
     {$ifopt O-} // if we don't expect fast code, don't optimize the framework
       {$undef ENHANCEDRTL}
@@ -539,6 +548,14 @@
   // undefined by default: BCC32 -pr fastcall (=Delphi resgister) is broken
   // because of issues with BCC32 itself, or some obfuscated calls in source?
   // -> allow to use external SQlite3 libraries in addition to static version
+{$endif}
+
+{$ifdef CPUX86} // safest to reset x87 exceptions
+{$ifndef PUREPASCAL}
+{$ifndef DELPHI5OROLDER}
+  {$define RESETFPUEXCEPTION}
+{$endif}
+{$endif}
 {$endif}
 
 {$ifdef FPC}

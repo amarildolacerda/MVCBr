@@ -34,7 +34,6 @@ object FormNewSet: TFormNewSet
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 3
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -97,6 +96,8 @@ object FormNewSet: TFormNewSet
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -218,7 +219,7 @@ object FormNewSet: TFormNewSet
       object Label7: TLabel
         Left = 3
         Top = 35
-        Width = 345
+        Width = 97
         Height = 20
         Alignment = taCenter
         Caption = 'Parabens....'

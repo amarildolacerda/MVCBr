@@ -1,13 +1,22 @@
+24/05/2017 - AL
+   * correção de bug quando execute ResolveController para o MainForm
+23/05/2017 - AL
+   * convertido o extrator de metadata para MVCBr   
+21/05/2017 - AL
+   - retirado dependencia do IdHttp
+   + substituido o TIdHTTP pelo  THTTPClient  (System.net);
+   - retirado alguns metodos do FormFactory substituido por Eventos
+   + adicionado eventos para os forms (Views)
+   + adicionado eventos para o TModuleFactory
+   
 16/05/2017 - AL
-   - retirado varios warnnings;
-   + adicionado suporte a Oracle no OData;
-   * alterado $top $skip para o PostgreSQL, como novo metodo para tratar final SELECT;
-   = renomeado update para updateview;
-   + iniciado TDbObjectListModel 
-   - suporte a configuração em BD;
-   = alterado class base para TObjectListModel Custom;
-   * atualizado a pasta DOCS (alterado de doc para docs);
-   + adicionado ferramenta para gerar Metadata por reverso do BD (ver sub-pasta no MVCBrServer);
+   - retirado varios warnnings
+   + adicionado suporte a Oracle no OData
+   * alterado $top $skip para o PostgreSQL, como novo metodo para tratar final SELECT
+   = renomeado update para updateview
+   + iniciado TDbObjectListModel - suporte a configuração em BD
+   = alterado class base para TObjectListModel Custom
+   * atualizado a pasta DOCS (alterado de doc para docs)
 
 05/05/2017 - AL
    + implementado ShowView com parametro BeforeOpen e OnClose Proc para controller e View;

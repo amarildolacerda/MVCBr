@@ -15,6 +15,7 @@ interface
 
 uses {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, System.SysUtils, MVCBr.Interf, MVCBr.Controller,
+  System.JSON,
   MVCBr.Component, MVCBr.FormView;
 
 type
@@ -67,7 +68,7 @@ type
     procedure SetView(const Value: IView);
   protected
     FClassType: TClass;
-    procedure SetID(const Value: String);override;
+    procedure SetID(const Value: String); override;
   public
     function GetOwner: TCustomPageViewFactory;
     function This: TPageView;
@@ -90,7 +91,7 @@ type
     procedure SetAfterViewCreate(const Value: TNotifyEvent);
   protected
     FPageContainer: TComponent;
-    FList:  IInterfaceList;// TMVCInterfacedList<IPageView>;
+    FList: IInterfaceList; // TMVCInterfacedList<IPageView>;
     procedure SetPageContainer(const Value: TComponent); virtual;
     function GetPageContainer: TComponent; virtual;
     /// ligação para o PageControl component
@@ -118,15 +119,21 @@ type
     property Items[idx: Integer]: IPageView read GetItems write SetItems;
     function PageViewIndexOf(APageView: IPageView): Integer;
     function NewItem(Const ACaption: string): IPageView; virtual;
+
     function AddView(AView: IView): IPageView; overload; virtual;
     function AddView(Const AController: TGuid): IPageView; overload; virtual;
     function AddView(Const AController: TGuid; ABeforeShow: TProc<IView>)
       : IPageView; overload; virtual;
     function AddForm(AClass: TFormClass): IPageView; virtual;
+
     function FindViewByID(Const AID: String): IPageView; virtual;
     function FindViewByClassName(const AClassName: String): IPageView; virtual;
     function FindView(Const AGuid: TGuid): IPageView; overload; virtual;
     function FindView(Const AView: IView): IPageView; overload; virtual;
+
+    procedure ViewEvent(AMessage: TJsonValue);overload;virtual;
+    procedure ViewEvent(AMessage: String);overload;virtual;
+
     function IndexOf(Const AGuid: TGuid): Integer;
     property AfterViewCreate: TNotifyEvent read FAfterViewCreate
       write SetAfterViewCreate;
@@ -239,8 +246,8 @@ begin
 
   // checa se já existe uma aba para a mesma view
   LView := LController.GetView;
-  if LView.GetController=nil then
-     LView.SetController(LController);
+  if LView.GetController = nil then
+    LView.SetController(LController);
   if not assigned(LView) then
     exit;
 
@@ -282,9 +289,9 @@ begin
   result := FList.Count;
 end;
 
-destructor TCustomPageViewFactory.destroy;
+destructor TCustomPageViewFactory.Destroy;
 begin
-  FList:=nil;//.DisposeOf;
+  FList := nil; // .DisposeOf;
   inherited;
 end;
 
@@ -421,11 +428,12 @@ var
   i: Integer;
 begin
   result := -1;
-  if not assigned(APageView) then exit;
+  if not assigned(APageView) then
+    exit;
 
-  for i:=0 to FList.Count-1 do
+  for i := 0 to FList.Count - 1 do
   begin
-    if APageView.Tab.Equals( items[i].Tab ) then
+    if APageView.Tab.Equals(Items[i].Tab) then
     begin
       result := i;
       exit;
@@ -438,12 +446,12 @@ var
   i: Integer;
 begin
   if assigned(FList) then
-      for i := FList.Count - 1 downto 0 do
-        if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
-        begin
-          FList.Delete(i);
-          exit;
-        end;
+    for i := FList.Count - 1 downto 0 do
+      if APageView.This.ID = (FList.Items[i] as IPageView).This.ID then
+      begin
+        FList.Delete(i);
+        exit;
+      end;
 end;
 
 procedure TCustomPageViewFactory.SetActivePage(const Tab: TObject);
@@ -469,6 +477,32 @@ end;
 procedure TCustomPageViewFactory.SetPageContainer(const Value: TComponent);
 begin
   FPageContainer := Value;
+end;
+
+procedure TCustomPageViewFactory.ViewEvent(AMessage: String);
+var
+  i: Integer;
+  LHandled: Boolean;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    Items[i].This.FView.ViewEvent(AMessage, LHandled);
+    if LHandled then
+       exit; 
+  end;
+end;
+
+procedure TCustomPageViewFactory.ViewEvent(AMessage: TJsonValue);
+var
+  i: Integer;
+  LHandled: Boolean;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    Items[i].This.FView.ViewEvent(AMessage, LHandled);
+    if LHandled then
+       exit; 
+  end;
 end;
 
 end.

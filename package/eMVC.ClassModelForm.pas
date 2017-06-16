@@ -141,7 +141,7 @@ end;
 procedure TFormClassModel.Translate;
 begin
   caption := wizardClassModel_Caption;
-  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
 
   Label3.caption := wizardClassModel_expert_caption;
   edUnitButton.caption := wizardForm_button_search;

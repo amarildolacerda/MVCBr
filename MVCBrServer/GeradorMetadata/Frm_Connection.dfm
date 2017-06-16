@@ -32,7 +32,6 @@ object FrmConnection: TFrmConnection
     Font.Style = [fsBold, fsItalic]
     ParentFont = False
     TabOrder = 0
-    ExplicitHeight = 334
     object Label1: TLabel
       Left = 36
       Top = 69

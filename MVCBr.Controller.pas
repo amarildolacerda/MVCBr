@@ -41,14 +41,15 @@ type
   TControllerFactory = class(TControllerAbstract, IController,
     IControllerAs<TControllerFactory>)
   private
-    FLoaded: boolean;
+    FControllerInited: Boolean;
+    FLoaded: Boolean;
     FRefModelCount: integer;
     FRefViewCount: integer;
   protected
     FView: IView;
     FID: string;
     procedure Load; virtual;
-    procedure SetID(const AID: string);override;
+    procedure SetID(const AID: string); override;
   public
     procedure AfterConstruction; override;
 
@@ -59,19 +60,18 @@ type
 {$IFDEF FMX}
     procedure Embedded(AControl: TLayout); virtual;
 {$ENDIF}
-    function IsView(AII: TGuid): boolean;
-    function IsController(AGuid: TGuid): boolean;
-    function IsModel(AIModel: TGuid): boolean;
+    function IsView(AII: TGuid): Boolean;
+    function IsController(AGuid: TGuid): Boolean;
+    function IsModel(AIModel: TGuid): Boolean;
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
-    function ShowView: IView; overload;virtual;
+    function ShowView: IView; overload; virtual;
     function ShowView(const AProcBeforeShow: TProc<IView>;
-      const AProcOnClose: TProc<IView>): IView;
-      overload; virtual;
+      const AProcOnClose: TProc<IView>): IView; overload; virtual;
 
-    function ViewEvent(AMessage: String; var AHandled: boolean): IView;
+    function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
       overload; virtual;
-    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: boolean)
+    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean)
       : IView; overload;
     function ID(const AID: string): IController; virtual;
     function GetID: String; override;
@@ -169,6 +169,7 @@ end;
 constructor TControllerFactory.Create;
 begin
   inherited Create;
+  FControllerInited := false;
   Load;
 end;
 
@@ -177,8 +178,9 @@ begin
   FModels.Delete(Index);
 end;
 
-destructor TControllerFactory.destroy;
-var ac:TApplicationController;
+destructor TControllerFactory.Destroy;
+var
+  ac: TApplicationController;
 begin
   if assigned(FModels) then
   begin
@@ -190,7 +192,8 @@ begin
   end;
   FView := nil;
   ac := ApplicationController;
-  if assigned(ac) then ac.remove(self);
+  if assigned(ac) then
+    ac.remove(self);
   inherited;
 end;
 
@@ -279,17 +282,20 @@ end;
 
 procedure TControllerFactory.Init;
 begin
-  if assigned(FView) then
-    FView.SetController(self);
-  BeforeInit;
+  if not FControllerInited then
+  begin
+    if assigned(FView) then
+      FView.SetController(self);
+    BeforeInit;
+  end;
 end;
 
-function TControllerFactory.IsController(AGuid: TGuid): boolean;
+function TControllerFactory.IsController(AGuid: TGuid): Boolean;
 begin
   result := supports(self, AGuid);
 end;
 
-function TControllerFactory.IsModel(AIModel: TGuid): boolean;
+function TControllerFactory.IsModel(AIModel: TGuid): Boolean;
 var
   i: integer;
 begin
@@ -302,7 +308,7 @@ begin
     end;
 end;
 
-function TControllerFactory.IsView(AII: TGuid): boolean;
+function TControllerFactory.IsView(AII: TGuid): Boolean;
 begin
   result := false;
   if assigned(FView) then
@@ -323,14 +329,14 @@ begin
 end;
 
 function TControllerFactory.ViewEvent(AMessage: String;
-  var AHandled: boolean): IView;
+  var AHandled: Boolean): IView;
 begin
   result := FView;
   FView.ViewEvent(AMessage, AHandled);
 end;
 
 function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string;
-  var AHandled: boolean): IView;
+  var AHandled: Boolean): IView;
 var
   i: integer;
   pInfo: PTypeInfo;
@@ -364,9 +370,9 @@ end;
 function TControllerFactory.ShowView(const AProcBeforeShow,
   AProcOnClose: TProc<IView>): IView;
 begin
-    result := FView;
-    if assigned(result) then
-       result.ShowView(AProcBeforeShow,AProcOnClose);
+  result := FView;
+  if assigned(result) then
+    result.ShowView(AProcBeforeShow, AProcOnClose);
 end;
 
 function TControllerFactory.ShowView: IView;
@@ -394,19 +400,23 @@ var
   FModel: IModel;
   vm: IViewModel;
 begin
-  FModel := GetModelByType(mtViewModel);
-  if assigned(FModel) then
-    if supports(FModel.This, IViewModel, vm) then
-    begin
-      vm.View(FView).Controller(self);
-    end;
 
-  ForEach(
-    procedure(AModel: IModel)
-    begin
-      AModel.AfterInit;
-    end);
+  if not FControllerInited then
+  begin
+    FModel := GetModelByType(mtViewModel);
+    if assigned(FModel) then
+      if supports(FModel.This, IViewModel, vm) then
+      begin
+        vm.View(FView).Controller(self);
+      end;
 
+    ForEach(
+      procedure(AModel: IModel)
+      begin
+        AModel.AfterInit;
+      end);
+    FControllerInited := true;
+  end;
 end;
 
 function TControllerFactory.ApplicationController: TApplicationController;

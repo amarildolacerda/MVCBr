@@ -154,6 +154,7 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
+        <DCCReference Include="DesignIDE.dcp"/>
         <DCCReference Include="..\MVCBr.ApplicationController.pas"/>
         <DCCReference Include="..\MVCBr.Component.pas"/>
         <DCCReference Include="..\MVCBr.Controller.pas"/>
@@ -172,13 +173,8 @@
         <DCCReference Include="..\MVCBr.View.pas"/>
         <DCCReference Include="..\MVCBr.ViewModel.pas"/>
         <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
-        <DCCReference Include="..\MVCBr.Comum.pas"/>
         <DCCReference Include="..\helpers\System.JsonFiles.pas"/>
-        <DCCReference Include="..\MVCBr.VCL.DataModuleDummy.pas">
-            <Form>DataModuleDummy</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
+        <DCCReference Include="..\VCL\MVCBr.Common.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -200,15 +196,10 @@
                     <Source Name="MainSource">MVCBrCore.dpk</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">(untitled)</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrVCL.bpl">MVCBr VCL</Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBr.bpl">MVCBr 1.0</Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFMX.bpl">(untitled)</Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrOData.bpl">(untitled)</Excluded_Packages>
-                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\QRD_DESIGN.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">MVCBr FireDAC</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
@@ -220,7 +211,7 @@
                     </Platform>
                 </DeployFile>
                 <DeployFile LocalName="..\..\BPLBerlin\MVCBrCore.bpl" Configuration="Debug" Class="ProjectOutput"/>
-                <DeployFile LocalName="C:\Users\Public\Documents\Embarcadero\Studio\19.0\Bpl\MVCBrCore.bpl" Configuration="Release" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\BPLTokyo\MVCBrCore.bpl" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>MVCBrCore.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

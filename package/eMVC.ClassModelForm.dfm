@@ -3283,6 +3283,8 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 136
@@ -3377,6 +3379,8 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label4: TLabel
         Left = 16
         Top = 11
@@ -3408,6 +3412,8 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 19

@@ -48,9 +48,9 @@ implementation
 uses
   DMVC.Expert.Forms.NewUnitWizard,
   DMVC.Expert.CodeGen.NewControllerUnit,
-  Controls,
-  Forms,
-  Windows,
+  Vcl.Controls,
+  Vcl.Forms,
+  WinApi.Windows,
   ExpertsRepository;
 
 resourcestring
@@ -77,6 +77,7 @@ begin
           Project :=  GetActiveProject;
           ControllerUnit := ModuleServices.CreateModule(
                            TNewControllerUnitEx.Create(WizardForm.CreateIndexMethod,
+                                                       WizardForm.CreateCRUDMethods,
                                                        WizardForm.CreateActionFiltersMethods,
                                                        WizardForm.ControllerClassName,
                                                        aPersonality));

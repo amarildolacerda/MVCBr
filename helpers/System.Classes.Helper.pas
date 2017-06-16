@@ -140,9 +140,18 @@ Type
     property MaxThread: Integer read FMaxThread write SetMaxThread;
   end;
 
-  {TFontHelper = class helper for TFont
+  TStingListHelper = Class helper for TStringList
+  public
+{$IF compilerVersion<32}
+    procedure addPair(AName, AValue: String);
+{$ENDIF}
+    class function New(AText: string; ADelimiter: char=','): TStringList;
+    function AsJsonArray: TJsonArray;
+    function AsJsonObject: TJsonObject;
+    function ToJson: string;
+    function FromJson(AJson: String): TStringList;
   end;
-  }
+
 implementation
 
 uses {$IF CompilerVersion>28} System.Threading, {$ENDIF} System.DateUtils,
@@ -864,4 +873,66 @@ end;
   end;
   end;
 }
+{ TStingListHelper }
+
+function TStingListHelper.AsJsonArray: TJsonArray;
+var
+  i: Integer;
+begin
+  result := TJsonArray.create;
+  for i := 0 to count - 1 do
+    result.Add(self[i]);
+end;
+
+{$IF compilerVersion<32}
+procedure TStingListHelper.addPair(AName, AValue: String);
+begin
+   self.add(AName+'='+AValue);
+end;
+{$ENDIF}
+
+function TStingListHelper.AsJsonObject: TJsonObject;
+var
+  i: Integer;
+begin
+  result := TJsonObject.create;
+  for i := 0 to count - 1 do
+    result.addPair(self.Names[i], self.ValueFromIndex[i]);
+end;
+
+function TStingListHelper.FromJson(AJson: String): TStringList;
+var
+  p: TJsonPair;
+  j: TJsonObject;
+begin
+  result := self;
+  j := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
+  try
+    for p in j do
+    begin
+      self.addPair(p.JsonString.Value, p.JsonValue.Value);
+    end;
+  finally
+    j.Free;
+  end;
+end;
+
+class function TStingListHelper.New(AText: string; ADelimiter: char=',')
+  : TStringList;
+begin
+  result := TStringList.create;
+  result.Delimiter := ADelimiter;
+  result.DelimitedText := AText;
+end;
+
+function TStingListHelper.ToJson: string;
+begin
+  with AsJsonObject do
+    try
+      result := ToJson;
+    finally
+      Free;
+    end;
+end;
+
 end.

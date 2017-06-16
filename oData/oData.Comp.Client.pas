@@ -14,7 +14,7 @@ uses System.Classes, System.RTTI,
   System.SysUtils,
   System.Generics.Collections,
   Data.DB, System.JSON,
-  MVCBr.idHTTPRestClient;
+  MVCBr.HTTPRestClient;
 
 Type
 
@@ -86,7 +86,7 @@ Type
     FServicePrefix: string;
     FExpand: string;
     FOrder: string;
-    FRestClient: TIdHTTPRestClient;
+    FRestClient: THTTPRestClient;
     FURI: string;
     FAfterExecute, FBeforeExecute, FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
     procedure SetSelect(const Value: string);
@@ -99,7 +99,7 @@ Type
     procedure SetServicePrefix(const Value: string);
     procedure SetExpand(const Value: string);
     procedure AddSqlResource(var Result: string; AResource: TODataResourceItem);
-    procedure SetRestClient(const Value: TIdHTTPRestClient);
+    procedure SetRestClient(const Value: THTTPRestClient);
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
     procedure WriteOnBeforeApplyUpdate(const Value: TNotifyEvent);
@@ -119,9 +119,9 @@ Type
     function addResource(AResource: string): TODataResourceItem; virtual;
     function execute: boolean; overload; virtual;
     function execute(AProc: TProc; AResource: String): boolean; overload; virtual;
-    function ApplyUpdates(AChanges: TJsonArray; AMethod: TIdHTTPRestMethod = rmPATCH): boolean; virtual;
+    function ApplyUpdates(AChanges: TJsonArray; AMethod: THTTPRestMethod = rmPATCH): boolean; virtual;
     property URI: string read FURI;
-    property RestClient: TIdHTTPRestClient read FRestClient write SetRestClient;
+    property RestClient: THTTPRestClient read FRestClient write SetRestClient;
     property BaseURL: string read FBaseURL write SetBaseURL;
     property ServicePrefix: string read FServicePrefix write SetServicePrefix;
     property Service: string read FService write SetService;
@@ -207,19 +207,19 @@ begin
     Result := Result + '(' + p + ')';
 end;
 
-function TODataCustomBuilder.ApplyUpdates(AChanges: TJsonArray; AMethod: TIdHTTPRestMethod = rmPATCH): boolean;
+function TODataCustomBuilder.ApplyUpdates(AChanges: TJsonArray; AMethod: THTTPRestMethod = rmPATCH): boolean;
 var
-  rest: TIdHTTPRestClient;
+  rest: THTTPRestClient;
 begin
   Result := false;
   if AChanges.Count = 0 then
     exit;
 
-  rest := TIdHTTPRestClient.create(self);
+  rest := THTTPRestClient.create(self);
   try
     if Assigned(FRestClient) then
     begin
-      rest.IdHTTP.Request.CustomHeaders.AddStrings(FRestClient.IdHTTP.Request.CustomHeaders);
+      //rest.HTTPClient.CustomHeaders. .AddStrings(FRestClient.IdHTTP.Request.CustomHeaders);
       rest.AcceptCharset := FRestClient.AcceptCharset;
       rest.AcceptEncoding := FRestClient.AcceptEncoding;
       rest.Accept := FRestClient.Accept;
@@ -368,7 +368,7 @@ begin
 
 end;
 
-procedure TODataCustomBuilder.SetRestClient(const Value: TIdHTTPRestClient);
+procedure TODataCustomBuilder.SetRestClient(const Value: THTTPRestClient);
 begin
   FRestClient := Value;
 end;

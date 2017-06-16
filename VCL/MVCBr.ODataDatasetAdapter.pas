@@ -35,11 +35,10 @@ unit MVCBr.ODataDatasetAdapter;
 interface
 
 uses System.Classes, System.SysUtils,
+  MVCBr.Common,
   System.JSON, System.Variants,
   System.Generics.Collections, Data.DB,
-  MVCBr.IdHTTPRestClient, oData.Comp.Client,
-  MVCBr.Common,
-  IdHTTP;
+  MVCBr.HTTPRestClient, oData.Comp.Client;
 
 type
 
@@ -52,7 +51,7 @@ type
     FChanges: TJsonArray;
     FJsonValue: TJsonValue;
     FDataset: TDataset;
-    FResponseJSON: TIdHTTPRestClient;
+    FResponseJSON: THTTPRestClient;
     FRootElement: string;
     FResponseType: TAdapterResponserType;
     FBuilder: TODataCustomBuilder;
@@ -62,7 +61,7 @@ type
     FParams: TParams;
     procedure SetDataset(const Value: TDataset);
     procedure SetActive(const Value: boolean);
-    procedure SetResponseJSON(const Value: TIdHTTPRestClient);
+    procedure SetResponseJSON(const Value: THTTPRestClient);
     procedure SetRootElement(const Value: string);
     function GetActive: boolean;
     procedure SetResponseType(const Value: TAdapterResponserType);
@@ -95,7 +94,7 @@ type
     procedure AddRowSet(ATypeChange: TRowSetChangeType; ADataset: TDataset);
     function UpdatesPending: boolean;
     procedure ClearChanges;
-    procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>; AMethod: TIdHTTPRestMethod = rmPATCH); overload;
+    procedure ApplyUpdates(AProc: TFunc<TJsonArray, boolean>; AMethod: THTTPRestMethod = rmPATCH); overload;
     procedure ApplyUpdates; overload;
     function ResourceName: string;
     function ResourceKeys: string;
@@ -105,7 +104,7 @@ type
     Property Active: boolean read GetActive write SetActive;
     Property Dataset: TDataset read FDataset write SetDataset;
     Property Params: TParams read FParams write SetParams;
-    Property ResponseJSON: TIdHTTPRestClient read FResponseJSON write SetResponseJSON;
+    Property ResponseJSON: THTTPRestClient read FResponseJSON write SetResponseJSON;
     Property RootElement: string read FRootElement write SetRootElement;
     Property ResponseType: TAdapterResponserType read FResponseType write SetResponseType default pureJSON;
     property OnBeforeApplyUpdates: TNotifyEvent read FOnBeforeApplyUpdate write SetOnBeforeApplyUpdate;
@@ -125,11 +124,11 @@ uses
 
 procedure TODataDatasetAdapter.AddChanges(ATypeChange: TRowSetChangeType; AJsonRow: TJsonValue);
 begin
-  (AJsonRow as TJsonObject).addPair('rowstate', TDatarowChangeTypeName[ATypeChange]);
+  (AJsonRow as TJsonObject).addPair(CRowStateKey, TDatarowChangeTypeName[ATypeChange]);
   FChanges.AddElement(AJsonRow);
 end;
 
-procedure TODataDatasetAdapter.ApplyUpdates(AProc: TFunc<TJsonArray, boolean>; AMethod: TIdHTTPRestMethod = rmPATCH);
+procedure TODataDatasetAdapter.ApplyUpdates(AProc: TFunc<TJsonArray, boolean>; AMethod: THTTPRestMethod = rmPATCH);
 begin
 
   if assigned(FOnBeforeApplyUpdate) then
@@ -730,7 +729,7 @@ begin
   FParams := Value;
 end;
 
-procedure TODataDatasetAdapter.SetResponseJSON(const Value: TIdHTTPRestClient);
+procedure TODataDatasetAdapter.SetResponseJSON(const Value: THTTPRestClient);
 begin
   FResponseJSON := Value;
 end;
