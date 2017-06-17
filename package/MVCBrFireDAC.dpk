@@ -47,6 +47,9 @@ requires
 
 contains
   MVCBr.FireDACReg in '..\VCL\MVCBr.FireDACReg.pas',
-  MVCBr.IdHTTPFiredacAdapter in '..\VCL\MVCBr.IdHTTPFiredacAdapter.pas';
+  MVCBr.IdHTTPFiredacAdapter in '..\VCL\MVCBr.IdHTTPFiredacAdapter.pas',
+  MVCBr.FireDAC.Model in '..\MVCBr.FireDAC.Model.pas',
+  MVCBr.FireDACModel.Interf in '..\MVCBr.FireDACModel.Interf.pas',
+  MVCBr.FireDACModel in '..\MVCBr.FireDACModel.pas';
 
 end.

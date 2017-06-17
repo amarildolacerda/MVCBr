@@ -155,7 +155,6 @@
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="..\MVCBr.ApplicationController.pas"/>
-        <DCCReference Include="..\MVCBr.Component.pas"/>
         <DCCReference Include="..\MVCBr.Controller.pas"/>
         <DCCReference Include="..\MVCBr.DatabaseModel.Interf.pas"/>
         <DCCReference Include="..\MVCBr.DatabaseModel.pas"/>
@@ -164,11 +163,8 @@
         <DCCReference Include="..\MVCBr.InterfaceHelper.pas"/>
         <DCCReference Include="..\MVCBr.IoC.pas"/>
         <DCCReference Include="..\MVCBr.Model.pas"/>
-        <DCCReference Include="..\MVCBr.ModuleModel.pas"/>
-        <DCCReference Include="..\MVCBr.NavigateModel.pas"/>
         <DCCReference Include="..\MVCBr.PageView.pas"/>
         <DCCReference Include="..\MVCBr.PersistentModel.pas"/>
-        <DCCReference Include="..\MVCBr.OrmModel.pas"/>
         <DCCReference Include="..\MVCBr.View.pas"/>
         <DCCReference Include="..\MVCBr.ViewModel.pas"/>
         <DCCReference Include="..\MVCBr.ObjectConfigList.pas"/>
@@ -179,6 +175,10 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="..\MVCBr.Component.pas"/>
+        <DCCReference Include="..\MVCBr.ModuleModel.pas"/>
+        <DCCReference Include="..\MVCBr.NavigateModel.pas"/>
+        <DCCReference Include="..\MVCBr.OrmModel.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -229,7 +229,16 @@
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgunwind.1.0.dylib" Class="DependencyModule"/>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule"/>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libPCRE.dylib" Class="DependencyModule"/>
-                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
+                <DeployClass Name="DependencyModule">
+                    <Platform Name="Win32">
+                        <Operation>0</Operation>
+                        <Extensions>.dll;.bpl</Extensions>
+                    </Platform>
+                    <Platform Name="OSX32">
+                        <Operation>1</Operation>
+                        <Extensions>.dylib</Extensions>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="ProjectOSXResource">
                     <Platform Name="OSX32">
                         <RemoteDir>Contents\Resources</RemoteDir>
@@ -568,16 +577,7 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="DependencyModule">
-                    <Platform Name="Win32">
-                        <Operation>0</Operation>
-                        <Extensions>.dll;.bpl</Extensions>
-                    </Platform>
-                    <Platform Name="OSX32">
-                        <Operation>1</Operation>
-                        <Extensions>.dylib</Extensions>
-                    </Platform>
-                </DeployClass>
+                <DeployClass Name="ProjectiOSDeviceResourceRules"/>
                 <ProjectRoot Platform="iOSDevice64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

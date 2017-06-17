@@ -39,7 +39,6 @@ requires
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
-  MVCBr.Component in '..\MVCBr.Component.pas',
   MVCBr.Controller in '..\MVCBr.Controller.pas',
   MVCBr.DatabaseModel.Interf in '..\MVCBr.DatabaseModel.Interf.pas',
   MVCBr.DatabaseModel in '..\MVCBr.DatabaseModel.pas',
@@ -48,17 +47,18 @@ contains
   MVCBr.InterfaceHelper in '..\MVCBr.InterfaceHelper.pas',
   MVCBr.IoC in '..\MVCBr.IoC.pas',
   MVCBr.Model in '..\MVCBr.Model.pas',
-  MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
-  MVCBr.NavigateModel in '..\MVCBr.NavigateModel.pas',
   MVCBr.PageView in '..\MVCBr.PageView.pas',
   MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
-  MVCBr.OrmModel in '..\MVCBr.OrmModel.pas',
   MVCBr.View in '..\MVCBr.View.pas',
   MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   MVCBr.Comum in '..\MVCBr.Comum.pas',
   System.JsonFiles in '..\helpers\System.JsonFiles.pas',
-  MVCBr.VCL.DataModuleDummy in '..\MVCBr.VCL.DataModuleDummy.pas' {DataModuleDummy: TDataModule};
+  MVCBr.VCL.DataModuleDummy in '..\MVCBr.VCL.DataModuleDummy.pas' {DataModuleDummy: TDataModule},
+  MVCBr.Component in '..\MVCBr.Component.pas',
+  MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
+  MVCBr.NavigateModel in '..\MVCBr.NavigateModel.pas',
+  MVCBr.OrmModel in '..\MVCBr.OrmModel.pas';
 
 end.
 
