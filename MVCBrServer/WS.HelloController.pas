@@ -32,10 +32,10 @@ procedure TWSHelloController.Index;
 begin
   render('<http><body>'+
    'MVCBr - OData Server<hr />'+
-   'Hello teste:  <a href="/hello/MVCBr">/hello/[nome]</a><br>'+
-  '<a href="/system/describeserver.info">describeserver.info</a><br>'+
-  '<a href="/OData">OData Services</a><br>'+
-  '<a href="/OData/$metadata">OData $metadata</a><br>'+
+   'Hello teste:  <a href="./hello/MVCBr">/hello/[nome]</a><br>'+
+  '<a href="./system/describeserver.info">describeserver.info</a><br>'+
+  '<a href="./OData">OData Services</a><br>'+
+  '<a href="./OData/$metadata">OData $metadata</a><br>'+
   '<a href="http://www.odata.org">Especificação by OData.Org</a>'+
    '<hr />Powered by: DelphiMVCFramework with OData/MVCBr'+
   '</body></http>');

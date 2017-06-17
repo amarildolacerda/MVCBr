@@ -90,7 +90,7 @@ Implementation
 {$R *.DFM}
 {$ENDIF}
 
-uses System.JSON.helper;
+uses OData.Interf, System.JSON.helper;
 
 function TWSConfigView.UpdateView: IView;
 begin
@@ -117,24 +117,25 @@ begin
 end;
 
 function TWSConfigView.GetServer: TJsonValue;
-var j:TJsonObject;
-    str:TStringList;
+var
+  j: TJsonObject;
+  str: TStringList;
 begin
-  str:=TStringList.create;
+  str := TStringList.create;
   try
     str.LoadFromFile(FList.FileName);
-    j := TJsonObject.ParseJSONValue(  str.text ) as TJsonObject;
+    j := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
   finally
     str.free;
   end;
   result := j.GetValue('Config');
-{  result.addPair('driverid', driverid.Text);
-  result.addPair('server', Server.Text);
-  result.addPair('database', Database.Text);
-  result.addPair('user_name', user_name.Text);
-  result.addPair('password', Password.Text);
-  result.addPair('vendorlib',vendorlib.text);
-}
+  { result.addPair('driverid', driverid.Text);
+    result.addPair('server', Server.Text);
+    result.addPair('database', Database.Text);
+    result.addPair('user_name', user_name.Text);
+    result.addPair('password', Password.Text);
+    result.addPair('vendorlib',vendorlib.text);
+  }
 end;
 
 class function TWSConfigView.New(aController: IController): IView;
@@ -168,8 +169,8 @@ begin
   Password.Text := 'masterkey';
 
   vendorlib := TEdit.create(self);
-  vendorlib.name := 'vendorlib';
-  vendorlib.text := '';
+  vendorlib.Name := 'vendorlib';
+  vendorlib.Text := '';
 
 {$ENDIF}
   /// dados do servidor
@@ -183,15 +184,16 @@ begin
   FList.Add(vendorlib);
 end;
 
+
 /// escreve os dados no arquivo de configuração
 procedure TWSConfigView.AfterConstruction;
 begin
   inherited;
   FList := TObjectConfigModel.create(self);
-  FList.FileName := ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config';
+  FList.FileName := GetODataConfigFilePath+'MVCBrServer.config';
   AddControls;
   try
-    if not fileExists(FList.FileName,false) then
+    if not fileExists(FList.FileName, false) then
       FList.WriteConfig
     else
       FList.ReadConfig;

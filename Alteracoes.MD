@@ -1,3 +1,8 @@
+16/06/2017 - AL
+   + adicionado ISAPI para OData
+   + adicionado pasta \bin  para os binários
+   * alterado o path de configuração para compatibilidade com o ISAPI (para usar "Arquivos de programas\mvcbr")
+
 15/06/2017 - AL
    + atualizado o DMVC para RC5 versao 3.0
    + ataulizado o LoggerPro

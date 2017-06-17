@@ -3,9 +3,6 @@
         <ProjectGuid>{4BF467B2-E6CA-4420-BD94-C3B55F51DC72}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="MVCBrServer_ISAPI.dproj">
-            <Dependencies/>
-        </Projects>
         <Projects Include="MVCBrServer.dproj">
             <Dependencies/>
         </Projects>
@@ -18,6 +15,9 @@
         <Projects Include="GeradorMetadata\MetadataGenerator.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="MVCBrServer_ISAPI.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -26,15 +26,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="MVCBrServer_ISAPI">
-        <MSBuild Projects="MVCBrServer_ISAPI.dproj"/>
-    </Target>
-    <Target Name="MVCBrServer_ISAPI:Clean">
-        <MSBuild Projects="MVCBrServer_ISAPI.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="MVCBrServer_ISAPI:Make">
-        <MSBuild Projects="MVCBrServer_ISAPI.dproj" Targets="Make"/>
-    </Target>
     <Target Name="MVCBrServer">
         <MSBuild Projects="MVCBrServer.dproj"/>
     </Target>
@@ -71,14 +62,23 @@
     <Target Name="MetadataGenerator:Make">
         <MSBuild Projects="GeradorMetadata\MetadataGenerator.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MVCBrServer_ISAPI">
+        <MSBuild Projects="MVCBrServer_ISAPI.dproj"/>
+    </Target>
+    <Target Name="MVCBrServer_ISAPI:Clean">
+        <MSBuild Projects="MVCBrServer_ISAPI.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrServer_ISAPI:Make">
+        <MSBuild Projects="MVCBrServer_ISAPI.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrServer_ISAPI;MVCBrServer;MVCBrServer_Linux;MVCBrServerService;MetadataGenerator"/>
+        <CallTarget Targets="MVCBrServer;MVCBrServer_Linux;MVCBrServerService;MetadataGenerator;MVCBrServer_ISAPI"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrServer_ISAPI:Clean;MVCBrServer:Clean;MVCBrServer_Linux:Clean;MVCBrServerService:Clean;MetadataGenerator:Clean"/>
+        <CallTarget Targets="MVCBrServer:Clean;MVCBrServer_Linux:Clean;MVCBrServerService:Clean;MetadataGenerator:Clean;MVCBrServer_ISAPI:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrServer_ISAPI:Make;MVCBrServer:Make;MVCBrServer_Linux:Make;MVCBrServerService:Make;MetadataGenerator:Make"/>
+        <CallTarget Targets="MVCBrServer:Make;MVCBrServer_Linux:Make;MVCBrServerService:Make;MetadataGenerator:Make;MVCBrServer_ISAPI:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

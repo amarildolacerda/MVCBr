@@ -6,23 +6,26 @@ uses
   Web.WebBroker,
   Web.Win.ISAPIApp,
   Web.Win.ISAPIThreadPool,
+
   LoggerPro,
   LoggerPro.FileAppender,
   MVCFramework.Logger,
-  MVCFramework.Commons,
+  oData.Interf,
 
   WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
+  WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
+  WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas',
+  WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
   WS.Common in 'WS\WS.Common.pas',
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
   WS.QueryController in 'WS\WS.QueryController.pas',
-  WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
-  WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas',
-  WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView};
-
-//  WebModuleU in '..\DMVC\samples\ISAPI\WebModules\WebModuleU.pas' {WebModule1: TWebModule},
-//  BusinessObjectsU in '..\DMVC\samples\ISAPI\BO\BusinessObjectsU.pas',
-//  RoutingSampleControllerU in '..\DMVC\samples\ISAPI\Controllers\RoutingSampleControllerU.pas';
+  MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
+  MVCgzipMiddleware in 'MVCgzipMiddleware.pas',
+  MVCSupportZLib in 'MVCSupportZLib.pas',
+  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
+  WS.HelloController in 'WS.HelloController.pas',
+  MVC.oData.Base in '..\oData\MVC.oData.Base.pas';
 
 {$R *.res}
 
@@ -37,8 +40,12 @@ begin
   Application.WebModuleClass := WebModuleClass;
 
     MVCFramework.Logger.SetDefaultLogger
-      (BuildLogWriter([TLoggerProFileAppender.Create(5, 2000, AppPath + 'logs')
-      ], nil, TLogType(TLogType.Error)));
+      (BuildLogWriter([TLoggerProFileAppender.Create(5, 2000, GetODataConfigFilePath + 'logs')
+      ], nil, TLogType.Error));
+
 
   Application.Run;
+
+
+
 end.
