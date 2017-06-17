@@ -37,11 +37,11 @@ begin
   with TStringList.Create do
     try
       Add('IPersistentModel=TPersistentModelFactory');
-      Add('INavigatorModel=TNavigatorModelFactory');
+      Add('INavigateModel=TNavigateModelFactory');
       Add('IValidateModel=TValidateModelFactory');
       Add('IModel=TModelFactory');
-      Add('IFireDACModel=TFireDACModel');
-      Add('IOrmModel=TORMModel');
+      Add('IFireDACModel=TFireDACModelFactory');
+      Add('IOrmModel=TORMModelFactory');
       result := text;
     finally
       Free;
@@ -54,11 +54,11 @@ begin
   with TStringList.Create do
     try
       Add('mtPersistent');
-      Add('mtNavigator');
+      Add('mtNavigate');
       Add('mtValidate');
       Add('mtCommon');
       Add('mtPersistent');
-      Add('mtPersistent');
+      Add('mtOrmModel');
       result := text;
     finally
       Free;
@@ -71,7 +71,7 @@ begin
   with TStringList.Create do
     try
       Add('PersistentModel');
-      Add('NavigatorModel');
+      Add('NavigateModel');
       Add('ValidateModel');
       Add('Model');
       Add('DataModel');
@@ -88,7 +88,7 @@ begin
   with TStringList.Create do
     try
       Add('IPersistentModel');
-      Add('INavigatorModel');
+      Add('INavigateModel');
       Add('IValidateModel');
       Add('IModel');
       Add('IFireDacModel');

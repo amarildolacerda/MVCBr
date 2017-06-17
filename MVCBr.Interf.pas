@@ -226,7 +226,7 @@ type
 
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
-    mtNavigator, mtComponent);
+    mtNavigate,mtOrmModel, mtComponent);
 
 
   // IModel Interfaces
@@ -440,15 +440,15 @@ type
     function Controller(const AController: IController): IPersistentModel;
   end;
 
-  INavigatorModel = interface;
+  INavigateModel = interface;
 
-  INavigatorModelBase = interface(IModel)
+  INavigateModelBase = interface(IModel)
     ['{0E0C626B-AE54-4050-9EA0-C8079FCA75BC}']
   end;
 
-  INavigatorModel = interface(INavigatorModelBase)
+  INavigateModel = interface(INavigateModelBase)
     ['{BF5767E0-FF6E-4A60-9409-9163AE4EDA4D}']
-    function Controller(const AController: IController): INavigatorModel;
+    function Controller(const AController: IController): INavigateModel;
   end;
 
   IValidateModel = interface(IModel)
@@ -457,6 +457,10 @@ type
 
   IModuleModel = interface(IModel)
     ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
+  end;
+
+  IOrmModel = interface(IModel)
+    ['{51D0E1AE-4C0E-4D13-B1CF-6183C997F36D}']
   end;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
