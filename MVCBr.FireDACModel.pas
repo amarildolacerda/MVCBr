@@ -14,8 +14,8 @@ uses Classes, forms, SysUtils,
 
 Type
 
-  TFireDACModel = class(TDatabaseModelFactory<TFDConnection, TFDQuery>,
-    IFireDACModel, IThisAs<TFireDACModel>)
+  TFireDACModelFactory = class(TDatabaseModelFactory<TFDConnection, TFDQuery>,
+    IFireDACModel, IThisAs<TFireDACModelFactory>)
   private
   protected
   public
@@ -23,7 +23,7 @@ Type
     Destructor Destroy; override;
     class function new(AProc: TProc<IFireDACModel>): IFireDACModel; overload;
     class function new(const AController: IController): IFireDACModel; overload;
-    function ThisAs: TFireDACModel;
+    function ThisAs: TFireDACModelFactory;
     // connection
     function DriverID(const ADriverID: string): IFireDACModel;
     function ConnectionName(const AConn: string): IFireDACModel;
@@ -39,13 +39,13 @@ Type
 
 Implementation
 
-function TFireDACModel.ConnectionName(const AConn: string): IFireDACModel;
+function TFireDACModelFactory.ConnectionName(const AConn: string): IFireDACModel;
 begin
   result := Self;
   GetConnection.ConnectionName := AConn;
 end;
 
-constructor TFireDACModel.Create;
+constructor TFireDACModelFactory.Create;
 begin
   inherited;
   SetModelTypes( [mtPersistent] );
@@ -59,49 +59,49 @@ begin
     end;
 end;
 
-destructor TFireDACModel.Destroy;
+destructor TFireDACModelFactory.Destroy;
 begin
   inherited;
 end;
 
-function TFireDACModel.DriverID(const ADriverID: string): IFireDACModel;
+function TFireDACModelFactory.DriverID(const ADriverID: string): IFireDACModel;
 begin
   result := Self;
   GetConnection.DriverName := ADriverID;
 end;
 
-class function TFireDACModel.new(AProc: TProc<IFireDACModel>): IFireDACModel;
+class function TFireDACModelFactory.new(AProc: TProc<IFireDACModel>): IFireDACModel;
 begin
-  result := TFireDACModel.Create;
+  result := TFireDACModelFactory.Create;
   if Assigned(AProc) then
     AProc(result);
 end;
 
-function TFireDACModel.ThisAs: TFireDACModel;
+function TFireDACModelFactory.ThisAs: TFireDACModelFactory;
 begin
   result := Self;
 end;
 
-function TFireDACModel.UserName(const AUser: string): IFireDACModel;
+function TFireDACModelFactory.UserName(const AUser: string): IFireDACModel;
 begin
   result := Self;
   GetConnection.Params.Values['USER_NAME'] := AUser;
 end;
 
-class function TFireDACModel.new(const AController: IController): IFireDACModel;
+class function TFireDACModelFactory.new(const AController: IController): IFireDACModel;
 begin
-  result := TFireDACModel.Create;
+  result := TFireDACModelFactory.Create;
   result.Controller(AController);
 end;
 
-function TFireDACModel.Password(const APass: string): IFireDACModel;
+function TFireDACModelFactory.Password(const APass: string): IFireDACModel;
 begin
   result := Self;
   GetConnection.Params.Values['PASSWORD'] := APass;
 
 end;
 
-procedure TFireDACModel.SetConnectionString(const Value: string);
+procedure TFireDACModelFactory.SetConnectionString(const Value: string);
 var
   Params: TStringList;
   i:integer;

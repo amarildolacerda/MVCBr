@@ -50,7 +50,7 @@ contains
   MVCBr.IoC in '..\MVCBr.IoC.pas',
   MVCBr.Model in '..\MVCBr.Model.pas',
   MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
-  MVCBr.NavigatorModel in '..\MVCBr.NavigatorModel.pas',
+  MVCBr.NavigateModel in '..\MVCBr.NavigateModel.pas',
   MVCBr.PageView in '..\MVCBr.PageView.pas',
   MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
   MVCBr.ValidateModel in '..\MVCBr.ValidateModel.pas',

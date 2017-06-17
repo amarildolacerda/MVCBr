@@ -227,7 +227,7 @@ type
 
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
-    mtNavigator, mtComponent);
+    mtNavigate,mtOrmModel, mtComponent);
 
   // IModel Interfaces
   IModel = interface;
@@ -461,6 +461,10 @@ type
   IModuleModel = interface(IModel)
     ['{FF946C5D-1385-443B-873E-B1DA1C54FECA}']
   end;
+
+  IOrmModel = Interface(IModel)
+    ['{043D4745-9F20-4BFD-94AF-5727357A50B5}']
+  End;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true); overload;

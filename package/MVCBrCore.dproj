@@ -166,7 +166,7 @@
         <DCCReference Include="..\MVCBr.IoC.pas"/>
         <DCCReference Include="..\MVCBr.Model.pas"/>
         <DCCReference Include="..\MVCBr.ModuleModel.pas"/>
-        <DCCReference Include="..\MVCBr.NavigatorModel.pas"/>
+        <DCCReference Include="..\MVCBr.NavigateModel.pas"/>
         <DCCReference Include="..\MVCBr.PageView.pas"/>
         <DCCReference Include="..\MVCBr.PersistentModel.pas"/>
         <DCCReference Include="..\MVCBr.ValidateModel.pas"/>
