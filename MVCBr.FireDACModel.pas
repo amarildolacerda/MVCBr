@@ -21,8 +21,6 @@ Type
   public
     Constructor Create; override;
     Destructor Destroy; override;
-    class function new(AProc: TProc<IFireDACModel>): IFireDACModel; overload;
-    class function new(const AController: IController): IFireDACModel; overload;
     function ThisAs: TFireDACModelFactory;
     // connection
     function DriverID(const ADriverID: string): IFireDACModel;
@@ -70,12 +68,6 @@ begin
   GetConnection.DriverName := ADriverID;
 end;
 
-class function TFireDACModelFactory.new(AProc: TProc<IFireDACModel>): IFireDACModel;
-begin
-  result := TFireDACModelFactory.Create;
-  if Assigned(AProc) then
-    AProc(result);
-end;
 
 function TFireDACModelFactory.ThisAs: TFireDACModelFactory;
 begin
@@ -88,11 +80,6 @@ begin
   GetConnection.Params.Values['USER_NAME'] := AUser;
 end;
 
-class function TFireDACModelFactory.new(const AController: IController): IFireDACModel;
-begin
-  result := TFireDACModelFactory.Create;
-  result.Controller(AController);
-end;
 
 function TFireDACModelFactory.Password(const APass: string): IFireDACModel;
 begin

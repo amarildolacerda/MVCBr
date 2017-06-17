@@ -3,7 +3,7 @@
         <ProjectGuid>{0C9009FC-ECD5-4E2A-9AB4-3B1899FED235}</ProjectGuid>
         <MainSource>MVCBrFireDAC.dpk</MainSource>
         <ProjectVersion>18.2</ProjectVersion>
-        <FrameworkType>None</FrameworkType>
+        <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -76,7 +76,7 @@
         <DCC_CBuilderOutput>All</DCC_CBuilderOutput>
         <GenPackage>true</GenPackage>
         <GenDll>true</GenDll>
-        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>MVCBrFireDAC</SanitizedProjectName>
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -164,6 +164,9 @@
         <DCCReference Include="MVCBrVCL.dcp"/>
         <DCCReference Include="..\VCL\MVCBr.FireDACReg.pas"/>
         <DCCReference Include="..\VCL\MVCBr.HTTPFiredacAdapter.pas"/>
+        <DCCReference Include="..\MVCBr.FireDAC.Model.pas"/>
+        <DCCReference Include="..\MVCBr.FireDACModel.Interf.pas"/>
+        <DCCReference Include="..\MVCBr.FireDACModel.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
