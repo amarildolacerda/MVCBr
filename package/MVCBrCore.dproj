@@ -176,6 +176,8 @@
         <DCCReference Include="..\MVCBr.PersistentModel.pas"/>
         <DCCReference Include="..\MVCBr.ValidateModel.pas"/>
         <DCCReference Include="..\MVCBr.ViewModel.pas"/>
+        <DCCReference Include="..\MVCBr.Observable.pas"/>
+        <DCCReference Include="..\MVCBr.Observer.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

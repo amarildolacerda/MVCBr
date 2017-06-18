@@ -123,14 +123,16 @@ type
       bSingleton: boolean = true); overload; Static;
     class procedure RegisterType<TInterface: IInterface; TImplements: Class>
       (const ANome: string; bSingleton: boolean = true); overload; static;
+    // class function Register<TClass:Class>:TMVCBrIOC;
     class function ResolveInterfaced<TInterface: IInterface>
       (const ANome: string): TInterface; static;
     /// <summary>
     /// Observers procedures
     /// </summary>
-    class procedure RegisterObserver(AName: string;
-      AObserver: IMVCBrObserver);overload; static;
-    class procedure RegisterObserver( AObserver: IMVCBrObserver);overload; static;
+    class procedure RegisterObserver(AName: string; AObserver: IMVCBrObserver);
+      overload; static;
+    class procedure RegisterObserver(AObserver: IMVCBrObserver);
+      overload; static;
     class procedure UnRegisterObserver(AObserver: IMVCBrObserver);
       overload; static;
     class procedure UnRegisterObserver(AName: string;
@@ -161,8 +163,6 @@ type
       write SetPropertyValue;
     function GetGuid(AII: IInterface): TGuid;
   end;
-
-
 
   /// <summary>
   /// who want be an observer item
@@ -224,10 +224,9 @@ type
     procedure Register(const AName: string; AObserver: IMVCBrObserver);
   end;
 
-
   /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns
   /// a todos as classes Factories
-  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase,IMVCBrObserver)
+  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase, IMVCBrObserver)
   private
     FID: string;
     FLock: TObject;
@@ -256,15 +255,15 @@ type
     /// </summary>
     procedure RegisterObserver(const AName: String; AObserver: IMVCBrObserver);
       overload; virtual;
-    procedure RegisterObserver(const AName:string);overload;virtual;
-    procedure RegisterObserver(AObserver:IMVCBrObserver);overload;virtual;
+    procedure RegisterObserver(const AName: string); overload; virtual;
+    procedure RegisterObserver(AObserver: IMVCBrObserver); overload; virtual;
     procedure UnRegisterObserver(const AName: String); overload; virtual;
     procedure UnRegisterObserver(const AName: string;
       AObserver: IMVCBrObserver); overload; virtual;
     procedure UnRegisterObserver(AObserver: IMVCBrObserver); overload; virtual;
     procedure UpdateObserver(const AName: string; AJsonValue: TJsonValue);
       overload; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); virtual;
 
   end;
 
@@ -300,7 +299,6 @@ type
   public
     procedure ForEach(AGuid: TGuid; AProc: TProc<TInterface>);
   end;
-
 
   IController = interface;
 
@@ -589,6 +587,7 @@ procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
   TMVCBr.RegisterInterfaced<IController>(ANome, IID, AClass, bSingleton);
+  // TMVCBr.Register<AClass>.implements(IID).Singleton := bSingleton;
 end;
 
 class procedure TMVCBr.RegisterType<TInterface; TImplements>
@@ -601,13 +600,18 @@ end;
 class procedure TMVCBr.RegisterInterfaced<TInterface>(const ANome: string;
   IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
-  TMVCBrIoc.DefaultContainer.RegisterInterfaced<TInterface>(IID, AClass, ANome,
+  {
+   TMVCBrIoc.DefaultContainer.RegisterInterfaced<TInterface>(IID, AClass, ANome,
     bSingleton);
+  }
+  TMVCBrIoc.DefaultContainer.RegisterType<TInterface>(ANome).Guid(IID).ImplementClass(AClass)
+    .Singleton(bSingleton);
+
 end;
 
 class procedure TMVCBr.RegisterObserver(AObserver: IMVCBrObserver);
 begin
-   TMVCBrObservable.DefaultContainer.Register(AObserver);
+  TMVCBrObservable.DefaultContainer.Register(AObserver);
 end;
 
 class procedure TMVCBr.RegisterObserver(AName: string;
@@ -983,7 +987,7 @@ end;
 
 procedure TMVCFactoryAbstract.RegisterObserver(const AName: string);
 begin
-   RegisterObserver(AName,self);
+  RegisterObserver(AName, self);
 end;
 
 procedure TMVCFactoryAbstract.RegisterObserver(const AName: String;
@@ -1011,7 +1015,7 @@ end;
 
 procedure TMVCFactoryAbstract.UnRegisterObserver(AObserver: IMVCBrObserver);
 begin
-   TMVCBr.UnRegisterObserver(AObserver);
+  TMVCBr.UnRegisterObserver(AObserver);
 end;
 
 procedure TMVCFactoryAbstract.UnRegisterObserver(const AName: String);
@@ -1024,7 +1028,6 @@ procedure TMVCFactoryAbstract.UnRegisterObserver(const AName: string;
 begin
   TMVCBr.UnRegisterObserver(AName, AObserver);
 end;
-
 
 procedure TMVCFactoryAbstract.Update(AJsonValue: TJsonValue;
   var AHandled: boolean);

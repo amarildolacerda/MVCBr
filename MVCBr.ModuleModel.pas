@@ -12,7 +12,8 @@ unit MVCBr.ModuleModel;
 interface
 
 uses
-{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF} System.UITypes, System.SysUtils, System.Classes,
+{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF}
+ System.UITypes, System.SysUtils, System.Classes, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf;
 
 type
@@ -31,7 +32,9 @@ type
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel; virtual;
-    function Update: IModel; virtual;
+    function Update: IModel;overload; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
+      overload; virtual;
 
     function Controller(const AController: IController): IModel; virtual;
     function GetModelTypes: TModelTypes; virtual;
@@ -140,6 +143,12 @@ end;
 function TCustomModuleFactory.This: TObject;
 begin
   result := self;
+end;
+
+procedure TCustomModuleFactory.Update(AJsonValue: TJsonValue;
+  var AHandled: boolean);
+begin
+   Update;
 end;
 
 function TCustomModuleFactory.Update: IModel;

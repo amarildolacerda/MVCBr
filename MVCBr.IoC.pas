@@ -52,13 +52,22 @@ type
 
   type
     TIoCRegistration<T: IInterface> = class
-      Guid: TGuid;
-      name: string;
-      IInterface: PTypeInfo;
-      ImplClass: TClass;
-      ActivatorDelegate: TActivatorDelegate<T>;
-      IsSingleton: boolean;
-      Instance: IInterface;
+      FGuid: TGuid;
+      FName: string;
+      FIInterface: PTypeInfo;
+      FImplClass: TClass;
+      FActivatorDelegate: TActivatorDelegate<T>;
+      FIsSingleton: boolean;
+      FInstance: IInterface;
+      function ImplementClass(AImplements: TInterfacedClass): TIoCRegistration<T>;
+      function Delegate(const ADelegate: TActivatorDelegate<T>)
+        : TIoCRegistration<T>;
+      function Singleton(const AValue: boolean): TIoCRegistration<T>;
+      function isSingleton: boolean;
+      function asGuid: TGuid;
+      function asName: String;
+      function Name(AName: String): TIoCRegistration<T>;
+      function Guid(AGuid: TGuid): TIoCRegistration<T>;
     end;
 
   private
@@ -70,9 +79,10 @@ type
     function GetInterfaceKey<TInterface>(const AName: string = ''): string;
     function InternalResolve<TInterface: IInterface>(out AInterface: TInterface;
       const AName: string = ''): TResolveResult;
-    procedure InternalRegisterType<TInterface: IInterface>(const singleton
+    function InternalRegisterType<TInterface: IInterface>(const Singleton
       : boolean; const AImplementation: TClass;
-      const delegate: TActivatorDelegate<TInterface>; const name: string = '');
+      const Delegate: TActivatorDelegate<TInterface>; const Name: string = '')
+      : TIoCRegistration<TInterface>;
   public
     constructor Create;
     destructor Destroy; override;
@@ -82,31 +92,34 @@ type
     // Exe's compiled with D2010 will crash when these are used.
     // NOTES: The issue is due to the two generics included in the functions. The constaints also seem to be an issue.
     procedure RegisterType<TInterface: IInterface; TImplementation: class>
-      (const name: string = ''); overload;
+      (const Name: string = ''); overload;
     procedure RegisterType<TInterface: IInterface; TImplementation: class>
-      (const singleton: boolean; const name: string = ''); overload;
+      (const Singleton: boolean; const Name: string = ''); overload;
 {$ENDIF}
-    procedure RegisterType<TInterface: IInterface>(const delegate
-      : TActivatorDelegate<TInterface>; const name: string = ''); overload;
-    procedure RegisterType<TInterface: IInterface>(const singleton: boolean;
-      const delegate: TActivatorDelegate<TInterface>;
-      const name: string = ''); overload;
+    procedure RegisterType<TInterface: IInterface>(const Delegate
+      : TActivatorDelegate<TInterface>; const Name: string = ''); overload;
+    procedure RegisterType<TInterface: IInterface>(const Singleton: boolean;
+      const Delegate: TActivatorDelegate<TInterface>;
+      const Name: string = ''); overload;
+    function RegisterType<TInterface: IInterface>(const AName: String)
+      : TIoCRegistration<TInterface>; overload;
 
     procedure RevokeInstance(AInstance: IInterface);
 
     // Register an instance as a signleton. If there is more than one instance that implements the interface
     // then use the name parameter
     procedure RegisterSingleton<TInterface: IInterface>(const Instance
-      : TInterface; const name: string = '');
+      : TInterface; const Name: string = '');
 
     // Resolution
-    function Resolve<TInterface: IInterface>(const name: string = '')
+    function Resolve<TInterface: IInterface>(const Name: string = '')
       : TInterface;
     function GetName(AGuid: TGuid): string;
     function GetGuid(AName: string): TGuid;
 
-    procedure RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
-      AClass: TInterfacedClass; AName: String; bSingleton: boolean); overload;
+    function RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
+      AClass: TInterfacedClass; AName: String; bSingleton: boolean)
+      : TIoCRegistration<IUnknown>; overload;
 
     // Returns true if we have such a service.
     function HasService<T: IInterface>: boolean;
@@ -175,27 +188,27 @@ end;
 {$IFDEF DELPHI_XE_UP}
 
 procedure TMVCBrIoC.RegisterType<TInterface, TImplementation>
-  (const name: string);
+  (const Name: string);
 begin
   InternalRegisterType<TInterface>(false, TImplementation, nil, name);
 end;
 
-procedure TMVCBrIoC.RegisterType<TInterface, TImplementation>(const singleton
-  : boolean; const name: string);
+procedure TMVCBrIoC.RegisterType<TInterface, TImplementation>(const Singleton
+  : boolean; const Name: string);
 begin
-  InternalRegisterType<TInterface>(singleton, TImplementation, nil, name);
+  InternalRegisterType<TInterface>(Singleton, TImplementation, nil, name);
 end;
 {$ENDIF}
 
-procedure TMVCBrIoC.RegisterType<TInterface>(const delegate
-  : TActivatorDelegate<TInterface>; const name: string);
+procedure TMVCBrIoC.RegisterType<TInterface>(const Delegate
+  : TActivatorDelegate<TInterface>; const Name: string);
 begin
-  InternalRegisterType<TInterface>(false, nil, delegate, name);
+  InternalRegisterType<TInterface>(false, nil, Delegate, name);
 end;
 
-procedure TMVCBrIoC.InternalRegisterType<TInterface>(const singleton: boolean;
-  const AImplementation: TClass; const delegate: TActivatorDelegate<TInterface>;
-  const name: string = '');
+function TMVCBrIoC.InternalRegisterType<TInterface>(const Singleton: boolean;
+  const AImplementation: TClass; const Delegate: TActivatorDelegate<TInterface>;
+  const Name: string = ''): TIoCRegistration<TInterface>;
 var
   key: string;
   pInfo: PTypeInfo;
@@ -204,46 +217,48 @@ var
   newName: string;
   newSingleton: boolean;
 begin
-  newSingleton := singleton;
+  result := nil;
+  newSingleton := Singleton;
   newName := name;
 
   pInfo := TypeInfo(TInterface);
 {$IFDEF ANDROID}
   if newName = '' then
-    key := pInfo.name.ToString
+    key := pInfo.Name.ToString
   else
-    key := pInfo.name.ToString + '_' + newName;
+    key := pInfo.Name.ToString + '_' + newName;
 {$ELSE}
   if newName = '' then
-    key := string(pInfo.name{$IFDEF LINUX}.ToString{$ENDIF})
+    key := string(pInfo.Name{$IFDEF LINUX}.ToString{$ENDIF})
   else
-    key := string(pInfo.name{$IFDEF LINUX}.ToString{$ENDIF}) + '_' + newName;
+    key := string(pInfo.Name{$IFDEF LINUX}.ToString{$ENDIF}) + '_' + newName;
 {$ENDIF}
   key := LowerCase(key);
 
   if not FContainerInfo.TryGetValue(key, o) then
   begin
     rego := TIoCRegistration<TInterface>.Create;
-    rego.IInterface := pInfo;
-    rego.ActivatorDelegate := delegate;
-    rego.ImplClass := AImplementation;
-    rego.IsSingleton := newSingleton;
+    rego.FIInterface := pInfo;
+    rego.FActivatorDelegate := Delegate;
+    rego.FImplClass := AImplementation;
+    rego.FIsSingleton := newSingleton;
     FContainerInfo.Add(key, rego);
   end
   else
   begin
     rego := TIoCRegistration<TInterface>(o);
     // cannot replace a singleton that has already been instanciated.
-    if rego.IsSingleton and (rego.Instance <> nil) then
+    if rego.FIsSingleton and (rego.FInstance <> nil) then
       raise EIoCException.Create
         (Format('An implementation for type %s with name %s is already registered with IoC',
-        [pInfo.name, newName]));
-    rego.IInterface := pInfo;
-    rego.ActivatorDelegate := delegate;
-    rego.ImplClass := AImplementation;
-    rego.IsSingleton := newSingleton;
+        [pInfo.Name, newName]));
+    rego.FIInterface := pInfo;
+    rego.FActivatorDelegate := Delegate;
+    rego.FImplClass := AImplementation;
+    rego.FIsSingleton := newSingleton;
     FContainerInfo.AddOrSetValue(key, rego);
   end;
+  result := rego;
 end;
 
 class procedure TMVCBrIoC.ClassDestroy;
@@ -291,9 +306,9 @@ begin
   // By default the key is the interface name unless otherwise found.
   pInfo := TypeInfo(TInterface);
 {$IFDEF ANDROID}
-  result := pInfo.name.ToString;
+  result := pInfo.Name.ToString;
 {$ELSE}
-  result := string(pInfo.name{$IFDEF LINUX}.ToString{$ENDIF});
+  result := string(pInfo.Name{$IFDEF LINUX}.ToString{$ENDIF});
 {$ENDIF}
   if (AName <> '') then
     result := result + '_' + AName;
@@ -311,7 +326,7 @@ begin
     if LName.ToUpper.Equals(AName.ToUpper) then
     begin
       rogo := TIoCRegistration<IController>(FContainerInfo.items[LName]);
-      result := rogo.Guid;
+      result := rogo.FGuid;
     end;
 end;
 
@@ -325,9 +340,9 @@ begin
   for LName in FContainerInfo.keys do
   begin
     rogo := TIoCRegistration<IController>(FContainerInfo.items[LName]);
-    if rogo.Guid = AGuid then
+    if rogo.FGuid = AGuid then
     begin
-      achei := rogo.name;
+      achei := rogo.FName;
       Break;
     end;
   end;
@@ -362,17 +377,17 @@ begin
 
   // Get the interface registration class correctly.
   registration := TIoCRegistration<TInterface>(registrationObj);
-  bIsSingleton := registration.IsSingleton;
+  bIsSingleton := registration.FIsSingleton;
 
   bInstanciate := true;
 
   if bIsSingleton then
   begin
     // If a singleton was registered with this interface then check if it's already been instanciated.
-    if registration.Instance <> nil then
+    if registration.FInstance <> nil then
     begin
       // Get AInterface as TInterface
-      if registration.Instance.QueryInterface(GetTypeData(TypeInfo(TInterface))
+      if registration.FInstance.QueryInterface(GetTypeData(TypeInfo(TInterface))
         .Guid, AInterface) <> 0 then
       begin
         result := TResolveResult.ImplNotRegistered;
@@ -389,12 +404,12 @@ begin
     MonitorEnter(container);
     try
       // If we have a implementing class then used this to activate.
-      if registration.ImplClass <> nil then
-        resolvedInf := TClassActivator.CreateInstance(registration.ImplClass)
+      if registration.FImplClass <> nil then
+        resolvedInf := TClassActivator.CreateInstance(registration.FImplClass)
         // Otherwise if there is a activate delegate use this to activate.
-      else if registration.ActivatorDelegate <> nil then
+      else if registration.FActivatorDelegate <> nil then
       begin
-        resolvedInf := registration.ActivatorDelegate();
+        resolvedInf := registration.FActivatorDelegate();
 
         if resolvedInf = nil then
         begin
@@ -415,7 +430,7 @@ begin
 
       if bIsSingleton then
       begin
-        registration.Instance := resolvedObj;
+        registration.FInstance := resolvedObj;
 
         // Reset the registration to show the instance which was created.
         container.AddOrSetValue(key, registration);
@@ -427,7 +442,7 @@ begin
 end;
 
 procedure TMVCBrIoC.RegisterSingleton<TInterface>(const Instance: TInterface;
-  const name: string);
+  const Name: string);
 var
   key: string;
   pInfo: PTypeInfo;
@@ -440,21 +455,22 @@ begin
   if not FContainerInfo.TryGetValue(key, o) then
   begin
     rego := TIoCRegistration<TInterface>.Create;
-    rego.IInterface := pInfo;
-    rego.ActivatorDelegate := nil;
-    rego.ImplClass := nil;
-    rego.IsSingleton := true;
-    rego.Instance := Instance;
+    rego.FIInterface := pInfo;
+    rego.FActivatorDelegate := nil;
+    rego.FImplClass := nil;
+    rego.FIsSingleton := true;
+    rego.FInstance := Instance;
     FContainerInfo.Add(key, rego);
   end
   else
     raise EIoCException.Create
       (Format('An implementation for type %s with name %s is already registered with IoC',
-      [pInfo.name, name]));
+      [pInfo.Name, name]));
 end;
 
-procedure TMVCBrIoC.RegisterInterfaced<TInterface>(AII: TGuid;
-  AClass: TInterfacedClass; AName: String; bSingleton: boolean);
+function TMVCBrIoC.RegisterInterfaced<TInterface>(AII: TGuid;
+  AClass: TInterfacedClass; AName: String; bSingleton: boolean)
+  : TIoCRegistration<IUnknown>;
 var
   Interf: PInterfaceEntry;
   rego: TIoCRegistration<IUnknown>;
@@ -466,14 +482,14 @@ begin
   key := GetInterfaceKey<TInterface>(AName);
 
   rego := TIoCRegistration<IUnknown>.Create;
-  rego.Guid := AII;
-  rego.name := AName;
-  rego.IInterface := nil;
-  rego.ImplClass := AClass;
-  rego.IsSingleton := bSingleton;
-  rego.Instance := nil;
+  rego.FGuid := AII;
+  rego.FName := AName;
+  rego.FIInterface := nil;
+  rego.FImplClass := AClass;
+  rego.FIsSingleton := bSingleton;
+  rego.FInstance := nil;
 
-  rego.ActivatorDelegate := function: IUnknown
+  rego.FActivatorDelegate := function: IUnknown
     var
       obj: TInterfacedObject;
     begin
@@ -482,12 +498,14 @@ begin
     end;
   FContainerInfo.Add(key, rego);
 
+  result := rego;
+
 end;
 
-procedure TMVCBrIoC.RegisterType<TInterface>(const singleton: boolean;
-  const delegate: TActivatorDelegate<TInterface>; const name: string);
+procedure TMVCBrIoC.RegisterType<TInterface>(const Singleton: boolean;
+  const Delegate: TActivatorDelegate<TInterface>; const Name: string);
 begin
-  InternalRegisterType<TInterface>(singleton, nil, delegate, name);
+  InternalRegisterType<TInterface>(Singleton, nil, Delegate, name);
 end;
 
 procedure TMVCBrIoC.RevokeInstance(AInstance: IInterface);
@@ -502,19 +520,19 @@ begin
   for LName in FContainerInfo.keys do
   begin
     rogo := TIoCRegistration<IUnknown>(FContainerInfo.items[LName]);
-    if assigned(rogo) and assigned(rogo.Instance) and (rogo.IsSingleton) then
+    if assigned(rogo) and assigned(rogo.FInstance) and (rogo.FIsSingleton) then
     begin
-      ALocal := rogo.Instance as TObject;
+      ALocal := rogo.FInstance as TObject;
       if AOrigem.ClassName = ALocal.ClassName then
       begin
-        rogo.Instance := nil;
+        rogo.FInstance := nil;
         Break;
       end;
     end;
   end;
 end;
 
-function TMVCBrIoC.Resolve<TInterface>(const name: string = ''): TInterface;
+function TMVCBrIoC.Resolve<TInterface>(const Name: string = ''): TInterface;
 var
   resolveResult: TResolveResult;
   errorMsg: string;
@@ -531,20 +549,20 @@ begin
         ;
       TResolveResult.InterfaceNotRegistered:
         errorMsg := Format('No implementation registered for type %s',
-          [pInfo.name]);
+          [pInfo.Name]);
       TResolveResult.ImplNotRegistered:
         errorMsg :=
           Format('The Implementation registered for type %s does not actually implement %s',
-          [pInfo.name, pInfo.name]);
+          [pInfo.Name, pInfo.Name]);
       TResolveResult.DeletegateFailedCreate:
         errorMsg :=
           Format('The Implementation registered for type %s does not actually implement %s',
-          [pInfo.name, pInfo.name]);
+          [pInfo.Name, pInfo.Name]);
     else
       // All other error types are treated as unknown until defined here.
       errorMsg :=
         Format('An Unknown Error has occurred for the resolution of the interface %s %s. This is either because a new error type isn''t being handled, '
-        + 'or it''s an bug.', [pInfo.name, name]);
+        + 'or it''s an bug.', [pInfo.Name, name]);
     end;
 
     raise EIoCResolutionException.Create(errorMsg);
@@ -591,6 +609,85 @@ begin
   result := assigned(InterfaceEntry);
   if result then
     IID := InterfaceEntry.IID;
+end;
+
+function TMVCBrIoC.RegisterType<TInterface>(const AName: String)
+  : TIoCRegistration<TInterface>;
+var
+  Interf: PInterfaceEntry;
+  key: string;
+begin
+
+  key := GetInterfaceKey<TInterface>(AName);
+
+  result := TIoCRegistration<TInterface>.Create;
+  result.FName := AName;
+  result.FIInterface := nil;
+  result.FIsSingleton := true;
+  result.FInstance := nil;
+
+  FContainerInfo.Add(key, result);
+
+end;
+
+{ TMVCBrIoC.TIoCRegistration<T> }
+
+function TMVCBrIoC.TIoCRegistration<T>.asGuid: TGuid;
+begin
+  result := FGuid;
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.asName: String;
+begin
+  result := FName;
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.Delegate(const ADelegate
+  : TActivatorDelegate<T>): TIoCRegistration<T>;
+begin
+  result := self;
+  FActivatorDelegate := ADelegate;
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.Guid(AGuid: TGuid): TIoCRegistration<T>;
+begin
+  result := self;
+  FGuid := AGuid;
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.ImplementClass(AImplements: TInterfacedClass)
+  : TIoCRegistration<T>;
+begin
+  result := self;
+
+  FActivatorDelegate := function: T
+    var
+      obj: TInterfacedObject;
+    begin
+      obj := AImplements.Create;
+      Supports(obj, FGuid, result);
+    end;
+
+  FImplClass := AImplements;
+
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.isSingleton: boolean;
+begin
+  result := FIsSingleton;
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.Name(AName: String): TIoCRegistration<T>;
+begin
+  result := self;
+  FName := AName;
+end;
+
+function TMVCBrIoC.TIoCRegistration<T>.Singleton(const AValue: boolean)
+  : TIoCRegistration<T>;
+begin
+  FIsSingleton := AValue;
+  result := self;
 end;
 
 initialization

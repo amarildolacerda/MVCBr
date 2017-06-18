@@ -59,7 +59,9 @@ contains
   MVCBr.OrmModel in '..\MVCBr.OrmModel.pas',
   MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
   MVCBr.ValidateModel in '..\MVCBr.ValidateModel.pas',
-  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas';
+  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
+  MVCBr.Observable in '..\MVCBr.Observable.pas',
+  MVCBr.Observer in '..\MVCBr.Observer.pas';
 
 end.
 
