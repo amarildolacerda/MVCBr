@@ -57,6 +57,14 @@ type
     procedure TestUpdateByView;
     procedure TestResolveController;
     procedure TestRevokeController;
+
+
+    procedure TestRegisterObserver;
+    procedure TestUnRegisterObserverNamed;
+    procedure TestUnRegisterObserverNamedOnly;
+    procedure TesteObserver;
+
+
   end;
 
 implementation
@@ -110,6 +118,11 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTControllerFactory.TesteObserver;
+begin
+
+end;
+
 procedure TestTControllerFactory.TestGetModel;
 var
   ReturnValue: IModel;
@@ -138,6 +151,11 @@ procedure TestTControllerFactory.TestInit;
 begin
   FControllerFactory.Init;
   // TODO: Validate method results
+end;
+
+procedure TestTControllerFactory.TestRegisterObserver;
+begin
+   FControllerFactory.RegisterObserver(FControllerFactory);
 end;
 
 procedure TestTControllerFactory.TestResolveController;
@@ -316,6 +334,17 @@ begin
   FControllerFactory.ForEach(AProc);
   checkTrue(rt);
   // TODO: Validate method results
+end;
+
+procedure TestTControllerFactory.TestUnRegisterObserverNamed;
+begin
+   FControllerFactory.RegisterObserver('x');
+
+end;
+
+procedure TestTControllerFactory.TestUnRegisterObserverNamedOnly;
+begin
+
 end;
 
 procedure TestTControllerFactory.TestUpdateAll;

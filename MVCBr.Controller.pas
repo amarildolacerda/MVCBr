@@ -28,7 +28,7 @@ unit MVCBr.Controller;
 interface
 
 uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
-  System.Generics.Collections,
+  System.Generics.Collections, System.JSON,
   System.TypInfo,
 {$IFDEF FMX} FMX.Layouts, {$ENDIF}
   System.Classes, System.SysUtils,
@@ -96,9 +96,9 @@ type
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);overload;virtual;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
-
   end;
 
   TControllerFactoryOf = class of TControllerFactory;
@@ -434,6 +434,25 @@ begin
   result := self;
 end;
 
+procedure TControllerFactory.Update(AJsonValue: TJsonValue;
+  var AHandled: Boolean);
+var
+  i: integer;
+begin
+  if FRefModelCount = 0 then
+  begin
+    inc(FRefModelCount); // previne para nao entrar em LOOP
+    try
+      for i := 0 to FModels.Count - 1 do
+        (FModels.Items[i] as IModel).Update(AJsonValue,AHandled);
+      if assigned(FView) then
+        FView.Update(AJsonValue,AHandled);
+    finally
+      dec(FRefModelCount);
+    end;
+  end;
+end;
+
 function TControllerFactory.UpdateAll: IController;
 var
   i: integer;
@@ -483,6 +502,7 @@ begin
     end;
   end;
 end;
+
 
 function TControllerFactory.View(const AView: IView): IController;
 var

@@ -78,20 +78,33 @@ uses System.Classes, System.SysUtils, System.Generics.Collections,
   System.TypInfo, System.RTTI;
 
 type
+
+  IMVCBrObserver = interface;
+  IMVCBrObservable = interface;
+
   ///
   /// MVCBr Utils
   /// Record para implementas utilidades de RTTI e outras Class Functions
   ///
   TMVCBr = record
     class function GetQualifiedName(AII: TGuid): string; static;
+    /// compare two GUIDs
     class function IsSame(I1, I2: TGuid): boolean; static;
+    /// compare two interfaces
+    class function Equals(I1, I2: IInterface): boolean; static;
+    /// check if it is an interface IOC service
     class function IsService<TInterface: IInterface>(Const Obj: TObject)
       : boolean; static;
+    /// Get GUID from an anonimous Interface
     class function GetGuid<TInterface: IInterface>: TGuid; overload; static;
+    /// convert GUID to string
     class function GetGuidString(IID: TGuid): string; static;
+    /// Get guid from an interface
     class function GetGuid(const AInterface: IInterface): TGuid;
       overload; static;
-
+    /// <summary>
+    /// IOC routes
+    /// </summary>
     class function InvokeCreate<TInterface: IInterface>(const AClass: TClass)
       : TInterface; overload; static;
     class function InvokeCreate(Const AGuid: TGuid; AClass: TClass): IInterface;
@@ -112,7 +125,21 @@ type
       (const ANome: string; bSingleton: boolean = true); overload; static;
     class function ResolveInterfaced<TInterface: IInterface>
       (const ANome: string): TInterface; static;
-
+    /// <summary>
+    /// Observers procedures
+    /// </summary>
+    class procedure RegisterObserver(AName: string;
+      AObserver: IMVCBrObserver);overload; static;
+    class procedure RegisterObserver( AObserver: IMVCBrObserver);overload; static;
+    class procedure UnRegisterObserver(AObserver: IMVCBrObserver);
+      overload; static;
+    class procedure UnRegisterObserver(AName: string;
+      AObserver: IMVCBrObserver); overload; static;
+    class procedure UnRegisterObserver(const AName: string); overload; static;
+    Class Procedure UpdateObserver(const AName: string; AJson: TJsonValue);
+      overload; static;
+    Class Procedure UpdateObserver(AJson: TJsonValue); overload; static;
+    class function Observable: IMVCBrObservable; static;
   end;
 
   TMVCRegister = TMVCBr;
@@ -135,9 +162,72 @@ type
     function GetGuid(AII: IInterface): TGuid;
   end;
 
+
+
+  /// <summary>
+  /// who want be an observer item
+  /// </summary>
+  IMVCBrObserver = interface
+    ['{B5187999-9E7B-45CF-901B-DC0C14FF9105}']
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); overload;
+  end;
+
+  TMVCBrObserverProc = TProc<TJsonValue>;
+
+  IMVCBrObserverItem = interface
+    ['{DE40A5D5-4492-4C3D-8369-378985ED0714}']
+    procedure SetTopic(const Value: string);
+    function GetTopic: string;
+    function GetSubscribeProc: TMVCBrObserverProc;
+    procedure SetSubscribeProc(const Value: TMVCBrObserverProc);
+    procedure SetObserver(const Value: IMVCBrObserver);
+  end;
+
+  /// <summary>
+  /// Abstract wrapper for TMVCBrObserverItem
+  /// </summary>
+  TMVCBrObserverItemAbstract = class(TInterfacedObject, IMVCBrObserverItem)
+  public
+    procedure SetTopic(const Value: string); virtual; abstract;
+    function GetTopic: string; virtual; abstract;
+    function GetSubscribeProc: TMVCBrObserverProc; virtual; abstract;
+    procedure SetSubscribeProc(const Value: TMVCBrObserverProc);
+      virtual; abstract;
+    procedure SetObserver(const Value: IMVCBrObserver); virtual; abstract;
+    function GetObserver: IMVCBrObserver; virtual; abstract;
+    procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
+      virtual; abstract;
+    property Observer: IMVCBrObserver read GetObserver write SetObserver;
+    property Topic: string read GetTopic write SetTopic;
+    property SubscribeProc: TMVCBrObserverProc read GetSubscribeProc
+      write SetSubscribeProc;
+
+  end;
+
+  /// <summary>
+  /// List of observers itens.
+  /// </summary>
+  IMVCBrObservable = interface
+    ['{F9FEB955-A18E-484F-9F67-1AC97DFF7028}']
+    function GetItems(idx: integer): TMVCBrObserverItemAbstract;
+    procedure SetItems(idx: integer; const Value: TMVCBrObserverItemAbstract);
+    function This: TObject;
+    procedure Lock;
+    procedure UnLock;
+    function Count: integer;
+    property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
+      write SetItems;
+    function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
+    procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
+    procedure Send(AJson: TJsonValue); overload;
+    procedure Send(const AName: string; AJson: TJsonValue); overload;
+    procedure Register(const AName: string; AObserver: IMVCBrObserver);
+  end;
+
+
   /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns
   /// a todos as classes Factories
-  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase)
+  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase,IMVCBrObserver)
   private
     FID: string;
     FLock: TObject;
@@ -155,11 +245,27 @@ type
     function GetID: string; virtual;
     class function New<TInterface: IInterface>(AClass: TClass)
       : TInterface; overload;
-    function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+    function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>)
+      : T; overload;
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
-    function AsType<TInterface: IInterface>: TInterface;
-    function GetGuid(AII: IInterface): TGuid;
+    function AsType<TInterface: IInterface>: TInterface; overload;
+    function GetGuid(AII: IInterface): TGuid; overload; virtual;
+    /// <summary>
+    /// Observer Methods
+    /// </summary>
+    procedure RegisterObserver(const AName: String; AObserver: IMVCBrObserver);
+      overload; virtual;
+    procedure RegisterObserver(const AName:string);overload;virtual;
+    procedure RegisterObserver(AObserver:IMVCBrObserver);overload;virtual;
+    procedure UnRegisterObserver(const AName: String); overload; virtual;
+    procedure UnRegisterObserver(const AName: string;
+      AObserver: IMVCBrObserver); overload; virtual;
+    procedure UnRegisterObserver(AObserver: IMVCBrObserver); overload; virtual;
+    procedure UpdateObserver(const AName: string; AJsonValue: TJsonValue);
+      overload; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);virtual;
+
   end;
 
   IMVCOwnedInterfacedObject = interface
@@ -195,14 +301,6 @@ type
     procedure ForEach(AGuid: TGuid; AProc: TProc<TInterface>);
   end;
 
-  IObservable = interface
-    ['{B5187999-9E7B-45CF-901B-DC0C14FF9105}']
-  end;
-
-  IObserver = interface
-    ['{F9FEB955-A18E-484F-9F67-1AC97DFF7028}']
-    procedure Update(Value: IObservable);
-  end;
 
   IController = interface;
 
@@ -227,7 +325,7 @@ type
 
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
-    mtNavigate,mtOrmModel, mtComponent);
+    mtNavigate, mtOrmModel, mtComponent);
 
   // IModel Interfaces
   IModel = interface;
@@ -239,7 +337,9 @@ type
 
     function GetID: string;
     function ID(const AID: String): IModel;
-    function Update: IModel;
+    function Update: IModel; overload;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); overload;
+
   end;
 
   // IModel representa a interface onde implementa as regras de negócio
@@ -267,9 +367,11 @@ type
   IViewBase = interface(IMVCBrBase)
     ['{B3302253-353A-4890-B7B1-B45FC41247F6}']
     function This: TObject;
-    function ShowView(const AProc: TProc<IView>): Integer; overload;
+    function ShowView(const AProc: TProc<IView>): integer; overload;
     function ShowView(): IView; overload;
     function UpdateView: IView;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); overload;
+
   end;
 
   IViewModel = interface;
@@ -292,11 +394,13 @@ type
     procedure SetTitle(Const AText: String);
     property Title: string read GetTitle write SetTitle;
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
-    function ShowView(const AProcBeforeShow: TProc<IView>): Integer; overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>): integer; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
       : IView; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcOnClose: TProc<IView>): IView; overload;
+    procedure UpdateObserver(AJson: TJsonValue); overload;
+    procedure UpdateObserver(AName: string; AJson: TJsonValue); overload;
     procedure Init;
   end;
 
@@ -326,9 +430,9 @@ type
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
     function This: TObject;
-    function Count: Integer;
-    function Add(const AController: IController): Integer;
-    procedure Delete(const idx: Integer);
+    function Count: integer;
+    function Add(const AController: IController): integer;
+    procedure Delete(const idx: integer);
     procedure Remove(const AController: IController);
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
@@ -345,15 +449,15 @@ type
     procedure Init;
     procedure BeforeInit;
     procedure AfterInit;
-    function IndexOfModelType(const AModelType: TModelType): Integer;
+    function IndexOfModelType(const AModelType: TModelType): integer;
     function GetModelByType(const AModelType: TModelType): IModel;
     function UpdateByModel(AModel: IModel): IController;
     function UpdateAll: IController;
-    function Add(const AModel: IModel): Integer;
-    function IndexOf(const AModel: IModel): Integer;
-    procedure Delete(const Index: Integer);
-    function Count: Integer;
-    function GetModel(const idx: Integer): IModel;
+    function Add(const AModel: IModel): integer;
+    function IndexOf(const AModel: IModel): integer;
+    procedure Delete(const Index: integer);
+    function Count: integer;
+    function GetModel(const idx: integer): IModel;
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
     function This: TControllerAbstract;
   end;
@@ -478,7 +582,8 @@ implementation
 uses {$IFNDEF BPL}
   MVCBr.InterfaceHelper,
 {$ENDIF}
-  MVCBr.ApplicationController, MVCBr.IoC;
+  MVCBr.ApplicationController, MVCBr.IoC,
+  MVCBr.Observable;
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true);
@@ -500,6 +605,17 @@ begin
     bSingleton);
 end;
 
+class procedure TMVCBr.RegisterObserver(AObserver: IMVCBrObserver);
+begin
+   TMVCBrObservable.DefaultContainer.Register(AObserver);
+end;
+
+class procedure TMVCBr.RegisterObserver(AName: string;
+  AObserver: IMVCBrObserver);
+begin
+  TMVCBrObservable.DefaultContainer.Register(AName, AObserver);
+end;
+
 procedure UnregisterInterfacedClass(const ANome: string);
 begin
   /// nao precisa fazer nada.
@@ -515,7 +631,7 @@ end;
 
 function TControllerAbstract.GetModel(const IID: TGuid; out intf): IModel;
 var
-  I: Integer;
+  I: integer;
 begin
   for I := 0 to FModels.Count - 1 do
     if supports((FModels.Items[I] as IModel).This, IID, intf) then
@@ -533,7 +649,7 @@ end;
 
 function TControllerAbstract.GetModel<TModelInterface>(): TModelInterface;
 var
-  I: Integer;
+  I: integer;
   pInfo: PTypeInfo;
   IID: TGuid;
 begin
@@ -613,8 +729,8 @@ begin
     if achei = '' then
       exit;
     ii := ResolveController(achei);
-    if ii<>nil then
-       supports(ii.This, AIID, ref);
+    if ii <> nil then
+      supports(ii.This, AIID, ref);
   end;
 end;
 
@@ -628,6 +744,15 @@ class function TMVCBr.ResolveInterfaced<TInterface>(const ANome: string)
   : TInterface;
 begin
   result := TMVCBrIoc.DefaultContainer.Resolve<TInterface>(ANome);
+end;
+
+class function TMVCBr.Equals(I1, I2: IInterface): boolean;
+var
+  g1, g2: TGuid;
+begin
+  g1 := GetGuid(I1);
+  g2 := GetGuid(I2);
+  result := TMVCBr.IsSame(g1, g2);
 end;
 
 class function TMVCBr.GetGuid(const AInterface: IInterface): TGuid;
@@ -736,6 +861,21 @@ begin
   result := supports(Obj, GetGuid<TInterface>);
 end;
 
+class function TMVCBr.Observable: IMVCBrObservable;
+begin
+  result := TMVCBrObservable.DefaultContainer;
+end;
+
+class procedure TMVCBr.UpdateObserver(const AName: string; AJson: TJsonValue);
+begin
+  TMVCBrObservable.DefaultContainer.Send(AName, AJson);
+end;
+
+class procedure TMVCBr.UpdateObserver(AJson: TJsonValue);
+begin
+  TMVCBrObservable.DefaultContainer.Send(AJson);
+end;
+
 class procedure TMVCBr.SetProperty(AInstance: TObject; APropertyNome: string;
   AValue: TValue);
 var
@@ -752,6 +892,22 @@ begin
   end;
 end;
 
+class procedure TMVCBr.UnRegisterObserver(const AName: string);
+begin
+  TMVCBrObservable.DefaultContainer.UnRegister(AName, nil);
+end;
+
+class procedure TMVCBr.UnRegisterObserver(AName: string;
+  AObserver: IMVCBrObserver);
+begin
+  TMVCBrObservable.DefaultContainer.UnRegister(AName, AObserver);
+end;
+
+class procedure TMVCBr.UnRegisterObserver(AObserver: IMVCBrObserver);
+begin
+  TMVCBrObservable.DefaultContainer.UnRegister(AObserver);
+end;
+
 { TMVCFactoryAbstract }
 
 function TMVCFactoryAbstract.AsType<TInterface>: TInterface;
@@ -765,7 +921,7 @@ begin
 end;
 
 var
-  LFactoryCount: Integer = 0;
+  LFactoryCount: integer = 0;
 
 constructor TMVCFactoryAbstract.Create;
 begin
@@ -825,6 +981,17 @@ begin
     Obj.DisposeOf;
 end;
 
+procedure TMVCFactoryAbstract.RegisterObserver(const AName: string);
+begin
+   RegisterObserver(AName,self);
+end;
+
+procedure TMVCFactoryAbstract.RegisterObserver(const AName: String;
+  AObserver: IMVCBrObserver);
+begin
+  TMVCBr.RegisterObserver(AName, AObserver);
+end;
+
 procedure TMVCFactoryAbstract.SetID(const AID: string);
 begin
   FID := AID;
@@ -842,12 +1009,41 @@ begin
   System.TMonitor.exit(FLock);
 end;
 
+procedure TMVCFactoryAbstract.UnRegisterObserver(AObserver: IMVCBrObserver);
+begin
+   TMVCBr.UnRegisterObserver(AObserver);
+end;
+
+procedure TMVCFactoryAbstract.UnRegisterObserver(const AName: String);
+begin
+  TMVCBr.UnRegisterObserver(AName);
+end;
+
+procedure TMVCFactoryAbstract.UnRegisterObserver(const AName: string;
+  AObserver: IMVCBrObserver);
+begin
+  TMVCBr.UnRegisterObserver(AName, AObserver);
+end;
+
+
+procedure TMVCFactoryAbstract.Update(AJsonValue: TJsonValue;
+  var AHandled: boolean);
+begin
+
+end;
+
+procedure TMVCFactoryAbstract.UpdateObserver(const AName: string;
+  AJsonValue: TJsonValue);
+begin
+  TMVCBr.UpdateObserver(AName, AJsonValue);
+end;
+
 { TMVCInterfacedList<T> }
 
 procedure TMVCInterfacedList<TInterface>.ForEach(AGuid: TGuid;
   AProc: TProc<TInterface>);
 var
-  I: Integer;
+  I: integer;
   intf: TInterface;
 begin
   if assigned(AProc) then
@@ -856,6 +1052,11 @@ begin
       supports(Items[I], AGuid, intf);
       AProc(intf);
     end;
+end;
+
+procedure TMVCFactoryAbstract.RegisterObserver(AObserver: IMVCBrObserver);
+begin
+  TMVCBr.RegisterObserver(AObserver);
 end;
 
 { TInterfaceAdapter }

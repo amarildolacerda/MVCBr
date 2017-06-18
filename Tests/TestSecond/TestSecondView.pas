@@ -23,12 +23,16 @@ uses
   MVCBr.View, MVCBr.FormView, MVCBr.Controller;
 
 type
+
+  TTestSecondView = class;
+
   /// Interface para a VIEW
   ITestSecondView = interface(IView)
     ['{38EC34E3-568C-4FC4-B7C5-4240C45D27C9}']
     // incluir especializacoes aqui
-    function getStubInt:integer;
-    function GetStubString:string;
+    function getStubInt: integer;
+    function GetStubString: string;
+    function ThisAs: TTestSecondView;
   end;
 
   /// Object Factory que implementa a interface da VIEW
@@ -37,6 +41,7 @@ type
     procedure FormFactoryViewEvent(AMessage: TJSONValue; var AHandled: Boolean);
   private
     FInited: Boolean;
+    FCountRef: integer;
   protected
     procedure Init;
     function Controller(const aController: IController): IView; override;
@@ -48,15 +53,21 @@ type
     function ViewAs: ITestSecondView;
     function ShowView(const AProc: TProc<IView>): integer; override;
     function UpdateView: IView; override;
-    function getStubInt:integer;
-    function GetStubString:string;
-    function GetShowModalStub:boolean;
+    function getStubInt: integer;
+    function GetStubString: string;
+    function GetShowModalStub: Boolean;
+    procedure Update(AJson: TJSONValue; var AHandled: boolean); override;
   end;
 
 Implementation
 
 {$R *.DFM}
 
+procedure TTestSecondView.Update(AJson: TJSONValue; var AHandled: boolean);
+begin
+  // inherited;
+  inc(FCountRef);
+end;
 
 function TTestSecondView.UpdateView: IView;
 begin
@@ -88,28 +99,28 @@ end;
 procedure TTestSecondView.FormFactoryViewEvent(AMessage: TJSONValue;
   var AHandled: Boolean);
 begin
-     AHandled := true;
+  AHandled := true;
 end;
 
-function TTestSecondView.GetShowModalStub: boolean;
+function TTestSecondView.GetShowModalStub: Boolean;
 begin
-   result := true;
+  result := true;
 end;
 
 function TTestSecondView.getStubInt: integer;
 begin
-  result := 1;
+  result := FCountRef;
 end;
 
 function TTestSecondView.GetStubString: string;
 begin
-   result := 'test';
+  result := 'test';
 end;
 
 procedure TTestSecondView.Init;
 begin
   // incluir incializações aqui
-
+  FCountRef := 1;
 
 end;
 

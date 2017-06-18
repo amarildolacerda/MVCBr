@@ -67,7 +67,7 @@ type
   /// TFormFactory é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr
   /// </summary>
   TCustomFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
-    IMVCBrBase, IView)
+    IMVCBrBase, IView, IMVCBrObserver)
   private
     FEventRef: Integer;
     FID: string;
@@ -116,6 +116,8 @@ type
       overload; virtual;
     function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView;
       overload; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
+      overload; virtual;
     function MainViewEvent(AMessage: string; var AHandled: boolean)
       : IView; virtual;
     function ViewEventOther(AMessage: string; var AHandled: boolean): IView;
@@ -159,6 +161,15 @@ type
     /// Evento para atualizar os dados da VIEW
     function UpdateView: IView; virtual;
 
+    procedure UpdateObserver(AJson: TJsonValue); overload; virtual;
+    procedure UpdateObserver(AName: string; AJson: TJsonValue);
+      overload; virtual;
+    procedure UpdateObserver(AName: string; AMensagem: String);
+      overload; virtual;
+    function Observable: IMVCBrObservable; virtual;
+    procedure RegisterObserver(const AName: String);
+    procedure UnRegisterObserver(const AName: String);
+
     property Text: string read GetTitle write SetTitle;
 
 {$IFDEF LINUX}
@@ -176,10 +187,10 @@ type
 
   TFormFactory = class(TCustomFormFactory)
   published
-{$ifdef LINUX}
-{$else}
+{$IFDEF LINUX}
+{$ELSE}
     property OnClose;
-{$endif}
+{$ENDIF}
     property OnViewEvent;
     property OnViewCommand;
     property OnViewUpdate;
@@ -300,6 +311,11 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
+procedure TCustomFormFactory.RegisterObserver(const AName: String);
+begin
+  TMVCBr.RegisterObserver(AName, self);
+end;
+
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
 begin
   result := FController.This.ResolveController(IID);
@@ -340,7 +356,6 @@ begin
   FOnViewUpdate := Value;
 end;
 
-
 {$IFDEF LINUX}
 {$ELSE}
 
@@ -348,7 +363,6 @@ procedure TCustomFormFactory.SetOnClose(const Value: TCloseEvent);
 begin
   FOnClose := Value;
 end;
-
 
 procedure TCustomFormFactory.DoCloseView(Sender: TObject;
   var ACloseAction: TCloseAction);
@@ -436,6 +450,11 @@ function TCustomFormFactory.MainViewEvent(AMessage: string;
   var AHandled: boolean): IView;
 begin
   ApplicationController.MainView.ViewEvent(AMessage, AHandled);
+end;
+
+function TCustomFormFactory.Observable: IMVCBrObservable;
+begin
+  result := TMVCBr.Observable;
 end;
 
 procedure TCustomFormFactory.SetPropertyValue(ANome: string;
@@ -545,6 +564,40 @@ end;
 function TCustomFormFactory.This: TObject;
 begin
   result := self;
+end;
+
+procedure TCustomFormFactory.UnRegisterObserver(const AName: String);
+begin
+  TMVCBr.UnRegisterObserver(AName, self);
+end;
+
+procedure TCustomFormFactory.Update(AJsonValue: TJsonValue;
+var AHandled: boolean);
+begin
+  ViewEvent(AJsonValue, AHandled);
+end;
+
+procedure TCustomFormFactory.UpdateObserver(AName, AMensagem: String);
+var
+  j: TJsonObject;
+begin
+  j := TJsonObject.Create;
+  try
+    j.addPair('message', AMensagem);
+    UpdateObserver(AName, j);
+  finally
+    j.free;
+  end;
+end;
+
+procedure TCustomFormFactory.UpdateObserver(AName: string; AJson: TJsonValue);
+begin
+  TMVCBr.UpdateObserver(AName, AJson);
+end;
+
+procedure TCustomFormFactory.UpdateObserver(AJson: TJsonValue);
+begin
+  TMVCBr.UpdateObserver(AJson);
 end;
 
 function TCustomFormFactory.UpdateView: IView;

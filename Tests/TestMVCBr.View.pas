@@ -55,11 +55,19 @@ type
     procedure TestFindController;
     procedure TestIsModel;
     procedure TestChamarViewSecundaria;
+
+    procedure TestRegisterObserver;
+    procedure TestUnRegisterObserverNamed;
+    procedure TestUnRegisterObserverNamedOnly;
+    procedure TesteObserver;
+
   end;
 
 implementation
 
-uses  testSecond.Controller.Interf, TestView.Controller.Interf, MVCBr.ApplicationController, TestView.Controller, system.Json, test.Controller.Interf, test.Model.Interf;
+uses testSecond.Controller.Interf, TestView.Controller.Interf,
+  MVCBr.ApplicationController, TestView.Controller, system.Json,
+  test.Controller.Interf, test.Model.Interf;
 
 procedure TestTViewFactory.SetUp;
 var
@@ -124,12 +132,12 @@ var
   Controller: IController;
 begin
   FFormFactory := TTestSecondView.create(nil);
-  Controller := TTestViewController.New(FFormFactory,nil);
+  Controller := TTestViewController.New(FFormFactory, nil);
 end;
 
 procedure TestTFormFactory.TearDown;
 begin
-//  FFormFactory.Free;
+  // FFormFactory.Free;
   FFormFactory := nil;
 end;
 
@@ -168,7 +176,8 @@ var
 begin
   // TODO: Setup method call parameters
   FFormFactory.PropertyValue['isShowModal'] := true;
-  CheckTrue(TTestSecondView(FFormFactory.This).isShowModal, 'Não alterou o ShowModal');
+  CheckTrue(TTestSecondView(FFormFactory.This).isShowModal,
+    'Não alterou o ShowModal');
   ReturnValue := TTestSecondView(FFormFactory.This).InvokeMethod<Boolean>
     ('GetShowModalStub', []);
   CheckTrue(ReturnValue, 'Não funcionou RTTI');
@@ -177,38 +186,46 @@ end;
 
 procedure TestTFormFactory.TestIsModel;
 begin
-  checkTrue( FFormFactory.GetController.IsModel(itestModel  ),'Não achei IsModel');
+  CheckTrue(FFormFactory.GetController.IsModel(itestModel),
+    'Não achei IsModel');
 end;
 
 procedure TestTFormFactory.TestProcurarModelEmUmController;
-var inf:ITestModel;
-    ctrl:ITestViewController;
+var
+  inf: itestModel;
+  ctrl: ITestViewController;
 begin
-    ApplicationController.SetMainView(FFormFactory);
-    checkNotNull(ApplicationController.MainView,'Não incializou o form principal');
+  ApplicationController.SetMainView(FFormFactory);
+  checkNotNull(ApplicationController.MainView,
+    'Não incializou o form principal');
 
-   inf := FFormFactory.GetModel( itestModel  ) as ITestModel;
-   checkNotNull(inf,'Não encontrou o model instanciado no controller');
+  inf := FFormFactory.GetModel(itestModel) as itestModel;
+  checkNotNull(inf, 'Não encontrou o model instanciado no controller');
 
-   ctrl := applicationController.ResolveController(ITestViewController) as ITestViewController;
-   checkNotNull(ctrl,'Não encontrou o controller desejado');
+  ctrl := ApplicationController.ResolveController(ITestViewController)
+    as ITestViewController;
+  checkNotNull(ctrl, 'Não encontrou o controller desejado');
 
-   checknotNull(ctrl.GetView,'Não incialicou o VIEW');
+  checkNotNull(ctrl.GetView, 'Não incialicou o VIEW');
 
+  inf := ctrl.GetModel(itestModel) as itestModel;
+  checkNotNull(inf, 'Não encontrou o model instanciado no controller');
 
-   inf := ctrl.GetModel( itestModel  ) as ITestModel;
-   checkNotNull(inf,'Não encontrou o model instanciado no controller');
+end;
 
-
-
-
+procedure TestTFormFactory.TestRegisterObserver;
+var
+  obs: IMVCBrObserver;
+begin
+  supports(FFormFactory.This, IMVCBrObserver, obs);
+  TMVCBr.RegisterObserver('x', obs);
 end;
 
 procedure TestTFormFactory.TestResolveController;
 var
   i: ITestController;
 begin
-  i := TTestSecondView(FFormFactory.this).ResolveController<ITestController>;
+  i := TTestSecondView(FFormFactory.This).ResolveController<ITestController>;
   checkNotNull(i, 'Não retornou a interface do controller');
   CheckTrue(i.This.InheritsFrom(TControllerFactory),
     'Não herdou de TControllerFactory');
@@ -224,6 +241,24 @@ begin
   ReturnValue := FFormFactory.ShowView(AProc);
 
   // TODO: Validate method results
+end;
+
+procedure TestTFormFactory.TestUnRegisterObserverNamed;
+var
+  obs: IMVCBrObserver;
+begin
+  supports(FFormFactory.This, IMVCBrObserver, obs);
+  TMVCBr.RegisterObserver('x', obs);
+  TMVCBr.UnRegisterObserver('x', obs);
+end;
+
+procedure TestTFormFactory.TestUnRegisterObserverNamedOnly;
+var
+  obs: IMVCBrObserver;
+begin
+  supports(FFormFactory.This, IMVCBrObserver, obs);
+  TMVCBr.RegisterObserver('y', obs);
+  TMVCBr.UnRegisterObserver('y');
 end;
 
 procedure TestTFormFactory.TestUpdate;
@@ -246,21 +281,38 @@ begin
   CheckTrue(LHandled, 'Não encontrou o evento');
 end;
 
+procedure TestTFormFactory.TesteObserver;
+var
+  obs: IMVCBrObserver;
+  ref: Integer;
+begin
+  supports(FFormFactory.This, IMVCBrObserver, obs);
+  TMVCBr.RegisterObserver('x', obs);
+  ref := FFormFactory.getStubInt;
+  TMVCBr.UpdateObserver('x', nil );
+
+  CheckTrue(FFormFactory.getStubInt>ref,'Não chamou o evento do Observer' );
+
+  TMVCBr.UnRegisterObserver('x', obs);
+end;
+
 procedure TestTFormFactory.TestFindController;
 begin
-   checkNotNull(ApplicationController.FindController(ITestViewController),'Não achou o controller com findController');
+  checkNotNull(ApplicationController.FindController(ITestViewController),
+    'Não achou o controller com findController');
 end;
 
 procedure TestTFormFactory.TestChamarViewSecundaria;
-var ctrl:IController;
-    itf:ITestSecondView;
+var
+  ctrl: IController;
+  itf: ITestSecondView;
 begin
-   ctrl := FFormFactory.GetController.resolveController(ITestSecondController);
-   checknotNull( ctrl,'Não achei o segundo controller');
-   checkNotNull(ctrl.GetView,'Não iniciou o segundo VEIW');
+  ctrl := FFormFactory.GetController.ResolveController(ITestSecondController);
+  checkNotNull(ctrl, 'Não achei o segundo controller');
+  checkNotNull(ctrl.GetView, 'Não iniciou o segundo VEIW');
 
-   itf := ctrl.getView as ITestSecondView;
-   checkTrue(itf.GetStubString='test','Não obteve GetStubString');
+  itf := ctrl.GetView as ITestSecondView;
+  CheckTrue(itf.GetStubString = 'test', 'Não obteve GetStubString');
 
 end;
 
