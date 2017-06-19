@@ -24,32 +24,62 @@
 { }
 { *************************************************************************** }
 
-unit MVCBr.Observer;
+unit MVCBr.Patterns.Decorator;
 
 interface
 
-uses System.Json, MVCBr.Interf;
+uses System.Classes,System.SysUtils;
 
 Type
 
-  TMCVBrObserver = class(TInterfacedObject, IMVCBrObserver)
+  IMVCBrDecorator = interface
+    ['{09068FF3-F838-4A09-BFDE-6E71174AF130}']
+    function This:TObject;
+  end;
+
+  TMVCBrDecorator<T> = class(TInterfacedObject, IMVCBrDecorator)
+  private
+    FDecorator: T;
+    FLock: TObject;
   public
+    constructor create(ADecorator: T);
+    destructor destroy; override;
     function This: TObject; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); virtual;
+    function Lock: T; virtual;
+    procedure UnLock; virtual;
   end;
 
 implementation
 
-{ TMCVBrObserver }
+{ TMVCBrDecorator<T> }
 
-function TMCVBrObserver.This: TObject;
+constructor TMVCBrDecorator<T>.create(ADecorator: T);
+begin
+  inherited create;
+  FLock := TObject.create;
+  FDecorator := ADecorator;
+end;
+
+destructor TMVCBrDecorator<T>.destroy;
+begin
+  FLock.free;
+  inherited;
+end;
+
+function TMVCBrDecorator<T>.Lock: T;
+begin
+  TMonitor.enter(FLock);
+  result := FDecorator;
+end;
+
+function TMVCBrDecorator<T>.This: TObject;
 begin
   result := self;
 end;
 
-procedure TMCVBrObserver.Update(AJsonValue: TJsonValue; var AHandled: boolean);
+procedure TMVCBrDecorator<T>.UnLock;
 begin
-
+  TMonitor.exit(FLock);
 end;
 
 end.

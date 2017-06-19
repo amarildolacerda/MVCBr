@@ -75,6 +75,7 @@ interface
 uses System.Classes, System.SysUtils, System.Generics.Collections,
   System.JSON, {$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
 {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
+  MVCBr.Patterns.Factory, MVCBr.Patterns.Adapter,
   System.TypInfo, System.RTTI;
 
 type
@@ -147,9 +148,6 @@ type
   TMVCRegister = TMVCBr;
   /// compatibilidade
 
-  IInterfaceAdapter = interface
-    ['{9075BA8D-80EE-4F4F-BE43-3B5F5BAB406F}']
-  end;
 
   IApplicationController = interface;
 
@@ -186,7 +184,7 @@ type
   /// <summary>
   /// Abstract wrapper for TMVCBrObserverItem
   /// </summary>
-  TMVCBrObserverItemAbstract = class(TInterfacedObject, IMVCBrObserverItem)
+  TMVCBrObserverItemAbstract = class(TMVCBrFactory, IMVCBrObserverItem)
   public
     procedure SetTopic(const Value: string); virtual; abstract;
     function GetTopic: string; virtual; abstract;
@@ -226,18 +224,16 @@ type
 
   /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns
   /// a todos as classes Factories
-  TMVCFactoryAbstract = class(TInterfacedObject, IMVCBrBase, IMVCBrObserver)
+  TMVCFactoryAbstract = class(TMVCBrFactory, IMVCBrBase, IMVCBrObserver)
   private
     FID: string;
-    FLock: TObject;
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
   protected
     procedure SetID(const AID: string); virtual;
 
   public
-    Function Lock: TMVCFactoryAbstract;
-    procedure UnLock;
+    Function Lock: TMVCFactoryAbstract;virtual;
     constructor Create; virtual;
     destructor Destroy; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
@@ -284,7 +280,11 @@ type
     procedure SetOwner(const AOwner: TComponent); virtual;
   end;
 
-  TInterfaceAdapter = class(TInterfacedObject, IInterfaceAdapter)
+  IInterfaceAdapter = interface(IMVCBrAdapter)
+    ['{EF8A7B2A-F5EC-4675-8E36-A6091820AB0A}']
+  end;
+
+  TInterfaceAdapter = class(TMVCBrAdapter,IInterfaceAdapter)
   private
     FClass: TClass;
     FGuid: TGuid;
@@ -567,6 +567,8 @@ type
   IOrmModel = Interface(IModel)
     ['{043D4745-9F20-4BFD-94AF-5727357A50B5}']
   End;
+
+
 
 procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true); overload;
@@ -930,14 +932,12 @@ var
 constructor TMVCFactoryAbstract.Create;
 begin
   inherited;
-  FLock := TObject.Create;
   inc(LFactoryCount);
   FID := ClassName + '_' + intToStr(LFactoryCount);
 end;
 
 destructor TMVCFactoryAbstract.Destroy;
 begin
-  FLock.DisposeOf;
   inherited;
 end;
 
@@ -965,7 +965,7 @@ end;
 function TMVCFactoryAbstract.Lock: TMVCFactoryAbstract;
 begin
   result := self;
-  System.TMonitor.Enter(FLock);
+  inherited Lock;
 end;
 
 function TMVCFactoryAbstract.ApplicationControllerInternal
@@ -1008,10 +1008,6 @@ begin
   TMVCBr.SetProperty(self, ANome, Value);
 end;
 
-procedure TMVCFactoryAbstract.UnLock;
-begin
-  System.TMonitor.exit(FLock);
-end;
 
 procedure TMVCFactoryAbstract.UnRegisterObserver(AObserver: IMVCBrObserver);
 begin

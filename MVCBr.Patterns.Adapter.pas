@@ -23,33 +23,53 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-
-unit MVCBr.Observer;
+unit MVCBr.Patterns.Adapter;
 
 interface
 
-uses System.Json, MVCBr.Interf;
+type
 
-Type
-
-  TMCVBrObserver = class(TInterfacedObject, IMVCBrObserver)
-  public
-    function This: TObject; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); virtual;
+  IMVCBrAdapter = interface
+    ['{9075BA8D-80EE-4F4F-BE43-3B5F5BAB406F}']
+    function This: TObject;
   end;
+
+  TMVCBrAdapter = class(TInterfacedObject, IMVCBrAdapter)
+  private
+  public
+    function This: TObject;
+  end;
+
+  TMVCBrAdapter<T> = class(TMVCBrAdapter)
+    private
+       FAdapter : T;
+    public
+      constructor Create( AObject:T );
+      function Adapter:T;
+  end;
+
 
 implementation
 
-{ TMCVBrObserver }
+{ TMVCBrAdapter }
 
-function TMCVBrObserver.This: TObject;
+
+function TMVCBrAdapter.This: TObject;
 begin
   result := self;
 end;
 
-procedure TMCVBrObserver.Update(AJsonValue: TJsonValue; var AHandled: boolean);
-begin
+{ TMVCBrAdapter<T> }
 
+function TMVCBrAdapter<T>.Adapter: T;
+begin
+   result := FAdapter;
+end;
+
+constructor TMVCBrAdapter<T>.Create(AObject: T);
+begin
+    inherited create;
+    FAdapter := AObject;
 end;
 
 end.

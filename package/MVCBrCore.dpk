@@ -61,7 +61,11 @@ contains
   MVCBr.ValidateModel in '..\MVCBr.ValidateModel.pas',
   MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
   MVCBr.Observable in '..\MVCBr.Observable.pas',
-  MVCBr.Observer in '..\MVCBr.Observer.pas';
+  MVCBr.Observer in '..\MVCBr.Observer.pas',
+  MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
+  MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
+  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
+  MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas';
 
 end.
 

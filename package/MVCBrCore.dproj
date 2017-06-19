@@ -178,6 +178,10 @@
         <DCCReference Include="..\MVCBr.ViewModel.pas"/>
         <DCCReference Include="..\MVCBr.Observable.pas"/>
         <DCCReference Include="..\MVCBr.Observer.pas"/>
+        <DCCReference Include="..\MVCBr.Patterns.Adapter.pas"/>
+        <DCCReference Include="..\MVCBr.Patterns.Decorator.pas"/>
+        <DCCReference Include="..\MVCBr.Patterns.Factory.pas"/>
+        <DCCReference Include="..\MVCBr.Patterns.States.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

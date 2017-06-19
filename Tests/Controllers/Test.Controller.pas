@@ -13,7 +13,8 @@ interface
 
 { .$I ..\inc\mvcbr.inc }
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, MVCBr.Interf,
+  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
+  System.Classes, MVCBr.Interf,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
   Test.Controller.Interf,
   System.RTTI;
@@ -22,7 +23,7 @@ type
   TTestController = class(TControllerFactory, ITestController,
     IThisAs<TTestController> { , IModelAs<ITestViewModel> } )
   protected
-    FContador:integer;
+    FContador: integer;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
   public
@@ -38,7 +39,7 @@ type
     procedure init; override;
     // function ModelAs: ITestViewModel;
 
-    function GetStubInt:Integer;
+    function GetStubInt: integer;
     procedure IncContador;
   end;
 
@@ -96,14 +97,14 @@ begin
   inherited;
 end;
 
-function TTestController.GetStubInt: Integer;
+function TTestController.GetStubInt: integer;
 begin
-   result := FContador;
+  result := FContador;
 end;
 
 procedure TTestController.IncContador;
 begin
-   inc(FContador);
+  inc(FContador);
 end;
 
 procedure TTestController.init;

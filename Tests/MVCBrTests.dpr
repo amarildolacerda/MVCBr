@@ -31,7 +31,12 @@ uses
   TestViewView in 'TestView\TestViewView.pas' {TestViewView},
   TestSecond.Controller.Interf in 'TestSecond\TestSecond.Controller.Interf.pas',
   TestSecond.Controller in 'TestSecond\TestSecond.Controller.pas',
-  TestSecondView in 'TestSecond\TestSecondView.pas' {TestSecondView};
+  TestSecondView in 'TestSecond\TestSecondView.pas' {TestSecondView},
+  MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
+  MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas',
+  TestMVCBr.Patterns in 'TestMVCBr.Patterns.pas',
+  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
+  MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas';
 
 {$R *.RES}
 
