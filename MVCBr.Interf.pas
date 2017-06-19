@@ -354,6 +354,12 @@ type
     procedure AfterInit;
   end;
 
+  TModelFactoryAbstract = class(TMVCOwnedInterfacedObject)
+
+  end;
+
+  TModelFactoryAbstractClass = class of TModelFactoryAbstract;
+
   IModelAs<TInterface: IInterface> = interface
     ['{2272BBD1-26B9-4F75-A820-E66AB4A16E86}']
     function ModelAs: TInterface;
@@ -481,6 +487,7 @@ type
     Function ResolveController(const ANome: string): IController; overload;
     Function ResolveController<TInterface>: TInterface; overload;
     class procedure RevokeInstance(const AII: IInterface); overload; virtual;
+    function AttachModel(const AModel:IModel):integer;virtual;
   end;
 
   TControllerClass = class of TControllerAbstract;
@@ -497,6 +504,7 @@ type
     function IsModel(AIModel: TGuid): boolean;
     function ApplicationControllerInternal: IApplicationController;
     function GetView: IView; overload;
+    procedure SetView(AView:IView);
     function ShowView: IView; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>;
       Const AProcOnClose: TProc<IView>): IView; overload;
@@ -511,6 +519,7 @@ type
     function GetModel(const IID: TGuid): IModel; overload;
     function This: TControllerAbstract;
     function Start: IController;
+    function AttachModel(const AModel:IModel):integer;
   end;
 
   IViewModelAs<TInterface: IInterface> = interface
@@ -629,6 +638,13 @@ begin
 end;
 
 { TControllerAbstract }
+
+function TControllerAbstract.AttachModel(const AModel: IModel): integer;
+begin
+  result := -1;
+  FModels.Add(AModel);
+  result := FModels.count -1;
+end;
 
 constructor TControllerAbstract.Create;
 begin

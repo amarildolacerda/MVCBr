@@ -86,10 +86,12 @@ type
     procedure BeforeInit; virtual;
     procedure AfterInit; virtual;
     function GetView: IView; virtual;
+    procedure SetView(AView:IView);virtual;
     function View(const AView: IView): IController; virtual;
     function This: TControllerAbstract; virtual;
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
+    function AttachModel(const AModel:IModel):integer;override;
     function IndexOf(const AModel: IModel): integer; virtual;
     function IndexOfModelType(const AModelType: TModelType): integer; virtual;
     procedure Delete(const Index: integer); virtual;
@@ -125,30 +127,8 @@ end;
 {$ENDIF}
 
 function TControllerFactory.Add(const AModel: IModel): integer;
-var
-  vm: IViewModel;
-  v: IView;
 begin
-  result := -1;
-  if not assigned(AModel) then
-    exit;
-  AModel.Controller(self);
-  FModels.Add(AModel);
-  result := FModels.Count - 1;
-
-  if mtViewModel in AModel.ModelTypes then
-  begin
-    if supports(AModel.This, IViewModel, vm) then
-    begin
-      v := GetView;
-      if assigned(v) then
-      begin
-        vm.View(v);
-        v.SetViewModel(vm);
-      end;
-    end;
-  end;
-
+   result := AttachModel(AModel);
 end;
 
 procedure TControllerFactory.BeforeInit;
@@ -367,6 +347,11 @@ begin
   FID := AID;
 end;
 
+procedure TControllerFactory.SetView(AView: IView);
+begin
+   View(AView);
+end;
+
 function TControllerFactory.ShowView(const AProcBeforeShow,
   AProcOnClose: TProc<IView>): IView;
 begin
@@ -427,6 +412,32 @@ begin
   ac := ApplicationControllerInternal;
   if assigned(ac) then
     result := TApplicationController(ac.This);
+end;
+
+function TControllerFactory.AttachModel(const AModel: IModel): integer;
+var
+  vm: IViewModel;
+  v: IView;
+begin
+  result := -1;
+  if not assigned(AModel) then
+    exit;
+  result := inherited attachModel(AModel);
+  AModel.Controller(self);
+
+  if mtViewModel in AModel.ModelTypes then
+  begin
+    if supports(AModel.This, IViewModel, vm) then
+    begin
+      v := GetView;
+      if assigned(v) then
+      begin
+        vm.View(v);
+        v.SetViewModel(vm);
+      end;
+    end;
+  end;
+
 end;
 
 function TControllerFactory.This: TControllerAbstract;

@@ -36,7 +36,7 @@ type
 
   TModelFactoryClass = class of TModelFactory;
 
-  TModelFactory = class(TMVCOwnedInterfacedObject, IModel)
+  TModelFactory = class( TModelFactoryAbstract, IModel)
   private
     FID: string;
     FModelTypes: TModelTypes;

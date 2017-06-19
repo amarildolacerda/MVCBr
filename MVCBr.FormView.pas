@@ -127,6 +127,11 @@ type
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
     function GetController: IController; virtual;
+    function AttachController(AInterface: TGuid): IController;
+      overload; virtual;
+    function AttachController<TIController: IController>: TIController;
+      overload;
+    function AttachModel<TIModel:IModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
     /// Retorna o SELF
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
@@ -309,6 +314,31 @@ function TCustomFormFactory.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
+end;
+
+function TCustomFormFactory.AttachController(AInterface: TGuid): IController;
+begin
+  result := ApplicationController.ResolveController(AInterface) as IController;
+  result.View(self);
+  SetController(result);
+end;
+
+function TCustomFormFactory.AttachController<TIController>: TIController;
+var
+  AGuid: TGuid;
+begin
+  AGuid := TMVCBr.GetGuid<TIController>;
+  result := AttachController(AGuid);
+end;
+
+function TCustomFormFactory.AttachModel<TIModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
+var o:TObject;
+    AGuid:TGuid;
+begin
+  o := aModelClass.Create;
+  AGuid := TMVCBr.GetGuid<TIModel>;
+  Supports(o,AGuid,result);
+  GetController.AttachModel(result);
 end;
 
 procedure TCustomFormFactory.RegisterObserver(const AName: String);

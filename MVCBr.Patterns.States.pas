@@ -37,7 +37,7 @@ Type
   IMVCBrStateStep = interface
     ['{09707154-F172-4F76-B9A5-AECAF48A2F71}']
     function This: TObject;
-    procedure execute;
+    procedure Execute;
   end;
 
   TDelegateSteps = TProc<IMVCBrStateStep>;
@@ -48,7 +48,7 @@ Type
   TMVCBrStateStep = class(TInterfacedObject, IMVCBrStateStep)
   public
     function This: TObject; virtual;
-    procedure execute; virtual;
+    procedure Execute; virtual;
   end;
 
   /// <summary>
