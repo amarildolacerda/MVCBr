@@ -1,9 +1,9 @@
-{//************************************************************//}
-{//         Projeto MVCBr                                      //}
-{//         tireideletra.com.br  / amarildo lacerda            //}
-{//************************************************************//}
-{// Data: 03/03/2017                                           //}
-{//************************************************************//}
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit oData.ProxyBase;
 
 interface
@@ -21,15 +21,21 @@ type
     function getInLineCount: integer;
   protected
     FCTX: TWebContext;
+    [unsafe]
     FODataParse: IODataParse;
     FInLineRecordCount: integer;
     function This: TObject;
+    procedure Release;
 
-    function ExecuteGET(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject; virtual;
-    function ExecuteDELETE(ABody:string; var JSONResponse: TJSONObject):Integer;virtual;
-    function ExecutePOST(ABody:string; var JSON:TJsonObject):Integer;virtual;
-    function ExecutePATCH(ABody:string;var JSON:TJSONObject):Integer;virtual;
-    function ExecuteOPTIONS(var JSON:TJSONObject):Integer;virtual;
+    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJSONObject)
+      : TObject; virtual;
+    function ExecuteDELETE(ABody: string; var JSONResponse: TJSONObject)
+      : integer; virtual;
+    function ExecutePOST(ABody: string; var JSON: TJSONObject)
+      : integer; virtual;
+    function ExecutePATCH(ABody: string; var JSON: TJSONObject)
+      : integer; virtual;
+    function ExecuteOPTIONS(var JSON: TJSONObject): integer; virtual;
 
     procedure CreateExpandCollections(AQuery: TObject); virtual;
 
@@ -43,7 +49,8 @@ type
       Write SetInLineRecordCount;
     function DialectClass: TODataDialectClass; virtual;
 
-    constructor create(); virtual;
+    constructor Create(); virtual;
+    destructor Destroy; override;
     procedure DecodeODataURL(CTX: TObject); virtual;
     function GetCollection(AName: string): string;
   end;
@@ -63,10 +70,11 @@ begin
 
 end;
 
-constructor TODataBase.create();
+constructor TODataBase.Create();
 begin
-  inherited create;
-  FAdapterAPI := DialectClass.create;
+  inherited Create;
+  FAdapterAPI := DialectClass.Create;
+  FODataParse := TODataParse.Create;
 
 end;
 
@@ -80,25 +88,32 @@ begin
   FCTX := CTX as TWebContext;
 end;
 
+destructor TODataBase.Destroy;
+begin
+  FODataParse := nil;
+  FAdapterAPI := nil;
+  inherited;
+end;
+
 function TODataBase.DialectClass: TODataDialectClass;
 begin
   result := TODataDialect;
 end;
 
-
-function TODataBase.ExecuteDELETE(ABody:string; var JSONResponse: TJSONObject): Integer;
-begin
-   result := 0;
-end;
-
-function TODataBase.ExecutePATCH(ABody: string; var JSON: TJSONObject): Integer;
+function TODataBase.ExecuteDELETE(ABody: string;
+  var JSONResponse: TJSONObject): integer;
 begin
   result := 0;
 end;
 
-function TODataBase.ExecutePOST(ABody: string;var JSON:TJSONObject): Integer;
+function TODataBase.ExecutePATCH(ABody: string; var JSON: TJSONObject): integer;
 begin
-   result := 0;
+  result := 0;
+end;
+
+function TODataBase.ExecutePOST(ABody: string; var JSON: TJSONObject): integer;
+begin
+  result := 0;
 end;
 
 function TODataBase.GetCollection(AName: string): string;
@@ -106,21 +121,23 @@ begin
   result := ODataServices.resource(AName).Collection;
 end;
 
-function TODataBase.ExecuteGET(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject;
+function TODataBase.ExecuteGET(AJsonBody: TJsonValue;
+  var JSONResponse: TJSONObject): TObject;
 begin
   result := nil;
 end;
 
-function TODataBase.ExecuteOPTIONS(var JSON: TJSONObject): Integer;
-var s:string;
-    LResource:IJsonODataServiceResource;
+function TODataBase.ExecuteOPTIONS(var JSON: TJSONObject): integer;
+var
+  s: string;
+  LResource: IJsonODataServiceResource;
 begin
-   AdapterAPI.createGETQuery(FODataParse.oData,'',false);
+  AdapterAPI.createGETQuery(FODataParse.oData, '', false);
   LResource := AdapterAPI.GetResource as IJsonODataServiceResource;
   s := LResource.method;
-  if s='' then
-     s := 'GET';
-  JSON.AddPair('allow',s);
+  if s = '' then
+    s := 'GET';
+  JSON.AddPair('allow', s);
 end;
 
 function TODataBase.getInLineCount: integer;
@@ -136,6 +153,12 @@ end;
 function TODataBase.GetParse: IODataParse;
 begin
   result := FODataParse;
+end;
+
+procedure TODataBase.Release;
+begin
+  FAdapterAPI.release;
+  FODataParse.release;
 end;
 
 procedure TODataBase.SetAdapterAPI(const Value: IODataDialect);

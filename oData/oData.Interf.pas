@@ -101,6 +101,7 @@ Type
 
   IODataDialect = interface
     ['{812DB60E-64D7-4290-99DB-F625EC52C6DA}']
+    procedure Release;
     function GetResource: IInterface; overload;
     function createGETQuery(AValue: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string;
@@ -117,6 +118,7 @@ Type
   IODataParse = interface
     ['{10893BDD-CE9A-4F31-BB2E-8DF18EA5A91B}']
     procedure Parse(URL: string);
+    procedure Release;
     function GetOData: IODataDecode;
     property oData: IODataDecode read GetOData; // write SetOData;
   end;
@@ -125,6 +127,7 @@ Type
     ['{61D854AF-4773-4DD2-9648-AD93A4134F13}']
     procedure DecodeODataURL(CTX: TObject);
     function This: TObject;
+    procedure Release;
 
     function ExecuteGET(AJsonBody: TJsonValue;
       var JSONResponse: TJSONObject): TObject;

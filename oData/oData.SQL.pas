@@ -260,7 +260,6 @@ var
   url: string;
 begin
   inherited;
-  FODataParse := TODataParse.create;
   try
     url := FCTX.Request.PathInfo;
     if FCTX.Request.QueryStringParams.Count > 0 then

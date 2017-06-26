@@ -60,6 +60,7 @@ Type
     procedure &and(var Result: string); virtual;
     procedure &or(var Result: string); virtual;
   public
+    procedure Release;
     function Collection: string; virtual;
     function GetResource(AResource: string): IInterface; overload; virtual;
     function Relation(AResource: string; ARelation: String)
@@ -664,6 +665,11 @@ begin
   except
     Result := nil;
   end;
+end;
+
+procedure TODataDialect.Release;
+begin
+
 end;
 
 function TODataDialect.SkipCmdStmt: string;

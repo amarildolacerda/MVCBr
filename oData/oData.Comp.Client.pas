@@ -14,7 +14,6 @@ uses System.Classes, System.RTTI,
   System.SysUtils,
   System.Generics.Collections,
   Data.DB, System.JSON,
-  MVCBr.HTTPRestClient.Common,
   MVCBr.HTTPRestClient;
 
 Type
@@ -87,7 +86,7 @@ Type
     FServicePrefix: string;
     FExpand: string;
     FOrder: string;
-    FRestClient: TMVCBrHttpRestClientAbstract;
+    FRestClient: THTTPRestClient;
     FURI: string;
     FAfterExecute, FBeforeExecute, FOnBeforeApplyUpdate, FOnAfterApplyUpdate: TNotifyEvent;
     procedure SetSelect(const Value: string);
@@ -100,7 +99,7 @@ Type
     procedure SetServicePrefix(const Value: string);
     procedure SetExpand(const Value: string);
     procedure AddSqlResource(var Result: string; AResource: TODataResourceItem);
-    procedure SetRestClient(const Value: TMVCBrHttpRestClientAbstract);
+    procedure SetRestClient(const Value: THTTPRestClient);
     procedure SetOnBeforeApplyUpdate(const Value: TNotifyEvent);
     procedure SetOnAfterApplyUpdate(const Value: TNotifyEvent);
     procedure WriteOnBeforeApplyUpdate(const Value: TNotifyEvent);
@@ -122,7 +121,7 @@ Type
     function execute(AProc: TProc; AResource: String): boolean; overload; virtual;
     function ApplyUpdates(AChanges: TJsonArray; AMethod: THTTPRestMethod = rmPATCH): boolean; virtual;
     property URI: string read FURI;
-    property RestClient: TMVCBrHttpRestClientAbstract read FRestClient write SetRestClient;
+    property RestClient: THTTPRestClient read FRestClient write SetRestClient;
     property BaseURL: string read FBaseURL write SetBaseURL;
     property ServicePrefix: string read FServicePrefix write SetServicePrefix;
     property Service: string read FService write SetService;
@@ -369,7 +368,7 @@ begin
 
 end;
 
-procedure TODataCustomBuilder.SetRestClient(const Value: TMVCBrHttpRestClientAbstract);
+procedure TODataCustomBuilder.SetRestClient(const Value: THTTPRestClient);
 begin
   FRestClient := Value;
 end;

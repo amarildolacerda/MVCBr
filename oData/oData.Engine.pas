@@ -252,8 +252,10 @@ end;
 
 destructor TODataDecode.destroy;
 begin
+  FParse := nil;
   FLock.Free;
   FExpandItem.Free;
+  FResourceParams := nil;
   inherited;
 end;
 
