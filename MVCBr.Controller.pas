@@ -28,7 +28,8 @@ unit MVCBr.Controller;
 interface
 
 uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
-{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
+{$IFDEF LINUX} {$ELSE}
+{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   System.Generics.Collections, System.JSON,
   System.TypInfo,
 {$IFDEF FMX} FMX.Layouts, {$ENDIF}

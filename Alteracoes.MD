@@ -1,3 +1,8 @@
+26/06/2017 - AL
+   + adicionado procedure release as interface para liberar referencia cruzada
+   * corrigido memory leaks nas classes com referencia cruzada
+   * corrigido servidor mermory leaks
+   
 16/06/2017 - AL
    + adicionado ISAPI para OData
    + adicionado pasta \bin  para os binários
