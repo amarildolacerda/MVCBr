@@ -49,6 +49,7 @@ type
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Release;virtual;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
 
@@ -123,6 +124,12 @@ function TCustomModuleFactory.ID(const AID: String): IModel;
 begin
   result := self as IModel;
   FID := AID;
+end;
+
+procedure TCustomModuleFactory.Release;
+begin
+  inherited;
+
 end;
 
 procedure TCustomModuleFactory.SetModelTypes(const AModelType: TModelTypes);

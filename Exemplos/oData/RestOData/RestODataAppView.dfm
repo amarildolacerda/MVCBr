@@ -81,20 +81,8 @@ object RestODataAppView: TRestODataAppView
     Left = 184
     Top = 176
   end
-  object IdHTTPRestClient1: TIdHTTPRestClient
-    BaseURL = 'http://localhost:8080'
-    Resource = 
-      '/produtos?$select=codigo,descricao,grupo,unidade,preco&$filter=g' +
-      'rupo eq '#39'1'#39
-    AcceptCharset = 'UTF-8'
-    Accept = 'application/json, text/plain, text/html'
-    AcceptEncoding = 'gzip'
-    Timeout = 360000
-    Left = 64
-    Top = 168
-  end
   object ODataBuilder1: TODataBuilder
-    RestClient = IdHTTPRestClient1
+    RestClient = HTTPRestClient1
     BaseURL = 'http://localhost:8080'
     ServicePrefix = '/OData'
     Service = '/OData.svc'
@@ -107,24 +95,54 @@ object RestODataAppView: TRestODataAppView
     TopRows = 0
     SkipRows = 0
     Count = False
-    Left = 64
+    Left = 80
     Top = 112
   end
   object ODataDatasetAdapter1: TODataDatasetAdapter
     Builder = ODataBuilder1
-    Active = False
+    Active = True
     Dataset = FDMemTable1
     Params = <>
-    ResponseJSON = IdHTTPRestClient1
+    ResponseJSON = HTTPRestClient1
     RootElement = 'value'
-    Left = 64
-    Top = 232
+    Left = 80
+    Top = 184
   end
   object FDMemTable1: TFDMemTable
+    Active = True
     BeforePost = FDMemTable1BeforePost
     AfterPost = FDMemTable1AfterPost
     BeforeDelete = FDMemTable1BeforeDelete
-    FieldDefs = <>
+    FieldDefs = <
+      item
+        Name = 'codigo'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 30
+      end
+      item
+        Name = 'descricao'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 128
+      end
+      item
+        Name = 'unidade'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'grupo'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 10
+      end
+      item
+        Name = 'preco'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end>
     IndexDefs = <>
     BeforeApplyUpdates = FDMemTable1BeforeApplyUpdates
     FetchOptions.AssignedValues = [evMode]
@@ -142,5 +160,16 @@ object RestODataAppView: TRestODataAppView
     Provider = 'Forms'
     Left = 408
     Top = 160
+  end
+  object HTTPRestClient1: THTTPRestClient
+    BaseURL = 'http://localhost:8080'
+    Resource = '/produtos'
+    ResourcePrefix = '/OData/OData.svc'
+    AcceptCharset = 'UTF-8'
+    Accept = 'application/json'
+    AcceptEncoding = 'gzip'
+    Timeout = 360000
+    Left = 80
+    Top = 64
   end
 end

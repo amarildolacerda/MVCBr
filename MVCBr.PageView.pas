@@ -61,6 +61,7 @@ type
     FTab: TObject;
     FID: String;
     FView: IView;
+    FController:IController;
     procedure SetText(const Value: string);
     function GetText: string;
     procedure SetTab(const Value: TObject);
@@ -70,6 +71,7 @@ type
     FClassType: TClass;
     procedure SetID(const Value: String); override;
   public
+    Destructor Destroy;override;
     function GetOwner: TCustomPageViewFactory;
     function This: TPageView;
     property Text: string read GetText write SetText;
@@ -143,6 +145,13 @@ implementation
 
 { TPageControllerView }
 
+destructor TPageView.Destroy;
+begin
+  //FView := nil;
+  //FController := nil;
+  inherited;
+end;
+
 function TPageView.GetOwner: TCustomPageViewFactory;
 begin
   result := FOwner;
@@ -196,6 +205,7 @@ function TCustomPageViewFactory.AddView(AView: IView): IPageView;
 begin
   result := NewItem(AView.Title);
   result.This.View := AView;
+  result.this.FController := AView.GetController;
   DoViewCreate(AView.This);
   Init(result);
 end;

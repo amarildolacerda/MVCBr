@@ -36,7 +36,7 @@ type
 
   TModelFactoryClass = class of TModelFactory;
 
-  TModelFactory = class( TModelFactoryAbstract, IModel)
+  TModelFactory = class(TModelFactoryAbstract, IModel)
   private
     FID: string;
     FModelTypes: TModelTypes;
@@ -49,6 +49,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure Release;override;
     procedure AfterConstruction; override;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure SetController(const AController: IController); virtual;
@@ -76,6 +77,7 @@ end;
 
 destructor TModelFactory.Destroy;
 begin
+  FController := nil;
   inherited;
 end;
 
@@ -94,11 +96,16 @@ begin
   result := FModelTypes;
 end;
 
-
 function TModelFactory.ID(const AID: String): IModel;
 begin
   result := self;
   SetID(AID);
+end;
+
+procedure TModelFactory.Release;
+begin
+  FController := nil;
+  inherited;
 end;
 
 procedure TModelFactory.SetController(const AController: IController);
@@ -143,7 +150,6 @@ procedure TModelFactory.Update(AJsonValue: TJsonValue; var AHandled: boolean);
 begin
   Update;
 end;
-
 
 function TModelFactory.Update: IModel;
 begin

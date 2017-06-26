@@ -1,0 +1,89 @@
+{
+	"@odata.context": "http://localhost:8080/OData/OData.svc",
+	"__comment": "Services list all resource available to OData.Service",
+	"OData.Services": [{
+                        "_comments_":"Products table service",
+			"resource": "produtos",
+			"collection": "produtos",
+			"keyID": "codigo",
+			"maxpagesize": 100,
+			"fields": "produtos.codigo,produtos.descricao,produtos.unidade,produtos.grupo,produtos.preco",
+			"method": "GET,PATCH,POST,PUT,DELETE",
+			"relations": [{
+				"resource": "grupos",
+				"sourceKey": "grupo",
+				"targetKey": "codigo",
+				"join": "left join grupos on (produtos.grupo=grupos.grupo)"
+			}]
+		},
+		{
+			"resource": "grupos",
+			"collection": "grupos",
+			"keyID": "codigo",
+			"fields": "*",
+			"method": "GET,PATCH,DELETE,PUT,POST",
+			"maxpagesize": 100,
+			"relations": [{
+				"resource": "produtos",
+				"sourceKey": "codigo",
+				"targetKey": "grupo",
+				"join": "join produtos on (grupos.codigo=produtos.grupo)"
+			}],
+			"expands": [{
+				"resource": "produtos",
+				"filter": "grupos.codigo=:grupo"
+			}]
+
+		},
+		{
+			"resource": "fornecedores",
+			"collection": "fornecedores",
+			"maxpagesize": 100,
+			"fields": "*",
+			"keyID": "codigo"
+		},
+		{
+			"resource": "clientes",
+			"collection": "clientes",
+			"keyID": "codigo",
+			"method": "GET,POST,PATCH,UT,DELETE",
+			"searchFields": "nome",
+			"maxpagesize": 100,
+			"fields": "*",
+			"relations": [{
+					"resource": "vendas",
+					"join": "join vendas on (vendas.cliente=clientes.codigo)"
+				},
+				{
+					"resource": "vendas_item",
+					"join": "join vendas a  on (clientes.codigo=a.cliente) join vendas_item b on (b.documento=a.documento)"
+				}
+			]
+		},
+		{
+			"resource": "vendas",
+			"collection": "vendas",
+			"maxpagesize": 100,
+			"keyID": "documento",
+			"fields": "*",
+			"method": "GET,POST,PATCH,PUT,DELETE"
+		},
+		{
+			"resource": "vendas_item",
+			"collection": "vendas_item",
+			"maxpagesize": 100,
+			"keyID": "documento",
+			"method": "GET,POST,PATCH,PUT,DELETE"
+		}
+
+	],
+	"OData.Execute": [{
+                "_comments_":"ExecSQL for exec_procedure",
+		"resource": "exec_procedure",
+		"procedure": "exec_procedure",
+		"params": "filial,dcto,data",
+		"returnRows": true
+	}]
+
+
+}

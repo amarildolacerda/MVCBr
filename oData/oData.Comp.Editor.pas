@@ -29,13 +29,15 @@ implementation
 
 {$R *.dfm}
 {$R TODataBuilder.res}
+{$R TODataDatasetBuilder.res}
 
-uses oData.Comp.Client{, VCL.Dialogs};
+uses oData.Comp.Client,MVCBr.ODataDatasetBuilder;
 
 procedure Register;
 begin
   RegisterComponents('MVCBr', [TODataBuilder]);
   RegisterComponentEditor(TODataBuilder, TODataPropertyEditor);
+  RegisterComponentEditor(TODataDatasetBuilder, TODataPropertyEditor);
 
 end;
 
@@ -81,6 +83,26 @@ begin
         end;
     end;
 
+  end else
+  if Component.InheritsFrom(TODataDatasetBuilder) then
+  begin
+    case index of
+      0:
+        begin
+          s := TODataDatasetBuilder(Component).ToString;
+          with TODataPropertyDlg.Create(nil) do
+            try
+              Memo1.Text := s;
+              showModal;
+            finally
+              free;
+            end;
+        end;
+      1:
+        begin
+          TODataDatasetBuilder(Component).execute;
+        end;
+    end;
   end;
 
 end;

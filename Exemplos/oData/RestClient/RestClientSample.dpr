@@ -1,6 +1,6 @@
-PROGRAM RestClientSample;
+program RestClientSample;
 
-// Código gerado pelo Assistente MVCBr OTA
+// Código gerado pelo Assistente MVCBr OTA
 // www.tireideletra.com.br
 // Amarildo Lacerda & Grupo MVCBr-2017
 uses
@@ -24,4 +24,3 @@ PROGRAM RestClientSample;
       result := true;
     end);
 end.
-

@@ -36,18 +36,21 @@ type
     procedure FormFactoryViewEvent(AMessage: TJSONValue; var AHandled: Boolean);
   private
     FInited: Boolean;
+    FCount:integer;
   protected
     procedure Init;
     function Controller(const aController: IController): IView; override;
   public
     { Public declarations }
     class function New(aController: IController): IView;
+    destructor Destroy;override;
     function This: TObject; override;
     function ThisAs: TTestViewView;
     function ViewAs: ITestViewView;
     function ShowView(const AProc: TProc<IView>): integer; override;
     function UpdateView: IView; override;
     function getStubInt: integer;
+    function GetShowModalStub:Boolean;
   end;
 
 Implementation
@@ -81,19 +84,32 @@ begin
   end;
 end;
 
+destructor TTestViewView.Destroy;
+begin
+
+  inherited;
+end;
+
 procedure TTestViewView.FormFactoryViewEvent(AMessage: TJSONValue;
   var AHandled: Boolean);
 begin
+    inc(FCount);
     AHandled := true;
+end;
+
+function TTestViewView.GetShowModalStub: Boolean;
+begin
+  result := true;
 end;
 
 function TTestViewView.getStubInt: integer;
 begin
-  result := 1;
+  result := FCount;
 end;
 
 procedure TTestViewView.Init;
 begin
+  FCount := 1;
   // incluir incializações aqui
 end;
 

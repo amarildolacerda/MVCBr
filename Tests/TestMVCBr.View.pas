@@ -15,7 +15,7 @@ uses
   TestFramework, system.SysUtils, system.Classes, VCL.Forms, MVCBr.Interf,
   MVCBr.Model,
   TestMVCBr.TestForm, MVCBr.Controller,
-  TestSecondView,
+  TestSecondView, TestViewView,
   MVCBr.View, system.Rtti;
 
 type
@@ -37,7 +37,7 @@ type
 
   TestTFormFactory = class(TTestCase)
   strict private
-    FFormFactory: ITestSecondView;
+    FFormFactory: ITestViewView;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -131,14 +131,17 @@ procedure TestTFormFactory.SetUp;
 var
   Controller: IController;
 begin
-  FFormFactory := TTestSecondView.create(nil);
-  Controller := TTestViewController.New(FFormFactory, nil);
+  Controller := TTestViewController.New(nil, nil);
+  FFormFactory := Controller.GetView as ITestViewView;
 end;
 
 procedure TestTFormFactory.TearDown;
+var
+  Controller: IController;
 begin
-  // FFormFactory.Free;
-  FFormFactory := nil;
+  Controller := FFormFactory.GetController;
+  if assigned(Controller) then
+    Controller.release;
 end;
 
 procedure TestTFormFactory.TestGetController;
@@ -164,7 +167,7 @@ Type
 
 procedure TestTFormFactory.TestInterfaceStubInt;
 var
-  itf: ITestSecondView;
+  itf: ITestViewView;
 begin
   itf := FFormFactory;
   CheckTrue(itf.getStubInt = 1, 'Não obteve dados na interface');
@@ -178,7 +181,7 @@ begin
   FFormFactory.PropertyValue['isShowModal'] := true;
   CheckTrue(TTestSecondView(FFormFactory.This).isShowModal,
     'Não alterou o ShowModal');
-  ReturnValue := TTestSecondView(FFormFactory.This).InvokeMethod<Boolean>
+  ReturnValue := TTestViewView(FFormFactory.This).InvokeMethod<Boolean>
     ('GetShowModalStub', []);
   CheckTrue(ReturnValue, 'Não funcionou RTTI');
   // TODO: Validate method results
@@ -272,7 +275,7 @@ end;
 
 procedure TestTFormFactory.TestEnviarEventoParaUmView;
 var
-  inf: ITestSecondView;
+  inf: ITestViewView;
   LHandled: Boolean;
 begin
   inf := FFormFactory;
@@ -289,11 +292,12 @@ begin
   supports(FFormFactory.This, IMVCBrObserver, obs);
   TMVCBr.RegisterObserver('x', obs);
   ref := FFormFactory.getStubInt;
-  TMVCBr.UpdateObserver('x', nil );
+  TMVCBr.UpdateObserver('x', nil);
 
-  CheckTrue(FFormFactory.getStubInt>ref,'Não chamou o evento do Observer' );
+  CheckTrue(FFormFactory.getStubInt > ref, 'Não chamou o evento do Observer');
 
   TMVCBr.UnRegisterObserver('x', obs);
+  obs := nil;
 end;
 
 procedure TestTFormFactory.TestFindController;
@@ -307,24 +311,34 @@ var
   ctrl: IController;
   itf: ITestSecondView;
 begin
-  ctrl := FFormFactory.GetController.ResolveController(ITestSecondController);
+  ctrl := ApplicationController.ResolveController(ITestSecondController);
+  try
   checkNotNull(ctrl, 'Não achei o segundo controller');
   checkNotNull(ctrl.GetView, 'Não iniciou o segundo VEIW');
 
   itf := ctrl.GetView as ITestSecondView;
   CheckTrue(itf.GetStubString = 'test', 'Não obteve GetStubString');
 
+  finally
+    //ctrl.release;
+    //itf.release;
+  end;
 end;
 
 procedure TestTFormFactory.TestEnviarEventoJSONparaUmView;
 var
-  inf: ITestSecondView;
+  inf: ITestViewView;
   LHandled: Boolean;
+  j: TJsonObject;
 begin
   inf := FFormFactory;
   LHandled := false;
-  inf.ViewEvent(TJsonObject.create(TJsonPair.create('texto', 'test')),
-    LHandled);
+  j := TJsonObject.create(TJsonPair.create('texto', 'test'));
+  try
+    inf.ViewEvent(j, LHandled);
+  finally
+    j.free;
+  end;
   CheckTrue(LHandled, 'Não encontrou o evento');
 end;
 

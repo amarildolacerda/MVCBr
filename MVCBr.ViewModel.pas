@@ -38,6 +38,8 @@ type
     FModel: IModel;
   public
     constructor Create; override;
+    Destructor Destroy;override;
+    procedure Release;override;
     procedure AfterConstruction;override;
     class function New(const AView: IView; const AModel: IModel)
       : IViewModel; virtual;
@@ -80,6 +82,13 @@ begin
   inherited;
 end;
 
+destructor TViewModelFactory.Destroy;
+begin
+  FView := nil;
+  FModel := nil;
+  inherited;
+end;
+
 function TViewModelFactory.Model(const AModel: IModel): IViewModel;
 begin
   result := self;
@@ -96,6 +105,13 @@ begin
   result.Model(AModel);
 end;
 
+
+procedure TViewModelFactory.Release;
+begin
+  FView := nil;
+  FModel := nil;
+  inherited;
+end;
 
 function TViewModelFactory.This: TObject;
 begin

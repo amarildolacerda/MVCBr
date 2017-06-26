@@ -28,7 +28,11 @@ interface
 
 Uses System.Classes,
   System.SysUtils, DB,
-  MVCBr.ODataDatasetAdapter, oData.Comp.Client, MVCBr.HttpRestClient,
+  MVCBr.ODataDatasetAdapter,
+  oData.Comp.Client,
+  MVCBr.HttpRestClient,
+  MVCBr.HttpRestClient.Common,
+  //MVCBr.IdHttpRestClient,
   MVCBr.ODataDatasetBuilder,
   MVCBr.Common, MVCBr.ODataFDMemTable,
   DesignIntf, DesignEditors;
@@ -54,7 +58,8 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents(CMVCBrComponentPalletName, [TODataDatasetAdapter,TODataDatasetBuilder, TODataFDMemTable]);
+  RegisterComponents(CMVCBrComponentPalletName,
+    [TODataDatasetAdapter, TODataDatasetBuilder, TODataFDMemTable]);
   RegisterComponentEditor(TODataDatasetAdapter, TODataDatasetAdapterCompEditor);
 
 end;
@@ -87,13 +92,13 @@ begin
           begin
             if not assigned(ResponseJSON) then
             begin
-              ResponseJSON := THTTPRestClient.Create(Component.Owner);
-              ResponseJSON.Name := 'RestClient_'+Component.Name;
+              ResponseJSON := TMVCBrHttpRestClientAbstract(THTTPRestClient.Create(Component.Owner));
+              ResponseJSON.Name := 'RestClient_' + Component.Name;
             end;
             if not assigned(Builder) then
             begin
               Builder := TODataBuilder.Create(Component.Owner);
-              Builder.Name := 'ODataBuilder_'+Component.Name;
+              Builder.Name := 'ODataBuilder_' + Component.Name;
             end;
 
             Builder.RestClient := ResponseJSON;

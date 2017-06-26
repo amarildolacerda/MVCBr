@@ -56,6 +56,7 @@ type
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
+    procedure Release; override;
     procedure Init; virtual;
     function ViewEvent(AMessage: string; var AHandled: boolean): IView;
       overload; virtual;
@@ -147,6 +148,13 @@ end;
 procedure TViewFactory.RegisterObserver(const AName: string);
 begin
   TMVCBr.RegisterObserver(AName, self);
+end;
+
+procedure TViewFactory.Release;
+begin
+  FController := nil;
+  FViewModel := nil;
+  inherited;
 end;
 
 class procedure TViewFactory.RegisterObserver(AName: string;

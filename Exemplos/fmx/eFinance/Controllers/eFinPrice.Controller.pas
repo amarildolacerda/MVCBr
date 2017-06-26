@@ -64,7 +64,7 @@ begin
   // %view View(TeFinPriceView.New(self));
   add(TeFinPriceViewModel.New(self).ID('{eFinPrice.ViewModel}'));
   /// Inicializar os modulos
-  CreateModules; // < criar os modulos persolnizados
+  /// CreateModules; // < criar os modulos persolnizados
 end;
 
 /// Finaliza o controller

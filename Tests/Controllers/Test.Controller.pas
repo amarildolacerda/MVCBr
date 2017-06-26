@@ -15,7 +15,8 @@ interface
 uses
   System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, MVCBr.Interf,
-  MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
+  MVCBr.Model, MVCBr.Controller,
+  MVCBr.ApplicationController,
   Test.Controller.Interf,
   System.RTTI;
 
