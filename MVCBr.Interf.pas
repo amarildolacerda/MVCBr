@@ -485,7 +485,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure release; override;
+    procedure Release; override;
     function This: TControllerAbstract;
     function DefaultModels: TList<IModel>;
     class function ResolveMainForm(const AIID: TGuid; out ref)
