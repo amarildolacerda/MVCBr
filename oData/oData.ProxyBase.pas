@@ -157,8 +157,8 @@ end;
 
 procedure TODataBase.Release;
 begin
-  FAdapterAPI.release;
-  FODataParse.release;
+  FAdapterAPI.Release;
+  FODataParse.Release;
 end;
 
 procedure TODataBase.SetAdapterAPI(const Value: IODataDialect);
