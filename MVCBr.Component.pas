@@ -29,6 +29,8 @@ type
   protected
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy;override;
+    procedure Release;
     procedure AfterConstruction; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
@@ -43,7 +45,7 @@ type
     procedure SetModelTypes(const AModelType: TModelTypes); virtual;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure AfterInit; virtual;
-    function Update: IModel; overload;virtual;
+    function Update: IModel; overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
 
@@ -86,6 +88,12 @@ begin
   initBase;
 end;
 
+destructor TComponentFactory.Destroy;
+begin
+
+  inherited;
+end;
+
 function TComponentFactory.GetController: IController;
 var
   vw: IView;
@@ -123,10 +131,15 @@ begin
   end;
 end;
 
+procedure TComponentFactory.Release;
+begin
+  FAdapter := nil;
+end;
+
 function TComponentFactory.ResolveController(const AGuidController: TGuid)
   : IController;
 begin
-  result := GetController.ResolveController(AGuidController);
+  result := applicationController.ResolveController(AGuidController);
 end;
 
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);

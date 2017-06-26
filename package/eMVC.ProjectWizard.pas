@@ -193,8 +193,9 @@ begin
             (GetNewPath('Controllers'), LIdentProject, false, true, true, false,
             false, true);
           debug('Main Controller Creator');
-          LControntrollerCreate.Templates.add('//ViewModelInit=' +
-            'result.add( T' + LIdentProject + 'ViewModel.new(self));');
+
+//          LControntrollerCreate.Templates.add('//ViewModelInit=' +
+//            'result.add( T' + LIdentProject + 'ViewModel.new(self));');
           LControntrollerCreate.BaseProjectType := TBaseProjectType(LItemIndex);
           LControntrollerCreate.Templates.add
             ('%ModuleIdent=' + (LIdentProject));
@@ -236,8 +237,8 @@ begin
             (GetNewPath('Controllers'), LIdentProject, false, true, true, false,
             false, true);
           debug('Main Controller Creator');
-          LControntrollerCreate.Templates.add('//ViewModelInit=' +
-            'result.add( T' + LIdentProject + 'ViewModel.new(self));');
+  //        LControntrollerCreate.Templates.add('//ViewModelInit=' +
+  //          'result.add( T' + LIdentProject + 'ViewModel.new(self));');
           LControntrollerCreate.BaseProjectType := TBaseProjectType(LItemIndex);
           LControntrollerCreate.Templates.add
             ('%ModuleIdent=' + (LIdentProject));
@@ -250,12 +251,12 @@ begin
             (GetNewPath('Controllers'), LIdentProject, false, true, true, false,
             false, true);
           debug('Main Controller Creator');
-          LControntrollerCreate.Templates.add('//ViewModelInit=' +
-            'result.add( T' + LIdentProject + 'ViewModel.new(self));');
-          LControntrollerCreate.Templates.add('//%viewmodelImpl=' + ' ');
+    //      LControntrollerCreate.Templates.add('//ViewModelInit=' +
+    //        'result.add( T' + LIdentProject + 'ViewModel.new(self));');
+    //      LControntrollerCreate.Templates.add('//%viewmodelImpl=' + ' ');
           LControntrollerCreate.Templates.add('%view=' + ' ');
-          LControntrollerCreate.Templates.add('//viewmodelUses=' + ' ');
-          LControntrollerCreate.createViewModel := true;
+    //      LControntrollerCreate.Templates.add('//viewmodelUses=' + ' ');
+    //      LControntrollerCreate.createViewModel := true;
           LControntrollerCreate.BaseProjectType := TBaseProjectType(LItemIndex);
           LControntrollerCreate.Templates.add
             ('%ModuleIdent=' + (LIdentProject));
@@ -264,7 +265,7 @@ begin
           (BorlandIDEServices as IOTAModuleServices)
             .CreateModule(LControntrollerCreate);
 
-          LModelInterfCreate := TViewModelCreator.Create(GetNewPath('Models'),
+       {   LModelInterfCreate := TViewModelCreator.Create(GetNewPath('Models'),
             LIdentProject, false);
           LModelInterfCreate.IsInterf := true;
           LModelInterfCreate.BaseProjectType := TBaseProjectType(LItemIndex);
@@ -282,7 +283,7 @@ begin
           LModelCreate.Templates.add('%UnitBase=' + LAppName);
 
           (BorlandIDEServices as IOTAModuleServices).CreateModule(LModelCreate);
-
+        }
           // Now create a Form for the Project since the code added to the Project expects it.
           LViewCreate := TViewCreator.Create(GetNewPath('Views'),
             LIdentProject, false);

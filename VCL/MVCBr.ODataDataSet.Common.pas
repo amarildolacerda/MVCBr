@@ -64,6 +64,8 @@ type
     procedure SetApplyUpdateDelegate(const AProc: TProc<TDataset>);
     function UpdatesPending: Boolean;
     procedure ClearChanges;
+    procedure SetLoading(const ALoading:boolean);
+    function GetLoading:Boolean;
     property Changes: TJSONArray read GetChanges;
     property KeyFields: string read GetKeyFields write SetKeyFields;
     property UpdateTable: string read GetUpdateTable write SetUpdateTable;

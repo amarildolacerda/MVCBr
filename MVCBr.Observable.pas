@@ -38,6 +38,7 @@ type
   /// </summary>
   TMVCBrObserverItem = class(TMVCBrObserverItemAbstract)
   private
+    [unsafe]
     FObserver: IMVCBrObserver;
     FSubscribeProc: TMVCBrObserverProc;
     FTopic: string;
@@ -48,6 +49,7 @@ type
     procedure SetObserver(const Value: IMVCBrObserver); override;
     function GetObserver: IMVCBrObserver; override;
   public
+    procedure release;override;
     property Observer: IMVCBrObserver read GetObserver write SetObserver;
     property Topic: string read GetTopic write SetTopic;
     property SubscribeProc: TMVCBrObserverProc read GetSubscribeProc
@@ -127,6 +129,7 @@ end;
 
 destructor TMVCBrObservable.Destroy;
 begin
+  FSubscribers.free;
   inherited;
 end;
 
@@ -333,6 +336,12 @@ end;
 function TMVCBrObserverItem.GetTopic: string;
 begin
   result := FTopic;
+end;
+
+procedure TMVCBrObserverItem.release;
+begin
+  FObserver := nil;
+  inherited;
 end;
 
 procedure TMVCBrObserverItem.Send(AJsonValue: TJsonValue;

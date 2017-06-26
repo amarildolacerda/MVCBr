@@ -11,6 +11,18 @@
   Código fornecidor por: Carlos Dias da Silva (Dex)
 }
 
+{
+   Exemplo de Uso:
+   procedure TFrmTestConnectionMain.GerarMensagem(ATexto: String);
+            var AModel:IWinNotificationModel;
+   begin
+     // uses WinNotification.Model.Interf
+     AModel := GetModel<IWinNotificationModel>;
+     AModel.Send('TestConnection','Falha de comunicação com o banco de dados',ATexto);
+   end;
+}
+
+
 Unit WinNotification.Model;
 
 interface

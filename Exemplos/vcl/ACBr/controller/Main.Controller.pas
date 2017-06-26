@@ -7,8 +7,10 @@ uses
   SysUtils, forms, buttons, classes, controls, MVCBr.Interf,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
   System.RTTI,
-  ACBrUtils.Model,  ACBrValidador.Model,
-  Main.ViewModel, Main.ViewModel.Interf, MainView;
+  ACBrUtils.Model,
+  ACBrValidador.Model,
+  //Main.ViewModel, Main.ViewModel.Interf,
+  MainView;
 
 type
   IMainController = interface(IController)
@@ -17,7 +19,7 @@ type
   end;
 
   TMainController = class(TControllerFactory, IMainController,
-    IThisAs<TMainController>, IModelAs<IMainViewModel>)
+    IThisAs<TMainController>{, IModelAs<IMainViewModel>})
   protected
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
@@ -32,7 +34,7 @@ type
     class function New(const AModel: IModel): IController; overload;
     function ThisAs: TMainController;
     procedure init; override;
-    function ModelAs: IMainViewModel;
+    //function ModelAs: IMainViewModel;
   end;
 
 implementation
@@ -40,7 +42,7 @@ implementation
 Constructor TMainController.Create;
 begin
   inherited;
-  add(TMainViewModel.New(self).ID('{Main.ViewModel}'));
+  //add(TMainViewModel.New(self).ID('{Main.ViewModel}'));
   CreateModules;
 end;
 
@@ -78,11 +80,13 @@ begin
   result := self;
 end;
 
+{
 function TMainController.ModelAs: IMainViewModel;
 begin
   if count >= 0 then
     supports(GetModelByType(mtViewModel), IMainViewModel, result);
 end;
+}
 
 Procedure TMainController.DoCommand(ACommand: string;
   const AArgs: Array of TValue);

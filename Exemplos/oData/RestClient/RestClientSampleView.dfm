@@ -61,7 +61,7 @@ object RestClientSampleView: TRestClientSampleView
     Accept = 'application/json, text/plain; q=0.9, text/html;q=0.8,'
     AcceptCharset = 'UTF-8, *;q=0.8'
     AcceptEncoding = 'gzip'
-    BaseURL = 'http://localhost:8886'
+    BaseURL = 'http://localhost:8080'
     Params = <>
     HandleRedirects = True
     Left = 184

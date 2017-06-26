@@ -8,13 +8,19 @@ procedure Register;
 
 implementation
 
+{$R HTTPRestClient.res}
+
 uses
   MVCBr.Common,
   MVCBr.FormView,
   MVCBr.VCL.PageView,
   MVCBr.ModuleModel,
-  MVCBr.HTTPRestClient, MVCBr.HTTPRestClientEditor,
+  MVCBr.HTTPRestClient,
+  MVCBr.IdHTTPRestClient,
+  MVCBr.HTTPRestClientEditor,
   MVCBr.ObjectConfigList;
+
+
 
 procedure Register;
 begin
@@ -23,7 +29,7 @@ begin
 
   RegisterComponents(CMVCBrComponentPalletName, [TVCLPageViewManager]);
 
-  RegisterComponents(CMVCBrComponentPalletName, [THTTPRestClient]);
+  RegisterComponents(CMVCBrComponentPalletName, [THTTPRestClient,TIdHTTPRestClient]);
   RegisterComponentEditor(THTTPRestClient, THTTPRestClientCompEditor);
 
   RegisterComponents(CMVCBrComponentPalletName,

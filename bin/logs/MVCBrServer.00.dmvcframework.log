@@ -1,0 +1,2 @@
+2017-06-23 15:40:18:291  [TID 4620    ][ERROR   ] [EAccessViolation] Access violation at address 00531778 in module 'MVCBrServer.exe'. Read of address 00000008 (Custom message: "Global Action Exception Handler") [dmvcframework]
+2017-06-23 15:40:24:889  [TID 7032    ][ERROR   ] [EAccessViolation] Access violation at address 00531778 in module 'MVCBrServer.exe'. Read of address 00000008 (Custom message: "Global Action Exception Handler") [dmvcframework]

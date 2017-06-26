@@ -28,6 +28,7 @@ unit MVCBr.Controller;
 interface
 
 uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
+{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Generics.Collections, System.JSON,
   System.TypInfo,
 {$IFDEF FMX} FMX.Layouts, {$ENDIF}
@@ -48,6 +49,7 @@ type
   protected
     FView: IView;
     FID: string;
+    FReleased: Boolean;
     procedure Load; virtual;
     procedure SetID(const AID: string); override;
   public
@@ -57,6 +59,8 @@ type
 
     constructor Create; override;
     destructor Destroy; override;
+    procedure Release; override;
+    function Default: IController; overload;
 {$IFDEF FMX}
     procedure Embedded(AControl: TLayout); virtual;
 {$ENDIF}
@@ -86,19 +90,20 @@ type
     procedure BeforeInit; virtual;
     procedure AfterInit; virtual;
     function GetView: IView; virtual;
-    procedure SetView(AView:IView);virtual;
+    procedure SetView(AView: IView); virtual;
     function View(const AView: IView): IController; virtual;
     function This: TControllerAbstract; virtual;
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
-    function AttachModel(const AModel:IModel):integer;override;
+    function AttachModel(const AModel: IModel): integer; override;
     function IndexOf(const AModel: IModel): integer; virtual;
     function IndexOfModelType(const AModelType: TModelType): integer; virtual;
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);overload;virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);
+      overload; virtual;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
   end;
@@ -128,7 +133,7 @@ end;
 
 function TControllerFactory.Add(const AModel: IModel): integer;
 begin
-   result := AttachModel(AModel);
+  result := AttachModel(AModel);
 end;
 
 procedure TControllerFactory.BeforeInit;
@@ -149,8 +154,16 @@ end;
 constructor TControllerFactory.Create;
 begin
   inherited Create;
+  SetUnsafe(self);
+  TMVCBr.AttachInstance(self.Default as IController);
+  FReleased := false;
   FControllerInited := false;
   Load;
+end;
+
+function TControllerFactory.Default: IController;
+begin
+  result := inherited Default as IController;
 end;
 
 procedure TControllerFactory.Delete(const Index: integer);
@@ -161,17 +174,30 @@ end;
 destructor TControllerFactory.Destroy;
 var
   ac: TApplicationController;
+  i: integer;
 begin
+  Release;
   if assigned(FModels) then
   begin
     try
+      for i := FModels.Count - 1 downto 0 do
+      begin
+        FModels.items[i].Release;
+        FModels.Delete(i);
+      end;
       FModels.Clear;
     except
     end;
+    FModels.free;
     FModels := nil;
   end;
-  FView := nil;
+  if assigned(FView) then
+  begin
+    FView.Release;
+    FView := nil;
+  end;
   ac := ApplicationController;
+  // self.DisabledRefCount := false;
   if assigned(ac) then
     ac.remove(self);
   inherited;
@@ -189,7 +215,7 @@ var
 begin
   if assigned(AProc) then
     for i := 0 to FModels.Count - 1 do
-      AProc(FModels.Items[i] as IModel);
+      AProc(FModels.items[i] as IModel);
 end;
 
 function TControllerFactory.GetGuid<TInterface>: TGuid;
@@ -213,9 +239,9 @@ var
 begin
   result := nil;
   for i := 0 to FModels.Count - 1 do
-    if sameText(AID, (FModels.Items[i] as IModel).GetID) then
+    if sameText(AID, (FModels.items[i] as IModel).GetID) then
     begin
-      result := FModels.Items[i] as IModel;
+      result := FModels.items[i] as IModel;
       exit;
     end;
 end;
@@ -228,7 +254,7 @@ begin
   result := nil;
   i := IndexOfModelType(AModelType);
   if i >= 0 then
-    result := FModels.Items[i] as IModel;
+    result := FModels.items[i] as IModel;
 end;
 
 function TControllerFactory.ID(const AID: string): IController;
@@ -238,8 +264,15 @@ begin
 end;
 
 function TControllerFactory.IndexOf(const AModel: IModel): integer;
+var
+  i: integer;
 begin
-  result := FModels.IndexOf(AModel);
+  for i := 0 to FModels.Count - 1 do
+    if TMVCBr.Equals(AModel, FModels.items[i]) then
+    begin
+      result := i;
+      exit;
+    end;
 end;
 
 function TControllerFactory.IndexOfModelType(const AModelType
@@ -249,15 +282,16 @@ var
   FModel: IModel;
 begin
   result := -1;
-  for i := 0 to FModels.Count - 1 do
-  begin
-    FModel := FModels.Items[i] as IModel;
-    if AModelType in FModel.ModelTypes then
+  if assigned(FModels) then
+    for i := 0 to FModels.Count - 1 do
     begin
-      result := i;
-      exit;
+      FModel := FModels.items[i] as IModel;
+      if AModelType in FModel.ModelTypes then
+      begin
+        result := i;
+        exit;
+      end;
     end;
-  end;
 end;
 
 procedure TControllerFactory.Init;
@@ -281,7 +315,7 @@ var
 begin
   result := false;
   for i := 0 to FModels.Count - 1 do
-    if supports((FModels.Items[i] as IModel).This, AIModel) then
+    if supports((FModels.items[i] as IModel).This, AIModel) then
     begin
       result := true;
       exit;
@@ -297,14 +331,39 @@ end;
 
 procedure TControllerFactory.Load;
 begin
-  if not assigned(FModels) then
-    FModels := TMVCInterfacedList<IModel>.Create;
+  DefaultModels;
   if (not FLoaded) then
   begin
     ApplicationController.Add(self);
     ID(self.ClassName);
     FLoaded := true;
     FRefModelCount := 0;
+  end;
+end;
+
+procedure TControllerFactory.Release;
+begin
+  if not FReleased then
+  begin
+    FReleased := true;
+    if assigned(FView) then
+    begin
+      FView.Release;
+      try
+        if assigned(FView) then
+        begin
+          if not TMVCBr.IsMainForm(FView.This) then
+            FView.This.free; // tenta encerrar o formulario
+        end;
+      except
+      end;
+    end;
+    FView := nil;
+    inherited;
+  end
+  else
+  begin
+    // FView := nil;
   end;
 end;
 
@@ -349,7 +408,7 @@ end;
 
 procedure TControllerFactory.SetView(AView: IView);
 begin
-   View(AView);
+  View(AView);
 end;
 
 function TControllerFactory.ShowView(const AProcBeforeShow,
@@ -422,7 +481,7 @@ begin
   result := -1;
   if not assigned(AModel) then
     exit;
-  result := inherited attachModel(AModel);
+  result := inherited AttachModel(AModel);
   AModel.Controller(self);
 
   if mtViewModel in AModel.ModelTypes then
@@ -446,7 +505,7 @@ begin
 end;
 
 procedure TControllerFactory.Update(AJsonValue: TJsonValue;
-  var AHandled: Boolean);
+var AHandled: Boolean);
 var
   i: integer;
 begin
@@ -455,9 +514,9 @@ begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
     try
       for i := 0 to FModels.Count - 1 do
-        (FModels.Items[i] as IModel).Update(AJsonValue,AHandled);
+        (FModels.items[i] as IModel).Update(AJsonValue, AHandled);
       if assigned(FView) then
-        FView.Update(AJsonValue,AHandled);
+        FView.Update(AJsonValue, AHandled);
     finally
       dec(FRefModelCount);
     end;
@@ -474,7 +533,7 @@ begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
     try
       for i := 0 to FModels.Count - 1 do
-        (FModels.Items[i] as IModel).Update;
+        (FModels.items[i] as IModel).Update;
       if assigned(FView) then
         FView.UpdateView;
     finally
@@ -507,19 +566,27 @@ begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
     try
       for i := 0 to FModels.Count - 1 do
-        (FModels.Items[i] as IModel).Update;
+        (FModels.items[i] as IModel).Update;
     finally
       dec(FRefModelCount);
     end;
   end;
 end;
 
-
 function TControllerFactory.View(const AView: IView): IController;
 var
   vm: IViewModel;
 begin
   result := self;
+
+  if not assigned(AView) then
+    exit;
+
+  if assigned(FView) and (FView <> AView) then
+  begin
+    FView.Release;
+    FView := nil;
+  end;
   FView := AView;
   if assigned(FView) then
   begin

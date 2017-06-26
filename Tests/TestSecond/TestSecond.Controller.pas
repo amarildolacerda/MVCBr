@@ -31,6 +31,7 @@ uses
   TestSecondView;
 
 type
+
   TTestSecondController = class(TControllerFactory, ITestSecondController,
     IThisAs<TTestSecondController>)
   protected
@@ -55,10 +56,14 @@ type
   end;
 
 
-  TTestSecondController2 = class(TTestSecondController,ITestSecondController2)
+  TTestSecondController2 = class(TControllerFactory,ITestSecondController2)
+   private
+   FContador:integer;
    public
        function GetStubInt2:integer;
-
+       destructor Destroy;override;
+    function GetStubInt:integer;
+    procedure IncContador;
   end;
 
 implementation
@@ -163,9 +168,25 @@ end;
 
 { TTestSecondController2 }
 
+destructor TTestSecondController2.Destroy;
+begin
+
+  inherited;
+end;
+
+function TTestSecondController2.GetStubInt: integer;
+begin
+   result := FContador;
+end;
+
 function TTestSecondController2.GetStubInt2: integer;
 begin
   result := FContador;
+end;
+
+procedure TTestSecondController2.IncContador;
+begin
+  inc(FContador);
 end;
 
 initialization

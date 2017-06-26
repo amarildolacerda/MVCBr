@@ -90,6 +90,7 @@ type
     procedure SetOnViewInit(const Value: TNotifyEvent);
   protected
     FOnCloseProc: TProc<IView>;
+    [unsafe]
     FController: IController;
     FShowModal: boolean;
     // FViewModel:IViewModel;
@@ -111,6 +112,7 @@ type
     function ApplicationController: TApplicationController;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Release; virtual;
     function GetGuid(AII: IInterface): TGuid;
     function ViewEvent(AMessage: string; var AHandled: boolean): IView;
       overload; virtual;
@@ -131,15 +133,18 @@ type
       overload; virtual;
     function AttachController<TIController: IController>: TIController;
       overload;
-    function AttachModel<TIModel:IModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
+    function AttachModel<TIModel: IModel>(AModelClass
+      : TModelFactoryAbstractClass): TIModel;
     /// Retorna o SELF
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
     function ResolveController(const IID: TGuid): IController;
       overload; virtual;
-    procedure RevokeController(IID: TGuid);
-    function ResolveController<TIController>: TIController; overload;
+    procedure RevokeController(IID: TGuid); overload;
+    procedure RevokeController(TIController: IController); overload;
+    function ResolveController<TIController: IController>
+      : TIController; overload;
     function GetModel<TIModel>: TIModel; overload;
     function GetModel(AII: TGuid): IModel; overload;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
@@ -215,7 +220,7 @@ end;
 function TCustomFormFactory.Controller(const AController: IController): IView;
 begin
   result := self;
-  FController := AController;
+  SetController(AController);
 end;
 
 var
@@ -233,7 +238,8 @@ end;
 destructor TCustomFormFactory.Destroy;
 begin
   if assigned(FController) then
-    FController.This.RevokeInstance(FController); // clear controller
+    FController.This.RevokeInstance(FController);
+  // clear controller
   FController := nil;
   inherited;
 end;
@@ -331,19 +337,28 @@ begin
   result := AttachController(AGuid);
 end;
 
-function TCustomFormFactory.AttachModel<TIModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
-var o:TObject;
-    AGuid:TGuid;
+function TCustomFormFactory.AttachModel<TIModel>(AModelClass
+  : TModelFactoryAbstractClass): TIModel;
+var
+  o: TObject;
+  AGuid: TGuid;
 begin
-  o := aModelClass.Create;
+  o := AModelClass.Create;
   AGuid := TMVCBr.GetGuid<TIModel>;
-  Supports(o,AGuid,result);
+  Supports(o, AGuid, result);
   GetController.AttachModel(result);
 end;
 
 procedure TCustomFormFactory.RegisterObserver(const AName: String);
 begin
   TMVCBr.RegisterObserver(AName, self);
+end;
+
+procedure TCustomFormFactory.Release;
+begin
+  if assigned(FController) then
+    FController.Release;
+  FController := nil;
 end;
 
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
@@ -356,6 +371,14 @@ begin
   result := GetController.This.ResolveController<TIController>();
 end;
 
+procedure TCustomFormFactory.RevokeController(TIController: IController);
+var
+  IID: TGuid;
+begin
+  IID := TMVCBr.GetGuid(TIController);
+  RevokeController(IID);
+end;
+
 procedure TCustomFormFactory.RevokeController(IID: TGuid);
 begin
   ApplicationController.RevokeController(IID);
@@ -363,7 +386,7 @@ end;
 
 procedure TCustomFormFactory.SetController(const AController: IController);
 begin
-  FController := AController;
+  FController := AController.This.Default as IController;
 end;
 
 procedure TCustomFormFactory.SetOnCommandEvent(const Value: TViewCommandNotify);
@@ -478,8 +501,11 @@ end;
 
 function TCustomFormFactory.MainViewEvent(AMessage: string;
   var AHandled: boolean): IView;
+var
+  AView: IView;
 begin
-  ApplicationController.MainView.ViewEvent(AMessage, AHandled);
+  if Supports(ApplicationController.MainView, IView, AView) then
+    AView.ViewEvent(AMessage, AHandled);
 end;
 
 function TCustomFormFactory.Observable: IMVCBrObservable;
