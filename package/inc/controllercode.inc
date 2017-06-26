@@ -299,7 +299,7 @@ ControllerCodeOnly =
   '                                                                 ' + #13#10 +
   '  T%FormIdentController = class(TControllerFactory,              ' + #13#10 +
   '    I%FormIdentController,                                       ' + #13#10 +
-  '    IThisAs<T%FormIdentController)  ' +
+  '    IThisAs<T%FormIdentController>)  ' +
   #13#10 + '  protected                                            ' + #13#10 +
   '  public                                                         ' + #13#10 +
   '    // inicializar os módulos personalizados em CreateModules    ' + #13#10 +

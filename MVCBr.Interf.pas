@@ -782,7 +782,7 @@ begin
   pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   Resolve(IID, rst);
-  result := rst.this.default as IController;
+  result := TInterface(rst.this.default) ;
   rst := nil;
 end;
 
