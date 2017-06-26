@@ -485,7 +485,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure release; override;
+    procedure Release; override;
     function This: TControllerAbstract;
     function DefaultModels: TList<IModel>;
     class function ResolveMainForm(const AIID: TGuid; out ref)
@@ -782,7 +782,7 @@ begin
   pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   Resolve(IID, rst);
-  result := rst.this.default as IController;
+  result := TInterface(rst.this.default) ;
   rst := nil;
 end;
 
