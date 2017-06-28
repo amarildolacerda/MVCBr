@@ -131,8 +131,7 @@ type
     function GetController: IController; virtual;
     function AttachController(AInterface: TGuid; AOwnedFree: boolean = true)
       : IController; overload; virtual;
-    function AttachController<TIController: IInterface>: TIController;
-      overload;
+    function AttachController<TIController: IInterface>: TIController; overload;
     function AttachModel<TIModel: IModel>(AModelClass
       : TModelFactoryAbstractClass): TIModel;
     /// Retorna o SELF
@@ -238,10 +237,12 @@ end;
 destructor TCustomFormFactory.Destroy;
 begin
   if assigned(FController) then
+  begin
     FController.This.RevokeInstance(FController);
-  // clear controller
-  FController.release;
-  FController := nil;
+    // clear controller
+    FController.Release;
+    FController := nil;
+  end;
   inherited;
 end;
 
@@ -364,19 +365,19 @@ end;
 
 procedure TCustomFormFactory.Release;
 begin
-  if assigned(FController) then
-    FController.Release;
+   if assigned(FController) then
+      FController.Release;
   FController := nil;
 end;
 
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
 begin
-  result := ApplicationController.thisAs.ResolveController(IID);
+  result := ApplicationController.ThisAs.ResolveController(IID);
 end;
 
 function TCustomFormFactory.ResolveController<TIController>: TIController;
 begin
-  result := ApplicationController.thisAs.ResolveController<TIController>();
+  result := ApplicationController.ThisAs.ResolveController<TIController>();
 end;
 
 procedure TCustomFormFactory.RevokeController(TIController: IController);

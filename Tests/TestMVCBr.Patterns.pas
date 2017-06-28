@@ -115,7 +115,7 @@ type
 
   TestTMVCBrStaticFactory = class(TTestCase)
   strict private
-    FMVCBrStaticFactory: TMVCBrStaticFactory;
+    FMVCBrStaticFactory: TMVCBrStaticFactory<TInterfacedObject>;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -502,7 +502,7 @@ end;
 
 procedure TestTMVCBrStaticFactory.SetUp;
 begin
-  FMVCBrStaticFactory := TMVCBrStaticFactory.Create;
+  FMVCBrStaticFactory := TMVCBrStaticFactory<TInterfacedObject>.Create(TInterfacedObject.create);
 end;
 
 procedure TestTMVCBrStaticFactory.TearDown;

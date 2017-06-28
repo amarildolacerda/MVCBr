@@ -39,6 +39,7 @@ type
   TestTFormFactory = class(TTestCase)
   strict private
     FFormFactory: ITestViewView;
+    Controller: IController;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -129,20 +130,16 @@ begin
 end;
 
 procedure TestTFormFactory.SetUp;
-var
-  Controller: IController;
 begin
   Controller := TTestViewController.New(nil, nil);
   FFormFactory := Controller.GetView as ITestViewView;
 end;
 
 procedure TestTFormFactory.TearDown;
-var
-  Controller: IController;
 begin
-  Controller := FFormFactory.GetController;
   if assigned(Controller) then
     Controller.release;
+  Controller := nil;
 end;
 
 procedure TestTFormFactory.TestGetController;
@@ -214,6 +211,8 @@ begin
 
   inf := ctrl.GetModel(itestModel) as itestModel;
   checkNotNull(inf, 'Não encontrou o model instanciado no controller');
+  ctrl := nil;
+  inf := nil;
 
 end;
 

@@ -15,7 +15,12 @@ program MVCBrTests;
 {$ENDIF}
 
 uses
-  DUnitTestRunner,
+   madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
+ DUnitTestRunner,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
   TestMVCBr.View in 'TestMVCBr.View.pas',

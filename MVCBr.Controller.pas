@@ -231,7 +231,11 @@ end;
 
 function TControllerFactory.GetModel(const idx: integer): IModel;
 begin
-  result := FModels[idx] as IModel;
+  try
+    result := FModels.LockList[idx] as IModel;
+  finally
+    FModels.UnlockList;
+  end;
 end;
 
 function TControllerFactory.GetModelByID(const AID: String): IModel;

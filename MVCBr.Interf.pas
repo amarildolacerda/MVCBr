@@ -76,6 +76,7 @@ uses System.Classes, System.SysUtils, System.Generics.Collections,
   System.JSON, {$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
 {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   MVCBr.Patterns.Factory, MVCBr.Patterns.Adapter,
+  System.ThreadSafe,
   System.TypInfo, System.RTTI;
 
 type
@@ -94,6 +95,7 @@ type
   /// Record para implementas utilidades de RTTI e outras Class Functions
   ///
   TMVCBr = record
+    class procedure release; static;
     class function GetQualifiedName(AII: TGuid): string; static;
     /// compare two GUIDs
     class function IsSame(I1, I2: TGuid): boolean; static;
@@ -289,7 +291,7 @@ type
     ['{EF8A7B2A-F5EC-4675-8E36-A6091820AB0A}']
   end;
 
-  TInterfaceAdapter = class(TMVCBrAdapter,IInterfaceAdapter)
+  TInterfaceAdapter = class(TMVCBrAdapter, IInterfaceAdapter)
   private
     FClass: TClass;
     FGuid: TGuid;
@@ -480,7 +482,7 @@ type
   TControllerAbstract = class(TMVCFactoryAbstract)
   protected
   protected
-    FModels: TList<IModel>;
+    FModels: TThreadSafeInterfaceList<IModel>;
     FViewOwnedFree: boolean;
 
   public
@@ -489,7 +491,7 @@ type
     procedure release; override;
     property ViewOwnedFree: boolean read FViewOwnedFree write FViewOwnedFree;
     function This: TControllerAbstract;
-    function DefaultModels: TList<IModel>;
+    function DefaultModels: TThreadSafeInterfaceList<IModel>;
     class function ResolveMainForm(const AIID: TGuid; out ref)
       : boolean; virtual;
     function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
@@ -624,6 +626,12 @@ begin
     (bSingleton, ANome);
 end;
 
+class procedure TMVCBr.release;
+begin
+  if TMVCBrIoc.DefaultContainer <> nil then
+    TMVCBrIoc.DefaultContainer.release;
+end;
+
 class procedure TMVCBr.RegisterInterfaced<TInterface>(const ANome: string;
   IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
@@ -668,11 +676,11 @@ begin
   achei := TMVCBrIoc.DefaultContainer.GetName(AIID);
   if achei = '' then
     exit;
-  ii := Resolve(achei,false);
+  ii := Resolve(achei, false);
   if ii <> nil then
   begin
     if supports(ii.This, AIID, ref) then
-       ii.AfterInit;
+      ii.AfterInit;
   end;
 end;
 
@@ -688,16 +696,22 @@ begin
   inherited;
 end;
 
-function TControllerAbstract.DefaultModels: TList<IModel>;
+function TControllerAbstract.DefaultModels: TThreadSafeInterfaceList<IModel>;
 begin
   if not assigned(FModels) then
-    FModels := TList<IModel>.Create;
+    FModels := TThreadSafeInterfaceList<IModel>.Create;
   result := FModels;
 end;
 
 destructor TControllerAbstract.Destroy;
 begin
   TMVCBrIoc.DefaultContainer.RevokeInstance(self);
+  if assigned(FModels) then
+  begin
+     FModels.Release;
+     FModels.free;
+  end;
+  FModels := nil;   
   inherited;
 end;
 
@@ -756,7 +770,7 @@ begin
     FModels.Delete(I);
     AModel.release;
   end;
-  FModels.Free;
+  FModels.free;
   FModels := nil;
   inherited;
 end;
@@ -916,7 +930,7 @@ begin
     if assigned(prp) then
       result := prp.GetValue(AInstance);
   finally
-    ctx.Free();
+    ctx.free();
   end;
 end;
 
@@ -947,7 +961,7 @@ begin
     result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args)
       .AsType<T>;
   finally
-    ctx.Free();
+    ctx.free();
   end;
 end;
 
@@ -975,7 +989,7 @@ begin
     Value := mtd.Invoke(AInstance, Args); // .AsType<T>;
     Value.TryAsType(result);
   finally
-    ctx.Free();
+    ctx.free();
   end;
 end;
 
@@ -1016,7 +1030,7 @@ begin
     if assigned(prp) then
       prp.SetValue(AInstance, AValue);
   finally
-    ctx.Free();
+    ctx.free();
   end;
 end;
 
@@ -1203,7 +1217,7 @@ destructor TMVCOwnedInterfacedObject.Destroy;
 begin
   if assigned(FOwner) then
   begin
-    FOwner.Free;
+    FOwner.free;
     FOwner := nil;
   end;
   inherited;

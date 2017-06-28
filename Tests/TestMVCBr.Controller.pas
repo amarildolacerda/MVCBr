@@ -21,8 +21,19 @@ uses
 type
 
   // Test methods for class TControllerFactory
-  TTestModel = class(TModelFactory)
+  ITestModel1 = interface(IModel)
+    ['{1972DCFC-4365-49DA-81AD-E92DD58690AD}']
   end;
+
+  TTestModel1 = class(TModelFactory, ITestModel1)
+  public
+    Constructor Create; override;
+    Destructor Destroy; override;
+  end;
+
+  TTestModel2 = class(TTestModel1);
+
+  TTestModel3 = class(TTestModel1);
 
   TTestView = class(TViewFactory)
   end;
@@ -76,7 +87,7 @@ uses Test.Controller, Test.Controller.Interf, TestSecond.Controller.Interf;
 procedure TestTControllerFactory.SetUp;
 begin
   FControllerFactory := TControllerFactory.Create;
-  FControllerFactory.add(TMVCBr.InvokeCreate<IModel>(TTestModel)
+  FControllerFactory.add(TMVCBr.InvokeCreate<ITestModel1>(TTestModel1)
     .ID('teste.model'));
   FControllerFactory.View(TMVCBr.InvokeCreate<IView>(TTestView));
 end;
@@ -162,7 +173,7 @@ procedure TestTControllerFactory.TestResolveController;
 var
   ctrl: ITestController;
 begin
-  ctrl := FControllerFactory.ResolveController<ITestController> ;
+  ctrl := FControllerFactory.ResolveController<ITestController>;
   CheckNotNull(ctrl, 'Não inicializou o controller');
 end;
 
@@ -281,9 +292,10 @@ var
   AModel: IModel;
 begin
   // TODO: Setup method call parameters
-  AModel := TTestModel.New<IModel>(TTestModel);
+  AModel := TTestModel2.New<IModel>(TTestModel2);
   ReturnValue := FControllerFactory.add(AModel);
   CheckTrue(ReturnValue > 0);
+  AModel := nil;
   // TODO: Validate method results
 end;
 
@@ -410,14 +422,25 @@ end;
 
 { TTestControllerFactory }
 
+{ TTestModel }
+
+constructor TTestModel1.Create;
+begin
+  inherited;
+
+end;
+
+destructor TTestModel1.Destroy;
+begin
+
+  inherited;
+end;
+
 initialization
 
-
-TMVCBr.RegisterInterfaced<IModel>('Teste.Model', IModel, TTestModel, true);
+TMVCBr.RegisterInterfaced<IModel>('Teste.Model', IModel, TTestModel1, true);
 // Register any test cases with the test runner
 
 RegisterTest(TestTControllerFactory.Suite);
 
 end.
-
-

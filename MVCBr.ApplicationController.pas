@@ -42,7 +42,9 @@ uses
   System.Classes,
   System.JSON,
   System.Generics.Collections,
-  System.SysUtils, MVCBr.Interf;
+  System.SysUtils,
+  System.Threadsafe,
+  MVCBr.Interf;
 
 type
   /// <summary>
@@ -55,7 +57,7 @@ type
   private
     /// Lista de controllers instanciados
     [unsafe]
-    FControllers: TObjectList<TAggregatedObject>;
+    FControllers: TThreadSafeObjectList<TAggregatedObject>;
   protected
     /// MainView para o Application
     FMainView: TObject;
@@ -74,8 +76,9 @@ type
 
     /// Controllers methods
     function FindController(AGuid: TGuid): IController; virtual;
-    function ResolveController<TIController:IController>:TIController;overload;
-    function ResolveController(AGuid: TGuid): IController;overload; virtual;
+    function ResolveController<TIController: IController>
+      : TIController; overload;
+    function ResolveController(AGuid: TGuid): IController; overload; virtual;
     function AttachController(AGuid: TGuid): IController; virtual;
     procedure RevokeController(AGuid: TGuid);
     /// Count retorna a quantidade de controllers empilhados na lista
@@ -162,7 +165,7 @@ end;
 
 function TApplicationController.AttachController(AGuid: TGuid): IController;
 begin
-   TControllerAbstract.AttachController(AGuid, result);
+  TControllerAbstract.AttachController(AGuid, result);
 end;
 
 function TApplicationController.Count: integer;
@@ -174,7 +177,7 @@ constructor TApplicationController.Create;
 begin
   inherited Create;
   LReleased := false;
-  FControllers := TObjectList<TAggregatedObject>.Create;
+  FControllers := TThreadSafeObjectList<TAggregatedObject>.Create;
 end;
 
 class function TApplicationController.Default: IApplicationController;
@@ -196,14 +199,18 @@ begin
   FMainView := nil;
   if assigned(FControllers) then
   begin
-    for i := FControllers.Count - 1 downto 0 do
-    begin
-      (FControllers.items[i].Controller as IController).Release;
+    try
+      for i := FControllers.Count - 1 downto 0 do
+      begin
+        (FControllers.items[i].Controller as IController).Release;
+      end;
+      FControllers.clear;
+      FControllers.free;
+      FControllers := nil;
+    finally
     end;
-    FControllers.clear;
-    FControllers.free;
-    FControllers := nil;
   end;
+  TMVCBr.Release;
   inherited;
 end;
 
@@ -398,7 +405,7 @@ procedure TApplicationController.Run(AController: IController;
 AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
-  AController.release;
+  AController.Release;
   AController := nil;
   FMainView := nil;
 end;
@@ -527,7 +534,7 @@ AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
   rt: boolean;
   reference: TComponent;
-  AView:IView;
+  AView: IView;
 begin
 
 {$IFDEF LINUX}
@@ -546,8 +553,8 @@ begin
       application.CreateForm(AClass, reference);
       if not supports(reference, IView) then
         raise Exception.Create('Não é uma classe que implementa IView');
-      FMainView := reference {as IView};
-      AController.view(reference as IView );
+      FMainView := reference { as IView };
+      AController.view(reference as IView);
     end;
 
     if assigned(AModel) then
@@ -579,6 +586,6 @@ initialization
 
 finalization
 
-//TApplicationController.Release;
+// TApplicationController.Release;
 
 end.

@@ -90,6 +90,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Release;virtual;
     // Default Container
     class function DefaultContainer: TMVCBrIoC;
 {$IFDEF DELPHI_XE_UP}
@@ -286,6 +287,7 @@ end;
 
 class function TMVCBrIoC.DefaultContainer: TMVCBrIoC;
 begin
+  result := nil;
   if FReleased then
     exit;
 
@@ -647,6 +649,21 @@ begin
 
 end;
 
+
+procedure TMVCBrIoC.Release;
+var
+  o: TObject;
+  rogo: TIoCRegistration<IMVCBrIOC>;
+  resolvedObj: TObject;
+begin
+  for o in FContainerInfo.values do
+  begin
+    rogo := TIoCRegistration<IMVCBrIOC>(o);
+    if assigned(rogo.FInstance) then
+       rogo.FInstance.release;
+    rogo.FInstance := nil;
+  end;
+end;
 
 procedure TMVCBrIoC.AttachInstance(AInstance: IMVCBrIOC);
 var
