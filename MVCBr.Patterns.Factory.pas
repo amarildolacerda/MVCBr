@@ -38,19 +38,24 @@ Type
     Procedure Lock;
     procedure UnLock;
     procedure Release;
+    function RefCount:Integer;
   end;
 
   TMVCBrFactory = class(TInterfacedObject, IMVCBrFactory)
   private
     FLock: TObject;
+    FIsUnsafe: boolean;
+    FDefaultSafeted: IInterface;
     [unsafe]
     FDefault: IInterface;
     function GetDefault: IInterface;
   public
-    constructor Create; overload;virtual;
-    constructor Create(AInterface: IInterface); overload;virtual;
+    constructor Create; overload; virtual;
+    constructor Create(AInterface: IInterface; AUnsafe: boolean = true);
+      overload; virtual;
     destructor Destroy; override;
-    procedure SetUnsafe(AInterface:IInterface);virtual;
+    procedure SetUnsafe(AInterface: IInterface); virtual;
+    procedure SetSafeted(AInterface: IInterface); virtual;
     property Default: IInterface read GetDefault;
     class function NewInstance<TInterface: IInterface>(AClass: TClass)
       : TInterface; static;
@@ -58,6 +63,7 @@ Type
     Procedure Lock; overload; virtual;
     procedure UnLock; virtual;
     procedure Release; virtual;
+    function RefCount:Integer;
   end;
 
   TMVCBrSingletonFactory<T: Class> = class(TMVCBrFactory)
@@ -81,9 +87,9 @@ Type
   private
     [unsafe]
     FController: IInterface;
-    FDisabledRefCount: Boolean; // unsafe/weak reference to controller
+    FDisabledRefCount: boolean; // unsafe/weak reference to controller
     function GetDefault: IInterface;
-    procedure SetDisabledRefCount(const Value: Boolean);
+    procedure SetDisabledRefCount(const Value: boolean);
   public
     property Default: IInterface read GetDefault;
     function QueryInterface(const IID: TGUID; out Obj): HResult; STDCALL;
@@ -91,7 +97,8 @@ Type
     function _Release: Integer; STDCALL;
     procedure Release; virtual;
     constructor Create(const Controller: IInterface);
-    property DisabledRefCount: Boolean read FDisabledRefCount
+    destructor Destroy; override;
+    property DisabledRefCount: boolean read FDisabledRefCount
       write SetDisabledRefCount;
   end;
 
@@ -100,16 +107,21 @@ Type
     function QueryInterface(const IID: TGUID; out Obj): HResult; STDCALL;
   end;
 
-  TMVCBrHelperFactory = class(TInterfacedObject)
+  TMVCBrHelperFactory<T: Class> = class(TInterfacedObject)
   protected
-    FInstance: TObject;
+    FInstance: T;
   public
-    constructor Create(Instance: TObject);
+    constructor Create(Instance: T);
     destructor Destroy; override;
+    property Default: T read FInstance;
   end;
 
-  TMVCBrStaticFactory = class(TObject)
-
+  TMVCBrStaticFactory<T> = class(TObject)
+  protected
+    FInstance: T;
+  public
+    constructor Create(AInstance: T);
+    property Default: T read FInstance;
   end;
 
 implementation
@@ -119,31 +131,42 @@ implementation
 constructor TMVCBrFactory.Create;
 begin
   inherited Create;
+  FDefaultSafeted := nil;
+  FIsUnsafe := false;
   FDefault := nil;
   FRefCount := 1;
   FLock := TObject.Create;
 end;
 
-constructor TMVCBrFactory.Create(AInterface: IInterface);
+constructor TMVCBrFactory.Create(AInterface: IInterface;
+  AUnsafe: boolean = true);
 begin
-    Create;
-    SetUnsafe(AInterface);
+  Create;
+  if AUnsafe then
+    SetUnsafe(AInterface)
+  else
+  begin
+    FDefaultSafeted := AInterface;
+  end;
 end;
 
 destructor TMVCBrFactory.Destroy;
 begin
+  FDefault := nil;
+  FDefaultSafeted := nil;
   FLock.free;
   inherited;
 end;
 
 function TMVCBrFactory.GetDefault: IInterface;
 begin
-  if assigned(FDefault) then
+  if FIsUnsafe then
     result := FDefault
+  else if assigned(FDefaultSafeted) then
+    result := FDefaultSafeted
   else
     result := self;
 end;
-
 
 procedure TMVCBrFactory.Lock;
 begin
@@ -167,16 +190,31 @@ begin
   end;
 end;
 
-procedure TMVCBrFactory.Release;
+function TMVCBrFactory.RefCount: Integer;
 begin
-  // FDisabledRefCount := false;
-  // _Release;
+   result := inherited RefCount;
 end;
 
+procedure TMVCBrFactory.Release;
+begin
+end;
+
+procedure TMVCBrFactory.SetSafeted(AInterface: IInterface);
+begin
+  if FDefaultSafeted <> AInterface then
+  begin
+    FDefaultSafeted := AInterface;
+    FDefault := nil;
+  end;
+  FIsUnsafe := false;
+end;
 
 procedure TMVCBrFactory.SetUnsafe(AInterface: IInterface);
 begin
-  FDefault := AInterface;
+  if FDefault <> AInterface then
+    FDefault := AInterface;
+  FDefaultSafeted := nil;
+  FIsUnsafe := true;
 end;
 
 function TMVCBrFactory.This: TObject;
@@ -188,8 +226,6 @@ procedure TMVCBrFactory.UnLock;
 begin
   TMonitor.Exit(FLock);
 end;
-
-
 
 { TMVCBrSingletonFactory<T> }
 
@@ -237,6 +273,12 @@ begin
   FController := Controller;
 end;
 
+destructor TMVCBrAggregatedFactory.Destroy;
+begin
+  FController := nil;
+  inherited;
+end;
+
 function TMVCBrAggregatedFactory.GetDefault: IInterface;
 begin
   result := FController;
@@ -257,7 +299,7 @@ begin
   _Release;
 end;
 
-procedure TMVCBrAggregatedFactory.SetDisabledRefCount(const Value: Boolean);
+procedure TMVCBrAggregatedFactory.SetDisabledRefCount(const Value: boolean);
 begin
   FDisabledRefCount := Value;
 end;
@@ -291,22 +333,30 @@ end;
 
 { TMVCBrHelperFactory }
 
-constructor TMVCBrHelperFactory.Create(Instance: TObject);
+constructor TMVCBrHelperFactory<T>.Create(Instance: T);
 begin
   inherited Create;
   FInstance := Instance;
 end;
 
-destructor TMVCBrHelperFactory.Destroy;
+destructor TMVCBrHelperFactory<T>.Destroy;
 begin
-
+  FInstance.free;
   inherited;
+end;
+
+{ TMVCBrStaticFactory<T> }
+
+constructor TMVCBrStaticFactory<T>.Create(AInstance: T);
+begin
+  inherited Create;
+  FInstance := AInstance;
 end;
 
 initialization
 
 finalization
 
-// TMVCBrSingletonFactory<TObject>.Release;
+TMVCBrSingletonFactory<TObject>.Release;
 
 end.

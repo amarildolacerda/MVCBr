@@ -45,12 +45,12 @@ type
     function GetModelTypes: TModelTypes; virtual;
     procedure SetModelTypes(const AModelTypes: TModelTypes); virtual;
     procedure SetID(const AID: string); override;
-    procedure AfterInit; virtual;
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure Release;override;
     procedure AfterConstruction; override;
+    procedure AfterInit; virtual;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure SetController(const AController: IController); virtual;
     function GetController: IController;

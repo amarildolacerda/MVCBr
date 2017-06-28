@@ -207,7 +207,6 @@ type
     property Topic: string read GetTopic write SetTopic;
     property SubscribeProc: TMVCBrObserverProc read GetSubscribeProc
       write SetSubscribeProc;
-
   end;
 
   /// <summary>
@@ -290,7 +289,7 @@ type
     ['{EF8A7B2A-F5EC-4675-8E36-A6091820AB0A}']
   end;
 
-  TInterfaceAdapter = class(TMVCBrAdapter, IInterfaceAdapter)
+  TInterfaceAdapter = class(TMVCBrAdapter,IInterfaceAdapter)
   private
     FClass: TClass;
     FGuid: TGuid;
@@ -482,10 +481,13 @@ type
   protected
   protected
     FModels: TList<IModel>;
+    FViewOwnedFree: boolean;
+
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Release; override;
+    procedure release; override;
+    property ViewOwnedFree: boolean read FViewOwnedFree write FViewOwnedFree;
     function This: TControllerAbstract;
     function DefaultModels: TList<IModel>;
     class function ResolveMainForm(const AIID: TGuid; out ref)
@@ -493,12 +495,14 @@ type
     function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
     function GetModel(const IID: TGuid): IModel; overload; virtual;
     function GetModel<TModelInterface>(): TModelInterface; overload;
-    class procedure Resolve(const AIID: TGuid; out ref)overload;
-    class Function Resolve(const ANome: string): IController; overload;
-    procedure ResolveController(const AIID: TGuid; out ref)overload;
+    class procedure Resolve(const AIID: TGuid; out ref); overload;
+    class Function Resolve(const ANome: string; AExecInit: boolean = true)
+      : IController; overload;
+    procedure ResolveController(const AIID: TGuid; out ref); overload;
+    class procedure AttachController(const AIID: TGuid; out ref); overload;
     Function ResolveController(const ANome: string): IController; overload;
     function ResolveController(const AIID: TGuid): IController; overload;
-    Function ResolveController<TInterface:IController>: TInterface; overload;
+    Function ResolveController<TInterface: IController>: TInterface; overload;
     class procedure RevokeInstance(const AII: IInterface); overload; virtual;
     function AttachModel(const AModel: IModel): integer; virtual;
   end;
@@ -655,14 +659,26 @@ begin
 end;
 
 { TControllerAbstract }
+class procedure TControllerAbstract.AttachController(const AIID: TGuid;
+  out ref);
+var
+  achei: string;
+  ii: IController;
+begin
+  achei := TMVCBrIoc.DefaultContainer.GetName(AIID);
+  if achei = '' then
+    exit;
+  ii := Resolve(achei,false);
+  if ii <> nil then
+  begin
+    if supports(ii.This, AIID, ref) then
+       ii.AfterInit;
+  end;
+end;
 
 function TControllerAbstract.AttachModel(const AModel: IModel): integer;
-// var
-// agg: TMVCBrAggregatedFactory;
 begin
   result := -1;
-  // agg := TMVCBrAggregatedFactory.Create(AModel);
-  // FModels.Add(agg);
   DefaultModels.Add(AModel);
   result := FModels.Count - 1;
 end;
@@ -745,7 +761,8 @@ begin
   inherited;
 end;
 
-class function TControllerAbstract.Resolve(const ANome: string): IController;
+class function TControllerAbstract.Resolve(const ANome: string;
+  AExecInit: boolean = true): IController;
 var
   achei: boolean;
   IID: TGuid;
@@ -758,7 +775,8 @@ begin
     rst := TMVCBrIoc.DefaultContainer.Resolve<IController>(ANome);
     result := rst.This.Default as IController;
     rst := nil;
-    result.Init;
+    if AExecInit then
+      result.Init;
   end;
 end;
 
@@ -777,12 +795,12 @@ function TControllerAbstract.ResolveController<TInterface>: TInterface;
 var
   pInfo: PTypeInfo;
   IID: TGuid;
-  rst:TInterface;
+  rst: TInterface;
 begin
   pInfo := TypeInfo(TInterface);
   IID := GetTypeData(pInfo).Guid;
   Resolve(IID, rst);
-  result := TInterface(rst.this.default) ;
+  result := TInterface(rst.This.Default);
   rst := nil;
 end;
 

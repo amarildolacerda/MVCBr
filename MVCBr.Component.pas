@@ -133,6 +133,7 @@ end;
 
 procedure TComponentFactory.Release;
 begin
+  FAdapter.release;
   FAdapter := nil;
 end;
 

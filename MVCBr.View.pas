@@ -31,8 +31,11 @@ unit MVCBr.View;
 
 interface
 
-uses {$IFDEF LINUX}  {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms,
-{$ENDIF}{$ENDIF} system.Classes,
+uses
+{$IFDEF LINUX}  {$ELSE}
+{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms,
+{$ENDIF}{$ENDIF}
+  system.Classes,
   system.SysUtils, system.Rtti, MVCBr.Model,
   MVCBr.Interf, system.JSON;
 

@@ -129,9 +129,9 @@ type
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
     function GetController: IController; virtual;
-    function AttachController(AInterface: TGuid): IController;
-      overload; virtual;
-    function AttachController<TIController: IController>: TIController;
+    function AttachController(AInterface: TGuid; AOwnedFree: boolean = true)
+      : IController; overload; virtual;
+    function AttachController<TIController: IInterface>: TIController;
       overload;
     function AttachModel<TIModel: IModel>(AModelClass
       : TModelFactoryAbstractClass): TIModel;
@@ -240,6 +240,7 @@ begin
   if assigned(FController) then
     FController.This.RevokeInstance(FController);
   // clear controller
+  FController.release;
   FController := nil;
   inherited;
 end;
@@ -322,11 +323,18 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
-function TCustomFormFactory.AttachController(AInterface: TGuid): IController;
+function TCustomFormFactory.AttachController(AInterface: TGuid;
+  AOwnedFree: boolean = true): IController;
 begin
-  result := ApplicationController.ResolveController(AInterface) as IController;
-  result.View(self);
-  SetController(result);
+  result := FController;
+  if not assigned(FController) then
+  begin
+    FController := ApplicationController.AttachController(AInterface)
+      as IController;
+    FController.This.ViewOwnedFree := AOwnedFree;
+    result := FController;
+    result.View(self);
+  end;
 end;
 
 function TCustomFormFactory.AttachController<TIController>: TIController;
@@ -363,12 +371,12 @@ end;
 
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
 begin
-  result := FController.This.ResolveController(IID);
+  result := ApplicationController.thisAs.ResolveController(IID);
 end;
 
 function TCustomFormFactory.ResolveController<TIController>: TIController;
 begin
-  result := GetController.This.ResolveController<TIController>();
+  result := ApplicationController.thisAs.ResolveController<TIController>();
 end;
 
 procedure TCustomFormFactory.RevokeController(TIController: IController);

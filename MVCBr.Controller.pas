@@ -55,7 +55,6 @@ type
     procedure SetID(const AID: string); override;
   public
     procedure AfterConstruction; override;
-
   public
 
     constructor Create; override;
@@ -104,7 +103,7 @@ type
     procedure ForEach(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);
-      overload; virtual;
+      overload; override;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
   end;
@@ -127,8 +126,8 @@ begin
     begin
       Parent := AControl;
     end;
-
   end;
+  child := nil;
 end;
 {$ENDIF}
 
@@ -155,6 +154,7 @@ end;
 constructor TControllerFactory.Create;
 begin
   inherited Create;
+  FViewOwnedFree := false;
   SetUnsafe(self);
   TMVCBr.AttachInstance(self.Default as IController);
   FReleased := false;
@@ -268,6 +268,7 @@ function TControllerFactory.IndexOf(const AModel: IModel): integer;
 var
   i: integer;
 begin
+  result := -1;
   for i := 0 to FModels.Count - 1 do
     if TMVCBr.Equals(AModel, FModels.items[i]) then
     begin
@@ -351,11 +352,12 @@ begin
     begin
       FView.Release;
       try
-        if assigned(FView) then
-        begin
-          if not TMVCBr.IsMainForm(FView.This) then
-            FView.This.free; // tenta encerrar o formulario
-        end;
+        if not FViewOwnedFree then
+          if assigned(FView) then
+          begin
+            if not TMVCBr.IsMainForm(FView.This) then
+              FView.This.free; // tenta encerrar o formulario
+          end;
       except
       end;
     end;

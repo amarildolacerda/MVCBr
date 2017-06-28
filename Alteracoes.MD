@@ -1,3 +1,9 @@
+28/06/2017 - AL
+   + MVCBr.Patterns.Adapter
+   * memory leak no TMVCBrComponentFactory
+26/06/2017 - AL
+   + adicionado parametro  OwnedFree no AttachController do FormFactory, para controlar se
+     o controller pode fazer um FREE no formulário (default=true, o controller nao pode fazer FREE na view )
 26/06/2017 - AL
    + adicionado procedure release as interface para liberar referencia cruzada
    * corrigido memory leaks nas classes com referencia cruzada

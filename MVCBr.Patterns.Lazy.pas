@@ -67,6 +67,24 @@ type
     property Default: T read Invoke;
   end;
 
+  TMVCBrAggregatedLazy<T: IInterface> = class(TInterfacedObject, IInterface)
+  private
+    FIsCreated: Boolean;
+    [unsafe]
+    FDefault: T;
+    FFactory: TFunc<T>;
+    procedure Initialize;
+    function Invoke: T;
+  protected
+    function QueryInterface(const AIID: TGUID; out Obj): HResult; stdcall;
+  public
+    constructor Create(AValueFactory: TFunc<T>);
+    destructor Destroy; override;
+    procedure Release; virtual;
+    function IsCreated: Boolean;
+    property Default: T read Invoke;
+  end;
+
   MVCBrLazy<T: class> = record
   strict private
     FLazy: IMVCBrLazy<T>;
@@ -155,6 +173,58 @@ end;
 class operator MVCBrLazy<T>.Implicit(const Value: TFunc<T>): MVCBrLazy<T>;
 begin
   Result.FLazy := TMVCBrLazy<T>.Create(Value);
+end;
+
+{ TMVCBrAggregatedLazy<T> }
+
+constructor TMVCBrAggregatedLazy<T>.Create(AValueFactory: TFunc<T>);
+begin
+  inherited Create;
+  FFactory := AValueFactory;
+end;
+
+destructor TMVCBrAggregatedLazy<T>.Destroy;
+begin
+  if FIsCreated then
+  begin
+    FDefault := nil;
+  end;
+  inherited;
+end;
+
+procedure TMVCBrAggregatedLazy<T>.Initialize;
+begin
+  if not FIsCreated then
+  begin
+    FDefault := FFactory();
+    FIsCreated := True;
+  end;
+end;
+
+function TMVCBrAggregatedLazy<T>.Invoke: T;
+begin
+  Initialize();
+  Result := FDefault;
+end;
+
+function TMVCBrAggregatedLazy<T>.IsCreated: Boolean;
+begin
+  Result := FIsCreated;
+end;
+
+function TMVCBrAggregatedLazy<T>.QueryInterface(const AIID: TGUID;
+  out Obj): HResult;
+begin
+  if IsEqualGUID(AIID, ObjCastGUID) then
+  begin
+    Initialize;
+  end;
+  Result := inherited;
+end;
+
+procedure TMVCBrAggregatedLazy<T>.Release;
+begin
+
 end;
 
 end.

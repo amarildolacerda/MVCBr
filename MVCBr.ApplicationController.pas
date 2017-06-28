@@ -2,7 +2,7 @@
   Application Controller - Singleton central para os controller
   Alterações:
   12/04/2017 - por: amarildo lacerda
-  + Introduzido Fucntion Default para Singleton
+  + Introduzido Function Default para Singleton
   + Incluido   class var FApplicationController
 }
 
@@ -74,7 +74,9 @@ type
 
     /// Controllers methods
     function FindController(AGuid: TGuid): IController; virtual;
-    function ResolveController(AGuid: TGuid): IController; virtual;
+    function ResolveController<TIController:IController>:TIController;overload;
+    function ResolveController(AGuid: TGuid): IController;overload; virtual;
+    function AttachController(AGuid: TGuid): IController; virtual;
     procedure RevokeController(AGuid: TGuid);
     /// Count retorna a quantidade de controllers empilhados na lista
     function Count: integer;
@@ -156,6 +158,11 @@ begin
     FControllers.Add(agg);
     result := FControllers.Count - 1;
   end;
+end;
+
+function TApplicationController.AttachController(AGuid: TGuid): IController;
+begin
+   TControllerAbstract.AttachController(AGuid, result);
 end;
 
 function TApplicationController.Count: integer;
@@ -366,6 +373,14 @@ begin
   TControllerAbstract.Resolve(AGuid, result);
 end;
 
+function TApplicationController.ResolveController<TIController>: TIController;
+var
+  IID: TGuid;
+begin
+  IID := TMVCBr.GetGuid<TIController>;
+  TControllerAbstract.Resolve(IID, result);
+end;
+
 procedure TApplicationController.RevokeController(AGuid: TGuid);
 var
   AController: IController;
@@ -383,6 +398,9 @@ procedure TApplicationController.Run(AController: IController;
 AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
+  AController.release;
+  AController := nil;
+  FMainView := nil;
 end;
 
 procedure TApplicationController.SetMainView(AView: IView);

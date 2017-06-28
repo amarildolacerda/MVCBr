@@ -62,6 +62,7 @@ end;
 
 destructor TMVCBrDecorator<T>.destroy;
 begin
+  /// dont free FDecorate - need free on owned calls
   FLock.free;
   inherited;
 end;

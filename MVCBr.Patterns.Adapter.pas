@@ -27,32 +27,49 @@ unit MVCBr.Patterns.Adapter;
 
 interface
 
+uses System.Classes, System.SysUtils;
+
 type
 
   IMVCBrAdapter = interface
     ['{9075BA8D-80EE-4F4F-BE43-3B5F5BAB406F}']
     function This: TObject;
+    procedure Release;
   end;
 
   TMVCBrAdapter = class(TInterfacedObject, IMVCBrAdapter)
   private
   public
-    function This: TObject;
+    function This: TObject; virtual;
+    procedure Release; virtual;
   end;
 
-  TMVCBrAdapter<T> = class(TMVCBrAdapter)
-    private
-       FAdapter : T;
-    public
-      constructor Create( AObject:T );
-      function Adapter:T;
+  TMVCBrAdapter<T: Class> = class(TMVCBrAdapter)
+  private
+    FAdapter: T;
+  public
+    constructor Create(AObject: T);
+    destructor Destroy; override;
+    property Adapter: T read FAdapter;
+    procedure Release; override;
+    function This: TObject; override;
   end;
 
+  TMVCBrInterfacedAdapter<T: IInterface> = class(TMVCBrAdapter)
+  private
+    FAdapter: T;
+  public
+    constructor Create(AInterface: T);
+    destructor Destroy; override;
+    property Default: T read FAdapter;
+  end;
 
 implementation
 
-{ TMVCBrAdapter }
-
+procedure TMVCBrAdapter.Release;
+begin
+  /// nothing
+end;
 
 function TMVCBrAdapter.This: TObject;
 begin
@@ -61,15 +78,42 @@ end;
 
 { TMVCBrAdapter<T> }
 
-function TMVCBrAdapter<T>.Adapter: T;
-begin
-   result := FAdapter;
-end;
-
 constructor TMVCBrAdapter<T>.Create(AObject: T);
 begin
-    inherited create;
-    FAdapter := AObject;
+  inherited Create;
+  FAdapter := AObject;
+end;
+
+destructor TMVCBrAdapter<T>.Destroy;
+begin
+  /// need free on calls class (FAdapter)
+  inherited;
+end;
+
+procedure TMVCBrAdapter<T>.Release;
+begin
+  if assigned(FAdapter) then
+    FAdapter.free;
+  FAdapter := nil;
+end;
+
+function TMVCBrAdapter<T>.This: TObject;
+begin
+  result := self;
+end;
+
+{ TMVCBrInterfacedAdapter<T> }
+
+constructor TMVCBrInterfacedAdapter<T>.Create(AInterface: T);
+begin
+  inherited Create;
+  FAdapter := AInterface;
+end;
+
+destructor TMVCBrInterfacedAdapter<T>.Destroy;
+begin
+  /// need freed interface on owner caller
+  inherited;
 end;
 
 end.
