@@ -15,11 +15,6 @@ program MVCBrTests;
 {$ENDIF}
 
 uses
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   DUnitTestRunner,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
@@ -40,9 +35,9 @@ uses
   MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
   MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas',
   TestMVCBr.Patterns in 'TestMVCBr.Patterns.pas',
-  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
   MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
-  MVCBr.Patterns.Lazy in '..\MVCBr.Patterns.Lazy.pas';
+  MVCBr.Patterns.Lazy in '..\MVCBr.Patterns.Lazy.pas',
+  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas';
 
 {$R *.RES}
 

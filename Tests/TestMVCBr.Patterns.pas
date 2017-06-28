@@ -13,7 +13,8 @@ interface
 
 uses
   TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
-  System.TypInfo, System.Classes, MVCBr.Interf, MVCBr.Patterns.States;
+  System.TypInfo, System.Classes, MVCBr.Interf, MVCBr.Patterns.States,
+  MVCBr.Patterns.Factory;
 
 type
   // Test methods for class TMVCBrStates
@@ -41,6 +42,83 @@ type
     procedure TestSetFirstStep;
     procedure TestSetLastStep;
     procedure TestExecuteDelegate;
+  end;
+  // Test methods for class TMVCBrFactory
+
+  TestTMVCBrFactory = class(TTestCase)
+  strict private
+    FMVCBrFactory: TMVCBrFactory;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+    procedure TestSetUnsafe;
+    procedure TestNewInstance;
+    procedure TestThis;
+    procedure TestLock;
+    procedure TestUnLock;
+    procedure TestRelease;
+  end;
+  // Test methods for class TMVCBrSingletonFactory
+
+  TestTMVCBrSingletonFactory = class(TTestCase)
+  strict private
+    FMVCBrSingletonFactory: TMVCBrSingletonFactory<TObject>;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+    procedure TestDefault;
+    procedure TestRelease;
+  end;
+  // Test methods for class TMVCBrBuilderFactory
+
+  TestTMVCBrBuilderFactory = class(TTestCase)
+  strict private
+    FMVCBrBuilderFactory: TMVCBrBuilderFactory<TObject>;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+    procedure TestBuilder;
+  end;
+  // Test methods for class TMVCBrAggregatedFactory
+
+  TestTMVCBrAggregatedFactory = class(TTestCase)
+  strict private
+    FMVCBrAggregatedFactory: TMVCBrAggregatedFactory;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+  end;
+  // Test methods for class TMVCBrContainedFactory
+
+  TestTMVCBrContainedFactory = class(TTestCase)
+  strict private
+    FMVCBrContainedFactory: TMVCBrContainedFactory;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  published
+  end;
+  // Test methods for class TMVCBrHelperFactory
+
+  TestTMVCBrHelperFactory = class(TTestCase)
+  strict private
+    FMVCBrHelperFactory: TMVCBrHelperFactory<TObject>;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
+  end;
+  // Test methods for class TMVCBrStaticFactory
+
+  TestTMVCBrStaticFactory = class(TTestCase)
+  strict private
+    FMVCBrStaticFactory: TMVCBrStaticFactory;
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
   end;
 
 implementation
@@ -251,15 +329,197 @@ begin
   // TODO: Validate method results
   checkTrue(FRef = 0);
 
-  FMVCBrStates.first;
+  FMVCBrStates.First;
   checkTrue(FRef = 1);
 
+end;
 
+procedure TestTMVCBrFactory.SetUp;
+begin
+  FMVCBrFactory := TMVCBrFactory.Create;
+end;
+
+procedure TestTMVCBrFactory.TearDown;
+begin
+  FMVCBrFactory.Free;
+  FMVCBrFactory := nil;
+end;
+
+procedure TestTMVCBrFactory.TestSetUnsafe;
+var
+  AInterface: IInterface;
+begin
+  // TODO: Setup method call parameters
+  FMVCBrFactory.SetUnsafe(AInterface);
+  // TODO: Validate method results
+end;
+
+type
+
+  TObjectClasse = class(TInterfacedObject, IInterface)
+  end;
+  TObjectClasse1 = class(TInterfacedObject, IInterface)
+  end;
+  TObjectClasse2 = class(TInterfacedObject, IInterface)
+  end;
+  TObjectClasse3 = class(TInterfacedObject, IInterface)
+  end;
+
+procedure TestTMVCBrFactory.TestNewInstance;
+var
+  ReturnValue: IInterface;
+  AClass: TClass;
+begin
+  // TODO: Setup method call parameters
+  ReturnValue := TMVCBrFactory.NewInstance<IInterface>(TObjectClasse1);
+  // TODO: Validate method results
+  ReturnValue := nil;
+end;
+
+procedure TestTMVCBrFactory.TestThis;
+var
+  ReturnValue: TObject;
+begin
+  ReturnValue := FMVCBrFactory.This;
+  // TODO: Validate method results
+end;
+
+procedure TestTMVCBrFactory.TestLock;
+begin
+  FMVCBrFactory.Lock;
+  FMVCBrFactory.UnLock;
+  // TODO: Validate method results
+end;
+
+procedure TestTMVCBrFactory.TestUnLock;
+begin
+  FMVCBrFactory.Lock;
+  FMVCBrFactory.UnLock;
+  // TODO: Validate method results
+end;
+
+procedure TestTMVCBrFactory.TestRelease;
+begin
+  FMVCBrFactory.Release;
+  // TODO: Validate method results
+end;
+
+type
+  TSingletonClasse = class(TInterfacedObject, IInterface)
+  end;
+
+procedure TestTMVCBrSingletonFactory.SetUp;
+begin
+  FMVCBrSingletonFactory := TMVCBrSingletonFactory<TObject>.Create
+    (TSingletonClasse.Create)
+end;
+
+procedure TestTMVCBrSingletonFactory.TearDown;
+begin
+  FMVCBrSingletonFactory.Free;
+  FMVCBrSingletonFactory := nil;
+end;
+
+procedure TestTMVCBrSingletonFactory.TestDefault;
+var
+  ReturnValue: TObject;
+begin
+  ReturnValue := FMVCBrSingletonFactory.Default;
+  // TODO: Validate method results
+end;
+
+procedure TestTMVCBrSingletonFactory.TestRelease;
+begin
+  FMVCBrSingletonFactory.Release;
+  // TODO: Validate method results
+end;
+
+procedure TestTMVCBrBuilderFactory.SetUp;
+begin
+  FMVCBrBuilderFactory := TMVCBrBuilderFactory<TObject>.Create(
+    procedure(sender: TObject)
+    begin
+
+    end);
+end;
+
+procedure TestTMVCBrBuilderFactory.TearDown;
+begin
+  FMVCBrBuilderFactory.Free;
+  FMVCBrBuilderFactory := nil;
+end;
+
+procedure TestTMVCBrBuilderFactory.TestBuilder;
+var
+  ReturnValue: TMVCBrBuilderFactory<TObject>;
+  AObject: TObject;
+begin
+  // TODO: Setup method call parameters
+  AObject := TObject.Create;
+  try
+    ReturnValue := FMVCBrBuilderFactory.Builder(AObject);
+    // TODO: Validate method results
+  finally
+    AObject.Free;
+  end;
+end;
+
+procedure TestTMVCBrAggregatedFactory.SetUp;
+begin
+  FMVCBrAggregatedFactory := TMVCBrAggregatedFactory.Create(TObjectClasse3.create);
+end;
+
+procedure TestTMVCBrAggregatedFactory.TearDown;
+begin
+  FMVCBrAggregatedFactory.free;
+end;
+
+
+
+
+procedure TestTMVCBrContainedFactory.SetUp;
+begin
+  FMVCBrContainedFactory := TMVCBrContainedFactory.Create(TObjectClasse2.create);
+end;
+
+procedure TestTMVCBrContainedFactory.TearDown;
+begin
+  FMVCBrContainedFactory.Free;
+  FMVCBrContainedFactory := nil;
+end;
+
+
+procedure TestTMVCBrHelperFactory.SetUp;
+begin
+  FMVCBrHelperFactory := TMVCBrHelperFactory<TObject>.Create(TObjectClasse.create);
+end;
+
+procedure TestTMVCBrHelperFactory.TearDown;
+begin
+  FMVCBrHelperFactory.Free;
+  FMVCBrHelperFactory := nil;
+end;
+
+procedure TestTMVCBrStaticFactory.SetUp;
+begin
+  FMVCBrStaticFactory := TMVCBrStaticFactory.Create;
+end;
+
+procedure TestTMVCBrStaticFactory.TearDown;
+begin
+  FMVCBrStaticFactory.Free;
+  FMVCBrStaticFactory := nil;
 end;
 
 initialization
 
 // Register any test cases with the test runner
 RegisterTest(TestTMVCBrStates.Suite);
-
+RegisterTest(TestTMVCBrFactory.Suite);
+RegisterTest(TestTMVCBrSingletonFactory.Suite);
+RegisterTest(TestTMVCBrBuilderFactory.Suite);
+RegisterTest(TestTMVCBrAggregatedFactory.Suite);
+RegisterTest(TestTMVCBrContainedFactory.Suite);
+RegisterTest(TestTMVCBrHelperFactory.Suite);
+RegisterTest(TestTMVCBrStaticFactory.Suite);
 end.

@@ -12,7 +12,8 @@ unit TestMVCBr.View;
 interface
 
 uses
-  TestFramework, system.SysUtils, system.Classes, VCL.Forms, MVCBr.Interf,
+  TestFramework, system.SysUtils,
+  system.Classes, VCL.Forms, MVCBr.Interf,
   MVCBr.Model,
   TestMVCBr.TestForm, MVCBr.Controller,
   TestSecondView, TestViewView,
@@ -228,7 +229,7 @@ procedure TestTFormFactory.TestResolveController;
 var
   i: ITestController;
 begin
-  i := TTestSecondView(FFormFactory.This).ResolveController<ITestController>;
+  i := TTestSecondView(FFormFactory.This).ResolveController<ITestController> as ITestController;
   checkNotNull(i, 'Não retornou a interface do controller');
   CheckTrue(i.This.InheritsFrom(TControllerFactory),
     'Não herdou de TControllerFactory');
@@ -349,3 +350,4 @@ RegisterTest(TestTViewFactory.Suite);
 RegisterTest(TestTFormFactory.Suite);
 
 end.
+

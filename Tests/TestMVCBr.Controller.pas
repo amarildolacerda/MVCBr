@@ -12,7 +12,8 @@ unit TestMVCBr.Controller;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Generics.Collections, System.TypInfo,
+  TestFramework, System.SysUtils,
+  System.Generics.Collections, System.TypInfo,
   MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController,
   System.RTTI, MVCBr.View, System.Classes,
   MVCBr.Controller;
@@ -101,7 +102,6 @@ end;
 procedure TestTControllerFactory.TestGetModelByID;
 var
   ReturnValue: IModel;
-  AID: string;
 begin
   // TODO: Setup method call parameters
   ReturnValue := FControllerFactory.GetModelByID('Teste.Model');
@@ -162,7 +162,7 @@ procedure TestTControllerFactory.TestResolveController;
 var
   ctrl: ITestController;
 begin
-  ctrl := FControllerFactory.ResolveController<ITestController>;
+  ctrl := FControllerFactory.ResolveController<ITestController> ;
   CheckNotNull(ctrl, 'Não inicializou o controller');
 end;
 
@@ -412,8 +412,12 @@ end;
 
 initialization
 
+
 TMVCBr.RegisterInterfaced<IModel>('Teste.Model', IModel, TTestModel, true);
 // Register any test cases with the test runner
+
 RegisterTest(TestTControllerFactory.Suite);
 
 end.
+
+
