@@ -170,8 +170,8 @@ type
     function IndexOf(AValue: T): integer;
     procedure Delete(AIndex: integer);
     procedure Remove(AValue: T);
-    constructor Create(AOwned: boolean = true); virtual;
-    destructor Destroy; override;
+    constructor create(AOwned: boolean = true); virtual;
+    destructor destroy; override;
     function Count: integer;
     procedure Clear;
     function LockList: TList<T>;
@@ -181,7 +181,10 @@ type
 
 implementation
 
+{$IFNDEF BPL}
+
 uses REST.Json;
+{$ENDIF}
 
 constructor TThreadSafeStringList.create;
 begin
@@ -784,6 +787,7 @@ var
   ob: T;
 begin
   result := TJsonArray.create;
+  {$ifndef BPL}
   with LockList do
     try
       for i := 0 to Count - 1 do
@@ -794,6 +798,7 @@ begin
     finally
       UnlockList;
     end;
+ {$endif}
 end;
 
 function TThreadSafeObjectList<T>.TryLockList: TObjectList<T>;
@@ -856,7 +861,7 @@ begin
 
 end;
 
-constructor TThreadSafeInterfaceList<T>.Create(AOwned: boolean = true);
+constructor TThreadSafeInterfaceList<T>.create(AOwned: boolean = true);
 begin
   inherited create;
   FOwned := AOwned;
@@ -880,7 +885,7 @@ begin
   end;
 end;
 
-destructor TThreadSafeInterfaceList<T>.Destroy;
+destructor TThreadSafeInterfaceList<T>.destroy;
 var
   i: integer;
 begin
