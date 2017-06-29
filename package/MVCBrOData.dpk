@@ -39,7 +39,6 @@ requires
   IndySystem,
   IndyProtocols,
   IndyCore,
-  RESTComponents,
   FireDAC,
   FireDACCommonDriver,
   FireDACCommon,
