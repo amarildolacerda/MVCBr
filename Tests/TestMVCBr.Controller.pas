@@ -40,7 +40,7 @@ type
 
   TestTControllerFactory = class(TTestCase)
   strict private
-    FControllerFactory: TControllerFactory;
+    FControllerFactory: IController;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -89,12 +89,12 @@ begin
   FControllerFactory := TControllerFactory.Create;
   FControllerFactory.add(TMVCBr.InvokeCreate<ITestModel1>(TTestModel1)
     .ID('teste.model'));
-  FControllerFactory.View(TMVCBr.InvokeCreate<IView>(TTestView));
+  FControllerFactory.View( TTestView.Create   );
 end;
 
 procedure TestTControllerFactory.TearDown;
 begin
-  // FControllerFactory.Free;
+  FControllerFactory.release;
   FControllerFactory := nil;
 end;
 
@@ -104,9 +104,10 @@ var
   AID: string;
 begin
   // TODO: Setup method call parameters
-  AID := FControllerFactory.ClassName;
-  ReturnValue := FControllerFactory.ID(AID);
+  AID := FControllerFactory.this.ClassName;
+  ReturnValue := TControllerFactory(FControllerFactory.this).ID(AID);
   CheckNotNull(ReturnValue, 'Não incializou o IController');
+  ReturnValue := nil;
   // TODO: Validate method results
 end;
 
@@ -115,8 +116,9 @@ var
   ReturnValue: IModel;
 begin
   // TODO: Setup method call parameters
-  ReturnValue := FControllerFactory.GetModelByID('Teste.Model');
+  ReturnValue := TControllerFactory(FControllerFactory.this).GetModelByID('Teste.Model');
   CheckNotNull(ReturnValue);
+  ReturnValue := nil;
   // TODO: Validate method results
 end;
 
@@ -166,14 +168,14 @@ end;
 
 procedure TestTControllerFactory.TestRegisterObserver;
 begin
-  FControllerFactory.RegisterObserver(FControllerFactory);
+  FControllerFactory.RegisterObserver(FControllerFactory.this);
 end;
 
 procedure TestTControllerFactory.TestResolveController;
 var
   ctrl: ITestController;
 begin
-  ctrl := FControllerFactory.ResolveController<ITestController>;
+  ctrl := FControllerFactory.this.ResolveController<ITestController>;
   CheckNotNull(ctrl, 'Não inicializou o controller');
 end;
 
@@ -281,7 +283,7 @@ procedure TestTControllerFactory.TestControllerAs;
 var
   ReturnValue: TControllerFactory;
 begin
-  ReturnValue := FControllerFactory.ControllerAs;
+  ReturnValue := TControllerFactory(FControllerFactory.this);
   CheckNotNull(ReturnValue);
   // TODO: Validate method results
 end;

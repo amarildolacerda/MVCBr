@@ -72,12 +72,16 @@ unit MVCBr.Interf;
 
 interface
 
-uses System.Classes, System.SysUtils, System.Generics.Collections,
-  System.JSON, {$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
+uses System.Classes, System.SysUtils,
+  System.Generics.Collections,
+  System.JSON,
+{$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
 {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
-  MVCBr.Patterns.Factory, MVCBr.Patterns.Adapter,
+  MVCBr.Patterns.Factory,
+  MVCBr.Patterns.Adapter,
   System.ThreadSafe,
-  System.TypInfo, System.RTTI;
+  System.TypInfo,
+  System.RTTI;
 
 type
 
@@ -189,6 +193,8 @@ type
     function GetSubscribeProc: TMVCBrObserverProc;
     procedure SetSubscribeProc(const Value: TMVCBrObserverProc);
     procedure SetObserver(const Value: IMVCBrObserver);
+    function GetObserver:IMVCBrObserver;
+    procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
   end;
 
   /// <summary>
@@ -216,13 +222,13 @@ type
   /// </summary>
   IMVCBrObservable = interface
     ['{F9FEB955-A18E-484F-9F67-1AC97DFF7028}']
-    function GetItems(idx: integer): TMVCBrObserverItemAbstract;
-    procedure SetItems(idx: integer; const Value: TMVCBrObserverItemAbstract);
+    function GetItems(idx: integer): IMVCBrObserverItem;
+    procedure SetItems(idx: integer; const Value: IMVCBrObserverItem);
     function This: TObject;
     procedure Lock;
     procedure UnLock;
     function Count: integer;
-    property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
+    property Items[idx: integer]: IMVCBrObserverItem read GetItems
       write SetItems;
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
     procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
@@ -268,6 +274,7 @@ type
     procedure UnRegisterObserver(AObserver: IMVCBrObserver); overload; virtual;
     procedure UpdateObserver(const AName: string; AJsonValue: TJsonValue);
       overload; virtual;
+
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); virtual;
 
   end;
@@ -441,6 +448,8 @@ type
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
+    procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
+      AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
     function This: TObject;
     function Count: integer;
     function Add(const AController: IController): integer;
@@ -472,6 +481,16 @@ type
     function GetModel(const idx: integer): IModel;
     Procedure DoCommand(ACommand: string; const AArgs: array of TValue);
     function This: TControllerAbstract;
+    procedure RegisterObserver(const AName: String;
+      AObserver: IMVCBrObserver); overload;
+    procedure RegisterObserver(const AName: string); overload;
+    procedure RegisterObserver(AObserver: IMVCBrObserver); overload;
+    procedure UnRegisterObserver(const AName: String); overload;
+    procedure UnRegisterObserver(const AName: string;
+      AObserver: IMVCBrObserver); overload;
+    procedure UnRegisterObserver(AObserver: IMVCBrObserver); overload;
+    procedure UpdateObserver(const AName: string; AJsonValue: TJsonValue);
+
   end;
 
   IControllerAs<TInterface: IInterface> = interface
@@ -480,7 +499,8 @@ type
   end;
 
   TControllerAbstract = class(TMVCFactoryAbstract)
-  protected
+  private
+    FReleased: boolean;
   protected
     FModels: TThreadSafeInterfaceList<IModel>;
     FViewOwnedFree: boolean;
@@ -494,7 +514,7 @@ type
     function DefaultModels: TThreadSafeInterfaceList<IModel>;
     class function ResolveMainForm(const AIID: TGuid; out ref)
       : boolean; virtual;
-    function GetModel(const IID: TGuid; out intf): IModel; overload; virtual;
+    procedure GetModel(const IID: TGuid; out intf); overload; virtual;
     function GetModel(const IID: TGuid): IModel; overload; virtual;
     function GetModel<TModelInterface>(): TModelInterface; overload;
     class procedure Resolve(const AIID: TGuid; out ref); overload;
@@ -535,7 +555,7 @@ type
     function ResolveController(const AName: string): IController; overload;
     function ResolveController(const AIID: TGuid): IController; overload;
     // procedure RevokeInstance;
-    function GetModel(const IID: TGuid; out intf): IModel; overload;
+    procedure GetModel(const IID: TGuid; out intf); overload;
     function GetModel(const IID: TGuid): IModel; overload;
     function This: TControllerAbstract;
     function Start: IController;
@@ -694,36 +714,42 @@ end;
 constructor TControllerAbstract.Create;
 begin
   inherited;
+  FReleased := false;
 end;
 
 function TControllerAbstract.DefaultModels: TThreadSafeInterfaceList<IModel>;
 begin
-  if not assigned(FModels) then
-    FModels := TThreadSafeInterfaceList<IModel>.Create;
-  result := FModels;
+  result := nil;
+  if not FReleased then
+  begin
+    if not assigned(FModels) then
+      FModels := TThreadSafeInterfaceList<IModel>.Create(false);
+    result := FModels;
+  end;
 end;
 
 destructor TControllerAbstract.Destroy;
 begin
-  TMVCBrIoc.DefaultContainer.RevokeInstance(self);
+  if TMVCBrIoc.DefaultContainer <> nil then
+    TMVCBrIoc.DefaultContainer.RevokeInstance(self);
+  if not FReleased then
+    release;
+  FReleased := true;
   if assigned(FModels) then
   begin
-     FModels.Release;
-     FModels.free;
+    FModels.free;
   end;
-  FModels := nil;   
+  FModels := nil;
   inherited;
 end;
 
-function TControllerAbstract.GetModel(const IID: TGuid; out intf): IModel;
+procedure TControllerAbstract.GetModel(const IID: TGuid; out intf);
 var
   I: integer;
 begin
   for I := 0 to FModels.Count - 1 do
     if supports((FModels.Items[I] as IModel).This, IID, intf) then
     begin
-      result := FModels.Items[I] as IModel;
-      supports(result.This, IID, intf);
       exit;
     end;
 end;
@@ -761,17 +787,29 @@ end;
 procedure TControllerAbstract.release;
 var
   I: integer;
-  AModel: IModel;
+  Obj: IModel;
 begin
-  for I := FModels.Count - 1 downto 0 do
+  if not FReleased then
   begin
-    AModel := (FModels.Items[I] as IModel);
-    FModels.Items[I] := nil;
-    FModels.Delete(I);
-    AModel.release;
+    FReleased := true;
+    if assigned(FModels) then
+    begin
+      repeat
+        if assigned(FModels) then
+        begin
+          I := FModels.Count - 1;
+          if I >= 0 then
+          begin
+            Obj := FModels.Items[I];
+            FModels.Items[I].release;
+            if assigned(FModels) then
+              FModels.Delete(I);
+            Obj := nil;
+          end;
+        end;
+      until ( not assigned(FModels)) or (FModels.Count <= 0);
+    end;
   end;
-  FModels.free;
-  FModels := nil;
   inherited;
 end;
 
@@ -841,7 +879,8 @@ end;
 class procedure TControllerAbstract.RevokeInstance(const AII: IInterface);
 begin
   if assigned(AII) then
-    TMVCBrIoc.DefaultContainer.RevokeInstance(AII);
+    if TMVCBrIoc.DefaultContainer <> nil then
+      TMVCBrIoc.DefaultContainer.RevokeInstance(AII);
 end;
 
 function TControllerAbstract.ResolveController(const AIID: TGuid): IController;
@@ -892,6 +931,8 @@ class function TMVCBr.Equals(I1, I2: IInterface): boolean;
 var
   g1, g2: TGuid;
 begin
+  result := assigned(I1) and assigned(I2);
+  if not result  then exit;
   g1 := GetGuid(I1);
   g2 := GetGuid(I2);
   result := TMVCBr.IsSame(g1, g2);

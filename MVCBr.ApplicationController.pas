@@ -56,7 +56,7 @@ type
     IApplicationController)
   private
     /// Lista de controllers instanciados
-    [unsafe]
+    [weak]
     FControllers: TThreadSafeObjectList<TAggregatedObject>;
   protected
     /// MainView para o Application
@@ -116,6 +116,9 @@ type
     /// Executa
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
+
+    procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
+      AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
 
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
@@ -580,6 +583,23 @@ begin
     AController.AfterInit;
   }
 {$ENDIF}
+end;
+
+procedure TApplicationController.RunMainForm(ATFormClass: TComponentClass; out AFormVar;
+AControllerGuid: TGuid; AFunc: TFunc<TObject, boolean>);
+var
+  AController: IController;
+  obj:TObject;
+begin
+  application.CreateForm(ATFormClass, AFormVar);
+  obj := TObject( AFormVar );
+  Run(ResolveController(AControllerGuid),
+    function: boolean
+    begin
+       result := true;
+       if assigned(AFunc) then
+         result := AFunc(obj);
+    end);
 end;
 
 initialization

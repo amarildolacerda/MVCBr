@@ -27,7 +27,10 @@ unit MVCBr.Controller;
 
 interface
 
-uses MVCBr.Interf, MVCBr.Model, MVCBr.View,
+uses
+  MVCBr.Interf,
+  MVCBr.Model,
+  MVCBr.View,
 {$IFDEF LINUX} {$ELSE}
 {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
   System.Generics.Collections, System.JSON,
@@ -178,20 +181,6 @@ var
   i: integer;
 begin
   Release;
-  if assigned(FModels) then
-  begin
-    try
-      for i := FModels.Count - 1 downto 0 do
-      begin
-        FModels.items[i].Release;
-        FModels.Delete(i);
-      end;
-      FModels.Clear;
-    except
-    end;
-    FModels.free;
-    FModels := nil;
-  end;
   if assigned(FView) then
   begin
     FView.Release;
@@ -244,9 +233,9 @@ var
 begin
   result := nil;
   for i := 0 to FModels.Count - 1 do
-    if sameText(AID, (FModels.items[i] as IModel).GetID) then
+    if sameText(AID, FModels.items[i].GetID) then
     begin
-      result := FModels.items[i] as IModel;
+      result := FModels.items[i];
       exit;
     end;
 end;

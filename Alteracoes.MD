@@ -3,6 +3,8 @@
    * memory leak no TMVCBrComponentFactory
    = alterado a lista de models para ser threadsafe
    = trocado a lista de controlles para threadsafe
+   + MVCBr.Patterns.Facade
+   + adicionado tests para Facade
 26/06/2017 - AL
    + adicionado parametro  OwnedFree no AttachController do FormFactory, para controlar se
      o controller pode fazer um FREE no formulário (default=true, o controller nao pode fazer FREE na view )

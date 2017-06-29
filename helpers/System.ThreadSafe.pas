@@ -170,7 +170,8 @@ type
     function IndexOf(AValue: T): integer;
     procedure Delete(AIndex: integer);
     procedure Remove(AValue: T);
-    constructor create(AOwned: boolean = true); virtual;
+    constructor Create(AOwned: boolean = true); virtual;
+    destructor Destroy; override;
     function Count: integer;
     procedure Clear;
     function LockList: TList<T>;
@@ -855,7 +856,7 @@ begin
 
 end;
 
-constructor TThreadSafeInterfaceList<T>.create(AOwned: boolean = true);
+constructor TThreadSafeInterfaceList<T>.Create(AOwned: boolean = true);
 begin
   inherited create;
   FOwned := AOwned;
@@ -868,13 +869,26 @@ var
 begin
   Lock;
   try
-    ob := FList.Items[AIndex];
-    FList.Delete(AIndex);
     if FOwned then
-      ob := nil;
+      FList.Items[AIndex] := nil;
+    // ob := FList.Items[AIndex];
+    FList.Delete(AIndex);
+    // if FOwned then
+    // ob := nil;
   finally
     UnLock;
   end;
+end;
+
+destructor TThreadSafeInterfaceList<T>.Destroy;
+var
+  i: integer;
+begin
+  if FOwned then
+    for i := FList.Count - 1 downto 0 do
+      FList.Items[i] := nil;
+  FList.Free;
+  inherited;
 end;
 
 function TThreadSafeInterfaceList<T>.Getitems(AIndex: integer): T;

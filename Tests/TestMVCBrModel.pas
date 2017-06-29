@@ -12,7 +12,8 @@ unit TestMVCBrModel;
 interface
 
 uses
-  TestFramework, System.Classes, System.Generics.collections, MVCBr.Interf,
+  TestFramework, System.Classes,
+  System.Generics.collections, MVCBr.Interf,
   MVCBr.Controller, System.JSON,
   MVCBr.Model, System.SysUtils;
 
@@ -29,7 +30,8 @@ type
 
   TestTModelFactory = class(TTestCase)
   strict private
-    FModelFactory: TModelFactoryMock;
+
+   [weak] FModelFactory: TModelFactoryMock;
 
   Type
     TTesteController = class(TControllerFactory)
@@ -63,14 +65,14 @@ procedure TestTModelFactory.SetUp;
 begin
   FController := TTesteController.Create;
   FModelFactory := TModelFactoryMock.Create;
-  with FController do
-    add(FModelFactory);
+  FController.add( FModelFactory );
 end;
 
 procedure TestTModelFactory.TearDown;
 begin
-  // FModelFactory.Free;
-  FModelFactory := nil;
+   FModelFactory := nil;
+   FController.release;
+   FController := nil;
 end;
 
 procedure TestTModelFactory.TestGetController;
@@ -145,6 +147,7 @@ begin
   ReturnValue := FModelFactory.ID(AID);
   // TODO: Validate method results
   CheckNotNull(ReturnValue, 'Nao retornou');
+  ReturnValue := nil;
 end;
 
 procedure TestTModelFactory.TestRegisterObserver;

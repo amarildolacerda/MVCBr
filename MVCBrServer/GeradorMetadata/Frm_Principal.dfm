@@ -309,6 +309,10 @@ object FrmPrincipal: TFrmPrincipal
       object tabModel: TTabSheet
         Caption = 'Modelo Classe'
         TabVisible = False
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object memModel: TMemo
           Left = 0
           Top = 0

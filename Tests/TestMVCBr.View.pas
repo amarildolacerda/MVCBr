@@ -13,11 +13,15 @@ interface
 
 uses
   TestFramework, system.SysUtils,
-  system.Classes, VCL.Forms, MVCBr.Interf,
+  system.Classes, VCL.Forms,
+  MVCBr.Interf,
   MVCBr.Model,
-  TestMVCBr.TestForm, MVCBr.Controller,
-  TestSecondView, TestViewView,
-  MVCBr.View, system.Rtti;
+  TestMVCBr.TestForm,
+  MVCBr.Controller,
+  TestSecondView,
+  TestViewView,
+  MVCBr.View,
+  system.Rtti;
 
 type
   // Test methods for class TViewFactory
@@ -25,6 +29,7 @@ type
   TestTViewFactory = class(TTestCase)
   strict private
     FViewFactory: TViewFactory;
+    FController: IController;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -72,19 +77,17 @@ uses testSecond.Controller.Interf, TestView.Controller.Interf,
   test.Controller.Interf, test.Model.Interf;
 
 procedure TestTViewFactory.SetUp;
-var
-  Controller: IController;
 begin
-  Controller := TControllerFactory.create;
+  FController := TControllerFactory.create;
   FViewFactory := TViewFactory.create;
-  Controller.View(FViewFactory);
+  FController.View(FViewFactory);
   checkNotNull(FViewFactory);
 end;
 
 procedure TestTViewFactory.TearDown;
 begin
-  // FViewFactory.Free;
-  FViewFactory := nil;
+  FController.release;
+  FController := nil;
 end;
 
 procedure TestTViewFactory.TestNew;
@@ -196,12 +199,13 @@ var
   inf: itestModel;
   ctrl: ITestViewController;
 begin
-  ApplicationController.SetMainView(FFormFactory);
-  checkNotNull(ApplicationController.MainView,
-    'Não incializou o form principal');
+//  ApplicationController.SetMainView(FFormFactory);
+//  checkNotNull(ApplicationController.MainView,
+//    'Não incializou o form principal');
 
   inf := FFormFactory.GetModel(itestModel) as itestModel;
   checkNotNull(inf, 'Não encontrou o model instanciado no controller');
+  inf := nil;
 
   ctrl := ApplicationController.ResolveController(ITestViewController)
     as ITestViewController;

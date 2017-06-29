@@ -307,7 +307,8 @@ begin
       if o <> nil then
       begin
         rego := TIoCRegistration<IMVCBrIOC>(o);
-        o.Free;
+        if assigned(o) then
+          o.Free;
       end;
     FContainerInfo.Free;
     FContainerInfo := nil;

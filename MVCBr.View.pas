@@ -130,7 +130,7 @@ end;
 
 function TViewFactory.GetModel(AII: TGuid): IModel;
 begin
-  result := FController.GetModel(AII, result);
+  FController.GetModel(AII, result);
 end;
 
 function TViewFactory.GetTitle: String;

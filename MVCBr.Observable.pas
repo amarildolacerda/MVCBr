@@ -29,14 +29,14 @@ unit MVCBr.Observable;
 interface
 
 uses System.Classes, System.SysUtils, System.Generics.Collections,
-  System.JSON, MVCBr.Interf;
+  System.JSON, MVCBr.Interf, System.ThreadSafe;
 
 type
 
   /// <summary>
   /// Data item about subscriber
   /// </summary>
-  TMVCBrObserverItem = class(TMVCBrObserverItemAbstract)
+  TMVCBrObserverItem = class(TMVCBrObserverItemAbstract, IMVCBrObserverItem)
   private
     [unsafe]
     FObserver: IMVCBrObserver;
@@ -49,7 +49,8 @@ type
     procedure SetObserver(const Value: IMVCBrObserver); override;
     function GetObserver: IMVCBrObserver; override;
   public
-    procedure release;override;
+    destructor Destroy; override;
+    procedure release; override;
     property Observer: IMVCBrObserver read GetObserver write SetObserver;
     property Topic: string read GetTopic write SetTopic;
     property SubscribeProc: TMVCBrObserverProc read GetSubscribeProc
@@ -62,19 +63,19 @@ type
   /// </summary>
   TMVCBrObservable = class(TInterfacedObject, IMVCBrObservable)
   private
-    FSubscribers: TObjectList<TMVCBrObserverItemAbstract>;
-    function GetItems(idx: integer): TMVCBrObserverItemAbstract;
-    procedure SetItems(idx: integer; const Value: TMVCBrObserverItemAbstract);
-    class procedure Release;
+    FSubscribers: TThreadSafeInterfaceList<IMVCBrObserverItem>;
+    function GetItems(idx: integer): IMVCBrObserverItem;
+    procedure SetItems(idx: integer; const Value: IMVCBrObserverItem);
+    class procedure release;
   public
     Constructor create;
     Destructor Destroy; override;
-    function LockList: TObjectList<TMVCBrObserverItemAbstract>; overload;
+    function LockList: TList<IMVCBrObserverItem>; overload;
     procedure Lock; overload;
     procedure Unlock;
     class function DefaultContainer: TMVCBrObservable;
     function Count: integer;
-    property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
+    property Items[idx: integer]: IMVCBrObserverItem read GetItems
       write SetItems;
     function This: TObject;
     function ThisAs: TMVCBrObservable;
@@ -96,8 +97,6 @@ implementation
 { TMVCBrObserver }
 var
   FSubscribeServer: IMVCBrObservable;
-
-var
   LLock: TObject;
 
 function TMVCBrObservable.Count: integer;
@@ -112,18 +111,16 @@ end;
 constructor TMVCBrObservable.create;
 begin
   if not assigned(FSubscribers) then
-    FSubscribers := TObjectList<TMVCBrObserverItemAbstract>.create;
+    FSubscribers := TThreadSafeInterfaceList<IMVCBrObserverItem>.create;
 end;
 
 class function TMVCBrObservable.DefaultContainer: TMVCBrObservable;
 begin
-  TMonitor.enter(LLock);
   try
     if not assigned(FSubscribeServer) then
       FSubscribeServer := TMVCBrObservable.create;
     result := TMVCBrObservable(FSubscribeServer.This);
   finally
-    TMonitor.exit(LLock);
   end;
 end;
 
@@ -133,7 +130,7 @@ begin
   inherited;
 end;
 
-function TMVCBrObservable.GetItems(idx: integer): TMVCBrObserverItemAbstract;
+function TMVCBrObservable.GetItems(idx: integer): IMVCBrObserverItem;
 begin
   try
     result := LockList.Items[idx];
@@ -144,13 +141,12 @@ end;
 
 procedure TMVCBrObservable.Lock;
 begin
-  TMonitor.enter(LLock);
+  FSubscribers.LockList;
 end;
 
-function TMVCBrObservable.LockList: TObjectList<TMVCBrObserverItemAbstract>;
+function TMVCBrObservable.LockList: TList<IMVCBrObserverItem>;
 begin
-  TMonitor.enter(LLock);
-  result := FSubscribers;
+  result := FSubscribers.LockList;
 end;
 
 procedure TMVCBrObservable.Register(const AName: string;
@@ -172,12 +168,11 @@ end;
 
 procedure TMVCBrObservable.Send(AJson: TJsonValue);
 var
-  p: TMVCBrObserverItemAbstract;
+  p: IMVCBrObserverItem;
   AHandled: boolean;
 begin
-  Lock;
   try
-    for p in FSubscribers do
+    for p in LockList do
     begin
       p.Send(AJson, AHandled);
       if AHandled then
@@ -209,7 +204,7 @@ begin
 end;
 
 procedure TMVCBrObservable.SetItems(idx: integer;
-  const Value: TMVCBrObserverItemAbstract);
+  const Value: IMVCBrObserverItem);
 begin
   try
     LockList.Items[idx] := Value;
@@ -244,7 +239,7 @@ begin
   Register(unnamed_name, AObserver);
 end;
 
-class procedure TMVCBrObservable.Release;
+class procedure TMVCBrObservable.release;
 begin
   FSubscribeServer := nil;
 end;
@@ -261,7 +256,7 @@ end;
 
 procedure TMVCBrObservable.Unlock;
 begin
-  TMonitor.exit(LLock);
+  FSubscribers.UnlockList;
 end;
 
 procedure TMVCBrObservable.UnRegister(AObserver: IMVCBrObserver);
@@ -273,20 +268,26 @@ procedure TMVCBrObservable.UnRegister(const AName: string;
   AObserver: IMVCBrObserver);
 var
   i: integer;
-  item: TMVCBrObserverItemAbstract;
+  item: IMVCBrObserverItem;
 begin
   with LockList do
     try
-      for i := FSubscribers.Count - 1 downto 0 do
+      for i := Count - 1 downto 0 do
       begin
-        item := FSubscribers.Items[i];
-        if item.GetObserver <> nil then
-          if (item.GetTopic.Equals(AName) and (not assigned(AObserver))) or
-            (item.GetTopic.Equals(AName) and TMVCBr.Equals(item.GetObserver,
-            AObserver)) then
-          begin
-            FSubscribers.Delete(i);
-          end;
+        item := Items[i];
+        try
+          if assigned(item) then
+            if item.GetObserver <> nil then
+              if (item.GetTopic.Equals(AName) and (not assigned(AObserver))) or
+                (item.GetTopic.Equals(AName) and TMVCBr.Equals(item.GetObserver,
+                AObserver)) then
+              begin
+                Delete(i);
+                item := nil;
+              end;
+        except // nao encontrou
+        end;
+        item := nil;
       end;
     finally
       Unlock;
@@ -303,17 +304,17 @@ begin
   // workaroud
   AList := TList<TMVCBrObserverProc>.create;
   try
-    Lock;
-    try
-      for i := 0 to FSubscribers.Count - 1 do
-        AList.Add(FSubscribers[i].SubscribeProc);
+    with LockList do
+      try
+        for i := 0 to Count - 1 do
+          AList.Add(Items[i].GetSubscribeProc);
 
-      i := AList.IndexOf(AProc);
-      if i >= 0 then
-        FSubscribers.Delete(i);
-    finally
-      Unlock;
-    end;
+        i := AList.IndexOf(AProc);
+        if i >= 0 then
+          Delete(i);
+      finally
+        Unlock;
+      end;
 
   finally
     AList.free;
@@ -322,6 +323,12 @@ begin
 end;
 
 { TMVCBrSubscribeItem }
+
+destructor TMVCBrObserverItem.Destroy;
+begin
+  FObserver := nil;
+  inherited;
+end;
 
 function TMVCBrObserverItem.GetObserver: IMVCBrObserver;
 begin
@@ -380,7 +387,7 @@ LLock := TObject.create;
 
 finalization
 
-TMVCBrObservable.Release;
+TMVCBrObservable.release;
 LLock.free;
 
 end.
