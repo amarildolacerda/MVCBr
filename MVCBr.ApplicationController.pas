@@ -116,7 +116,7 @@ type
     /// Executa
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
-
+    procedure Run; overload;
     procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
       AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
 
@@ -585,21 +585,26 @@ begin
 {$ENDIF}
 end;
 
-procedure TApplicationController.RunMainForm(ATFormClass: TComponentClass; out AFormVar;
-AControllerGuid: TGuid; AFunc: TFunc<TObject, boolean>);
+procedure TApplicationController.RunMainForm(ATFormClass: TComponentClass;
+out AFormVar; AControllerGuid: TGuid; AFunc: TFunc<TObject, boolean>);
 var
   AController: IController;
-  obj:TObject;
+  obj: TObject;
 begin
   application.CreateForm(ATFormClass, AFormVar);
-  obj := TObject( AFormVar );
+  obj := TObject(AFormVar);
   Run(ResolveController(AControllerGuid),
     function: boolean
     begin
-       result := true;
-       if assigned(AFunc) then
-         result := AFunc(obj);
+      result := true;
+      if assigned(AFunc) then
+        result := AFunc(obj);
     end);
+end;
+
+procedure TApplicationController.Run;
+begin
+  Application.Run;
 end;
 
 initialization

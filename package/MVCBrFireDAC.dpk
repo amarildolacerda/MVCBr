@@ -45,8 +45,4 @@ requires
   MVCBrCore,
   MVCBrVCL;
 
-contains
-  MVCBr.FireDACReg in '..\VCL\MVCBr.FireDACReg.pas',
-  MVCBr.HTTPFiredacAdapter in '..\VCL\MVCBr.HTTPFiredacAdapter.pas';
-
 end.

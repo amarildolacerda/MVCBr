@@ -188,12 +188,14 @@ type
 
   IMVCBrObserverItem = interface
     ['{DE40A5D5-4492-4C3D-8369-378985ED0714}']
+    procedure SetIDInstance(const Value: TGuid);
+    function GetIDInstance: TGuid;
     procedure SetTopic(const Value: string);
     function GetTopic: string;
     function GetSubscribeProc: TMVCBrObserverProc;
     procedure SetSubscribeProc(const Value: TMVCBrObserverProc);
     procedure SetObserver(const Value: IMVCBrObserver);
-    function GetObserver:IMVCBrObserver;
+    function GetObserver: IMVCBrObserver;
     procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
   end;
 
@@ -201,6 +203,11 @@ type
   /// Abstract wrapper for TMVCBrObserverItem
   /// </summary>
   TMVCBrObserverItemAbstract = class(TMVCBrFactory, IMVCBrObserverItem)
+  private
+    FIDInstance: TGuid;
+  protected
+    procedure SetIDInstance(const Value: TGuid);virtual;
+    function GetIDInstance: TGuid;virtual;
   public
     procedure SetTopic(const Value: string); virtual; abstract;
     function GetTopic: string; virtual; abstract;
@@ -211,6 +218,7 @@ type
     function GetObserver: IMVCBrObserver; virtual; abstract;
     procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
       virtual; abstract;
+    property IDInstance:TGuid read GetIDInstance write SetIDInstance;
     property Observer: IMVCBrObserver read GetObserver write SetObserver;
     property Topic: string read GetTopic write SetTopic;
     property SubscribeProc: TMVCBrObserverProc read GetSubscribeProc
@@ -448,6 +456,7 @@ type
       AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
+    procedure Run;overload;
     procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
       AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
     function This: TObject;
@@ -807,7 +816,7 @@ begin
             Obj := nil;
           end;
         end;
-      until ( not assigned(FModels)) or (FModels.Count <= 0);
+      until (not assigned(FModels)) or (FModels.Count <= 0);
     end;
   end;
   inherited;
@@ -932,7 +941,8 @@ var
   g1, g2: TGuid;
 begin
   result := assigned(I1) and assigned(I2);
-  if not result  then exit;
+  if not result then
+    exit;
   g1 := GetGuid(I1);
   g2 := GetGuid(I2);
   result := TMVCBr.IsSame(g1, g2);
@@ -1276,6 +1286,18 @@ end;
   //FOwner := AOwner;
   end;
 }
+
+{ TMVCBrObserverItemAbstract }
+
+function TMVCBrObserverItemAbstract.GetIDInstance: TGuid;
+begin
+  result := FIDInstance;
+end;
+
+procedure TMVCBrObserverItemAbstract.SetIDInstance(const Value: TGuid);
+begin
+  FIDInstance := Value;
+end;
 
 initialization
 
