@@ -369,6 +369,7 @@ type
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     procedure release;
     function Controller(const AController: IController): IModel;
+    procedure SetController(const AController:IController);
     function ApplicationControllerInternal: IApplicationController;
     function GetModelTypes: TModelTypes;
     function GetController: IController;

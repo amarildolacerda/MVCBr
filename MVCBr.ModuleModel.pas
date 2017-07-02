@@ -13,7 +13,7 @@ interface
 
 uses
 {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF}
- System.UITypes, System.SysUtils, System.Classes, System.JSON,
+  System.UITypes, System.SysUtils, System.Classes, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf;
 
 type
@@ -32,11 +32,12 @@ type
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel; virtual;
-    function Update: IModel;overload; virtual;
+    function Update: IModel; overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
 
     function Controller(const AController: IController): IModel; virtual;
+    procedure SetController(const AController:IController);
     function GetModelTypes: TModelTypes; virtual;
     function GetController: IController;
     procedure SetModelTypes(const AModelType: TModelTypes);
@@ -44,12 +45,13 @@ type
     procedure AfterInit; virtual;
     property OnUpdateModel: TNotifyEvent read FOnUpdateModel
       write SetOnUpdateModel;
-    property OnAfterInitModel: TNotifyEvent read FOnAfterInit write SetOnAfterInit;
+    property OnAfterInitModel: TNotifyEvent read FOnAfterInit
+      write SetOnAfterInit;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Release;virtual;
+    procedure Release; virtual;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
 
@@ -101,7 +103,7 @@ end;
 
 destructor TCustomModuleFactory.Destroy;
 begin
-  // FFont.Free;
+  FController := nil;
   inherited;
 end;
 
@@ -128,8 +130,12 @@ end;
 
 procedure TCustomModuleFactory.Release;
 begin
-  inherited;
+  FController := nil;
+end;
 
+procedure TCustomModuleFactory.SetController(const AController: IController);
+begin
+   FController := AController;
 end;
 
 procedure TCustomModuleFactory.SetModelTypes(const AModelType: TModelTypes);
@@ -154,8 +160,10 @@ end;
 
 procedure TCustomModuleFactory.Update(AJsonValue: TJsonValue;
   var AHandled: boolean);
+var AModel:IModel;
 begin
-   Update;
+  AModel := Update;
+  AModel := nil;
 end;
 
 function TCustomModuleFactory.Update: IModel;
