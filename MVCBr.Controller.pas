@@ -43,8 +43,7 @@ uses
 type
 
   // TControllerFactory Classe Factory para  IController
-  TControllerFactory = class(TControllerAbstract, IController,
-    IControllerAs<TControllerFactory>)
+  TControllerFactory = class(TControllerAbstract, IController, IControllerAs<TControllerFactory>)
   private
     FControllerInited: Boolean;
     FLoaded: Boolean;
@@ -62,6 +61,7 @@ type
 
     constructor Create; override;
     destructor Destroy; override;
+    procedure CreateModule(AClass: TComponentClass; var AModule);
     procedure Release; override;
     function Default: IController; overload;
 {$IFDEF FMX}
@@ -73,18 +73,14 @@ type
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
     function ShowView: IView; overload; virtual;
-    function ShowView(const AProcBeforeShow: TProc<IView>;
-      const AProcOnClose: TProc<IView>): IView; overload; virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>; const AProcOnClose: TProc<IView>): IView; overload; virtual;
 
-    function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
-      overload; virtual;
-    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean)
-      : IView; overload;
+    function ViewEvent(AMessage: String; var AHandled: Boolean): IView; overload; virtual;
+    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean): IView; overload;
     function ID(const AID: string): IController; virtual;
     function GetID: String; override;
     function GetModelByID(const AID: String): IModel; virtual;
-    Procedure DoCommand(ACommand: string;
-      const AArgs: array of TValue); virtual;
+    Procedure DoCommand(ACommand: string; const AArgs: array of TValue); virtual;
     function GetModel(const idx: integer): IModel; overload; virtual;
 
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
@@ -105,8 +101,7 @@ type
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);
-      overload; override;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean); overload; override;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
   end;
@@ -151,7 +146,12 @@ end;
 
 function TControllerFactory.Count: integer;
 begin
-  result := FModels.Count;
+  with FModels.LockList do
+    try
+      result := Count;
+    finally
+      FModels.UnlockList;
+    end;
 end;
 
 constructor TControllerFactory.Create;
@@ -172,7 +172,12 @@ end;
 
 procedure TControllerFactory.Delete(const Index: integer);
 begin
-  FModels.Delete(Index);
+  with FModels.LockList do
+    try
+      Delete(Index);
+    finally
+      FModels.UnlockList;
+    end;
 end;
 
 destructor TControllerFactory.Destroy;
@@ -193,8 +198,7 @@ begin
   inherited;
 end;
 
-procedure TControllerFactory.DoCommand(ACommand: string;
-  const AArgs: array of TValue);
+procedure TControllerFactory.DoCommand(ACommand: string; const AArgs: array of TValue);
 begin
 
 end;
@@ -204,8 +208,13 @@ var
   i: integer;
 begin
   if assigned(AProc) then
-    for i := 0 to FModels.Count - 1 do
-      AProc(FModels.items[i] as IModel);
+    with FModels.LockList do
+      try
+        for i := 0 to Count - 1 do
+          AProc(items[i] as IModel);
+      finally
+        FModels.UnlockList;
+      end;
 end;
 
 function TControllerFactory.GetGuid<TInterface>: TGuid;
@@ -232,23 +241,32 @@ var
   i: integer;
 begin
   result := nil;
-  for i := 0 to FModels.Count - 1 do
-    if sameText(AID, FModels.items[i].GetID) then
-    begin
-      result := FModels.items[i];
-      exit;
+  with FModels.LockList do
+    try
+      for i := 0 to Count - 1 do
+        if sameText(AID, items[i].GetID) then
+        begin
+          result := items[i];
+          exit;
+        end;
+    finally
+      FModels.UnlockList;
     end;
 end;
 
-function TControllerFactory.GetModelByType(const AModelType
-  : TModelType): IModel;
+function TControllerFactory.GetModelByType(const AModelType: TModelType): IModel;
 var
   i: integer;
 begin
   result := nil;
   i := IndexOfModelType(AModelType);
   if i >= 0 then
-    result := FModels.items[i] as IModel;
+    with FModels.LockList do
+      try
+        result := items[i] as IModel;
+      finally
+        FModels.UnlockList;
+      end;
 end;
 
 function TControllerFactory.ID(const AID: string): IController;
@@ -262,31 +280,40 @@ var
   i: integer;
 begin
   result := -1;
-  for i := 0 to FModels.Count - 1 do
-    if TMVCBr.Equals(AModel, FModels.items[i]) then
-    begin
-      result := i;
-      exit;
+  with FModels.LockList do
+    try
+      for i := 0 to Count - 1 do
+        if TMVCBr.Equals(AModel, items[i]) then
+        begin
+          result := i;
+          exit;
+        end;
+    finally
+      FModels.UnlockList;
     end;
 end;
 
-function TControllerFactory.IndexOfModelType(const AModelType
-  : TModelType): integer;
+function TControllerFactory.IndexOfModelType(const AModelType: TModelType): integer;
 var
   i: integer;
   FModel: IModel;
 begin
   result := -1;
   if assigned(FModels) then
-    for i := 0 to FModels.Count - 1 do
-    begin
-      FModel := FModels.items[i] as IModel;
-      if AModelType in FModel.ModelTypes then
-      begin
-        result := i;
-        exit;
+    with FModels.LockList do
+      try
+        for i := 0 to Count - 1 do
+        begin
+          FModel := items[i] as IModel;
+          if AModelType in FModel.ModelTypes then
+          begin
+            result := i;
+            exit;
+          end;
+        end;
+      finally
+        FModels.UnlockList;
       end;
-    end;
 end;
 
 procedure TControllerFactory.Init;
@@ -294,7 +321,7 @@ begin
   if not FControllerInited then
   begin
     if assigned(FView) then
-      FView.SetController(self);
+      FView.setController(self);
     BeforeInit;
   end;
 end;
@@ -309,11 +336,16 @@ var
   i: integer;
 begin
   result := false;
-  for i := 0 to FModels.Count - 1 do
-    if supports((FModels.items[i] as IModel).This, AIModel) then
-    begin
-      result := true;
-      exit;
+  with FModels.LockList do
+    try
+      for i := 0 to Count - 1 do
+        if supports((items[i] as IModel).This, AIModel) then
+        begin
+          result := true;
+          exit;
+        end;
+    finally
+      FModels.UnlockList;
     end;
 end;
 
@@ -334,6 +366,22 @@ begin
     FLoaded := true;
     FRefModelCount := 0;
   end;
+end;
+
+procedure TControllerFactory.CreateModule(AClass: TComponentClass; var AModule);
+var
+  LModel: IModel;
+  obj: TObject;
+begin
+  obj := AClass.NewInstance;
+  if supports(obj, IModel, LModel) then
+  begin
+    TObject(AModule) := obj;
+    LModel.SetController(self);
+    self.add(LModel);
+  end
+  else
+    obj.free;
 end;
 
 procedure TControllerFactory.Release;
@@ -363,15 +411,13 @@ begin
   end;
 end;
 
-function TControllerFactory.ViewEvent(AMessage: String;
-  var AHandled: Boolean): IView;
+function TControllerFactory.ViewEvent(AMessage: String; var AHandled: Boolean): IView;
 begin
   result := FView;
   FView.ViewEvent(AMessage, AHandled);
 end;
 
-function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string;
-  var AHandled: Boolean): IView;
+function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean): IView;
 var
   i: integer;
   pInfo: PTypeInfo;
@@ -407,8 +453,7 @@ begin
   View(AView);
 end;
 
-function TControllerFactory.ShowView(const AProcBeforeShow,
-  AProcOnClose: TProc<IView>): IView;
+function TControllerFactory.ShowView(const AProcBeforeShow, AProcOnClose: TProc<IView>): IView;
 begin
   result := FView;
   if assigned(result) then
@@ -478,7 +523,7 @@ begin
   if not assigned(AModel) then
     exit;
   result := inherited AttachModel(AModel);
-  AModel.Controller(self);
+  AModel.setController(self);
 
   if mtViewModel in AModel.ModelTypes then
   begin
@@ -500,22 +545,26 @@ begin
   result := self;
 end;
 
-procedure TControllerFactory.Update(AJsonValue: TJsonValue;
-var AHandled: Boolean);
+procedure TControllerFactory.Update(AJsonValue: TJsonValue; var AHandled: Boolean);
 var
   i: integer;
 begin
   if FRefModelCount = 0 then
   begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
-    try
-      for i := 0 to FModels.Count - 1 do
-        (FModels.items[i] as IModel).Update(AJsonValue, AHandled);
-      if assigned(FView) then
-        FView.Update(AJsonValue, AHandled);
-    finally
-      dec(FRefModelCount);
-    end;
+    with FModels.LockList do
+      try
+        try
+          for i := 0 to Count - 1 do
+            (items[i] as IModel).Update(AJsonValue, AHandled);
+          if assigned(FView) then
+            FView.Update(AJsonValue, AHandled);
+        finally
+          dec(FRefModelCount);
+        end;
+      finally
+        FModels.UnlockList;
+      end;
   end;
 end;
 
@@ -527,14 +576,19 @@ begin
   if FRefModelCount = 0 then
   begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
-    try
-      for i := 0 to FModels.Count - 1 do
-        (FModels.items[i] as IModel).Update;
-      if assigned(FView) then
-        FView.UpdateView;
-    finally
-      dec(FRefModelCount);
-    end;
+    with FModels.LockList do
+      try
+        try
+          for i := 0 to Count - 1 do
+            (items[i] as IModel).Update;
+          if assigned(FView) then
+            FView.UpdateView;
+        finally
+          dec(FRefModelCount);
+        end;
+      finally
+        FModels.UnlockList;
+      end;
   end;
 end;
 
@@ -560,12 +614,17 @@ begin
   if FRefModelCount = 0 then
   begin
     inc(FRefModelCount); // previne para nao entrar em LOOP
-    try
-      for i := 0 to FModels.Count - 1 do
-        (FModels.items[i] as IModel).Update;
-    finally
-      dec(FRefModelCount);
-    end;
+    with FModels.LockList do
+      try
+        try
+          for i := 0 to Count - 1 do
+            (items[i] as IModel).Update;
+        finally
+          dec(FRefModelCount);
+        end;
+      finally
+        FModels.UnlockList;
+      end;
   end;
 end;
 

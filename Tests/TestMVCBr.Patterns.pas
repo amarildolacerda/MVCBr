@@ -13,8 +13,9 @@ interface
 
 uses
   TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
+  System.RTTI, Forms,
   System.TypInfo, System.Classes, MVCBr.Interf, MVCBr.Patterns.States,
-  MVCBr.Patterns.Factory;
+  MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
 
 type
   // Test methods for class TMVCBrStates
@@ -75,12 +76,16 @@ type
 
   TestTMVCBrBuilderFactory = class(TTestCase)
   strict private
-    FMVCBrBuilderFactory: TMVCBrBuilderFactory<TObject>;
+    FMVCBrBuilderFactory: IMVCBrBuilder<TObject, string>;
   public
     procedure SetUp; override;
     procedure TearDown; override;
   published
     procedure TestBuilder;
+    procedure TestAddOneCommand;
+    procedure TestAddManyCommands;
+    procedure TestRemoveCommand;
+    procedure TestQueryCommand;
   end;
   // Test methods for class TMVCBrAggregatedFactory
 
@@ -358,10 +363,13 @@ type
 
   TObjectClasse = class(TInterfacedObject, IInterface)
   end;
+
   TObjectClasse1 = class(TInterfacedObject, IInterface)
   end;
+
   TObjectClasse2 = class(TInterfacedObject, IInterface)
   end;
+
   TObjectClasse3 = class(TInterfacedObject, IInterface)
   end;
 
@@ -434,31 +442,177 @@ begin
   // TODO: Validate method results
 end;
 
+const
+  CMD_ONE = 1;
+
 procedure TestTMVCBrBuilderFactory.SetUp;
 begin
-  FMVCBrBuilderFactory := TMVCBrBuilderFactory<TObject>.Create(
-    procedure(sender: TObject)
-    begin
 
-    end);
+  /// criando uma instancia para o Builder
+  FMVCBrBuilderFactory := TMVCBrBuilderFactory<TObject, string>.New;
+
 end;
 
 procedure TestTMVCBrBuilderFactory.TearDown;
 begin
-  FMVCBrBuilderFactory.Free;
   FMVCBrBuilderFactory := nil;
+end;
+
+procedure TestTMVCBrBuilderFactory.TestAddManyCommands;
+var
+  LBuilder: IMVCBrBuilder<TObject, string>;
+  LCommand: string;
+  LResult: IMVCBrBuilderItem<TObject, string>;
+begin
+  /// create new builder with class function NEW
+  /// params: object sender is TObject and Result of delegate function is Boolean
+  LBuilder := TMVCBrBuilderFactory<TObject, string>.New;
+
+  LCommand := 'COMANDOX';
+
+  /// add new command to builder
+  LBuilder.Add(LCommand,
+    function(sender: TObject): string
+    /// param TObject with result boolean
+    begin
+      /// return boolean for anonimous function
+      result := LCommand;
+    end);
+
+  /// add new command to builder
+  LBuilder.Add(1,
+    function(sender: TObject): string
+    /// param TObject with result boolean
+    begin
+      /// return boolean for anonimous function
+      result := '1';
+    end);
+
+  /// add new command to builder
+  LBuilder.Add(2,
+    function(sender: TObject): string
+    /// param TObject with result boolean
+    begin
+      /// return boolean for anonimous function
+      result := '2';
+    end);
+
+  /// search LCommand
+  LResult := LBuilder.Query(LCommand);
+  /// check result
+  CheckNotNull(LResult, 'Não encontrou o comando');
+  checkTrue(LResult.Execute(nil).Response.equals(LCommand), 'Não executou');
+
+  /// look or unknown command
+  LResult := LBuilder.Query('XXX');
+  CheckNull(LResult, 'Falhou para um comando que nao existe');
+
+  LResult := LBuilder.Query(2);
+  CheckNotNull(LResult, 'Command 2 not found on list item os commands');
+  checkTrue(LResult.Execute(nil).Response.equals('2'), 'Command 2 not found');
+
+  LBuilder := nil;
+end;
+
+procedure TestTMVCBrBuilderFactory.TestAddOneCommand;
+begin
+
+  /// create and executing
+
+  checkTrue(
+  TMVCBrBuilderFactory<string, string>.New.Add('TESTE',
+    function(sender: string): string
+    begin
+      result := 'SUCESSO';
+    end).Execute('TESTE').Response.equals('SUCESSO'), 'Não Executou o builder')
+
 end;
 
 procedure TestTMVCBrBuilderFactory.TestBuilder;
 var
-  ReturnValue: TMVCBrBuilderFactory<TObject>;
+  ReturnValue: IMVCBrBuilderItem<TObject, string>;
   AObject: TObject;
 begin
   // TODO: Setup method call parameters
   AObject := TObject.Create;
   try
-    ReturnValue := FMVCBrBuilderFactory.Builder(AObject);
+
+    /// add an item to builder
+    FMVCBrBuilderFactory.Add(CMD_ONE,
+      Function(sender: TObject): string
+      begin
+        result := 'OK';
+      end);
+
+    ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
+
+    checkTrue(ReturnValue.Response = 'OK', 'Não executou o builder');
+
+  finally
+    AObject.Free;
+  end;
+end;
+
+procedure TestTMVCBrBuilderFactory.TestQueryCommand;
+var
+  LBuilder: IMVCBrBuilder<TObject, Boolean>;
+  LCommand: string;
+  LResult: IMVCBrBuilderItem<TObject, Boolean>;
+begin
+  /// create new builder with class function NEW
+  /// params: object sender is TObject and Result of delegate function is Boolean
+  LBuilder := TMVCBrBuilderFactory<TObject, Boolean>.New;
+
+  LCommand := 'COMANDOX';
+
+  /// add new command to builder
+  LBuilder.Add(LCommand,
+    function(sender: TObject): Boolean
+    /// param TObject with result boolean
+    begin
+      /// return boolean for anonimous function
+      result := true;
+    end);
+
+  /// search LCommand
+  LResult := LBuilder.Query(LCommand);
+  /// check result
+  CheckNotNull(LResult, 'Não encontrou o comando');
+  checkTrue(LResult.Execute(nil).Response, 'Não executou');
+
+  /// look or unknown command
+  LResult := LBuilder.Query('XXX');
+  CheckNull(LResult, 'Falhou para um comando que nao existe');
+
+  LBuilder := nil;
+end;
+
+procedure TestTMVCBrBuilderFactory.TestRemoveCommand;
+var
+  ReturnValue: IMVCBrBuilderItem<TObject, string>;
+  AObject: TObject;
+begin
+  // TODO: Setup method call parameters
+  AObject := TObject.Create;
+  try
+
+    /// add an item to builder
+    FMVCBrBuilderFactory.Add(CMD_ONE,
+      Function(sender: TObject): string
+      begin
+        result := 'OK';
+      end);
+
+    ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
     // TODO: Validate method results
+
+    checkTrue(ReturnValue.Response = 'OK', 'Não executou o builder');
+
+    /// remove
+    ///
+    FMVCBrBuilderFactory.Remove(CMD_ONE);
+    checkNull(FMVCBrBuilderFactory.query(CMD_ONE),'Não removeu');
+
   finally
     AObject.Free;
   end;
@@ -466,20 +620,19 @@ end;
 
 procedure TestTMVCBrAggregatedFactory.SetUp;
 begin
-  FMVCBrAggregatedFactory := TMVCBrAggregatedFactory.Create(TObjectClasse3.create);
+  FMVCBrAggregatedFactory := TMVCBrAggregatedFactory.Create
+    (TObjectClasse3.Create);
 end;
 
 procedure TestTMVCBrAggregatedFactory.TearDown;
 begin
-  FMVCBrAggregatedFactory.free;
+  FMVCBrAggregatedFactory.Free;
 end;
-
-
-
 
 procedure TestTMVCBrContainedFactory.SetUp;
 begin
-  FMVCBrContainedFactory := TMVCBrContainedFactory.Create(TObjectClasse2.create);
+  FMVCBrContainedFactory := TMVCBrContainedFactory.Create
+    (TObjectClasse2.Create);
 end;
 
 procedure TestTMVCBrContainedFactory.TearDown;
@@ -488,10 +641,10 @@ begin
   FMVCBrContainedFactory := nil;
 end;
 
-
 procedure TestTMVCBrHelperFactory.SetUp;
 begin
-  FMVCBrHelperFactory := TMVCBrHelperFactory<TObject>.Create(TObjectClasse.create);
+  FMVCBrHelperFactory := TMVCBrHelperFactory<TObject>.Create
+    (TObjectClasse.Create);
 end;
 
 procedure TestTMVCBrHelperFactory.TearDown;
@@ -502,7 +655,8 @@ end;
 
 procedure TestTMVCBrStaticFactory.SetUp;
 begin
-  FMVCBrStaticFactory := TMVCBrStaticFactory<TInterfacedObject>.Create(TInterfacedObject.create);
+  FMVCBrStaticFactory := TMVCBrStaticFactory<TInterfacedObject>.Create
+    (TInterfacedObject.Create);
 end;
 
 procedure TestTMVCBrStaticFactory.TearDown;
@@ -522,4 +676,5 @@ RegisterTest(TestTMVCBrAggregatedFactory.Suite);
 RegisterTest(TestTMVCBrContainedFactory.Suite);
 RegisterTest(TestTMVCBrHelperFactory.Suite);
 RegisterTest(TestTMVCBrStaticFactory.Suite);
+
 end.

@@ -21,6 +21,7 @@ uses
   TestSecondView,
   TestViewView,
   MVCBr.View,
+  MVCBr.FormView,
   system.Rtti;
 
 type

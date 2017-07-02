@@ -13,9 +13,10 @@ interface
 
 uses
   TestFramework, System.Classes,
+  Forms,
   System.Generics.collections, MVCBr.Interf,
   MVCBr.Controller, System.JSON,
-  MVCBr.Model, System.SysUtils;
+  MVCBr.Model, MVCBr.ModuleModel, System.SysUtils;
 
 type
   // Test methods for class TModelFactory
@@ -24,14 +25,14 @@ type
   private
     FRefCount: Integer;
     function GetStubInt: Integer;
-   function Update:IModel; override;
+    function Update: IModel; override;
 
   end;
 
   TestTModelFactory = class(TTestCase)
   strict private
 
-   [weak] FModelFactory: TModelFactoryMock;
+    FModelFactory: TModelFactoryMock;
 
   Type
     TTesteController = class(TControllerFactory)
@@ -59,20 +60,57 @@ type
 
   end;
 
+  TModuleFactoryMock = class(TModuleFactory)
+
+  end;
+
+  TestTModuleModelFactory = class(TTestCase)
+  strict private
+
+  [unsafe]
+    FModelFactory: IModel;
+
+  Type
+    TTesteController = class(TControllerFactory)
+    end;
+  private
+    procedure SetUp; override;
+    procedure TearDown; override;
+
+  protected
+    [unsafe]
+    FController: IController;
+  public
+    procedure TestGetOwned;
+    procedure TestController;
+    procedure TestThis;
+    procedure TestGetID;
+    procedure TestID;
+    procedure TestUpdate;
+    procedure TestAfterInit;
+
+    procedure TestRegisterObserver;
+    procedure TestUnRegisterObserverNamed;
+    procedure TestUnRegisterObserverNamedOnly;
+    procedure TesteObserver;
+  published
+    procedure TestGetController;
+  end;
+
 implementation
 
 procedure TestTModelFactory.SetUp;
 begin
   FController := TTesteController.Create;
   FModelFactory := TModelFactoryMock.Create;
-  FController.add( FModelFactory );
+  FController.add(FModelFactory);
 end;
 
 procedure TestTModelFactory.TearDown;
 begin
-   FModelFactory := nil;
-   FController.release;
-   FController := nil;
+  FModelFactory := nil;
+  FController.release;
+  FController := nil;
 end;
 
 procedure TestTModelFactory.TestGetController;
@@ -205,10 +243,95 @@ begin
   inc(FRefCount);
 end;
 
+{ TestTModuleModelFactory }
+
+procedure TestTModuleModelFactory.SetUp;
+var
+  o: TModuleFactoryMock;
+begin
+  FController := TTesteController.Create;
+  TTesteController(FController.this).CreateModule(TModuleFactoryMock,o);
+  FModelFactory := o;
+end;
+
+procedure TestTModuleModelFactory.TearDown;
+begin
+  FController.release;
+  FController := nil;
+  FModelFactory := nil;
+
+end;
+
+procedure TestTModuleModelFactory.TestAfterInit;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestController;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TesteObserver;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestGetController;
+var
+  ReturnValue: IController;
+begin
+  ReturnValue := FModelFactory.GetController;
+  CheckNotNull(ReturnValue, 'Nao retornou');
+  CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
+  ReturnValue := nil;
+  // TODO: Validate method results
+end;
+
+procedure TestTModuleModelFactory.TestGetID;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestGetOwned;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestID;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestRegisterObserver;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestThis;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestUnRegisterObserverNamed;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestUnRegisterObserverNamedOnly;
+begin
+
+end;
+
+procedure TestTModuleModelFactory.TestUpdate;
+begin
+
+end;
 
 initialization
 
 // Register any test cases with the test runner
 RegisterTest(TestTModelFactory.Suite);
+RegisterTest(TestTModuleModelFactory.Suite);
 
 end.
