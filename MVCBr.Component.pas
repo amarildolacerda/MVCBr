@@ -29,7 +29,7 @@ type
   protected
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy;override;
+    destructor Destroy; override;
     procedure Release;
     procedure AfterConstruction; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
@@ -38,6 +38,7 @@ type
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
     function Controller(const AController: IController): IModel; virtual;
+    procedure SetController(const AController: IController); virtual;
     function GetModelTypes: TModelTypes; virtual;
     function GetController: IController; virtual;
     function ResolveController(const AGuidController: TGuid)
@@ -133,14 +134,19 @@ end;
 
 procedure TComponentFactory.Release;
 begin
-  FAdapter.release;
+  FAdapter.Release;
   FAdapter := nil;
 end;
 
 function TComponentFactory.ResolveController(const AGuidController: TGuid)
   : IController;
 begin
-  result := applicationController.ResolveController(AGuidController);
+  result := ApplicationController.ResolveController(AGuidController);
+end;
+
+procedure TComponentFactory.SetController(const AController: IController);
+begin
+  FAdapter.SetController(AController);
 end;
 
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);
