@@ -25,7 +25,8 @@ unit System.Classes.Helper;
 
 interface
 
-uses System.Classes, System.SysUtils, System.Rtti,
+uses System.Classes, System.SysUtils,
+  System.Rtti,
   System.Generics.Collections,
   System.TypInfo, System.Json;
 

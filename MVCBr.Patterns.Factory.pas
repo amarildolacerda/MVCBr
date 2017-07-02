@@ -75,13 +75,6 @@ Type
     class procedure Release;
   end;
 
-  TMVCBrBuilderFactory<T> = class(TMVCBrFactory)
-  private
-    FDelegate: TProc<T>;
-  public
-    constructor Create(ADelegate: TProc<T>);
-    function Builder(AObject: T): TMVCBrBuilderFactory<T>;
-  end;
 
   TMVCBrAggregatedFactory = class(TObject)
   private
@@ -251,19 +244,6 @@ begin
   FSingleton := nil;
 end;
 
-{ TMVCBrBuilderFactory<T> }
-
-function TMVCBrBuilderFactory<T>.Builder(AObject: T): TMVCBrBuilderFactory<T>;
-begin
-  result := self;
-  FDelegate(AObject);
-end;
-
-constructor TMVCBrBuilderFactory<T>.Create(ADelegate: TProc<T>);
-begin
-  inherited Create;
-  FDelegate := ADelegate;
-end;
 
 { TMVCBrAggregatedFactory }
 
