@@ -14,7 +14,8 @@ interface
 uses
   TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
   System.RTTI, Forms,
-  System.TypInfo, System.Classes, MVCBr.Interf, MVCBr.Patterns.States,
+  System.TypInfo, System.Classes,
+  MVCBr.Interf, MVCBr.Patterns.States,
   MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
 
 type

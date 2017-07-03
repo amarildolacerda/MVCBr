@@ -43,7 +43,7 @@ uses
   System.JSON,
   System.Generics.Collections,
   System.SysUtils,
-  System.Threadsafe,
+  System.ThreadSafe,
   MVCBr.Interf;
 
 type
@@ -52,8 +52,7 @@ type
   /// No ApplicationController fica armazenado uma lista de Controllers
   /// ativos
   /// </summary>
-  TApplicationController = class(TMVCOwnedInterfacedObject,
-    IApplicationController)
+  TApplicationController = class(TMVCOwnedInterfacedObject, IApplicationController)
   private
     /// Lista de controllers instanciados
     [weak]
@@ -76,8 +75,7 @@ type
 
     /// Controllers methods
     function FindController(AGuid: TGuid): IController; virtual;
-    function ResolveController<TIController: IController>
-      : TIController; overload;
+    function ResolveController<TIController: IController>: TIController; overload;
     function ResolveController(AGuid: TGuid): IController; overload; virtual;
     function AttachController(AGuid: TGuid): IController; virtual;
     procedure RevokeController(AGuid: TGuid);
@@ -91,16 +89,11 @@ type
 
     /// Views Methods
     function FindView(AGuid: TGuid): IView; virtual;
-    function ViewEvent(AMessage: string; var AHandled: boolean)
-      : IApplicationController; overload;
-    function ViewEventOther(ASender: IController; AMessage: string;
-      var AHandled: boolean): IApplicationController;
-    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
-      : IView; overload;
-    function ViewEvent<TViewInterface: IInterface>(AMessage: String;
-      var AHandled: boolean): IView; overload;
-    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean)
-      : IView; overload;
+    function ViewEvent(AMessage: string; var AHandled: boolean): IApplicationController; overload;
+    function ViewEventOther(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;
+    function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView; overload;
+    function ViewEvent<TViewInterface: IInterface>(AMessage: String; var AHandled: boolean): IView; overload;
+    function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView; overload;
 
     /// Models Methods
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
@@ -111,14 +104,11 @@ type
     function ThisAs: TApplicationController;
 
     /// Executa o ApplicationController
-    procedure Run(AClass: TComponentClass; AController: IController;
-      AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc < boolean >= nil); overload;
     /// Executa
-    procedure Run(AController: IController;
-      AFunc: TFunc < boolean >= nil); overload;
+    procedure Run(AController: IController; AFunc: TFunc < boolean >= nil); overload;
     procedure Run; overload;
-    procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
-      AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
+    procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar; AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
 
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
@@ -161,8 +151,13 @@ begin
   if assigned(AController) then
   begin
     agg := TAggregatedObject.Create(AController);
-    FControllers.Add(agg);
-    result := FControllers.Count - 1;
+    with FControllers.LockList do
+      try
+        Add(agg);
+        result := Count - 1;
+      finally
+        FControllers.UnlockList;
+      end;
   end;
 end;
 
@@ -173,7 +168,12 @@ end;
 
 function TApplicationController.Count: integer;
 begin
-  result := FControllers.Count;
+  with FControllers.LockList do
+    try
+      result := Count;
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 constructor TApplicationController.Create;
@@ -192,7 +192,12 @@ end;
 
 procedure TApplicationController.Delete(const idx: integer);
 begin
-  FControllers.Delete(idx);
+  with FControllers.LockList do
+    try
+      Delete(idx);
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 destructor TApplicationController.Destroy;
@@ -202,16 +207,19 @@ begin
   FMainView := nil;
   if assigned(FControllers) then
   begin
-    try
-      for i := FControllers.Count - 1 downto 0 do
-      begin
-        (FControllers.items[i].Controller as IController).Release;
+    with FControllers.LockList do
+      try
+        for i := Count - 1 downto 0 do
+        begin
+          (items[i].Controller as IController).Release;
+        end;
+        clear;
+      finally
+        if assigned(FControllers) then
+          FControllers.UnlockList;
       end;
-      FControllers.clear;
-      FControllers.free;
-      FControllers := nil;
-    finally
-    end;
+    FControllers.free;
+    FControllers := nil;
   end;
   TMVCBr.Release;
   inherited;
@@ -283,8 +291,7 @@ begin
   result := rst;
 end;
 
-function TApplicationController.ForEach
-  (AProc: TFunc<IController, boolean>): boolean;
+function TApplicationController.ForEach(AProc: TFunc<IController, boolean>): boolean;
 var
   i: integer;
   LHandled: boolean;
@@ -293,20 +300,24 @@ begin
   try
     LHandled := false;
     if assigned(AProc) then
-      for i := 0 to FControllers.Count - 1 do
-      begin
-        LHandled := AProc(FControllers.items[i].Controller as IController);
-        if LHandled then
-          break;
-      end;
+      with FControllers.LockList do
+        try
+          for i := 0 to Count - 1 do
+          begin
+            LHandled := AProc(items[i].Controller as IController);
+            if LHandled then
+              break;
+          end;
+        finally
+          FControllers.UnlockList;
+        end;
     result := LHandled;
   finally
     UnLock;
   end;
 end;
 
-function TApplicationController.ForEachDown
-  (AProc: TFunc<IController, boolean>): boolean;
+function TApplicationController.ForEachDown(AProc: TFunc<IController, boolean>): boolean;
 var
   i: integer;
   LHandled: boolean;
@@ -315,12 +326,17 @@ begin
   try
     LHandled := false;
     if assigned(AProc) then
-      for i := FControllers.Count - 1 downto 0 do
-      begin
-        LHandled := AProc(FControllers.items[i].Controller as IController);
-        if LHandled then
-          break;
-      end;
+      with FControllers.LockList do
+        try
+          for i := Count - 1 downto 0 do
+          begin
+            LHandled := AProc(items[i].Controller as IController);
+            if LHandled then
+              break;
+          end;
+        finally
+          FControllers.UnlockList;
+        end;
     result := LHandled;
   finally
     UnLock;
@@ -370,11 +386,15 @@ procedure TApplicationController.Remove(const AController: IController);
 var
   i: integer;
 begin
-  for i := FControllers.Count - 1 downto 0 do
-    if (FControllers.items[i].Controller as IController)
-      .This.Equals(AController.This) then
-    begin
-      Delete(i);
+  with FControllers.LockList do
+    try
+      for i := Count - 1 downto 0 do
+        if (items[i].Controller as IController).This.Equals(AController.This) then
+        begin
+          Delete(i);
+        end;
+    finally
+      FControllers.UnlockList;
     end;
 end;
 
@@ -404,8 +424,7 @@ begin
   end;
 end;
 
-procedure TApplicationController.Run(AController: IController;
-AFunc: TFunc<boolean>);
+procedure TApplicationController.Run(AController: IController; AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
   AController.Release;
@@ -418,8 +437,7 @@ begin
   FMainView := AView.This;
 end;
 
-function TApplicationController.ViewEvent(AMessage: string;
-var AHandled: boolean): IApplicationController;
+function TApplicationController.ViewEvent(AMessage: string; var AHandled: boolean): IApplicationController;
 begin
   result := ViewEventOther(nil, AMessage, AHandled);
 end;
@@ -433,31 +451,30 @@ procedure TApplicationController.Update(const AIID: TGuid);
 var
   i: integer;
 begin
-  Lock;
-  try
-    for i := 0 to Count - 1 do
-      if supports(FControllers.items[i], AIID) then
-        (FControllers.items[i].Controller as IController).UpdateAll;
-  finally
-    UnLock;
-  end;
+  with FControllers.LockList do
+    try
+      for i := 0 to Count - 1 do
+        if supports(items[i], AIID) then
+          (items[i].Controller as IController).UpdateAll;
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 procedure TApplicationController.UpdateAll;
 var
   i: integer;
 begin
-  Lock;
-  try
-    for i := 0 to FControllers.Count - 1 do
-      (FControllers.items[i].Controller as IController).UpdateAll;
-  finally
-    UnLock;
-  end;
+  with FControllers.LockList do
+    try
+      for i := 0 to Count - 1 do
+        (items[i].Controller as IController).UpdateAll;
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
-function TApplicationController.ViewEvent(AView: TGuid; AMessage: String;
-var AHandled: boolean): IView;
+function TApplicationController.ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean): IView;
 var
   view: IView;
   rst: IView;
@@ -481,8 +498,7 @@ begin
   AHandled := LHandled;
 end;
 
-function TApplicationController.ViewEvent(AMessage: TJsonValue;
-var AHandled: boolean): IView;
+function TApplicationController.ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView;
 var
   LHandled: boolean;
   AView: IView;
@@ -504,8 +520,7 @@ begin
   AHandled := LHandled;
 end;
 
-function TApplicationController.ViewEvent<TViewInterface>(AMessage: String;
-var AHandled: boolean): IView;
+function TApplicationController.ViewEvent<TViewInterface>(AMessage: String; var AHandled: boolean): IView;
 var
   IID: TGuid;
 begin
@@ -513,8 +528,7 @@ begin
   result := ViewEvent(IID, AMessage, AHandled);
 end;
 
-function TApplicationController.ViewEventOther(ASender: IController;
-AMessage: string; var AHandled: boolean): IApplicationController;
+function TApplicationController.ViewEventOther(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;
 var
   LHandled: boolean;
 begin
@@ -532,8 +546,7 @@ begin
   AHandled := LHandled;
 end;
 
-procedure TApplicationController.Run(AClass: TComponentClass;
-AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
+procedure TApplicationController.Run(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc<boolean>);
 var
   rt: boolean;
   reference: TComponent;
@@ -585,8 +598,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TApplicationController.RunMainForm(ATFormClass: TComponentClass;
-out AFormVar; AControllerGuid: TGuid; AFunc: TFunc<TObject, boolean>);
+procedure TApplicationController.RunMainForm(ATFormClass: TComponentClass; out AFormVar; AControllerGuid: TGuid; AFunc: TFunc<TObject, boolean>);
 var
   AController: IController;
   obj: TObject;
@@ -604,13 +616,13 @@ end;
 
 procedure TApplicationController.Run;
 begin
-  Application.Run;
+  application.Run;
 end;
 
 initialization
 
 finalization
 
-// TApplicationController.Release;
+ TApplicationController.Release;
 
 end.

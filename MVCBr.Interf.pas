@@ -212,8 +212,6 @@ type
     function GetItems(idx: integer): IMVCBrObserverItem;
     procedure SetItems(idx: integer; const Value: IMVCBrObserverItem);
     function This: TObject;
-    procedure Lock;
-    procedure UnLock;
     function Count: integer;
     property Items[idx: integer]: IMVCBrObserverItem read GetItems write SetItems;
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;

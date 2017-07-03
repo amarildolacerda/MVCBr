@@ -141,7 +141,7 @@ begin
   FCont := 0;
 
   FMVCBrFacade.ForEach(0,
-    function(cmd: string): boolean
+    function(cmd: TValue): boolean
     begin
        result := true;
     end);
@@ -151,9 +151,9 @@ begin
 
 
   FMVCBrFacade.ForEach(0,
-    function(cmd: string): boolean
+    function(cmd: TValue): boolean
     begin
-       result := cmd.equals('TESTE1');
+       result := cmd.AsString.equals('TESTE1');
     end);
 
   checkTrue(FCont = 2, 'não executou o comando com function(2)');

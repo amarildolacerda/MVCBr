@@ -43,8 +43,10 @@ uses
   MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
   MVCBr.Patterns.Lazy in '..\MVCBr.Patterns.Lazy.pas',
   MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
-  MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas',
-  TestMVCBr.Facade in 'TestMVCBr.Facade.pas';
+  MVCBr.Patterns.Facade.First in '..\MVCBr.Patterns.Facade.First.pas',
+  TestMVCBr.Facade in 'TestMVCBr.Facade.pas',
+  MVCBr.Patterns.Builder in '..\MVCBr.Patterns.Builder.pas',
+  MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas';
 
 {$R *.RES}
 

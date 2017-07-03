@@ -258,6 +258,7 @@ procedure TestTModuleModelFactory.TearDown;
 begin
   FController.release;
   FController := nil;
+  FModelFactory.this.free;
   FModelFactory := nil;
 
 end;

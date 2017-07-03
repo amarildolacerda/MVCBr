@@ -1,3 +1,10 @@
+03/07/2017 - AL
+   + acrescentado  MVCBr.Patterns.Builder
+   -+ Alterado MVCBr.Patters.Facade para herdar de Builder
+   * alterado Lista de Controller para acertar memory leaks *ainda*
+   * alterado observer com bugs de vazamento de memoria.
+   + adicionado tests para Builder 
+   
 28/06/2017 - AL
    + MVCBr.Patterns.Adapter
    * memory leak no TMVCBrComponentFactory

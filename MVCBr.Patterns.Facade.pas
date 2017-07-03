@@ -1,3 +1,4 @@
+
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -23,197 +24,173 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
+
+/// <summary>
+///   TMVCBrFacade Class - Create commands to be execute by injection methods
+///                Its a class inherited by TMVCBrBuilder class
+/// </summary>
+
 unit MVCBr.Patterns.Facade;
 
 interface
 
-uses System.Classes, System.SysUtils, System.RTTI, System.Generics.Collections;
+uses System.Classes, System.SysUtils, System.RTTI,
+  MVCBr.Patterns.Builder;
 
 type
 
   TMVCBrFacateFunc = TFunc<TValue, boolean>;
 
   IMVCBrFacade = interface
-    ['{A7519403-F83B-415A-87AB-2015EE4C4618}']
+    ['{734BBC32-4236-4B1B-BAE1-47F7DCF1D572}']
     function GetItems(idx: integer): TMVCBrFacateFunc;
     procedure SetItems(idx: integer; AValue: TMVCBrFacateFunc);
-    procedure Add(ACommand: string; AFunc: TMVCBrFacateFunc);
-    procedure Remove(ACommand: string);
-    function Contains(ACommand: string): boolean;
+    procedure Add(ACommand: TValue; AFunc: TMVCBrFacateFunc);
+    procedure Remove(ACommand: TValue);
+    function Contains(ACommand: TValue): boolean;
     function Count: integer;
-    function Execute(ACommand: String; AValue: TValue): boolean;
+    function Execute(ACommand: TValue; AValue: TValue): boolean;
     property Items[idx: integer]: TMVCBrFacateFunc read GetItems write SetItems;
-    procedure ForEach(AValue: TValue; AExecuteBool: TFunc < string,
-      boolean >= nil);
-    function GetItem(ACommand: String): TMVCBrFacateFunc;
+    procedure ForEach(AValue: TValue; AExecuteBool: TFunc < TValue, boolean >= nil);
+    function GetItem(ACommand: TValue): TMVCBrFacateFunc;
   end;
 
-  TTDictionaryFacadeCommands = class(TDictionary<string, TMVCBrFacateFunc>);
-
-  TMVCBrFacade = class(TInterfacedObject, IMVCBrFacade)
-  private type
-  private
-    FSender: TValue;
-    FLock: TObject;
-    FCommands: TTDictionaryFacadeCommands;
+  /// <summary>
+  ///  TMVCBrFacade - Injection commands to be execute later
+  ///                 tem por objetivo injetar comandos a serem executados
+  ///  </summary>
+  TMVCBrFacade = class(TMVCBrBuilderFactory<TValue, boolean>, IMVCBrFacade)
+  public
+    class function New: TMVCBrFacade;
+    procedure Add(ACommand: TValue; AFunc: TMVCBrFacateFunc);
     function GetItems(idx: integer): TMVCBrFacateFunc;
     procedure SetItems(idx: integer; AValue: TMVCBrFacateFunc);
-  public
-    constructor Create(ASender: TValue); virtual;
-    Destructor Destroy; override;
-    class function New: IMVCBrFacade; overload;
-    class function New(ASender: TValue): IMVCBrFacade; overload;
-    procedure Add(ACommand: string; AFunc: TMVCBrFacateFunc); virtual;
-    procedure Remove(ACommand: string);
-    function Count: integer;
+    procedure Remove(ACommand: TValue);
+    function Contains(ACommand: TValue): boolean;
+    function Execute(ACommand: TValue; AValue: TValue): boolean; overload;
     property Items[idx: integer]: TMVCBrFacateFunc read GetItems write SetItems;
-    function Contains(ACommand: string): boolean;
-    function LockList: TTDictionaryFacadeCommands;
-    procedure UnlockList;
-    function Execute(ACommand: String; AValue: TValue): boolean;
-      overload; virtual;
-    function Execute(ACommand: String): boolean; overload; virtual;
-    procedure ForEach(AValue: TValue; AExecuteBool: TFunc < string,
-      boolean >= nil);
-    function GetItem(ACommand: String): TMVCBrFacateFunc;
+    procedure ForEach(AValue: TValue; AExecuteBool: TFunc < TValue, boolean >= nil);
+    function GetItem(ACommand: TValue): TMVCBrFacateFunc;
   end;
 
 implementation
 
-{ TMVCBrFacade<T> }
+{ TMVCBrFacade }
 
-procedure TMVCBrFacade.Add(ACommand: string; AFunc: TMVCBrFacateFunc);
+procedure TMVCBrFacade.Add(ACommand: TValue; AFunc: TMVCBrFacateFunc);
 begin
-  with LockList do
-    try
-      AddOrSetValue(ACommand, AFunc);
-    finally
-      UnlockList;
-    end;
+  inherited Add(ACommand, AFunc);
 end;
 
-function TMVCBrFacade.Contains(ACommand: string): boolean;
+function TMVCBrFacade.Contains(ACommand: TValue): boolean;
 begin
-  result := LockList.ContainsKey(ACommand);
-  UnlockList;
+  result := Builder.Contains(ACommand);
 end;
 
-function TMVCBrFacade.Count: integer;
-begin
-  result := LockList.Count;
-  UnlockList;
-end;
-
-constructor TMVCBrFacade.Create(ASender: TValue);
-begin
-  inherited Create;
-  FSender := ASender;
-  FCommands := TTDictionaryFacadeCommands.Create();
-  FLock := TObject.Create;
-end;
-
-destructor TMVCBrFacade.Destroy;
-begin
-  FSender := nil;
-  FCommands.free;
-  FLock.free;
-  inherited;
-end;
-
-function TMVCBrFacade.Execute(ACommand: String): boolean;
-begin
-  result := Execute(ACommand, FSender);
-end;
-
-function TMVCBrFacade.Execute(ACommand: String; AValue: TValue): boolean;
+function TMVCBrFacade.Execute(ACommand: TValue; AValue: TValue): boolean;
 var
-  AFunc: TFunc<TValue, boolean>;
+  i: integer;
+  item: TMVCBrBuilderItem<string, boolean>;
 begin
-  with LockList do
-    try
-      if TryGetValue(ACommand, AFunc) then
-        if assigned(AFunc) then
-          result := AFunc(AValue);
-    finally
-      UnlockList;
-    end;
-end;
-
-procedure TMVCBrFacade.ForEach(AValue: TValue; AExecuteBool: TFunc < string,
-  boolean >= nil);
-var
-  ACommand: string;
-  AItem: TPair<string, TMVCBrFacateFunc>;
-  AFunc: TMVCBrFacateFunc;
-  rt: boolean;
-begin
-  with LockList do
-    try
-      for AItem in FCommands do
-      begin
-        if assigned(AExecuteBool) and (not AExecuteBool(AItem.Key)) then
-          continue;
-        AFunc := AItem.Value;
-        if assigned(AFunc) then
-        begin
-          rt := (AFunc(AValue));
-          if rt then
-            break;
-        end;
-      end;
-      finally
-        UnlockList;
-      end;
-    end;
-
-  function TMVCBrFacade.GetItem(ACommand: String): TMVCBrFacateFunc;
-  begin
-    LockList.TryGetValue(ACommand, result);
-    UnlockList;
-  end;
-
-  function TMVCBrFacade.GetItems(idx: integer): TMVCBrFacateFunc;
-
-  begin
-    result := LockList.Values.ToArray[idx];
-    UnlockList;
-  end;
-
-  function TMVCBrFacade.LockList: TTDictionaryFacadeCommands;
-  begin
-    TMonitor.Enter(FLock);
-    result := FCommands;
-  end;
-
-  class function TMVCBrFacade.New(ASender: TValue): IMVCBrFacade;
-  begin
-    result := TMVCBrFacade.Create(ASender);
-  end;
-
-  class function TMVCBrFacade.New: IMVCBrFacade;
-  begin
-    result := New(nil);
-  end;
-
-  procedure TMVCBrFacade.Remove(ACommand: string);
+  result := false;
+  i := Builder.IndexOf(ACommand);
+  if Builder.isValid(i) then
   begin
     with LockList do
       try
-        Remove(ACommand);
+        result := Items[i].Execute(AValue).Response;
       finally
-        UnlockList;
+        unlocklist;
       end;
   end;
+end;
 
-  procedure TMVCBrFacade.SetItems(idx: integer; AValue: TMVCBrFacateFunc);
-  begin
-    LockList.Values.ToArray[idx] := AValue;
-    UnlockList;
-  end;
+procedure TMVCBrFacade.ForEach(AValue: TValue; AExecuteBool: TFunc<TValue, boolean>);
+var
+  i: integer;
+  ACommand: string;
+  AItem: IMVCBrBuilderItem<TValue, boolean>;
+  rt: boolean;
+  AFunc: TMVCBrFacateFunc;
+begin
+  with LockList do
+    try
+      for i := 0 to Count - 1 do
+      begin
+        if Builder.isValid(i) then
+        begin
+          AItem := Items[i];
+          if assigned(AExecuteBool) and (not AExecuteBool(AItem.Command)) then
+            continue;
+          AFunc := AItem.Delegate;
+          if assigned(AFunc) then
+          begin
+            rt := (AFunc(AValue));
+            if rt then
+              break;
+          end;
+        end;
+      end;
+    finally
+      unlocklist;
+    end;
+end;
 
-  procedure TMVCBrFacade.UnlockList;
+function TMVCBrFacade.GetItem(ACommand: TValue): TMVCBrFacateFunc;
+var
+  i: integer;
+  item: IMVCBrBuilderItem<TValue, boolean>;
+begin
+  result := nil;
+  i := Builder.IndexOf(ACommand);
+  if Builder.isValid(i) then
   begin
-    TMonitor.Exit(FLock);
+    with LockList do
+      try
+        item := Items[i];
+        result := item.Delegate;
+      finally
+        unlocklist;
+      end;
   end;
+end;
+
+function TMVCBrFacade.GetItems(idx: integer): TMVCBrFacateFunc;
+var
+  item: IMVCBrBuilderItem<TValue, boolean>;
+begin
+  result := nil;
+  if Builder.isValid(idx) then
+  begin
+    item := LockList.Items[idx];
+    try
+      if assigned(item) then
+        result := item.Delegate;
+    finally
+      unlocklist;
+    end;
+  end;
+end;
+
+class function TMVCBrFacade.New: TMVCBrFacade;
+begin
+  result := TMVCBrFacade.Create(TMVCBrBuilder<TValue, boolean>.Create);
+end;
+
+procedure TMVCBrFacade.Remove(ACommand: TValue);
+begin
+  Builder.Remove(ACommand);
+end;
+
+procedure TMVCBrFacade.SetItems(idx: integer; AValue: TMVCBrFacateFunc);
+begin
+  if Builder.isValid(idx) then
+    with LockList do
+      try
+        Items[idx].SetDelegate(AValue);
+      finally
+        unlocklist;
+      end;
+end;
 
 end.
