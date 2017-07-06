@@ -205,6 +205,7 @@ var
   i: integer;
 begin
   FMainView := nil;
+  TMVCBr.Release;
   if assigned(FControllers) then
   begin
     with FControllers.LockList do
@@ -221,7 +222,6 @@ begin
     FControllers.free;
     FControllers := nil;
   end;
-  TMVCBr.Release;
   inherited;
 end;
 

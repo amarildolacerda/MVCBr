@@ -124,55 +124,6 @@
         <DCCReference Include="vclactnband.dcp"/>
         <DCCReference Include="vclx.dcp"/>
         <DCCReference Include="MVCBrCore.dcp"/>
-        <DCCReference Include="eMVC.PersistentWizard.pas"/>
-        <DCCReference Include="eMVC.ProjectCreator.pas"/>
-        <DCCReference Include="eMVC.ModuleModelCreator.pas"/>
-        <DCCReference Include="eMVC.BaseCreator.pas"/>
-        <DCCReference Include="eMVC.FrameCreator.pas"/>
-        <DCCReference Include="eMVC.FileCreator.pas"/>
-        <DCCReference Include="eMVC.Logger.pas"/>
-        <DCCReference Include="eMVC.toolBox.pas"/>
-        <DCCReference Include="eMVC.copyfileform.pas">
-            <Form>FormCopyFile</Form>
-        </DCCReference>
-        <DCCReference Include="eMVC.shadow.pas"/>
-        <DCCReference Include="eMVC.ViewCreator.pas"/>
-        <DCCReference Include="eMVC.ControllerCreator.pas"/>
-        <DCCReference Include="eMVC.ViewModelCreator.pas"/>
-        <DCCReference Include="eMVC.ProjectFileCreator.pas"/>
-        <DCCReference Include="eMVC.ProjectWizardForm.pas">
-            <Form>FormAppWizard</Form>
-        </DCCReference>
-        <DCCReference Include="eMVC.ProjectWizard.pas"/>
-        <DCCReference Include="eMVC.PersistentModelForm.pas">
-            <Form>FormNewSetPersistentModel</Form>
-        </DCCReference>
-        <DCCReference Include="eMVC.Patterns.pas"/>
-        <DCCReference Include="eMVC.OTAUtilities.pas"/>
-        <DCCReference Include="eMVC.ViewModelWizard.pas"/>
-        <DCCReference Include="eMVC.PersistentModelCreator.pas"/>
-        <DCCReference Include="eMVC.ProjectGroupCreator.pas"/>
-        <DCCReference Include="eMVC.DatasetModel.pas"/>
-        <DCCReference Include="eMVC.PersistentModelConst.pas"/>
-        <DCCReference Include="eMVC.IncludeCreator.pas"/>
-        <DCCReference Include="eMVC.ModuleModelConst.pas"/>
-        <DCCReference Include="eMVC.ControllerWizard.pas"/>
-        <DCCReference Include="eMVC.ControllerForm.pas">
-            <Form>FormNewController</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="eMVC.ViewModelForm.pas">
-            <Form>FormNewSet</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="eMVC.ModuleModelWizard.pas"/>
-        <DCCReference Include="eMVC.ModelCreator.pas"/>
-        <DCCReference Include="eMVC.ClassModelWizard.pas"/>
-        <DCCReference Include="eMVC.ClassModelCreator.pas"/>
-        <DCCReference Include="eMVC.ClassModelForm.pas">
-            <Form>FormClassModel</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="parser\IntfParser.pas"/>
         <DCCReference Include="parser\TokenClasses.pas"/>
         <DCCReference Include="parser\TokenInterfaces.pas"/>
@@ -180,14 +131,74 @@
         <DCCReference Include="castalia\CastaliaPasLexTypes.pas"/>
         <DCCReference Include="castalia\CastaliaSimplePasPar.pas"/>
         <DCCReference Include="castalia\CastaliaSimplePasParTypes.pas"/>
-        <DCCReference Include="eMVC.Config.pas">
-            <Form>MVCConfig</Form>
+        <DCCReference Include="eMVC.FacadeSubClassCreator.pas"/>
+        <DCCReference Include="eMVC.FacadeSubClassWizard.pas"/>
+        <DCCReference Include="eMVC.FacadeSubClassForm.pas">
+            <Form>FormNewFacadeSubClass</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ProjectWizard.pas"/>
+        <DCCReference Include="eMVC.PersistentModelConst.pas"/>
+        <DCCReference Include="eMVC.Logger.pas"/>
+        <DCCReference Include="eMVC.toolBox.pas"/>
+        <DCCReference Include="eMVC.ClassModelForm.pas">
+            <Form>FormClassModel</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ControllerForm.pas">
+            <Form>FormNewController</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="eMVC.ModuleModelForm.pas">
             <Form>FormNewModuleModel</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="eMVC.PersistentModelForm.pas">
+            <Form>FormNewSetPersistentModel</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ViewModelForm.pas">
+            <Form>FormNewSet</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ModuleModelWizard.pas"/>
+        <DCCReference Include="eMVC.ControllerWizard.pas"/>
+        <DCCReference Include="eMVC.ModuleModelCreator.pas"/>
+        <DCCReference Include="eMVC.ProjectWizardForm.pas">
+            <Form>FormAppWizard</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ClassModelWizard.pas"/>
+        <DCCReference Include="eMVC.PersistentWizard.pas"/>
+        <DCCReference Include="eMVC.ViewModelWizard.pas"/>
+        <DCCReference Include="eMVC.ProjectCreator.pas"/>
+        <DCCReference Include="eMVC.ProjectFileCreator.pas"/>
+        <DCCReference Include="eMVC.FileCreator.pas"/>
+        <DCCReference Include="eMVC.IncludeCreator.pas"/>
+        <DCCReference Include="eMVC.ViewModelCreator.pas"/>
+        <DCCReference Include="eMVC.ControllerCreator.pas"/>
+        <DCCReference Include="eMVC.PersistentModelCreator.pas"/>
+        <DCCReference Include="eMVC.ViewCreator.pas"/>
+        <DCCReference Include="eMVC.BaseCreator.pas"/>
+        <DCCReference Include="eMVC.OTAUtilities.pas"/>
+        <DCCReference Include="eMVC.ModelCreator.pas"/>
+        <DCCReference Include="eMVC.ClassModelCreator.pas"/>
+        <DCCReference Include="eMVC.Config.pas">
+            <Form>MVCConfig</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.ModuleModelConst.pas"/>
+        <DCCReference Include="eMVC.ProjectGroupCreator.pas"/>
+        <DCCReference Include="eMVC.DatasetModel.Interf.pas"/>
+        <DCCReference Include="eMVC.DatasetModel.pas"/>
+        <DCCReference Include="eMVC.CopyFileForm.pas">
+            <Form>FormCopyFile</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="eMVC.FrameCreator.pas"/>
+        <DCCReference Include="eMVC.Patterns.pas"/>
+        <DCCReference Include="eMVC.shadow.pas"/>
+        <DCCReference Include="eMVC.FacadeModelWizard.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

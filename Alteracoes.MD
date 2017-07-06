@@ -1,3 +1,6 @@
+06/07/2017 - AL
+   + acrescentado dois nova assistentes     7-Facade Factory   8-Facade Sub-Class
+   
 03/07/2017 - AL
    + acrescentado  MVCBr.Patterns.Builder
    -+ Alterado MVCBr.Patters.Facade para herdar de Builder

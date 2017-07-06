@@ -85,8 +85,7 @@ type
     function Count: integer;
     function GetItems(idx: integer): IObjectConfigListItem;
     procedure SetItems(idx: integer; const Value: IObjectConfigListItem);
-    property Items[idx: integer]: IObjectConfigListItem read GetItems
-      write SetItems;
+    property Items[idx: integer]: IObjectConfigListItem read GetItems write SetItems;
   end;
 
   IObjectConfigList = interface(IObjectConfigListComum)
@@ -129,11 +128,9 @@ type
     procedure WriteDateTime(const Section, Ident: string; Value: TDateTime);
     procedure WriteBool(const Section, Ident: string; Value: boolean);
     procedure WriteInteger(const Section, Ident: string; Value: integer);
-    function ReadInteger(const Section, Ident: string;
-      Default: integer): integer;
+    function ReadInteger(const Section, Ident: string; Default: integer): integer;
     function ReadBool(const Section, Ident: string; Default: boolean): boolean;
-    function ReadDatetime(const Section, Ident: string; Default: TDateTime)
-      : TDateTime;
+    function ReadDatetime(const Section, Ident: string; Default: TDateTime): TDateTime;
     function ConfigFile: TObject;
   end;
 
@@ -169,11 +166,9 @@ type
     procedure WriteDateTime(const Section, Ident: string; Value: TDateTime);
     procedure WriteBool(const Section, Ident: string; Value: boolean);
     procedure WriteInteger(const Section, Ident: string; Value: integer);
-    function ReadInteger(const Section, Ident: string;
-      Default: integer): integer;
+    function ReadInteger(const Section, Ident: string; Default: integer): integer;
     function ReadBool(const Section, Ident: string; Default: boolean): boolean;
-    function ReadDatetime(const Section, Ident: string; Default: TDateTime)
-      : TDateTime;
+    function ReadDatetime(const Section, Ident: string; Default: TDateTime): TDateTime;
     function ConfigFile: TObject;
   end;
 
@@ -189,11 +184,9 @@ type
     procedure WriteDateTime(const Section, Ident: string; Value: TDateTime);
     procedure WriteBool(const Section, Ident: string; Value: boolean);
     procedure WriteInteger(const Section, Ident: string; Value: integer);
-    function ReadInteger(const Section, Ident: string;
-      Default: integer): integer;
+    function ReadInteger(const Section, Ident: string; Default: integer): integer;
     function ReadBool(const Section, Ident: string; Default: boolean): boolean;
-    function ReadDatetime(const Section, Ident: string; Default: TDateTime)
-      : TDateTime;
+    function ReadDatetime(const Section, Ident: string; Default: TDateTime): TDateTime;
     function ConfigFile: TObject;
   end;
 
@@ -207,7 +200,7 @@ type
     procedure SetItems(idx: integer; const Value: IObjectConfigListItem);
     Function GetContentFile: IConfigFile; virtual;
     procedure SetComponentFullPath(const Value: boolean);
-    function GetComponentFullPath:boolean;
+    function GetComponentFullPath: boolean;
   protected
     procedure ReadConfig; virtual; abstract;
     procedure WriteConfig; virtual; abstract;
@@ -215,18 +208,16 @@ type
     procedure ReadItem(ASection, AItem: string; out AValue: TValue); virtual;
 
   public
-    constructor Create(AOwner: TComponent); overload; override;
+    constructor create(AOwner: TComponent); overload; override;
     destructor Destroy; override;
-    function This: TObject;override;
+    function This: TObject; override;
     function Count: integer;
-    property Items[idx: integer]: IObjectConfigListItem read GetItems
-      write SetItems;
+    property Items[idx: integer]: IObjectConfigListItem read GetItems write SetItems;
     procedure RegisterControl(ASection: string; AText: string; AControl:
 {$IFDEF LINUX} TComponent {$ELSE} TControl{$ENDIF}); overload; virtual;
     procedure Add(AControl: {$IFDEF LINUX} TComponent
 {$ELSE} TControl{$ENDIF}); overload; virtual;
-    property ComponentFullPath: boolean read GetComponentFullPath
-      write SetComponentFullPath;
+    property ComponentFullPath: boolean read GetComponentFullPath write SetComponentFullPath;
 
   end;
 
@@ -235,17 +226,18 @@ type
     FFileName: string;
     FContentFile: IConfigFile;
     FContentType: TObjectConfigContentType;
+    function MemoToString(Value: TMemo): string;
+    procedure StringToMemo(text: string; memo: TMemo);
   protected
     procedure SetFileName(const Value: string);
     function GetFileName: string;
     Function GetContentFile: IConfigFile; override;
     procedure SetContentType(const Value: TObjectConfigContentType);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor create(AOwner: TComponent); override;
     class function new: IObjectConfigList; static;
     property FileName: string read GetFileName write SetFileName;
-    property ContentType: TObjectConfigContentType read FContentType
-      write SetContentType;
+    property ContentType: TObjectConfigContentType read FContentType write SetContentType;
     procedure WriteConfig; override;
     procedure ReadConfig; override;
     procedure WriteItem(ASection, AItem: string; AValue: TValue); override;
@@ -260,8 +252,7 @@ type
     ColumnValue: string;
   end;
 
-  TDBObjectConfigModel = class(TObjectConfigModelCustom, IObjectConfigListComum,
-    IDBObjectConfigList)
+  TDBObjectConfigModel = class(TObjectConfigModelCustom, IObjectConfigListComum, IDBObjectConfigList)
   private
     FGroupID: string;
     FDataset: TDataset;
@@ -276,7 +267,7 @@ type
     procedure WriteConfig; override;
     procedure ReadConfig; override;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor create(AOwner: TComponent); override;
     class function new: IDBObjectConfigList; static;
     procedure WriteItem(ASection, AItem: string; AValue: TValue); override;
     procedure ReadItem(ASection, AItem: string; out AValue: TValue); override;
@@ -284,13 +275,10 @@ type
     property Dataset: TDataset read GetDataset write SetDataset;
     property GroupID: string read GetGroupID write SetGroupID;
 
-    property ColumnNames: TDBConfigColumnNames read FColumnNames
-      write SetColumnNames;
+    property ColumnNames: TDBConfigColumnNames read FColumnNames write SetColumnNames;
   end;
 
-
 implementation
-
 
 type
   TValueHelper = record helper for TValue
@@ -378,14 +366,15 @@ begin
       FProcRead(FList.Items[i] as IObjectConfigListItem);
 end;
 
-procedure TObjectConfigModel.ReadItem(ASection, AItem: string;
-  out AValue: TValue);
+procedure TObjectConfigModel.ReadItem(ASection, AItem: string; out AValue: TValue);
 begin
   with GetContentFile do
     if AValue.isBoolean then
       AValue := ReadBool(ASection, AItem, AValue.AsBoolean)
     else if AValue.isDatetime then
       AValue := ReadDatetime(ASection, AItem, AValue.AsExtended)
+    else if (AValue.IsObject) and AValue.AsObject.InheritsFrom(TMemo) then
+      StringToMemo(ReadString(ASection, AItem, ''), TMemo(AValue.AsObject))
     else
       AValue := ReadString(ASection, AItem, AValue.AsString);
 end;
@@ -402,14 +391,12 @@ begin
   RegisterControl('Config', LItem, AControl);
 end;
 
-procedure TObjectConfigModelCustom.ReadItem(ASection, AItem: string;
-  out AValue: TValue);
+procedure TObjectConfigModelCustom.ReadItem(ASection, AItem: string; out AValue: TValue);
 begin
   /// inherits
 end;
 
-procedure TObjectConfigModelCustom.RegisterControl(ASection: string;
-  AText: string; AControl: {$IFDEF LINUX} TComponent
+procedure TObjectConfigModelCustom.RegisterControl(ASection: string; AText: string; AControl: {$IFDEF LINUX} TComponent
 {$ELSE} TControl{$ENDIF});
 var
   obj: TObjectConfigListItem;
@@ -426,8 +413,7 @@ begin
   FComponentFullPath := Value;
 end;
 
-procedure TObjectConfigModel.SetContentType(const Value
-  : TObjectConfigContentType);
+procedure TObjectConfigModel.SetContentType(const Value: TObjectConfigContentType);
 begin
   FContentFile := nil;
   FContentType := Value;
@@ -438,8 +424,21 @@ begin
   FFileName := Value;
 end;
 
-procedure TObjectConfigModelCustom.SetItems(idx: integer;
-  const Value: IObjectConfigListItem);
+procedure TObjectConfigModel.StringToMemo(text: string; memo: TMemo);
+var
+  str: TStringList;
+begin
+  str := TStringList.create;
+  try
+    str.Delimiter := '|';
+    str.DelimitedText := text;
+    memo.lines.text := str.text;
+  finally
+    str.free;
+  end;
+end;
+
+procedure TObjectConfigModelCustom.SetItems(idx: integer; const Value: IObjectConfigListItem);
 begin
   FList.Items[idx] := Value;
 end;
@@ -460,8 +459,7 @@ begin
   end;
 end;
 
-procedure TObjectConfigModelCustom.WriteItem(ASection, AItem: string;
-  AValue: TValue);
+procedure TObjectConfigModelCustom.WriteItem(ASection, AItem: string; AValue: TValue);
 begin
   // inherits
 end;
@@ -487,6 +485,20 @@ begin
     end;
 end;
 
+function TObjectConfigModel.MemoToString(Value: TMemo): string;
+var
+  str: TStringList;
+begin
+  str := TStringList.create;
+  try
+    str.Assign(Value.lines);
+    str.Delimiter := '|';
+    result := str.DelimitedText;
+  finally
+    str.free;
+  end;
+end;
+
 procedure TObjectConfigModel.WriteItem(ASection, AItem: string; AValue: TValue);
 begin
   with GetContentFile do
@@ -494,6 +506,8 @@ begin
       WriteBool(ASection, AItem, AValue.AsBoolean)
     else if AValue.isDatetime then
       WriteDateTime(ASection, AItem, AValue.AsExtended)
+    else if (AValue.IsObject) and AValue.AsObject.InheritsFrom(TMemo) then
+      WriteString(ASection, AItem, MemoToString(TMemo(AValue.AsObject)))
     else
       WriteString(ASection, AItem, AValue.AsString);
 end;
@@ -586,26 +600,22 @@ begin
   inherited;
 end;
 
-function TConfigIniFile.ReadBool(const Section, Ident: string;
-  Default: boolean): boolean;
+function TConfigIniFile.ReadBool(const Section, Ident: string; Default: boolean): boolean;
 begin
   result := FIniFile.ReadBool(Section, Ident, Default);
 end;
 
-function TConfigIniFile.ReadDatetime(const Section, Ident: string;
-  Default: TDateTime): TDateTime;
+function TConfigIniFile.ReadDatetime(const Section, Ident: string; Default: TDateTime): TDateTime;
 begin
   result := FIniFile.ReadDatetime(Section, Ident, Default);
 end;
 
-function TConfigIniFile.ReadInteger(const Section, Ident: string;
-  Default: integer): integer;
+function TConfigIniFile.ReadInteger(const Section, Ident: string; Default: integer): integer;
 begin
   result := FIniFile.ReadInteger(Section, Ident, Default);
 end;
 
-function TConfigIniFile.ReadString(const Section, Ident,
-  Default: string): string;
+function TConfigIniFile.ReadString(const Section, Ident, Default: string): string;
 begin
   result := FIniFile.ReadString(Section, Ident, Default);
 end;
@@ -615,20 +625,17 @@ begin
   result := FIniFile;
 end;
 
-procedure TConfigIniFile.WriteBool(const Section, Ident: string;
-  Value: boolean);
+procedure TConfigIniFile.WriteBool(const Section, Ident: string; Value: boolean);
 begin
   FIniFile.WriteBool(Section, Ident, Value);
 end;
 
-procedure TConfigIniFile.WriteDateTime(const Section, Ident: string;
-  Value: TDateTime);
+procedure TConfigIniFile.WriteDateTime(const Section, Ident: string; Value: TDateTime);
 begin
   FIniFile.WriteDateTime(Section, Ident, Value);
 end;
 
-procedure TConfigIniFile.WriteInteger(const Section, Ident: string;
-  Value: integer);
+procedure TConfigIniFile.WriteInteger(const Section, Ident: string; Value: integer);
 begin
   FIniFile.WriteInteger(Section, Ident, Value);
 end;
@@ -652,26 +659,22 @@ begin
   inherited;
 end;
 
-function TConfigJsonFile.ReadBool(const Section, Ident: string;
-  Default: boolean): boolean;
+function TConfigJsonFile.ReadBool(const Section, Ident: string; Default: boolean): boolean;
 begin
   result := FJsonFile.ReadBool(Section, Ident, Default);
 end;
 
-function TConfigJsonFile.ReadDatetime(const Section, Ident: string;
-  Default: TDateTime): TDateTime;
+function TConfigJsonFile.ReadDatetime(const Section, Ident: string; Default: TDateTime): TDateTime;
 begin
   result := FJsonFile.ReadDatetime(Section, Ident, Default);
 end;
 
-function TConfigJsonFile.ReadInteger(const Section, Ident: string;
-  Default: integer): integer;
+function TConfigJsonFile.ReadInteger(const Section, Ident: string; Default: integer): integer;
 begin
   result := FJsonFile.ReadInteger(Section, Ident, Default);
 end;
 
-function TConfigJsonFile.ReadString(const Section, Ident,
-  Default: string): string;
+function TConfigJsonFile.ReadString(const Section, Ident, Default: string): string;
 begin
   result := FJsonFile.ReadString(Section, Ident, Default);
 end;
@@ -681,20 +684,17 @@ begin
   result := FJsonFile;
 end;
 
-procedure TConfigJsonFile.WriteBool(const Section, Ident: string;
-  Value: boolean);
+procedure TConfigJsonFile.WriteBool(const Section, Ident: string; Value: boolean);
 begin
   FJsonFile.WriteBool(Section, Ident, Value);
 end;
 
-procedure TConfigJsonFile.WriteDateTime(const Section, Ident: string;
-  Value: TDateTime);
+procedure TConfigJsonFile.WriteDateTime(const Section, Ident: string; Value: TDateTime);
 begin
   FJsonFile.WriteDateTime(Section, Ident, Value);
 end;
 
-procedure TConfigJsonFile.WriteInteger(const Section, Ident: string;
-  Value: integer);
+procedure TConfigJsonFile.WriteInteger(const Section, Ident: string; Value: integer);
 begin
   FJsonFile.WriteInteger(Section, Ident, Value);
 end;
@@ -746,8 +746,7 @@ begin
 
 end;
 
-procedure TDBObjectConfigModel.ReadItem(ASection, AItem: string;
-  out AValue: TValue);
+procedure TDBObjectConfigModel.ReadItem(ASection, AItem: string; out AValue: TValue);
 begin
   FDataset.Filter := FilterBuilder(ASection, AItem);
   FDataset.Filtered := true;
@@ -763,16 +762,12 @@ begin
   end;
 end;
 
-function TDBObjectConfigModel.FilterBuilder(ASection: string;
-  AItem: string): string;
+function TDBObjectConfigModel.FilterBuilder(ASection: string; AItem: string): string;
 begin
-  result := format(' %s = %s and %s = %s and %s = %s ',
-    [msgocl_ColumanNames_File, quotedStr(FGroupID), msgocl_ColumanNames_Section,
-    quotedStr(ASection), msgocl_ColumanNames_Item, quotedStr(AItem)]);
+  result := format(' %s = %s and %s = %s and %s = %s ', [msgocl_ColumanNames_File, quotedStr(FGroupID), msgocl_ColumanNames_Section, quotedStr(ASection), msgocl_ColumanNames_Item, quotedStr(AItem)]);
 end;
 
-procedure TDBObjectConfigModel.SetColumnNames(const Value
-  : TDBConfigColumnNames);
+procedure TDBObjectConfigModel.SetColumnNames(const Value: TDBConfigColumnNames);
 begin
   FColumnNames := Value;
 end;
@@ -797,8 +792,7 @@ begin
     FDataset.post;
 end;
 
-procedure TDBObjectConfigModel.WriteItem(ASection, AItem: string;
-  AValue: TValue);
+procedure TDBObjectConfigModel.WriteItem(ASection, AItem: string; AValue: TValue);
 begin
   FDataset.Filter := FilterBuilder(ASection, AItem);
   FDataset.Filtered := true;
