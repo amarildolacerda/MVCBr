@@ -15,11 +15,6 @@ program MVCBrTests;
 {$ENDIF}
 
 uses
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   DUnitTestRunner,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
@@ -45,12 +40,13 @@ uses
   MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
   TestMVCBr.Facade in 'TestMVCBr.Facade.pas',
   MVCBr.Patterns.Builder in '..\MVCBr.Patterns.Builder.pas',
-  MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas';
+  MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas',
+  DataModuleMock in 'Models\DataModuleMock.pas' {DataModule1: TDataModule};
 
 {$R *.RES}
 
 begin
   System.ReportMemoryLeaksOnShutdown := true;
   DUnitTestRunner.RunRegisteredTests;
-end.
 
+end.

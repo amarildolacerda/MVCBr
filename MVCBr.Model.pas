@@ -36,6 +36,9 @@ type
 
   TModelFactoryClass = class of TModelFactory;
 
+  /// <summary>
+  /// Model Factory
+  /// </summary>
   TModelFactory = class(TModelFactoryAbstract, IModel)
   private
     FID: string;
@@ -48,7 +51,7 @@ type
   public
     constructor Create; override;
     destructor Destroy; override;
-    procedure Release;override;
+    procedure Release; override;
     procedure AfterConstruction; override;
     procedure AfterInit; virtual;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
@@ -63,6 +66,25 @@ type
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; override;
 
+  end;
+
+  /// <summary>
+  /// Lazy Adapter for Models
+  /// </summary>
+  TModelAdapterFactory<T: Class> = class(TModelFactory, IModel,
+    IModelAdapter<T>)
+  private
+    FInstanceClass: TComponentClass;
+    FInstance: T;
+    function GetInstance: T;
+    constructor CreateInternal; overload; virtual;
+  public
+    constructor Create; overload;
+    class function New(AController: IController)
+      : TModelAdapterFactory<T>; static;
+    destructor Destroy; override;
+    procedure Release; override;
+    property Instance: T read GetInstance;
   end;
 
 implementation
@@ -154,6 +176,46 @@ end;
 function TModelFactory.Update: IModel;
 begin
   result := self;
+end;
+
+{ TModuleAdapterFactory }
+
+constructor TModelAdapterFactory<T>.Create;
+begin
+  raise Exception.Create('Abstract... Use Class Function NEW');
+end;
+
+constructor TModelAdapterFactory<T>.CreateInternal;
+begin
+  inherited Create;
+  FInstanceClass := TComponentClass(T);
+  FInstance := nil;
+end;
+
+destructor TModelAdapterFactory<T>.Destroy;
+begin
+  FreeAndNil(FInstance);
+  inherited;
+end;
+
+function TModelAdapterFactory<T>.GetInstance: T;
+begin
+  if not assigned(FInstance) then
+    FInstance := T(FInstanceClass.NewInstance);
+  result := FInstance;
+end;
+
+class function TModelAdapterFactory<T>.New(AController: IController)
+  : TModelAdapterFactory<T>;
+begin
+  result := TModelAdapterFactory<T>.CreateInternal();
+  result.SetController(AController);
+end;
+
+procedure TModelAdapterFactory<T>.Release;
+begin
+  FreeAndNil(FInstance);
+  inherited;
 end;
 
 end.

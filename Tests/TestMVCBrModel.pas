@@ -16,7 +16,7 @@ uses
   Forms,
   System.Generics.collections, MVCBr.Interf,
   MVCBr.Controller, System.JSON,
-  MVCBr.Model, MVCBr.ModuleModel, System.SysUtils;
+  DataModuleMock, MVCBr.Model, MVCBr.ModuleModel, System.SysUtils;
 
 type
   // Test methods for class TModelFactory
@@ -68,7 +68,7 @@ type
   strict private
 
   [unsafe]
-    FModelFactory: IModel;
+    FModelFactory: IModelAdapter<TDataModuleMock>;
 
   Type
     TTesteController = class(TControllerFactory)
@@ -246,21 +246,16 @@ end;
 { TestTModuleModelFactory }
 
 procedure TestTModuleModelFactory.SetUp;
-var
-  o: TModuleFactoryMock;
 begin
   FController := TTesteController.Create;
-  TTesteController(FController.this).CreateModule(TModuleFactoryMock,o);
-  FModelFactory := o;
+  FModelFactory := TModelAdapterFactory<TDataModuleMock>.new(FController);
+  FController.add(FModelFactory);
 end;
 
 procedure TestTModuleModelFactory.TearDown;
 begin
   FController.release;
   FController := nil;
-  FModelFactory.this.free;
-  FModelFactory := nil;
-
 end;
 
 procedure TestTModuleModelFactory.TestAfterInit;
@@ -284,7 +279,8 @@ var
 begin
   ReturnValue := FModelFactory.GetController;
   CheckNotNull(ReturnValue, 'Nao retornou');
-  CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
+  if assigned(ReturnValue) then
+    CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
   ReturnValue := nil;
   // TODO: Validate method results
 end;
