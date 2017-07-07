@@ -9,7 +9,7 @@ facadeSubClass =
 '                                                               '+#13#10+
 'uses  %facadeClass.Model;                                       '+ #13#10 +
 '                                                               '+#13#10+
-'function %FormIdentModelFunc(sender: TValue): boolean;         '+ #13#10 +
+'function %FormIdentModelFunc(AParam: TValue): boolean;         '+ #13#10 +
 'begin                                                          '+ #13#10 +
 '    ///                                                        '+ #13#10 +
 '    /// Implements your code here                              '+ #13#10 +
@@ -33,12 +33,13 @@ facadeModelInterf =
   'interface                                                     ' + #13#10 +
   '                                                              ' + #13#10 +
   '                                                              ' + #13#10 +
-  'Uses MVCBr.Interf,MVCBr.Model;                               ' + #13#10 +
+  'Uses MVCBr.Interf,MVCBr.Model, System.RTTI;                   ' + #13#10 +
   '                                                              ' + #13#10 +
   'Type                                                          ' + #13#10 +
   '                                                              ' + #13#10 +
   '  I%FormIdentModel = interface(IModel)                        ' + #13#10 +
   '         [''%guid'']                                             ' + #13#10 +
+'    function ExecuteCommand(ACommand: TValue; AParam: TValue): boolean;'+#13#10+
   '  end;                                                        ' + #13#10 +
   '                                                              ' + #13#10 +
   'Implementation                                                ' + #13#10 +
@@ -72,10 +73,10 @@ facadeModel =
 '    class function new(const AController: IController): I%FormIdentModel; overload; '+#13#10+
 '    function ThisAs: T%FormIdentModel;                                   '+#13#10+
 '    // implementaçoes                                               '+#13#10+
-'    function ExecuteCommand(AComando: TValue; AParametro: TValue): boolean;'+#13#10+
+'    function ExecuteCommand(ACommand: TValue; AParam: TValue): boolean;'+#13#10+
 '  end;                                                              '+#13#10+
 '                                                                    '+#13#10+
-'procedure %FormIdentModelRegister(AComando: TValue; AFunc: TMVCBrFacateFunc);'+#13#10+
+'procedure %FormIdentModelRegister(ACommand: TValue; AFunc: TMVCBrFacateFunc);'+#13#10+
 '                                                                    '+#13#10+
 'Implementation                                                      '+#13#10+
 '                                                                    '+#13#10+
@@ -83,9 +84,9 @@ facadeModel =
 '                                                                    '+#13#10+
 '                                                                    '+#13#10+
 '                                                                    '+#13#10+
-'procedure %FormIdentModelRegister(AComando: TValue; AFunc: TMVCBrFacateFunc);'+#13#10+
+'procedure %FormIdentModelRegister(ACommand: TValue; AFunc: TMVCBrFacateFunc);'+#13#10+
 'begin                                                               '+#13#10+
-'  T%FormIdentModel.Facade.add(AComando, AFunc);                     '+#13#10+
+'  T%FormIdentModel.Facade.add(ACommand, AFunc);                     '+#13#10+
 'end;                                                                '+#13#10+
 '                                                                    '+#13#10+
 'class function T%FormIdentModel.Facade: TMVCBrFacade;               '+#13#10+
@@ -106,9 +107,9 @@ facadeModel =
 '  inherited;                                                        '+#13#10+
 'end;                                                                '+#13#10+
 '                                                                    '+#13#10+
-'function T%FormIdentModel.ExecuteCommand(AComando, AParametro: TValue): boolean;'+#13#10+
+'function T%FormIdentModel.ExecuteCommand(ACommand, AParam: TValue): boolean;'+#13#10+
 'begin                                                               '+#13#10+
-'  result := FFacade.Execute(AComando, AParametro);                  '+#13#10+
+'  result := FFacade.Execute(ACommand, AParam);                  '+#13#10+
 'end;                                                                '+#13#10+
 '                                                                    '+#13#10+
 'function T%FormIdentModel.ThisAs: T%FormIdentModel;                 '+#13#10+
