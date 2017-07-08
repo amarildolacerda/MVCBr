@@ -76,7 +76,7 @@ type
   private
     FInstanceClass: TComponentClass;
     FInstance: T;
-    function GetInstance: T;
+    function GetInstance: T; virtual;
     constructor CreateInternal; overload; virtual;
   public
     constructor Create; overload;
@@ -85,6 +85,7 @@ type
     destructor Destroy; override;
     procedure Release; override;
     property Instance: T read GetInstance;
+    procedure FreeInstance; virtual;
   end;
 
 implementation
@@ -196,6 +197,11 @@ destructor TModelAdapterFactory<T>.Destroy;
 begin
   FreeAndNil(FInstance);
   inherited;
+end;
+
+procedure TModelAdapterFactory<T>.FreeInstance;
+begin
+  FreeAndNil(FInstance);
 end;
 
 function TModelAdapterFactory<T>.GetInstance: T;
