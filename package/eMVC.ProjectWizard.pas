@@ -71,6 +71,7 @@ procedure Register;
 
 implementation
 
+
 uses DCCStrs, System.Classes, eMVC.FileCreator;
 { TNewProjectWizard }
 
@@ -321,7 +322,7 @@ end;
 function TNewProjectWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
-  result := LoadIcon(hInstance, 'SAMPLEWIZARD');
+  result := LoadIcon(hInstance, 'PROJECT');
 end;
 
 function TNewProjectWizard.GetIDString: string;

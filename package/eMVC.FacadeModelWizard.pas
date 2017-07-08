@@ -240,7 +240,7 @@ end;
 function TNewMVCFacadeModelWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
-  result := LoadIcon(hInstance, 'SAMPLEWIZARD');
+  result := LoadIcon(hInstance, 'FACADEMODEL');
 end;
 
 function TNewMVCFacadeModelWizard.GetIDString: string;

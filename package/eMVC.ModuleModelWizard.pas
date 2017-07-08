@@ -272,7 +272,7 @@ end;
 function TNewMVCSetDatamoduleModelWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
-  result := LoadIcon(hInstance, 'SAMPLEWIZARD');
+  result := LoadIcon(hInstance, 'MODULEMODEL');
 end;
 
 function TNewMVCSetDatamoduleModelWizard.GetIDString: string;
