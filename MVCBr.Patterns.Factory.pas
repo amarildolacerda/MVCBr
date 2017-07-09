@@ -66,6 +66,9 @@ Type
     function RefCount:Integer;
   end;
 
+  {
+    /// nao faz sentido um singleton para uma classe estática.
+    /// nao tem como manter mais de uma variavel ao logo da aplicacação
   TMVCBrSingletonFactory<T: Class> = class(TMVCBrFactory)
   private
     class var FSingleton: T;
@@ -74,7 +77,7 @@ Type
     class function Default: T;
     class procedure Release;
   end;
-
+  }
 
   TMVCBrAggregatedFactory = class(TObject)
   private
@@ -221,7 +224,7 @@ begin
 end;
 
 { TMVCBrSingletonFactory<T> }
-
+(*
 constructor TMVCBrSingletonFactory<T>.Create();
 begin
   inherited Create;
@@ -243,7 +246,7 @@ begin
     FSingleton.disposeOf;
   FSingleton := nil;
 end;
-
+*)
 
 { TMVCBrAggregatedFactory }
 
@@ -337,6 +340,6 @@ initialization
 
 finalization
 
-TMVCBrSingletonFactory<TObject>.Release;
+//TMVCBrSingletonFactory<TObject>.Release;
 
 end.

@@ -207,7 +207,9 @@ end;
 function TModelAdapterFactory<T>.GetInstance: T;
 begin
   if not assigned(FInstance) then
-    FInstance := T(FInstanceClass.NewInstance);
+  begin
+    FInstance := TMVCBr.InvokeCreate<T>([nil]);
+  end;
   result := FInstance;
 end;
 

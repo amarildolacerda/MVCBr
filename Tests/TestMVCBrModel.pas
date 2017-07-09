@@ -60,15 +60,14 @@ type
 
   end;
 
-  TModuleFactoryMock = class(TModuleFactory)
-
-  end;
-
+  { TModuleFactoryMock = class(TModuleFactory)
+    end;
+  }
   TestTModuleModelFactory = class(TTestCase)
   strict private
 
   [unsafe]
-    FModelFactory: IModelAdapter<TDataModuleMock>;
+    FModelFactory: IModelAdapter<TDataModuleMockTester>;
 
   Type
     TTesteController = class(TControllerFactory)
@@ -81,20 +80,9 @@ type
     [unsafe]
     FController: IController;
   public
-    procedure TestGetOwned;
-    procedure TestController;
-    procedure TestThis;
-    procedure TestGetID;
-    procedure TestID;
-    procedure TestUpdate;
-    procedure TestAfterInit;
-
-    procedure TestRegisterObserver;
-    procedure TestUnRegisterObserverNamed;
-    procedure TestUnRegisterObserverNamedOnly;
-    procedure TesteObserver;
   published
     procedure TestGetController;
+    procedure TestLazyLoad;
   end;
 
 implementation
@@ -248,7 +236,7 @@ end;
 procedure TestTModuleModelFactory.SetUp;
 begin
   FController := TTesteController.Create;
-  FModelFactory := TModelAdapterFactory<TDataModuleMock>.new(FController);
+  FModelFactory := TModelAdapterFactory<TDataModuleMockTester>.new(FController);
   FController.add(FModelFactory);
 end;
 
@@ -258,20 +246,6 @@ begin
   FController := nil;
 end;
 
-procedure TestTModuleModelFactory.TestAfterInit;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestController;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TesteObserver;
-begin
-
-end;
 
 procedure TestTModuleModelFactory.TestGetController;
 var
@@ -285,45 +259,22 @@ begin
   // TODO: Validate method results
 end;
 
-procedure TestTModuleModelFactory.TestGetID;
-begin
 
+procedure TestTModuleModelFactory.TestLazyLoad;
+var
+  ReturnValue: IController;
+begin
+  ReturnValue := FModelFactory.GetController;
+  CheckNotNull(ReturnValue, 'Nao retornou');
+  if assigned(ReturnValue) then
+    CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
+
+  CheckTrue(FModelFactory.Instance.counter = 1, 'Não executou Lazy Load');
+
+  ReturnValue := nil;
+  // TODO: Validate method results
 end;
 
-procedure TestTModuleModelFactory.TestGetOwned;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestID;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestRegisterObserver;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestThis;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestUnRegisterObserverNamed;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestUnRegisterObserverNamedOnly;
-begin
-
-end;
-
-procedure TestTModuleModelFactory.TestUpdate;
-begin
-
-end;
 
 initialization
 

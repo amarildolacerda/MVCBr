@@ -378,8 +378,9 @@ type
 
   IModelAdapter<T: Class> = interface(IModel)
     ['{AA846DF6-4CCA-41A8-AB98-FE0EFB3E6D40}']
-    function GetInstance:T;
+    function GetInstance: T;
     property Instance: T read GetInstance;
+    procedure FreeInstance;
   end;
 
   TModelFactoryAbstract = class(TMVCOwnedInterfacedObject)
@@ -1034,11 +1035,17 @@ end;
 class function TMVCBr.InvokeCreate<T>(const Args: TArray<TValue>): T;
 var
   ctx: TRttiContext;
+  method: TRttiMethod;
+  rType: TRttiType;
 begin
   ctx := TRttiContext.Create;
   try
-    result := ctx.GetType(TClass(T)).GetMethod('create').Invoke(TClass(T), Args)
-      .AsType<T>;
+    rType := ctx.GetType(TClass(T));
+    method := rType.GetMethod('create');
+    if Length(method.GetParameters) = 0 then
+      result := method.invoke(TClass(T), []).AsType<T>
+    else
+      result := method.invoke(TClass(T), Args).AsType<T>;
   finally
     ctx.free();
   end;
@@ -1065,8 +1072,13 @@ begin
   ctx := TRttiContext.Create;
   try
     mtd := ctx.GetType(AInstance.ClassInfo).GetMethod(AMethod);
-    Value := mtd.Invoke(AInstance, Args); // .AsType<T>;
-    Value.TryAsType(result);
+    if mtd.MethodKind = mkFunction then
+    begin
+      Value := mtd.invoke(AInstance, Args); // .AsType<T>;
+      Value.TryAsType(result);
+    end
+    else
+      mtd.invoke(AInstance, Args);
   finally
     ctx.free();
   end;

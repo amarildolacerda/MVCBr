@@ -43,7 +43,8 @@ uses
 type
 
   // TControllerFactory Classe Factory para  IController
-  TControllerFactory = class(TControllerAbstract, IController, IControllerAs<TControllerFactory>)
+  TControllerFactory = class(TControllerAbstract, IController,
+    IControllerAs<TControllerFactory>)
   private
     FControllerInited: Boolean;
     FLoaded: Boolean;
@@ -73,14 +74,18 @@ type
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
     function ShowView: IView; overload; virtual;
-    function ShowView(const AProcBeforeShow: TProc<IView>; const AProcOnClose: TProc<IView>): IView; overload; virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const AProcOnClose: TProc<IView>): IView; overload; virtual;
 
-    function ViewEvent(AMessage: String; var AHandled: Boolean): IView; overload; virtual;
-    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean): IView; overload;
+    function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
+      overload; virtual;
+    function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean)
+      : IView; overload;
     function ID(const AID: string): IController; virtual;
     function GetID: String; override;
     function GetModelByID(const AID: String): IModel; virtual;
-    Procedure DoCommand(ACommand: string; const AArgs: array of TValue); virtual;
+    Procedure DoCommand(ACommand: string;
+      const AArgs: array of TValue); virtual;
     function GetModel(const idx: integer): IModel; overload; virtual;
 
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
@@ -101,7 +106,8 @@ type
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
     function UpdateAll: IController; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean); overload; override;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);
+      overload; override;
     function UpdateByModel(AModel: IModel): IController; virtual;
     function UpdateByView(AView: IView): IController; virtual;
   end;
@@ -198,7 +204,8 @@ begin
   inherited;
 end;
 
-procedure TControllerFactory.DoCommand(ACommand: string; const AArgs: array of TValue);
+procedure TControllerFactory.DoCommand(ACommand: string;
+  const AArgs: array of TValue);
 begin
 
 end;
@@ -254,7 +261,8 @@ begin
     end;
 end;
 
-function TControllerFactory.GetModelByType(const AModelType: TModelType): IModel;
+function TControllerFactory.GetModelByType(const AModelType
+  : TModelType): IModel;
 var
   i: integer;
 begin
@@ -293,7 +301,8 @@ begin
     end;
 end;
 
-function TControllerFactory.IndexOfModelType(const AModelType: TModelType): integer;
+function TControllerFactory.IndexOfModelType(const AModelType
+  : TModelType): integer;
 var
   i: integer;
   FModel: IModel;
@@ -371,20 +380,33 @@ end;
 procedure TControllerFactory.CreateModule(AClass: TComponentClass; var AModule);
 var
   LModel: IModel;
-  obj: TObject;
+  Instance: TComponent;
 begin
-  obj := AClass.NewInstance;
-  if supports(obj, IModel, LModel) then
+  Instance := nil;
+{$IF DEFINED(CLR)}
+  Instance := AClass.Create(self);
+{$ELSE}
+  Instance := TComponent(AClass.NewInstance);
+  try
+    Instance.Create(nil);
+  except
+    Instance := nil;
+    raise;
+  end;
+{$ENDIF}
+  if supports(Instance, IModel, LModel) then
   begin
-    TObject(AModule) := obj;
-    LModel.SetController(self);
-    self.add(LModel);
+    TObject(AModule) := Instance;
+    LModel.setController(self);
+    self.Add(LModel);
   end
   else
-    obj.free;
+    Instance.free;
 end;
 
 procedure TControllerFactory.Release;
+var
+  obj: TObject;
 begin
   if not FReleased then
   begin
@@ -397,7 +419,11 @@ begin
           if assigned(FView) then
           begin
             if not TMVCBr.IsMainForm(FView.This) then
-              FView.This.free; // tenta encerrar o formulario
+            begin
+              obj := FView.This;
+              FView := nil; // tenta encerrar o formulario
+              obj.DisposeOf;
+            end;
           end;
       except
       end;
@@ -411,13 +437,15 @@ begin
   end;
 end;
 
-function TControllerFactory.ViewEvent(AMessage: String; var AHandled: Boolean): IView;
+function TControllerFactory.ViewEvent(AMessage: String;
+  var AHandled: Boolean): IView;
 begin
   result := FView;
   FView.ViewEvent(AMessage, AHandled);
 end;
 
-function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean): IView;
+function TControllerFactory.ViewEvent<TViewInterface>(AMessage: string;
+  var AHandled: Boolean): IView;
 var
   i: integer;
   pInfo: PTypeInfo;
@@ -453,7 +481,8 @@ begin
   View(AView);
 end;
 
-function TControllerFactory.ShowView(const AProcBeforeShow, AProcOnClose: TProc<IView>): IView;
+function TControllerFactory.ShowView(const AProcBeforeShow,
+  AProcOnClose: TProc<IView>): IView;
 begin
   result := FView;
   if assigned(result) then
@@ -545,7 +574,8 @@ begin
   result := self;
 end;
 
-procedure TControllerFactory.Update(AJsonValue: TJsonValue; var AHandled: Boolean);
+procedure TControllerFactory.Update(AJsonValue: TJsonValue;
+var AHandled: Boolean);
 var
   i: integer;
 begin

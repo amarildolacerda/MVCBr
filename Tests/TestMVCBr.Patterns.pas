@@ -27,6 +27,8 @@ type
 
   TestTMVCBrStates = class(TTestCase)
   strict private
+    FCount: Integer;
+    FStepSign: Integer;
     FMVCBrStates: TMVCBrStates<TTestMVCBrStateStep>;
   public
     procedure SetUp; override;
@@ -43,6 +45,7 @@ type
     procedure TestMoveTo;
     procedure TestSetFirstStep;
     procedure TestSetLastStep;
+    procedure TestMoveInterno;
     procedure TestExecuteDelegate;
   end;
   // Test methods for class TMVCBrFactory
@@ -63,16 +66,18 @@ type
   end;
   // Test methods for class TMVCBrSingletonFactory
 
-  TestTMVCBrSingletonFactory = class(TTestCase)
-  strict private
+  (*
+    TestTMVCBrSingletonFactory = class(TTestCase)
+    strict private
     FMVCBrSingletonFactory: TMVCBrSingletonFactory<TObject>;
-  public
+    public
     procedure SetUp; override;
     procedure TearDown; override;
-  published
+    published
     procedure TestDefault;
     procedure TestRelease;
-  end;
+    end;
+  *)
   // Test methods for class TMVCBrBuilderFactory
 
   TestTMVCBrBuilderFactory = class(TTestCase)
@@ -131,6 +136,8 @@ implementation
 
 procedure TestTMVCBrStates.SetUp;
 begin
+  FStepSign := 0;
+  FCount := 0;
   FMVCBrStates := TMVCBrStates<TTestMVCBrStateStep>.Create;
 end;
 
@@ -144,9 +151,17 @@ procedure TestTMVCBrStates.TestAdd;
 var
   ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
 begin
+
   TThread.NameThreadForDebugging('TestAdd');
   // TODO: Setup method call parameters
-  ReturnValue := FMVCBrStates.Add<IMVCBrStateStep>(TTestMVCBrStateStep);
+  if FCount = 1 then
+    ReturnValue := FMVCBrStates.Add<IMVCBrStateStep>(TTestMVCBrStateStep)
+  else
+    ReturnValue := FMVCBrStates.Add<IMVCBrStateStep>
+      ('COMMAND' + FCount.ToString, TTestMVCBrStateStep);
+
+  inc(FCount);
+
   CheckNotNull(ReturnValue, 'Deveria retornar um object instanciado');
   // TODO: Validate method results
 end;
@@ -252,6 +267,49 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTMVCBrStates.TestMoveInterno;
+var
+  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
+  ASetp: Integer;
+begin
+  // TODO: Setup method call parameters
+  TestAdd;
+  TestAdd;
+  TestAdd;
+  ReturnValue := FMVCBrStates.SetLastStep('COMMAND2');
+  TestAdd;
+  TestAdd;
+  TestAdd;
+  TestAdd;
+
+  FMVCBrStates.Add<IMVCBrStateStep>('XXX', TTestMVCBrStateStep).Delegate(
+    procedure
+    begin
+      self.FStepSign := self.FStepSign + 10;
+    end);;
+
+  TestAdd;
+  FMVCBrStates.Add<IMVCBrStateStep>('YYY', TTestMVCBrStateStep).Delegate(
+    procedure(step: IMVCBrStateStep)
+    begin
+      self.FStepSign := self.FStepSign + 10;
+      step.MoveTo('XXX');
+    end);
+  TestAdd;
+
+  FMVCBrStates.Last;
+  checkTrue(FMVCBrStates.CurrenteIndex = 2);
+
+  FMVCBrStates.MoveTo('XXX');
+  checkTrue(self.FStepSign = 10, 'Não movimentou o ponteiro');
+
+  self.FStepSign := 0;
+  FMVCBrStates.MoveTo('YYY');
+  checkTrue(self.FStepSign = 20, 'Não movimentou o ponteiro');
+
+  // TODO: Validate method results
+end;
+
 procedure TestTMVCBrStates.TestMoveTo;
 var
   ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
@@ -296,7 +354,7 @@ begin
   TestAdd;
   TestAdd;
   TestAdd;
-  ReturnValue := FMVCBrStates.SetLastStep(2);
+  ReturnValue := FMVCBrStates.SetLastStep('COMMAND2');
   FMVCBrStates.Last;
   checkTrue(FMVCBrStates.CurrenteIndex = 2);
   // TODO: Validate method results
@@ -417,31 +475,34 @@ type
   TSingletonClasse = class(TInterfacedObject, IInterface)
   end;
 
-procedure TestTMVCBrSingletonFactory.SetUp;
-begin
-  FMVCBrSingletonFactory := TMVCBrSingletonFactory<TObject>.Create
+  (*
+    procedure TestTMVCBrSingletonFactory.SetUp;
+    begin
+    FMVCBrSingletonFactory := TMVCBrSingletonFactory<TObject>.Create
     (TSingletonClasse.Create)
-end;
+    end;
 
-procedure TestTMVCBrSingletonFactory.TearDown;
-begin
-  FMVCBrSingletonFactory.Free;
-  FMVCBrSingletonFactory := nil;
-end;
+    procedure TestTMVCBrSingletonFactory.TearDown;
+    begin
+    FMVCBrSingletonFactory.Free;
+    FMVCBrSingletonFactory := nil;
+    end;
 
-procedure TestTMVCBrSingletonFactory.TestDefault;
-var
-  ReturnValue: TObject;
-begin
-  ReturnValue := FMVCBrSingletonFactory.Default;
-  // TODO: Validate method results
-end;
 
-procedure TestTMVCBrSingletonFactory.TestRelease;
-begin
-  FMVCBrSingletonFactory.Release;
-  // TODO: Validate method results
-end;
+    procedure TestTMVCBrSingletonFactory.TestDefault;
+    var
+    ReturnValue: TObject;
+    begin
+    ReturnValue := FMVCBrSingletonFactory.Default;
+    // TODO: Validate method results
+    end;
+
+    procedure TestTMVCBrSingletonFactory.TestRelease;
+    begin
+    FMVCBrSingletonFactory.Release;
+    // TODO: Validate method results
+    end;
+  *)
 
 const
   CMD_ONE = 1;
@@ -520,8 +581,7 @@ begin
 
   /// create and executing
 
-  checkTrue(
-  TMVCBrBuilderFactory<string, string>.New.Add('TESTE',
+  checkTrue(TMVCBrBuilderFactory<string, string>.New.Add('TESTE',
     function(sender: string): string
     begin
       result := 'SUCESSO';
@@ -612,7 +672,7 @@ begin
     /// remove
     ///
     FMVCBrBuilderFactory.Remove(CMD_ONE);
-    checkNull(FMVCBrBuilderFactory.query(CMD_ONE),'Não removeu');
+    CheckNull(FMVCBrBuilderFactory.Query(CMD_ONE), 'Não removeu');
 
   finally
     AObject.Free;
@@ -671,7 +731,7 @@ initialization
 // Register any test cases with the test runner
 RegisterTest(TestTMVCBrStates.Suite);
 RegisterTest(TestTMVCBrFactory.Suite);
-RegisterTest(TestTMVCBrSingletonFactory.Suite);
+// RegisterTest(TestTMVCBrSingletonFactory.Suite);
 RegisterTest(TestTMVCBrBuilderFactory.Suite);
 RegisterTest(TestTMVCBrAggregatedFactory.Suite);
 RegisterTest(TestTMVCBrContainedFactory.Suite);

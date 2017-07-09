@@ -43,8 +43,7 @@ type
   TResolveResult = (Unknown, Success, InterfaceNotRegistered, ImplNotRegistered,
     DeletegateFailedCreate);
 
-  TActivatorDelegate<TInterface: IMVCBrIOC> = reference to function
-    : TInterface;
+  TActivatorDelegate<TInterface: IMVCBrIOC> = reference to function: TInterface;
 
   TMVCBrIoC = class
   private
@@ -59,8 +58,8 @@ type
       FActivatorDelegate: TActivatorDelegate<T>;
       FIsSingleton: boolean;
       [unsafe]
-      FInstance: IMVCBrIoC;
-      Destructor Destroy;override;
+      FInstance: IMVCBrIOC;
+      Destructor Destroy; override;
       function ImplementClass(AImplements: TInterfacedClass)
         : TIoCRegistration<T>;
       function DelegateTo(const ADelegate: TActivatorDelegate<T>)
@@ -90,7 +89,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Release;virtual;
+    procedure Release; virtual;
     // Default Container
     class function DefaultContainer: TMVCBrIoC;
 {$IFDEF DELPHI_XE_UP}
@@ -150,6 +149,7 @@ type
   public
     constructor Create;
     class function CreateInstance(const AClass: TClass): IInterface;
+    class procedure CallReleaseMethod(FInstance: TObject);
   end;
 
 function GetInterfaceIID(const I: IInterface; var IID: TGuid): boolean;
@@ -184,6 +184,30 @@ begin
     end;
   end;
 
+end;
+
+class procedure TClassActivator.CallReleaseMethod(FInstance: TObject);
+var
+  rType: TRttiType;
+  method: TRttiMethod;
+  II: IMVCBrIOC;
+begin
+  if supports(FInstance, IMVCBrIOC, II) then
+  begin
+    II.Release;
+    II := nil;
+    exit;
+  end;
+  rType := FRttiCtx.GetType(FInstance.ClassType);
+  if not(rType is TRttiInstanceType) then
+    exit;
+  method := TRttiInstanceType(rType).GetMethod('release');
+  if assigned(method) and rType.IsInstance then
+    if (method.Visibility in [mvPublic, mvPublished]) and
+      (Length(method.GetParameters) = 0) then
+    begin
+      method.Invoke(FInstance, []);
+    end;
 end;
 
 function TMVCBrIoC.HasService<T>: boolean;
@@ -271,6 +295,7 @@ class procedure TMVCBrIoC.ClassDestroy;
 begin
   if FDefault <> nil then
     FDefault.Free;
+  FDefault := nil;
 end;
 
 procedure TMVCBrIoC.Clear;
@@ -372,7 +397,7 @@ function TMVCBrIoC.InternalResolve<TInterface>(out AInterface: TInterface;
 var
   key: string;
   errorMsg: string;
-  //container: TDictionary<string, TObject>;
+  // container: TDictionary<string, TObject>;
   registrationObj: TObject;
   registration: TIoCRegistration<TInterface>;
   resolvedInf: IInterface;
@@ -385,7 +410,7 @@ begin
 
   // Get the key for the interace we are resolving and locate the container for that key.
   key := GetInterfaceKey<TInterface>(AName);
-  //container := FContainerInfo;
+  // container := FContainerInfo;
 
   if not FContainerInfo.TryGetValue(key, registrationObj) then
   begin
@@ -512,7 +537,7 @@ begin
       obj: TInterfacedObject;
     begin
       obj := AClass.Create;
-      Supports(obj, AII, result);
+      supports(obj, AII, result);
     end;
   FContainerInfo.Add(key, rego);
 
@@ -534,7 +559,7 @@ var
   AOrigem, ALocal: TObject;
 begin
   if FReleased then
-     exit;
+    exit;
   achei := '';
   AOrigem := AInstance as TObject;
   for LName in FContainerInfo.keys do
@@ -650,18 +675,17 @@ begin
 
 end;
 
-
 procedure TMVCBrIoC.Release;
 var
   o: TObject;
   rogo: TIoCRegistration<IMVCBrIOC>;
   resolvedObj: TObject;
 begin
-  for o in FContainerInfo.values do
+  for o in FContainerInfo.Values do
   begin
     rogo := TIoCRegistration<IMVCBrIOC>(o);
     if assigned(rogo.FInstance) then
-       rogo.FInstance.release;
+      rogo.FInstance.release;
     rogo.FInstance := nil;
   end;
 end;
@@ -673,7 +697,7 @@ var
   resolvedObj: TObject;
 
 begin
-  for o in FContainerInfo.values do
+  for o in FContainerInfo.Values do
   begin
     rogo := TIoCRegistration<IMVCBrIOC>(o);
     resolvedObj := AInstance as TObject;
@@ -682,12 +706,10 @@ begin
       (rogo.isSingleton) then
     begin
       rogo.FInstance := AInstance;
-      break;
+      Break;
     end;
   end;
 end;
-
-
 
 { TMVCBrIoC.TIoCRegistration<T> }
 
@@ -732,7 +754,7 @@ begin
       obj: TInterfacedObject;
     begin
       obj := AImplements.Create;
-      Supports(obj, FGuid, result);
+      supports(obj, FGuid, result);
     end;
 
   FImplClass := AImplements;
@@ -761,6 +783,6 @@ initialization
 
 finalization
 
- TMVCBrIoC.ClassDestroy;
+TMVCBrIoC.ClassDestroy;
 
 end.
