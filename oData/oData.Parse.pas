@@ -400,6 +400,12 @@ var
 begin
   NextToken(true);
   s := GetToken;
+
+  if FTokenKindArray.TryGetValue(s, tk) then
+   case tk of
+     ptCount : oData.Count := 'true';
+   end;
+
   NextToken(true);
   if isTokenType(ptEqual) then
   begin

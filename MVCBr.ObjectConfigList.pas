@@ -68,6 +68,9 @@ type
   public
     text: string;
   end;
+  TMemo = class(TComponent)
+    Lines:TstringList;
+  end;
 {$ENDIF}
 
   TObjectConfigContentType = (ctIniFile, ctJsonFile, ctDataset);

@@ -60,7 +60,7 @@ type
     FControllers: TThreadSafeObjectList<TAggregatedObject>;
   protected
     /// MainView para o Application
-    //[weak]
+    // [weak]
     FMainView: IView;
     /// singleton
     class var FApplicationController: IApplicationController;
@@ -614,7 +614,7 @@ begin
     if (not assigned(FMainView)) and assigned(application.MainForm) then
     begin
       TComponent(reference) := application.MainForm;
-      if supports(reference, IView,FMainView) then
+      if supports(reference, IView, FMainView) then
       begin
         if assigned(AController) then
           AController.view(FMainView);
@@ -635,6 +635,9 @@ var
   AController: IController;
   obj: TObject;
 begin
+{$IFDEF LINUX}
+  Run(ResolveController(AControllerGuid));
+{$ELSE}
   application.CreateForm(ATFormClass, AFormVar);
   obj := TObject(AFormVar);
   Run(ResolveController(AControllerGuid),
@@ -644,11 +647,16 @@ begin
       if assigned(AFunc) then
         result := AFunc(obj);
     end);
+{$ENDIF}
 end;
 
 procedure TApplicationController.Run;
 begin
+{$IFDEF LINUX}
+  Run(nil, nil);
+{$ELSE}
   application.Run;
+{$ENDIF}
 end;
 
 initialization
