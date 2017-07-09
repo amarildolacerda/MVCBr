@@ -36,7 +36,7 @@ uses System.Classes, System.SysUtils,
 Type
 
   TMVCBrStateStep = class;
-  TMVCBrStates<T: TMVCBrStateStep> = class;
+  TMVCBrStates<T: Class> = class;
 
   IMVCBrStateStep = interface
     ['{09707154-F172-4F76-B9A5-AECAF48A2F71}']
@@ -121,7 +121,7 @@ Type
   /// <summary>
   /// TMVCBrStates Object container for States
   /// </summary>
-  TMVCBrStates<T: TMVCBrStateStep> = class(TInterfacedObject, IMVCBrStates<T>)
+  TMVCBrStates<T: Class> = class(TInterfacedObject, IMVCBrStates<T>)
   type
     TStateSteps = class(TObjectList < TMVCBrStateSteps < T >> )
     end;
