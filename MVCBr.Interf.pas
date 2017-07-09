@@ -257,6 +257,7 @@ type
     Function Lock: TMVCFactoryAbstract; virtual;
     constructor Create; virtual;
     destructor Destroy; override;
+    [weak]
     function ApplicationControllerInternal: IApplicationController; virtual;
     function GetID: string; virtual;
     class function New<TInterface: IInterface>(AClass: TClass)
@@ -517,6 +518,7 @@ type
   private
     FReleased: boolean;
   protected
+    [weak]
     FModels: TThreadList<IModel>;
     FViewOwnedFree: boolean;
 
@@ -530,15 +532,21 @@ type
     class function ResolveMainForm(const AIID: TGuid; out ref)
       : boolean; virtual;
     procedure GetModel(const IID: TGuid; out intf); overload; virtual;
+    [weak]
     function GetModel(const IID: TGuid): IModel; overload; virtual;
+    [weak]
     function GetModel<TModelInterface>(): TModelInterface; overload;
     class procedure Resolve(const AIID: TGuid; out ref); overload;
+    [weak]
     class Function Resolve(const ANome: string; AExecInit: boolean = true)
       : IController; overload;
     procedure ResolveController(const AIID: TGuid; out ref); overload;
     class procedure AttachController(const AIID: TGuid; out ref); overload;
+    [weak]
     Function ResolveController(const ANome: string): IController; overload;
+    [weak]
     function ResolveController(const AIID: TGuid): IController; overload;
+    [weak]
     Function ResolveController<TInterface: IController>: TInterface; overload;
     class procedure RevokeInstance(const AII: IInterface); overload; virtual;
     function AttachModel(const AModel: IModel): integer; virtual;

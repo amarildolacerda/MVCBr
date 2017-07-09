@@ -64,7 +64,7 @@ type
     destructor Destroy; override;
     procedure CreateModule(AClass: TComponentClass; var AModule);
     procedure Release; override;
-    function Default: IController; overload;
+    [weak] function Default: IController; overload;
 {$IFDEF FMX}
     procedure Embedded(AControl: TLayout); virtual;
 {$ENDIF}

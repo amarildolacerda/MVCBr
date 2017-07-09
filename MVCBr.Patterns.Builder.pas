@@ -55,11 +55,16 @@ type
     constructor Create; virtual;
     destructor Destroy; override;
     class function New: TMVCBrBuilder<T, TResult>; overload;
-    class function New(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilder<T, TResult>; overload;
+    class function New(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
+      : TMVCBrBuilder<T, TResult>; overload;
     function LockList: TList<IMVCBrBuilderItem<T, TResult>>; virtual;
     procedure UnlockList; virtual;
-    function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>; virtual;
-    function Execute(ACommand: TValue; AParam: T): IMVCBrBuilderItem<T, TResult>; virtual;
+    function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
+      : TMVCBrBuilderItem<T, TResult>; virtual;
+    [weak]
+    function Execute(ACommand: TValue; AParam: T)
+      : IMVCBrBuilderItem<T, TResult>; virtual;
+    [weak]
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>; virtual;
     procedure Release; virtual;
     procedure Clear; virtual;
@@ -76,14 +81,17 @@ type
     ['{1C86D407-8F67-411F-AEA8-D90BBC6AA91A}']
     procedure Release;
     function This: TObject;
-    function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): IMVCBrBuilderItem<T, TResult>;
+    function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
+      : IMVCBrBuilderItem<T, TResult>;
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>;
-    function Execute(ACommand: TValue; AParam: T): IMVCBrBuilderItem<T, TResult>;
+    function Execute(ACommand: TValue; AParam: T)
+      : IMVCBrBuilderItem<T, TResult>;
     function Contains(ACommand: TValue): Boolean;
     procedure Remove(ACommand: TValue);
   end;
 
-  TMVCBrBuilderItem<T, TResult> = Class(TInterfacedObject, IMVCBrBuilderItem<T, TResult>)
+  TMVCBrBuilderItem<T, TResult> = Class(TInterfacedObject,
+    IMVCBrBuilderItem<T, TResult>)
   public
   private
     FCommand: TValue;
@@ -92,9 +100,12 @@ type
     [weak]
     FBuilder: TMVCBrBuilder<T, TResult>;
   public
-    constructor Create(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue; ADelegate: TFunc<T, TResult>);
+    constructor Create(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue;
+      ADelegate: TFunc<T, TResult>);
     destructor Destroy; override;
-    class function New(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue; ADelegate: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
+    class function New(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue;
+      ADelegate: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
+    [weak]
     function Execute(AParam: T): IMVCBrBuilderItem<T, TResult>; virtual;
     function Response: TResult; virtual;
     function Delegate: TFunc<T, TResult>; virtual;
@@ -108,7 +119,8 @@ type
     procedure UnlockList;
   end;
 
-  TMVCBrBuilderFactory<T, TResult> = class(TInterfacedObject, IMVCBrBuilder<T, TResult>)
+  TMVCBrBuilderFactory<T, TResult> = class(TInterfacedObject,
+    IMVCBrBuilder<T, TResult>)
   private
     [weak]
     FWrapper: TMVCBrBuilder<T, TResult>;
@@ -120,8 +132,13 @@ type
     function This: TObject; virtual;
     procedure Release; virtual;
     function Count: Integer; virtual;
-    function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): IMVCBrBuilderItem<T, TResult>; virtual;
-    function Execute(ACommand: TValue; AParam: T): IMVCBrBuilderItem<T, TResult>; virtual;
+    [weak]
+    function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
+      : IMVCBrBuilderItem<T, TResult>; virtual;
+    [weak]
+    function Execute(ACommand: TValue; AParam: T)
+      : IMVCBrBuilderItem<T, TResult>; virtual;
+    [weak]
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>; virtual;
     procedure Remove(ACommand: TValue); overload; virtual;
     function Contains(ACommand: TValue): Boolean; virtual;
@@ -134,7 +151,8 @@ implementation
 
 { TMVCBrBuilderFactory<T> }
 
-function TMVCBrBuilder<T, TResult>.Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilder<T, TResult>.Add(ACommand: TValue;
+  ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
 begin
   result := TMVCBrBuilderItem<T, TResult>.New(self, ACommand, ABuilderFunc);
   FList.Add(result);
@@ -161,12 +179,13 @@ begin
 end;
 
 function TMVCBrBuilder<T, TResult>.Contains(ACommand: TValue): Boolean;
-var i:integer;
+var
+  i: Integer;
 begin
 
   try
-    i :=  IndexOf(ACommand);
-    result :=  isValid(i);
+    i := IndexOf(ACommand);
+    result := isValid(i);
   except
     /// workaround early freed interface
     result := false;
@@ -183,13 +202,15 @@ begin
     end;
 end;
 
-class function TMVCBrBuilder<T, TResult>.New(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilder<T, TResult>;
+class function TMVCBrBuilder<T, TResult>.New(ACommand: TValue;
+  ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilder<T, TResult>;
 begin
   result := TMVCBrBuilder<T, TResult>.New;
   result.Add(ACommand, ABuilderFunc);
 end;
 
-function TMVCBrBuilder<T, TResult>.Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilder<T, TResult>.Query(ACommand: TValue)
+  : IMVCBrBuilderItem<T, TResult>;
 var
   i: Integer;
 begin
@@ -204,7 +225,8 @@ begin
     end;
 end;
 
-function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T): IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T)
+  : IMVCBrBuilderItem<T, TResult>;
 begin
   result := Query(ACommand);
   Assert(assigned(result), 'Builder Command not found');
@@ -220,7 +242,8 @@ begin
     try
       for i := Count - 1 downto 0 do
       begin
-        if TMVCBrBuilderItem<T, TResult>(items[i].This).FCommand.Equals(ACommand) then
+        if TMVCBrBuilderItem<T, TResult>(items[i].This).FCommand.Equals(ACommand)
+        then
         begin
           result := i;
           exit;
@@ -236,7 +259,8 @@ begin
   result := (idx >= 0) and (idx < Count);
 end;
 
-function TMVCBrBuilder<T, TResult>.LockList: TList<IMVCBrBuilderItem<T, TResult>>;
+function TMVCBrBuilder<T, TResult>.LockList
+  : TList<IMVCBrBuilderItem<T, TResult>>;
 begin
   result := FList.LockList;
 end;
@@ -279,7 +303,8 @@ begin
       end;
 end;
 
-procedure TMVCBrBuilder<T, TResult>.Remove(AItem: TMVCBrBuilderItem<T, TResult>);
+procedure TMVCBrBuilder<T, TResult>.Remove
+  (AItem: TMVCBrBuilderItem<T, TResult>);
 begin
   try
     if Contains(AItem.FCommand) then
@@ -314,18 +339,22 @@ begin
   inherited;
 end;
 
-function TMVCBrBuilderItem<T, TResult>.Execute(AParam: T): IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilderItem<T, TResult>.Execute(AParam: T)
+  : IMVCBrBuilderItem<T, TResult>;
 begin
   result := self;
   FResult := FDelegate(AParam);
 end;
 
-function TMVCBrBuilderItem<T, TResult>.LockList: TList<IMVCBrBuilderItem<T, TResult>>;
+function TMVCBrBuilderItem<T, TResult>.LockList
+  : TList<IMVCBrBuilderItem<T, TResult>>;
 begin
   result := FBuilder.LockList;
 end;
 
-class function TMVCBrBuilderItem<T, TResult>.New(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue; ADelegate: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
+class function TMVCBrBuilderItem<T, TResult>.New
+  (ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue;
+  ADelegate: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
 begin
   result := TMVCBrBuilderItem<T, TResult>.Create(ABuilder, ACommand, ADelegate);
 end;
@@ -335,7 +364,9 @@ begin
   result := FCommand;
 end;
 
-constructor TMVCBrBuilderItem<T, TResult>.Create(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue; ADelegate: TFunc<T, TResult>);
+constructor TMVCBrBuilderItem<T, TResult>.Create
+  (ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue;
+  ADelegate: TFunc<T, TResult>);
 begin
   inherited Create;
   FCommand := ACommand;
@@ -378,7 +409,8 @@ end;
 
 { TMVCBrBuilderFactory<T, TResult> }
 
-function TMVCBrBuilderFactory<T, TResult>.Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>): IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilderFactory<T, TResult>.Add(ACommand: TValue;
+  ABuilderFunc: TFunc<T, TResult>): IMVCBrBuilderItem<T, TResult>;
 begin
   result := FWrapper.Add(ACommand, ABuilderFunc);
 end;
@@ -393,7 +425,8 @@ begin
   result := FWrapper.Count;
 end;
 
-constructor TMVCBrBuilderFactory<T, TResult>.Create(AClass: TMVCBrBuilder<T, TResult>);
+constructor TMVCBrBuilderFactory<T, TResult>.Create
+  (AClass: TMVCBrBuilder<T, TResult>);
 begin
   inherited Create;
   FWrapper := AClass;
@@ -406,22 +439,26 @@ begin
   inherited;
 end;
 
-function TMVCBrBuilderFactory<T, TResult>.Execute(ACommand: TValue; AParam: T): IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilderFactory<T, TResult>.Execute(ACommand: TValue; AParam: T)
+  : IMVCBrBuilderItem<T, TResult>;
 begin
   result := FWrapper.Execute(ACommand, AParam);
 end;
 
-function TMVCBrBuilderFactory<T, TResult>.LockList: TList<IMVCBrBuilderItem<T, TResult>>;
+function TMVCBrBuilderFactory<T, TResult>.LockList
+  : TList<IMVCBrBuilderItem<T, TResult>>;
 begin
   result := FWrapper.LockList;
 end;
 
 class function TMVCBrBuilderFactory<T, TResult>.New: IMVCBrBuilder<T, TResult>;
 begin
-  result := TMVCBrBuilderFactory<T, TResult>.Create(TMVCBrBuilder<T, TResult>.Create);
+  result := TMVCBrBuilderFactory<T, TResult>.Create
+    (TMVCBrBuilder<T, TResult>.Create);
 end;
 
-function TMVCBrBuilderFactory<T, TResult>.Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilderFactory<T, TResult>.Query(ACommand: TValue)
+  : IMVCBrBuilderItem<T, TResult>;
 begin
   result := FWrapper.Query(ACommand);
 end;

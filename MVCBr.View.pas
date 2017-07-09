@@ -50,12 +50,15 @@ type
   TViewFactory = class(TMVCFactoryAbstract, IView, IMVCBrObserver)
   private
     FText: string;
+    [weak]
     FController: IController;
+    [weak]
     FViewModel: IViewModel;
     procedure SetController(const AController: IController);
     function GetTitle: String;
     procedure SetTitle(Const AText: String);
   protected
+    [weak]
     function Controller(const AController: IController): IView; virtual;
     function This: TObject; virtual;
   public
@@ -76,10 +79,13 @@ type
       overload; virtual;
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcAfterShow: TProc<IView>): IView; overload; virtual;
+    [weak]
     function GetViewModel: IViewModel; virtual;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
+    [weak]
     function GetModel(AII: TGuid): IModel;
 
+    [weak]
     function UpdateView: IView; virtual;
 
     /// <summary>
@@ -97,7 +103,9 @@ type
       AObserver: IMVCBrObserver); overload; static;
     class procedure UnRegisterObserver(const AName: string); overload; static;
 
+    [weak]
     function GetController: IController;
+    [weak]
     function ViewModel(const AModel: IViewModel): IView;
     property Text: string read GetTitle write SetTitle;
 

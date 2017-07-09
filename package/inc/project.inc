@@ -1,61 +1,69 @@
-ProjectCode = 'program %ModuleIdent;                         ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '// Código gerado pelo Assistente MVCBr OTA                ' + #10#13 +
-  '// www.tireideletra.com.br                                ' + #10#13 +
-  '// Amarildo Lacerda & Grupo MVCBr-2017                    ' + #10#13 +
-  'uses                                                      ' + #10#13 +
-  '  Forms, MVCBr.ApplicationController, MVCBr.Controller;   ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '{$R *.res}                                                ' + #10#13 +
-  'begin                                                     ' + #10#13 +
-  '/// Inicializa o Controller e Roda o MainForm                     ' + #10#13
-  + '  ApplicationController.Run(T%ModuleIdentController.New,' + #10#13 +
-  '    function :boolean                                     ' + #10#13 +
-  '    begin                                                 ' + #10#13 +
-  '      // retornar True se o applicatio pode ser carregado ' + #10#13 +
-  '      //          False se não foi autorizado inicialização' + #10#13 +
-  '      result := true;                                     ' + #10#13 +
-  '    end);                                                 ' + #10#13 +
-  'end.                                                      ' + #10#13;
+ProjectCode = 'program %ModuleIdent;                         ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '// Código gerado pelo Assistente MVCBr OTA                ' + #13#10 +
+  '// www.tireideletra.com.br                                ' + #13#10 +
+  '// Amarildo Lacerda & Grupo MVCBr-2017                    ' + #13#10 +
+  'uses                                                      ' + #13#10 +
+  '  Forms, MVCBr.ApplicationController, MVCBr.Controller;   ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '{$R *.res}                                                ' + #13#10 +
+  'function CheckApplicationAuth: boolean;                   ' + #13#10 +
+  'begin                                                     ' + #13#10 +
+  '  // retornar True se o applicatio pode ser carregado ' + #13#10 +
+  '  //          False se não foi autorizado inicialização' + #13#10 +
+  '  result := true;                                         ' + #13#10 +
+  'end;                                                      ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'begin                                                     ' + #13#10 +
+  '/// Inicializa o Controller e Roda o MainForm       ' + #13#10 +
+  'if CheckApplicationAuth then       ' +#13#10+
+  '  ApplicationController.Run(T%ModuleIdentController.New);' + #13#10 +
+  'end.                                                      ' + #13#10;
 
-ProjectCodeFMX = 'program %ModuleIdent;                         ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '// Código gerado pelo Assistente MVCBr OTA                ' + #10#13 +
-  '// www.tireideletra.com.br                                ' + #10#13 +
-  '// Amarildo Lacerda & Grupo MVCBr-2017                    ' + #10#13 +
-  'uses                                                      ' + #10#13 +
-  '  System.StartUpCopy,                                     ' + #10#13 +
-  '  FMX.Forms, MVCBr.ApplicationController, MVCBr.Controller;' + #10#13 +
-  '                                                          ' + #10#13 +
-  '{$R *.res}                                                ' + #10#13 +
-  'begin                                                     ' + #10#13 +
-  '  ApplicationController.Run(T%ModuleIdentController.New,' + #10#13 +
-  '    function :boolean                                     ' + #10#13 +
-  '    begin                                                 ' + #10#13 +
-  '      // retornar True se o applicatio pode ser carregado ' + #10#13 +
-  '      //          False se não foi autorizado inicialização' + #10#13 +
-  '      result := true;                                     ' + #10#13 +
-  '    end);                                                 ' + #10#13 +
-  'end.                                                      ' + #10#13;
+ProjectCodeFMX = 'program %ModuleIdent;                         ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '// Código gerado pelo Assistente MVCBr OTA                ' + #13#10 +
+  '// www.tireideletra.com.br                                ' + #13#10 +
+  '// Amarildo Lacerda & Grupo MVCBr-2017                    ' + #13#10 +
+  'uses                                                      ' + #13#10 +
+  '  System.StartUpCopy,                                     ' + #13#10 +
+  '  FMX.Forms, MVCBr.ApplicationController, MVCBr.Controller;' + #13#10 +
+  '                                                          ' + #13#10 +
+  '{$R *.res}                                                ' + #13#10 +
+  'function CheckApplicationAuth: boolean;                   ' + #13#10 +
+  'begin                                                     ' + #13#10 +
+  '  // retornar True se o applicatio pode ser carregado ' + #13#10 +
+  '  //          False se não foi autorizado inicialização' + #13#10 +
+  '  result := true;                                         ' + #13#10 +
+  'end;                                                      ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'begin                                                     ' + #13#10 +
+  'if CheckApplicationAuth then '+#13#10+
+  '  ApplicationController.Run(T%ModuleIdentController.New);' + #13#10 +
+  'end.                                                      ' + #13#10;
 
-promptProject = 'program %ModuleIdent;                       ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '// Código gerado pelo Assistente MVCBr OTA                ' + #10#13 +
-  '// www.tireideletra.com.br                                ' + #10#13 +
-  '// Amarildo Lacerda & Grupo MVCBr-2017                    ' + #10#13 + ' ' +
-  #10#13 + '{$APPTYPE CONSOLE} ' + #10#13 +
-  '                                                          ' + #10#13 +
-  '{$R *.res}                                         ' + #10#13 +
-  'uses                                                      ' + #10#13 +
-  '  System.SysUtils,MVCBr.ApplicationController,            ' + #10#13 +
-  '  MVCBr.Controller;                                       ' + #10#13 +
-  '                                                          ' + #10#13 +
-  'begin                                                     ' + #10#13 +
-  '  /// Inicializa o Controller                             ' + #10#13 +
-  '  ApplicationController.Run(T%ModuleIdentController.New,  ' + #10#13 +
-  '    function: boolean' + #10#13 + '    begin              ' + #10#13 +
-  '      // retornar True se o applicatio pode ser carregado ' + #10#13 +
-  '      // False se não foi autorizado inicialização        ' + #10#13 +
-  '      result := true;' + #10#13 + '    end);              ' + #10#13 +
-  '                                                          ' + #10#13 +
+promptProject = 'program %ModuleIdent;                       ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '// Código gerado pelo Assistente MVCBr OTA                ' + #13#10 +
+  '// www.tireideletra.com.br                                ' + #13#10 +
+  '// Amarildo Lacerda & Grupo MVCBr-2017                    ' + #13#10 + ' ' +
+  #13#10 + '{$APPTYPE CONSOLE} ' + #13#10 +
+  '                                                          ' + #13#10 +
+  '{$R *.res}                                         ' + #13#10 +
+  'uses                                                      ' + #13#10 +
+  '  System.SysUtils,MVCBr.ApplicationController,            ' + #13#10 +
+  '  MVCBr.Controller;                                       ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'function CheckApplicationAuth: boolean;                   ' + #13#10 +
+  'begin                                                     ' + #13#10 +
+  '  // retornar True se o applicatio pode ser carregado ' + #13#10 +
+  '  //          False se não foi autorizado inicialização' + #13#10 +
+  '  result := true;                                         ' + #13#10 +
+  'end;                                                      ' + #13#10 +
+  '                                                          ' + #13#10 +
+  'begin                                                     ' + #13#10 +
+  '  /// Inicializa o Controller                             ' + #13#10 +
+  'if CheckApplicationAuth then '+#13#10+
+  '  ApplicationController.Run(T%ModuleIdentController.New);  ' + #13#10 +
+  '                                                          ' + #13#10 +
   'end.             ';

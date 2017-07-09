@@ -16,6 +16,10 @@ program MVCBrTests;
 
 uses
   DUnitTestRunner,
+  MVCBr.ApplicationController,
+  MVCBr.Controller,
+  MVCBr.FormView,
+  MVCBr.View,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
   TestMVCBr.View in 'TestMVCBr.View.pas',
@@ -46,6 +50,7 @@ uses
 {$R *.RES}
 
 begin
+
   System.ReportMemoryLeaksOnShutdown := true;
   DUnitTestRunner.RunRegisteredTests;
 

@@ -90,7 +90,7 @@ type
     procedure SetOnViewInit(const Value: TNotifyEvent);
   protected
     FOnCloseProc: TProc<IView>;
-    [unsafe]
+    [weak]
     FController: IController;
     FShowModal: boolean;
     // FViewModel:IViewModel;
@@ -108,67 +108,92 @@ type
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
+    [weak]
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Release; virtual;
     function GetGuid(AII: IInterface): TGuid;
+    [weak]
     function ViewEvent(AMessage: string; var AHandled: boolean): IView;
       overload; virtual;
+    [weak]
     function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView;
       overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
-    function Update:IView;overload;virtual;
+    [weak]
+    function Update: IView; overload; virtual;
+    [weak]
     function MainViewEvent(AMessage: string; var AHandled: boolean)
       : IView; virtual;
+    [weak]
     function ViewEventOther(AMessage: string; var AHandled: boolean): IView;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetID: string;
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
+    [weak]
     function GetController: IController; virtual;
+    [weak]
     function AttachController(AInterface: TGuid; AOwnedFree: boolean = true)
       : IController; overload; virtual;
+    [weak]
     function AttachController<TIController: IInterface>: TIController; overload;
+    [weak]
     function AttachModel<TIModel: IModel>(AModelClass
       : TModelFactoryAbstractClass): TIModel;
     /// Retorna o SELF
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
+    [weak]
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+    [weak]
     function ResolveController(const IID: TGuid): IController;
       overload; virtual;
     procedure RevokeController(IID: TGuid); overload;
     procedure RevokeController(TIController: IController); overload;
+    [weak]
     function ResolveController<TIController: IController>
       : TIController; overload;
+    [weak]
     function GetModel<TIModel>: TIModel; overload;
+    [weak]
     function GetModel(AII: TGuid): IModel; overload;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
+    [weak]
     function GetView<TIView: IInterface>: TIView; overload;
+    [weak]
     function FindView(AGuid: TGuid): IView;
     /// Apresenta o VIEW para o usuario
+    [weak]
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>; const AProcONClose: TProc<IView>)
       : IView; overload; virtual;
     function ShowView(const AProcBeforeShow: TProc<IView>): Integer;
       overload; virtual;
+    [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
       : IView; overload; virtual;
+    [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcONClose: TProc<IView>): IView; overload; virtual;
+    [weak]
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>): IView; overload; virtual;
+    [weak]
     function ShowView(const IIDController: TGuid): IView; overload; virtual;
+    [weak]
     function ShowView(): IView; overload;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
+    [weak]
     function GetViewModel: IViewModel; virtual;
     /// Evento para atualizar os dados da VIEW
+    [weak]
     function UpdateView: IView; virtual;
 
     procedure UpdateObserver(AJson: TJsonValue); overload; virtual;
@@ -176,6 +201,7 @@ type
       overload; virtual;
     procedure UpdateObserver(AName: string; AMensagem: String);
       overload; virtual;
+    [weak]
     function Observable: IMVCBrObservable; virtual;
     procedure RegisterObserver(const AName: String);
     procedure UnRegisterObserver(const AName: String);
@@ -366,8 +392,8 @@ end;
 
 procedure TCustomFormFactory.Release;
 begin
-   if assigned(FController) then
-      FController.Release;
+  if assigned(FController) then
+    FController.Release;
   FController := nil;
 end;
 
