@@ -45,36 +45,37 @@ type
   IMVCBrLazy<T: class> = interface(TFunc<T>)
     ['{17498F3A-F1D7-410D-8D96-B299C26F947B}']
     function IsCreated: Boolean;
-    property Default: T read Invoke;
+    property Instance: T read Invoke;
     procedure Release;
+    procedure FreeInstance;
   end;
 
   TMVCBrLazy<T: class> = class(TInterfacedObject, IMVCBrLazy<T>, IInterface)
   private
-    FIsCreated: Boolean;
-    FDefault: T;
+    FCreated: Boolean;
+    FInstance: T;
     FFactory: TFunc<T>;
     procedure Initialize;
     function Invoke: T;
   protected
     function QueryInterface(const AIID: TGUID; out Obj): HResult; stdcall;
   public
-    constructor Create(AValueFactory: TFunc<T>);
+    constructor Create(AValueFactory: TFunc<T>); virtual;
     destructor Destroy; override;
     procedure Release; virtual;
-
     function IsCreated: Boolean;
-    property Default: T read Invoke;
+    property Instance: T read Invoke;
+    procedure FreeInstance; virtual;
   end;
 
   TMVCBrAggregatedLazy<T: IInterface> = class(TInterfacedObject, IInterface)
   private
-    FIsCreated: Boolean;
+    FCreated: Boolean;
     [unsafe]
-    FDefault: T;
+    FInstance: T;
     FFactory: TFunc<T>;
     procedure Initialize;
-    function Invoke: T;
+    function GetInstance: T;
   protected
     function QueryInterface(const AIID: TGUID; out Obj): HResult; stdcall;
   public
@@ -82,17 +83,17 @@ type
     destructor Destroy; override;
     procedure Release; virtual;
     function IsCreated: Boolean;
-    property Default: T read Invoke;
+    property Instance: T read GetInstance;
   end;
 
   MVCBrLazy<T: class> = record
   strict private
     FLazy: IMVCBrLazy<T>;
-    function GetDefault: T;
+    function GetInstance: T;
   private
   public
     class constructor Create;
-    property Default: T read GetDefault;
+    property Instance: T read GetInstance;
     class operator Implicit(const Value: MVCBrLazy<T>): IMVCBrLazy<T>; overload;
     class operator Implicit(const Value: MVCBrLazy<T>): T; overload;
     class operator Implicit(const Value: TFunc<T>): MVCBrLazy<T>; overload;
@@ -107,32 +108,38 @@ end;
 
 destructor TMVCBrLazy<T>.Destroy;
 begin
-  if FIsCreated then
+  if FCreated then
   begin
-    if Assigned(FDefault) then
-      FDefault.Free;
+    if Assigned(FInstance) then
+      FInstance.Free;
   end;
   inherited;
 end;
 
+procedure TMVCBrLazy<T>.FreeInstance;
+begin
+  FreeAndNil(FInstance);
+  FCreated := false;
+end;
+
 procedure TMVCBrLazy<T>.Initialize;
 begin
-  if not FIsCreated then
+  if not FCreated then
   begin
-    FDefault := FFactory();
-    FIsCreated := True;
+    FInstance := FFactory();
+    FCreated := True;
   end;
 end;
 
 function TMVCBrLazy<T>.Invoke: T;
 begin
   Initialize();
-  Result := FDefault;
+  Result := FInstance;
 end;
 
 function TMVCBrLazy<T>.IsCreated: Boolean;
 begin
-  Result := FIsCreated;
+  Result := FCreated;
 end;
 
 function TMVCBrLazy<T>.QueryInterface(const AIID: TGUID; out Obj): HResult;
@@ -155,7 +162,7 @@ begin
   // TRttiSingleton.GetInstance.GetRttiType(TypeInfo(T));
 end;
 
-function MVCBrLazy<T>.GetDefault: T;
+function MVCBrLazy<T>.GetInstance: T;
 begin
   Result := FLazy();
 end;
@@ -167,7 +174,7 @@ end;
 
 class operator MVCBrLazy<T>.Implicit(const Value: MVCBrLazy<T>): T;
 begin
-  Result := Value.Default;
+  Result := Value.Instance;
 end;
 
 class operator MVCBrLazy<T>.Implicit(const Value: TFunc<T>): MVCBrLazy<T>;
@@ -185,31 +192,31 @@ end;
 
 destructor TMVCBrAggregatedLazy<T>.Destroy;
 begin
-  if FIsCreated then
+  if FCreated then
   begin
-    FDefault := nil;
+    FInstance := nil;
   end;
   inherited;
 end;
 
 procedure TMVCBrAggregatedLazy<T>.Initialize;
 begin
-  if not FIsCreated then
+  if not FCreated then
   begin
-    FDefault := FFactory();
-    FIsCreated := True;
+    FInstance := FFactory();
+    FCreated := True;
   end;
 end;
 
-function TMVCBrAggregatedLazy<T>.Invoke: T;
+function TMVCBrAggregatedLazy<T>.GetInstance: T;
 begin
   Initialize();
-  Result := FDefault;
+  Result := FInstance;
 end;
 
 function TMVCBrAggregatedLazy<T>.IsCreated: Boolean;
 begin
-  Result := FIsCreated;
+  Result := FCreated;
 end;
 
 function TMVCBrAggregatedLazy<T>.QueryInterface(const AIID: TGUID;

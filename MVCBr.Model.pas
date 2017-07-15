@@ -74,7 +74,8 @@ type
   TModelAdapterFactory<T: Class> = class(TModelFactory, IModel,
     IModelAdapter<T>)
   private
-    FInstanceClass: TComponentClass;
+    FCreated: boolean;
+    FInstanceClass: TClass;
     FInstance: T;
     function GetInstance: T; virtual;
     constructor CreateInternal; overload; virtual;
@@ -86,6 +87,7 @@ type
     procedure Release; override;
     property Instance: T read GetInstance;
     procedure FreeInstance; virtual;
+    function IsCreated: boolean; virtual;
   end;
 
 implementation
@@ -202,15 +204,22 @@ end;
 procedure TModelAdapterFactory<T>.FreeInstance;
 begin
   FreeAndNil(FInstance);
+  FCreated := false;
 end;
 
 function TModelAdapterFactory<T>.GetInstance: T;
 begin
-  if not assigned(FInstance) then
+  if not FCreated then
   begin
     FInstance := TMVCBr.InvokeCreate<T>([nil]);
+    FCreated := true;
   end;
   result := FInstance;
+end;
+
+function TModelAdapterFactory<T>.IsCreated: boolean;
+begin
+  result := FCreated;
 end;
 
 class function TModelAdapterFactory<T>.New(AController: IController)

@@ -57,6 +57,8 @@ type
     procedure TestUnRegisterObserverNamed;
     procedure TestUnRegisterObserverNamedOnly;
     procedure TesteObserver;
+    Procedure TestCreateLazyModel;
+    procedure TestFreeInstanceLazyModel;
 
   end;
 
@@ -132,6 +134,27 @@ begin
   // TODO: Validate method results
 end;
 
+
+type
+    TObjectComum = class(TObject)
+      public
+         FCount:integer;
+         procedure Execute(AValue:Integer);
+    end;
+
+procedure TestTModelFactory.TestCreateLazyModel;
+var LModel:IModelAdapter<TObjectComum>;
+    LController:IController;
+begin
+
+    LModel := TModelAdapterFactory<TObjectComum>.new(LController);
+    LModel.Instance.Execute(10);
+    CheckTrue(LModel.Instance.FCount=10,'Não atribuiu valor');
+    LModel := nil;
+
+
+end;
+
 procedure TestTModelFactory.TesteObserver;
 var
   ref: Integer;
@@ -143,6 +166,20 @@ begin
   CheckTrue(FModelFactory.GetStubInt > ref, 'Não chamou o evento do Observer');
 
   TMVCBr.UnRegisterObserver('x', FModelFactory);
+end;
+
+procedure TestTModelFactory.TestFreeInstanceLazyModel;
+
+var LModel:IModelAdapter<TObjectComum>;
+    LController:IController;
+begin
+
+    LModel := TModelAdapterFactory<TObjectComum>.new(LController);
+    LModel.Instance.Execute(10);
+    CheckTrue(LModel.Instance.FCount=10,'Não atribuiu valor');
+    LModel := nil;
+
+
 end;
 
 procedure TestTModelFactory.TestThis;
@@ -275,6 +312,13 @@ begin
   // TODO: Validate method results
 end;
 
+
+{ TObjectComum }
+
+procedure TObjectComum.Execute(AValue:Integer);
+begin
+    FCount := AValue;
+end;
 
 initialization
 

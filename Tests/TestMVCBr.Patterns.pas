@@ -16,9 +16,17 @@ uses
   System.RTTI, Forms,
   System.TypInfo, System.Classes,
   MVCBr.Interf, MVCBr.Patterns.States,
+  MVCBr.Patterns.Lazy,
   MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
 
 type
+
+  TestTMVCBrLazyObject = class(TTestCase)
+  published
+    procedure TestCreateLazyObject;
+  end;
+
+
   // Test methods for class TMVCBrStates
 
   TTestMVCBrStateStep = class(TMVCBrStateStep)
@@ -95,7 +103,7 @@ type
 
     procedure TestLazyBuilder;
     procedure TestLazyBuilderQueryInterface;
-
+    procedure TestLazyBuilderInvokeClass;
   end;
   // Test methods for class TMVCBrAggregatedFactory
 
@@ -625,7 +633,7 @@ Type
     procedure IncValor;
   end;
 
-  TBuildLazyObject = class(TMVCBrBuilderObject,IBuildLazyObject)
+  TBuildLazyObject = class(TMVCBrBuilderObject, IBuildLazyObject)
   private
   public
     function Execute(AParam: TValue): TValue; override;
@@ -636,8 +644,6 @@ procedure TestTMVCBrBuilderFactory.TestLazyBuilder;
 var
   LazyBuilderFac: TMVCBrBuilderLazyFactory;
   ret: IMVCBrBuilderItem<TValue, TValue>;
-
-  interf:IBuildLazyObject;
 
 begin
   LazyBuilderFac := TMVCBrBuilderLazyFactory.New;
@@ -653,19 +659,43 @@ begin
   end;
 end;
 
+procedure TestTMVCBrBuilderFactory.TestLazyBuilderInvokeClass;
+var
+  ALazy: TMVCBrBuilderLazyFactory;
+  refLazy: TBuildLazyObject;
+begin
+  ALazy := TMVCBrBuilderLazyFactory.New;
+  try
+    ALazy.Add('comandoB', TBuildLazyObject);
+
+    refLazy := ALazy.Query<TBuildLazyObject>('comandoB');
+    refLazy.Execute(10);
+
+    checkTrue(refLazy.Response.asInteger = 10, 'Não Executou INVOKE function');
+
+  finally
+    ALazy.Free;
+  end;
+
+end;
+
 procedure TestTMVCBrBuilderFactory.TestLazyBuilderQueryInterface;
 var
   LazyBuilderFac: TMVCBrBuilderLazyFactory;
-  interf:IBuildLazyObject;
+  Interf: IBuildLazyObject;
 
 begin
   LazyBuilderFac := TMVCBrBuilderLazyFactory.New;
   try
     LazyBuilderFac.Add('comandoA', TBuildLazyObject);
-    interf := LazyBuilderFac.Query<TBuildLazyObject>('comandoA');
-    interf.Execute(30);
-    checkTrue(Interf.Response.asInteger = 30 , 'Não executou comando pela interface');
-  //  interf := nil;
+
+    Interf := LazyBuilderFac.Query<TBuildLazyObject>('comandoA');
+    Interf.Execute(30);
+
+    checkTrue(Interf.Response.asInteger = 30,
+      'Não executou comando pela interface');
+    Interf := nil;
+
   finally
     LazyBuilderFac.Free;
   end;
@@ -797,6 +827,34 @@ begin
   Response := Response.asInteger + 1;
 end;
 
+{ TestTMVCBrLazyObject }
+Type
+  TLazyObject = class
+  public
+    FCount: Integer;
+    procedure Execute(AValue: Integer);
+  end;
+
+procedure TestTMVCBrLazyObject.TestCreateLazyObject;
+var
+  LLazy: IMVCBrLazy<TLazyObject>;
+begin
+  LLazy := TMVCBrLazy<TLazyObject>.Create(
+    function: TLazyObject
+    begin
+      result := TLazyObject.Create;
+    end);
+  LLazy.Execute(10);
+  checkTrue(LLazy.FCount = 10, 'Não Executou o LazyObject');
+end;
+
+{ TLazyObject }
+
+procedure TLazyObject.Execute(AValue: Integer);
+begin
+  FCount := AValue;
+end;
+
 initialization
 
 // Register any test cases with the test runner
@@ -808,5 +866,6 @@ RegisterTest(TestTMVCBrAggregatedFactory.Suite);
 RegisterTest(TestTMVCBrContainedFactory.Suite);
 RegisterTest(TestTMVCBrHelperFactory.Suite);
 RegisterTest(TestTMVCBrStaticFactory.Suite);
+RegisterTest(TestTMVCBrLazyObject.Suite);
 
 end.

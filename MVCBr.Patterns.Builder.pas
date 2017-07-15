@@ -1,6 +1,6 @@
-{ *************************************************************************** }
+ï»¿{ *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr Ã© o resultado de esforÃ§os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -33,6 +33,13 @@ uses
   System.RTTI, System.Generics.Collections;
 
 type
+
+  IMVCBrBuilderItem<T: Class> = interface(TFunc<T>)
+    property Instance: T read Invoke;
+    function IsCreated: Boolean;
+    function Response: TValue;
+    procedure FreeInstance;
+  end;
 
   TMVCBrBuilderItem<T, TResult> = class;
 
@@ -128,6 +135,7 @@ type
   private
     [weak]
     FWrapper: TMVCBrBuilder<T, TResult>;
+  protected
   public
     constructor Create(AClass: TMVCBrBuilder<T, TResult>); virtual;
     destructor Destroy; override;
@@ -175,22 +183,27 @@ type
   TMVCBrBuilderObjectClass = class of TMVCBrBuilderObject;
 
   /// Lazy Builder Item
-  TMVCBrBuilderLazyItem = class(TMVCBrBuilderItem<TValue, TValue>)
+  TMVCBrBuilderLazyItem = class(TMVCBrBuilderItem<TValue, TValue>,
+    IMVCBrBuilderItem<TMVCBrBuilderObject>)
   private
     FClass: TMVCBrBuilderObjectClass;
     [weak]
     FInstance: TMVCBrBuilderObject;
+    FCreated: Boolean;
   protected
+    function Invoke: TMVCBrBuilderObject;
   public
     constructor Create; Overload;
     destructor Destroy; override;
     class Function New(ABuilder: TMVCBrBuilder<TValue, TValue>;
       ACommand: string): TMVCBrBuilderLazyItem;
-    function Default: TMVCBrBuilderObject;
+    property Instance: TMVCBrBuilderObject read Invoke;
+    procedure FreeInstance;
     [weak]
     function Execute(AParam: TValue)
       : IMVCBrBuilderItem<TValue, TValue>; override;
     function Response: TValue; Override;
+    function IsCreated: Boolean; virtual;
   end;
 
   /// Lazy Builder Factory
@@ -562,24 +575,20 @@ end;
 
 constructor TMVCBrBuilderLazyItem.Create;
 begin
-  raise Exception.Create('Use NEW instead of create');
-end;
-
-function TMVCBrBuilderLazyItem.Default: TMVCBrBuilderObject;
-begin
-  if not assigned(FInstance) then
-    FInstance := FClass.Create;
-  result := FInstance;
+  raise Exception.Create
+    ('Abstract... Use NEW class function instead of create');
 end;
 
 destructor TMVCBrBuilderLazyItem.Destroy;
-var interf:IInterface;
+var
+  Interf: IInterface;
 begin
-   try
-    interf := FInstance;
-    interf := nil; /// workaround - with Free blow Exception Error
-   except
-   end;
+  try
+    Interf := FInstance;
+    Interf := nil;
+    /// workaround - with Free blow Exception Error
+  except
+  end;
   inherited;
 end;
 
@@ -587,7 +596,29 @@ function TMVCBrBuilderLazyItem.Execute(AParam: TValue)
   : IMVCBrBuilderItem<TValue, TValue>;
 begin
   result := self;
-  Default.Execute(AParam);
+  Instance.Execute(AParam);
+end;
+
+procedure TMVCBrBuilderLazyItem.FreeInstance;
+begin
+  freeAndNil(FInstance);
+  FCreated := false;
+end;
+
+function TMVCBrBuilderLazyItem.Invoke: TMVCBrBuilderObject;
+begin
+  if not FCreated then
+  begin
+    FInstance := FClass.Create;
+    FCreated := true;
+  end;
+  result := FInstance;
+
+end;
+
+function TMVCBrBuilderLazyItem.IsCreated: Boolean;
+begin
+  result := FCreated;
 end;
 
 class function TMVCBrBuilderLazyItem.New
@@ -601,7 +632,7 @@ end;
 
 function TMVCBrBuilderLazyItem.Response: TValue;
 begin
-  result := Default.Response;
+  result := Instance.Response;
 end;
 
 { TMVCBBuilderObject }
@@ -644,7 +675,7 @@ var
 begin
   ret := inherited Query(ACommand);
   AItem := TMVCBrBuilderLazyItem(ret.This);
-  result := T(AItem.Default);
+  result := T(AItem.Instance);
   ret := nil;
 end;
 
