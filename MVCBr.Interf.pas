@@ -240,7 +240,7 @@ type
     procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
     procedure Send(AJson: TJsonValue); overload;
     procedure Send(const AName: string; AJson: TJsonValue); overload;
-    procedure Register(const AName: string; AObserver: IMVCBrObserver);
+    function Register(const AName: string; AObserver: IMVCBrObserver):IMVCBrObservable;
   end;
 
   /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns

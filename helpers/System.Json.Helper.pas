@@ -89,6 +89,7 @@ type
     constructor create; overload;
     destructor destroy; override;
     function This: TInterfacedJSON; virtual;
+    class function New(AOwned: Boolean): IJsonObject; overload;
     class function New(AJson: string): IJsonObject; overload;
     class function New: IJsonObject; overload;
     class function New(AJson: TJsonValue; AOwned: Boolean): IJsonObject;
@@ -128,6 +129,7 @@ type
     constructor create(AKey, AValue: String); overload;
     function V(chave: String): variant;
     function S(chave: string): string;
+    function D(chave: string): Double;
     function I(chave: string): integer;
     function O(chave: string): TJsonObject; overload;
     function O(index: integer): TJsonObject; overload;
@@ -654,6 +656,13 @@ end;
 constructor TJSONObjectHelper.create(AKey, AValue: String);
 begin
   inherited create(TJsonPair.create(AKey, AValue));
+end;
+
+function TJSONObjectHelper.D(chave: string): Double;
+begin
+  result := 0;
+  if FindValue(chave) <> nil then
+    TryGetValue<Double>(chave, result);
 end;
 
 function TJSONObjectHelper.F(chave: string): Extended;
@@ -1248,6 +1257,12 @@ begin
   jo.FJson := AJson;
   jo.FInstanceOwned := AOwned;
   result := jo;
+end;
+
+class function TInterfacedJSON.New(AOwned: Boolean): IJsonObject;
+begin
+  result := TInterfacedJSON.New('{}');
+  TInterfacedJSON(result.This).FInstanceOwned := AOwned;
 end;
 
 function TInterfacedJSON.addPair(AKey: string; AValue: TJsonValue): TJsonObject;

@@ -64,7 +64,8 @@ type
     destructor Destroy; override;
     procedure CreateModule(AClass: TComponentClass; var AModule);
     procedure Release; override;
-    [weak] function Default: IController; overload;
+    [weak]
+    function Default: IController; overload;
 {$IFDEF FMX}
     procedure Embedded(AControl: TLayout); virtual;
 {$ENDIF}
@@ -100,6 +101,7 @@ type
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
     function AttachModel(const AModel: IModel): integer; override;
+    procedure AttachView(const AView: IView); virtual;
     function IndexOf(const AModel: IModel): integer; virtual;
     function IndexOfModelType(const AModelType: TModelType): integer; virtual;
     procedure Delete(const Index: integer); virtual;
@@ -567,6 +569,13 @@ begin
     end;
   end;
 
+end;
+
+procedure TControllerFactory.AttachView(const AView: IView);
+begin
+  FView := AView;
+  if assigned(FView) and (FView.GetController = nil) then
+    FView.setController(self);
 end;
 
 function TControllerFactory.This: TControllerAbstract;

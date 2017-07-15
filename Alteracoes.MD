@@ -1,3 +1,8 @@
+14/07/2017 - AL
+   + adicionado Lazy Builder
+   + adicionado exemplo para UniGUI
+   + alterado instalador para incluir PATH completos para os fontes.
+   
 06/07/2017 - AL
    + acrescentado dois nova assistentes     7-Facade Factory   8-Facade Sub-Class
    

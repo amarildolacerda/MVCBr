@@ -621,6 +621,9 @@ begin
         FMainView.ShowView(nil, false);
         application.Run;
       end;
+{$IFDEF UNIGUI}
+      application.Run;
+{$ENDIF}
     end {$IFDEF MSWINDOWS}
     else
       application.Run;

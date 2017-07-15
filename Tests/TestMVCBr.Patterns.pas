@@ -92,6 +92,10 @@ type
     procedure TestAddManyCommands;
     procedure TestRemoveCommand;
     procedure TestQueryCommand;
+
+    procedure TestLazyBuilder;
+    procedure TestLazyBuilderQueryInterface;
+
   end;
   // Test methods for class TMVCBrAggregatedFactory
 
@@ -614,6 +618,59 @@ begin
   end;
 end;
 
+Type
+
+  IBuildLazyObject = interface(IMVCBrBuilderObject)
+    ['{640FEF6A-0098-470B-855A-37DF1D54AD89}']
+    procedure IncValor;
+  end;
+
+  TBuildLazyObject = class(TMVCBrBuilderObject,IBuildLazyObject)
+  private
+  public
+    function Execute(AParam: TValue): TValue; override;
+    procedure IncValor;
+  end;
+
+procedure TestTMVCBrBuilderFactory.TestLazyBuilder;
+var
+  LazyBuilderFac: TMVCBrBuilderLazyFactory;
+  ret: IMVCBrBuilderItem<TValue, TValue>;
+
+  interf:IBuildLazyObject;
+
+begin
+  LazyBuilderFac := TMVCBrBuilderLazyFactory.New;
+  try
+    LazyBuilderFac.Add('comandoA', TBuildLazyObject);
+
+    ret := LazyBuilderFac.Execute('comandoA', 10);
+
+    checkTrue(ret.Response.asInteger = 10, 'Não executou o comando');
+
+  finally
+    LazyBuilderFac.Free;
+  end;
+end;
+
+procedure TestTMVCBrBuilderFactory.TestLazyBuilderQueryInterface;
+var
+  LazyBuilderFac: TMVCBrBuilderLazyFactory;
+  interf:IBuildLazyObject;
+
+begin
+  LazyBuilderFac := TMVCBrBuilderLazyFactory.New;
+  try
+    LazyBuilderFac.Add('comandoA', TBuildLazyObject);
+    interf := LazyBuilderFac.Query<TBuildLazyObject>('comandoA');
+    interf.Execute(30);
+    checkTrue(Interf.Response.asInteger = 30 , 'Não executou comando pela interface');
+  //  interf := nil;
+  finally
+    LazyBuilderFac.Free;
+  end;
+end;
+
 procedure TestTMVCBrBuilderFactory.TestQueryCommand;
 var
   LBuilder: IMVCBrBuilder<TObject, Boolean>;
@@ -724,6 +781,20 @@ procedure TestTMVCBrStaticFactory.TearDown;
 begin
   FMVCBrStaticFactory.Free;
   FMVCBrStaticFactory := nil;
+end;
+
+{ TObjectToBeLazy }
+
+{ TBuildLazyObject }
+
+function TBuildLazyObject.Execute(AParam: TValue): TValue;
+begin
+  Response := AParam.asInteger;
+end;
+
+procedure TBuildLazyObject.IncValor;
+begin
+  Response := Response.asInteger + 1;
 end;
 
 initialization
