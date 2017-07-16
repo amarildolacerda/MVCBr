@@ -64,15 +64,21 @@ builderClass =
   '  System.RTTI;                                                  ' + #13#10 +
   'Type                                                            ' + #13#10 +
   '                                                                ' + #13#10 +
-  ' T%FormIdentBuilder = class(TBuilderModelFactory,                 ' + #13#10 +
-  '                I%FormIdentBuilder, IThisAs<T%FormIdentBuilder>)    ' + #13#10 +
-  ' protected                                                      ' + #13#10 +
+  '  T%FormIdentCommands = record                                  ' + #13#10 +
+  '    const                                                       ' + #13#10 +
+  '       cmd_default = ''default'';                               ' + #13#10 +
+  '  end;                                                          ' + #13#10 +
+  '                                                                ' + #13#10 +
+  '                                                                ' + #13#10 +
+  ' T%FormIdentBuilder = class(TBuilderModelFactory,               ' + #13#10 +
+  '                I%FormIdentBuilder, IThisAs<T%FormIdentBuilder>)' + #13#10 +
+  ' protected                                             ' + #13#10 +
   '    procedure CreateSubClasses; override;                       ' + #13#10 +
   ' public                                                         ' + #13#10 +
-  '    class function new(): I%FormIdentBuilder; overload;           ' + #13#10 +
+  '    class function new(): I%FormIdentBuilder; overload;         ' + #13#10 +
   '    class function new(const AController: IController):         ' + #13#10 +
-  'I%FormIdentBuilder; overload;                                     ' + #13#10 +
-  '    function ThisAs: T%FormIdentBuilder;                          ' + #13#10 +
+  'I%FormIdentBuilder; overload;                                   ' + #13#10 +
+  '    function ThisAs: T%FormIdentBuilder;                        ' + #13#10 +
   ' // implementaçoes                                              ' + #13#10 +
   '  end;                                                          ' + #13#10 +
   '                                                                ' + #13#10 +
@@ -82,32 +88,32 @@ builderClass =
   '                                                                ' + #13#10 +
   '/// Add Sub-Classes of Builder                                  ' + #13#10 +
   '                                                                ' + #13#10 +
-  'procedure T%FormIdentBuilder.CreateSubClasses;                    ' + #13#10 +
+  'procedure T%FormIdentBuilder.CreateSubClasses;                  ' + #13#10 +
   'begin                                                           ' + #13#10 +
   '/// Add Sub-Classes here                                        ' + #13#10 +
-  '  //FBuilder.Add(''comandoA'', TSubClass1Item);                 ' + #13#10 +
-  'end;                                                            ' + #13#10 +
-  '                                                                ' + #13#10 +
-  'function T%FormIdentBuilder.ThisAs: T%FormIdentBuilder;             ' + #13#10 +
+  '//FBuilder.Add(T%FormIdentCommands.cmd_default, T%FormIdentBuiltFactory);' +
+  #13#10 + 'end;                                                            ' +
+  #13#10 + '                                                       ' + #13#10 +
+  'function T%FormIdentBuilder.ThisAs: T%FormIdentBuilder;         ' + #13#10 +
   'begin                                                           ' + #13#10 +
   '  result := self;                                               ' + #13#10 +
   'end;                                                            ' + #13#10 +
   '                                                                ' + #13#10 +
-  'class function T%FormIdentBuilder.new(): I%FormIdentBuilder;        ' + #13#10 +
+  'class function T%FormIdentBuilder.new(): I%FormIdentBuilder;    ' + #13#10 +
   'begin                                                           ' + #13#10 +
   '  result := new(nil);                                           ' + #13#10 +
   ' end;                                                           ' + #13#10 +
   '                                                                ' + #13#10 +
-  'class function T%FormIdentBuilder.new(const AController:IController)' + #13#10
-  + '             : I%FormIdentBuilder;                                ' + #13#10
-  + 'begin                                                           ' + #13#10
-  + '  result := T%FormIdentBuilder.Create;                            ' + #13#10
-  + '  result.Controller(AController);                               ' + #13#10
-  + 'end;                                                            ' + #13#10
-  + '                                                                ' + #13#10
-  + 'Initialization                                                  ' + #13#10
-  + '                                                                ' + #13#10
-  + ' TMVCRegister.RegisterType<I%FormIdentBuilder, T%FormIdentBuilder>  ' + #13#10
-  + '  (T%FormIdentBuilder.classname, true);                           ' + #13#10
-  + '                                                                ' + #13#10
-  + 'end.             ';
+  'class function T%FormIdentBuilder.new(const AController:IController)' +
+  #13#10 + '             : I%FormIdentBuilder;                     ' + #13#10 +
+  'begin                                                           ' + #13#10 +
+  '  result := T%FormIdentBuilder.Create;                          ' + #13#10 +
+  '  result.Controller(AController);                               ' + #13#10 +
+  'end;                                                            ' + #13#10 +
+  '                                                                ' + #13#10 +
+  'Initialization                                                  ' + #13#10 +
+  '                                                                ' + #13#10 +
+  ' TMVCRegister.RegisterType<I%FormIdentBuilder, T%FormIdentBuilder>' + #13#10
+  + '  (T%FormIdentBuilder.classname, true);                       ' + #13#10 +
+  '                                                                ' + #13#10 +
+  'end.             ';
