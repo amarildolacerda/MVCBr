@@ -1,3 +1,8 @@
+
+/// <summary>
+/// Unit MVCBr.View implementas os objeto Factory para a camada de visualização
+/// </summary>
+unit MVCBr.View;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -23,11 +28,6 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-
-/// <summary>
-/// Unit MVCBr.View implementas os objeto Factory para a camada de visualização
-/// </summary>
-unit MVCBr.View;
 
 interface
 

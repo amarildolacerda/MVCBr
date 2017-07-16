@@ -60,57 +60,61 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#GetConnection">GetConnection</a></b>(ADataset: TDataset): TObject; virtual;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="oData.SQL.TODataSQL.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#GetConnection">GetConnection</a></b>(ADataset: TDataset): TObject; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#GetPrimaryKey">GetPrimaryKey</a></b>(AConnection: TObject; ACollection: string) : string; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.SQL.TODataSQL.html#CreateEntitiesSchema">CreateEntitiesSchema</a></b>(ADataset: TDataset; var JSONResponse: TJsonObject); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#QueryClass">QueryClass</a></b>: TDatasetClass; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#Select">Select</a></b>: string; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#CreateGETQuery">CreateGETQuery</a></b>(FParse: IODataParse; AInLineCount: boolean = false) : string; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#CreateSearchFields">CreateSearchFields</a></b>(FParse: IODataParse; const ASearch: String; const fields: string): String; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#CreateDeleteQuery">CreateDeleteQuery</a></b>(FParse: IODataParse; AJsonBody: TJsonValue;AKeys:string): string; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#CreatePOSTQuery">CreatePOSTQuery</a></b>(FParse: IODataParse; AJsonBody: TJsonValue) : string; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#CreatePATCHQuery">CreatePATCHQuery</a></b>(FParse: IODataParse; AJsonBody: TJsonValue;AKeys:string) : string; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#Collection">Collection</a></b>: string; override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.SQL.TODataSQL.html#DecodeODataURL">DecodeODataURL</a></b>(CTX: TObject); override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#ExecuteGET">ExecuteGET</a></b>(AJsonBody: TJsonValue; var JSONResponse: TJsonObject) : TObject; override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.SQL.TODataSQL.html#ExecuteDELETE">ExecuteDELETE</a></b>(ABody: string; var JSONResponse: TJsonObject) : Integer; override;</code></td>
 </tr>
@@ -130,6 +134,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="EncodeFilterSql"></a><code>function <b>EncodeFilterSql</b>(AFilter: string): string; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

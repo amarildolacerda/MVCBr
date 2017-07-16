@@ -1,3 +1,13 @@
+/// ---------------------------------------------------------------------------
+/// <summary>
+/// MVCBr.Interf  declara as interfaces bases para o MVCBr
+/// O uso de interface objetivo minimizar o acoplamento das UNITs
+/// o que irá permitir reutilização das mesmas interfaces
+/// para um numero grande de UNIT;
+/// </summary>
+/// ---------------------------------------------------------------------------
+
+unit MVCBr.Interf;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -22,6 +32,8 @@
 { See the License for the specific language governing permissions and }
 { limitations under the License. }
 { }
+{ *************************************************************************** }
+
 { *************************************************************************** }
 { Créditos: }
 { Kleberson Toro }
@@ -59,16 +71,7 @@
   - ApplicationController have a list of controllers
 }
 
-unit MVCBr.Interf;
 
-/// ---------------------------------------------------------------------------
-/// <summary>
-/// MVCBr.Interf  declara as interfaces bases para o MVCBr
-/// O uso de interface objetivo minimizar o acoplamento das UNITs
-/// o que irá permitir reutilização das mesmas interfaces
-/// para um numero grande de UNIT;
-/// </summary>
-/// ---------------------------------------------------------------------------
 
 interface
 

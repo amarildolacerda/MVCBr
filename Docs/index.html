@@ -52,19 +52,27 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.ApplicationController.html">MVCBr.ApplicationController</a></td>
-<td class="itemdesc"><p>***************************************************************************</p></td>
+<td class="itemdesc"><p>Application Controller - Singleton central para os controller Alterações: 12/04/2017 - por: amarildo lacerda + Introduzido Function Default para Singleton + Incluido class var FApplicationController</p></td>
 </tr>
 <tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.BuilderModel.html">MVCBr.BuilderModel</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.Common.html">MVCBr.Common</a></td>
 <td class="itemdesc"><p>***************************************************************************</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.Component.html">MVCBr.Component</a></td>
 <td class="itemdesc"><p>Implementa interface IModel para TComponent a ser herdado em Componentes que possom ser registrado para o Delphi</p></td>
 </tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="MVCBr.ContainedModel.html">MVCBr.ContainedModel</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
 <tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.Controller.html">MVCBr.Controller</a></td>
-<td class="itemdesc"><p>***************************************************************************</p></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.DatabaseModel.html">MVCBr.DatabaseModel</a></td>
@@ -72,7 +80,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.DatabaseModel.Interf.html">MVCBr.DatabaseModel.Interf</a></td>
-<td class="itemdesc"><p>Unit de abstração de acesso a camada de banco de dados ligado a Data.DB Utilizar para fazer herança para os drivers de conexão Por: Amarildo Lacerda Historico: + 29/01/2017 - Criada a primeira versao</p></td>
+<td class="itemdesc"><p>Unit de abstração de acesso a camada de banco de dados ligado a Data.DB Utilizar para fazer herança para os drivers de conexão</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.DesignEditors.Helper.html">MVCBr.DesignEditors.Helper</a></td>
@@ -108,9 +116,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.FormView.html">MVCBr.FormView</a></td>
-<td class="itemdesc"><p>MVCBr.FormView - implements base class of FormView Auth: amarildo lacerda Date: jan/2017
-
-<p>Changes: 29-mar-2017 + MainViewEvent - send ViewEvent to MainView by: amarildo lacerda + ViewEventOther - send ViewEvent to other VIEW</p></td>
+<td class="itemdesc"><p> MVCBr.FormView - implements base class of FormView Auth: amarildo lacerda Date: jan/2017 </p></td>
 </tr>
 <tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.IdHTTPRestClient.html">MVCBr.IdHTTPRestClient</a></td>
@@ -122,19 +128,27 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.Model.html">MVCBr.Model</a></td>
-<td class="itemdesc"><p>***************************************************************************</p></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.ModuleModel.html">MVCBr.ModuleModel</a></td>
 <td class="itemdesc"><p>Changes:</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="MVCBr.NavigatorModel.html">MVCBr.NavigatorModel</a></td>
+<td class="itemname"><a class="bold" href="MVCBr.NavigateModel.html">MVCBr.NavigateModel</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.ObjectConfigList.html">MVCBr.ObjectConfigList</a></td>
-<td class="itemdesc"><p>Objetivo: é um gerenciador de componentes de configura a serem persistindo localmente pro INI ou JSON Alterações: 02/04/2017 - por: amarildo lacerda + Adicionado suporte a JsonFile para a gravação dos dados + Adicionado interface para IniFile e JSONFile</p></td>
+<td class="itemdesc"><p> Objetivo: é um gerenciador de componentes de configura a serem persistindo localmente pro INI ou JSON Alterações: 02/04/2017 - por: amarildo lacerda + Adicionado suporte a JsonFile para a gravação dos dados + Adicionado interface para IniFile e JSONFile </p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.Observable.html">MVCBr.Observable</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="MVCBr.Observer.html">MVCBr.Observer</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.ODataDataSet.Common.html">MVCBr.ODataDataSet.Common</a></td>
@@ -153,114 +167,142 @@ MVCBr
 <td class="itemdesc"><p>***************************************************************************</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="MVCBr.PageView.html">MVCBr.PageView</a></td>
-<td class="itemdesc"><p>PageView é adapter para gerar controller para PageViews Abstract</p></td>
+<td class="itemname"><a class="bold" href="MVCBr.OrmModel.html">MVCBr.OrmModel</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list2">
+<td class="itemname"><a class="bold" href="MVCBr.PageView.html">MVCBr.PageView</a></td>
+<td class="itemdesc"><p> PageView é adapter para gerar controller para PageViews Abstract </p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.Patterns.Builder.html">MVCBr.Patterns.Builder</a></td>
+<td class="itemdesc"><p>***************************************************************************</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="MVCBr.Patterns.Decorator.html">MVCBr.Patterns.Decorator</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.Patterns.Facade.html">MVCBr.Patterns.Facade</a></td>
+<td class="itemdesc"><p> <a class="normal" href="MVCBr.Patterns.Facade.TMVCBrFacade.html">TMVCBrFacade</a> Class - Create commands to be execute by injection methods Its a class inherited by <a class="normal" href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a> class </p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="MVCBr.Patterns.Factory.html">MVCBr.Patterns.Factory</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.Patterns.Lazy.html">MVCBr.Patterns.Lazy</a></td>
+<td class="itemdesc"><p>Alterado para compatibilidade com estrutura do MVCBr.</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="MVCBr.Patterns.States.html">MVCBr.Patterns.States</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.PersistentModel.html">MVCBr.PersistentModel</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.Servico.html">MVCBr.Servico</a></td>
 <td class="itemdesc"><p>Alterações: * 01/04/2017 - alterado o RunServer para permitir rodar em loop do serviço - por: amarildo lacerda * 02/04/2017 - alterado para gravar configurações no MVCBrServer.json - por: AL</p></td>
 </tr>
-<tr class="list2">
-<td class="itemname"><a class="bold" href="MVCBr.ValidateModel.html">MVCBr.ValidateModel</a></td>
-<td class="itemdesc"><p>***************************************************************************</p></td>
-</tr>
 <tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.ValidateModel.html">MVCBr.ValidateModel</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.VCL.DataModuleDummy.html">MVCBr.VCL.DataModuleDummy</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="MVCBr.VCL.PageView.html">MVCBr.VCL.PageView</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MVCBr.View.html">MVCBr.View</a></td>
 <td class="itemdesc"><p> Unit MVCBr.View implementas os objeto Factory para a camada de visualização </p></td>
 </tr>
-<tr class="list2">
-<td class="itemname"><a class="bold" href="MVCBr.ViewModel.html">MVCBr.ViewModel</a></td>
-<td class="itemdesc"><p>***************************************************************************</p></td>
-</tr>
 <tr class="list">
+<td class="itemname"><a class="bold" href="MVCBr.ViewModel.html">MVCBr.ViewModel</a></td>
+<td class="itemdesc"><p>&nbsp;</p></td>
+</tr>
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MVCgzipMiddleware.html">MVCgzipMiddleware</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="MVCSupportZLib.html">MVCSupportZLib</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="oData.Client.html">oData.Client</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="oData.Client.Builder.html">oData.Client.Builder</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="oData.Collections.html">oData.Collections</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="oData.Comp.Editor.html">oData.Comp.Editor</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="oData.Dialect.Firebird.html">oData.Dialect.Firebird</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="oData.Dialect.MySQL.html">oData.Dialect.MySQL</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="oData.JSON.html">oData.JSON</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="oData.Parse.html">oData.Parse</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="oData.ProxyBase.html">oData.ProxyBase</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="oData.SQL.html">oData.SQL</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="oData.SQL.FireDAC.html">oData.SQL.FireDAC</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list2">
-<td class="itemname"><a class="bold" href="System.Json.Helper.html">System.Json.Helper</a></td>
-<td class="itemdesc"><p>Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões</p></td>
-</tr>
 <tr class="list">
+<td class="itemname"><a class="bold" href="System.Json.Helper.html">System.Json.Helper</a></td>
+<td class="itemdesc"><p>Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com XE8; por: Wolnei Simões 22/05/2017 + AsJsonObject e FieldNames..</p></td>
+</tr>
+<tr class="list2">
 <td class="itemname"><a class="bold" href="System.JsonFiles.html">System.JsonFiles</a></td>
 <td class="itemdesc"><p>Alterações: 05/05/2017 - trocado TJsonBoolean para compatibilidade com XE8; por: Wolnei Simões</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="WS.Datamodule.html">WS.Datamodule</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="WS.HelloController.html">WS.HelloController</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="WS.QueryController.html">WS.QueryController</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="WS.RegisterControllers.html">WS.RegisterControllers</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="WS.WebModule.html">WS.WebModule</a></td>
 <td class="itemdesc"><p>//************************************************************//</p></td>
 </tr>

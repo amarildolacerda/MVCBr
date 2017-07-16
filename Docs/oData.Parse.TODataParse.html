@@ -147,29 +147,33 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.Parse.TODataParse.html#isTokenIsJunk">isTokenIsJunk</a></b>(const tk: <a  href="oData.Parse.html#TTokenKind">TTokenKind</a>): boolean;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="oData.Parse.TODataParse.html#Release">Release</a></b>;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="oData.Parse.TODataParse.html#isTokenIsJunk">isTokenIsJunk</a></b>(const tk: <a  href="oData.Parse.html#TTokenKind">TTokenKind</a>): boolean;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.Parse.TODataParse.html#whileIn">whileIn</a></b>(AArry: Array of <a  href="oData.Parse.html#TTokenKind">TTokenKind</a>);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.Parse.TODataParse.html#FindToken">FindToken</a></b>(tk: <a  href="oData.Parse.html#TTokenKind">TTokenKind</a>);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.Parse.TODataParse.html#Parse">Parse</a></b>(URL: string); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.Parse.TODataParse.html#DoCollectionInsert">DoCollectionInsert</a></b>(ACurrent: IODataDecode); virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.Parse.TODataParse.html#Select">Select</a></b>: string; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="oData.Parse.TODataParse.html#OperatorToString">OperatorToString</a></b>(txt: String): string;</code></td>
 </tr>
@@ -221,7 +225,12 @@ MVCBr
 <td class="itemcode"><a name="FOData"></a><code><b>FOData</b>: IODataDecode;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>unsafe</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -372,6 +381,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="destroy"></a><code>destructor <b>destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Release"></a><code>procedure <b>Release</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

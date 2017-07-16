@@ -67,9 +67,9 @@ end;
 
 function TFacadeCreator.GetImplFileName: string;
 begin
-  FUnitIdent := getBaseName + '.Model';
+  FUnitIdent := getBaseName + '.Facade';
   if isInterf then
-    FUnitIdent := getBaseName + '.Model.Interf';
+    FUnitIdent := getBaseName + '.Facade.Interf';
 
   result := self.getpath + FUnitIdent + '.pas';
 
@@ -94,7 +94,7 @@ begin
       end);
 
   fc.Templates.assign(Templates);
-  fc.Templates.Values['%MdlInterf'] := getBaseName + '.Model.Interf';
+  fc.Templates.Values['%MdlInterf'] := getBaseName + '.Facade.Interf';
   fc.Templates.Values['%UnitIdent'] := FUnitIdent;
   result := fc;
 end;

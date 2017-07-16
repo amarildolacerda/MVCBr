@@ -1,3 +1,5 @@
+
+unit MVCBr.Observable;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -23,8 +25,6 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-
-unit MVCBr.Observable;
 
 interface
 

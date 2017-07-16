@@ -1,9 +1,35 @@
 // Unit de abstração de acesso a camada de banco de dados ligado a Data.DB
 // Utilizar para fazer herança para os drivers de conexão
+unit MVCBr.DatabaseModel.Interf;
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
+
 // Por: Amarildo Lacerda
 // Historico:
 //           + 29/01/2017 - Criada a primeira versao
-unit MVCBr.DatabaseModel.Interf;
 
 interface
 

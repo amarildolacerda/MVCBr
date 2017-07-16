@@ -79,51 +79,59 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecuteGET">ExecuteGET</a></b>(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject; virtual;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="oData.ProxyBase.TODataBase.html#Release">Release</a></b>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecuteDELETE">ExecuteDELETE</a></b>(ABody:string; var JSONResponse: TJSONObject):Integer; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecuteGET">ExecuteGET</a></b>(AJsonBody: TJsonValue; var JSONResponse: TJSONObject) : TObject; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecutePOST">ExecutePOST</a></b>(ABody:string; var JSON:TJsonObject):Integer; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecuteDELETE">ExecuteDELETE</a></b>(ABody: string; var JSONResponse: TJSONObject) : integer; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecutePATCH">ExecutePATCH</a></b>(ABody:string;var JSON:TJSONObject):Integer; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecutePOST">ExecutePOST</a></b>(ABody: string; var JSON: TJSONObject) : integer; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecuteOPTIONS">ExecuteOPTIONS</a></b>(var JSON:TJSONObject):Integer; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecutePATCH">ExecutePATCH</a></b>(ABody: string; var JSON: TJSONObject) : integer; virtual;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#ExecuteOPTIONS">ExecuteOPTIONS</a></b>(var JSON: TJSONObject): integer; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.ProxyBase.TODataBase.html#CreateExpandCollections">CreateExpandCollections</a></b>(AQuery: TObject); virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#Collection">Collection</a></b>: string; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#GetInLineRecordCount">GetInLineRecordCount</a></b>: integer;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="oData.ProxyBase.TODataBase.html#SetInLineRecordCount">SetInLineRecordCount</a></b>(const Value: integer);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#GetParse">GetParse</a></b>: IODataParse; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="oData.ProxyBase.TODataBase.html#DialectClass">DialectClass</a></b>: TODataDialectClass; virtual;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="oData.ProxyBase.TODataBase.html#Create">Create</a></b>(); virtual;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>constructor <b><a  href="oData.ProxyBase.TODataBase.html#create">create</a></b>(); virtual;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="oData.ProxyBase.TODataBase.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -170,7 +178,12 @@ MVCBr
 <td class="itemcode"><a name="FODataParse"></a><code><b>FODataParse</b>: IODataParse;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>unsafe</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -208,7 +221,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="ExecuteGET"></a><code>function <b>ExecuteGET</b>(AJsonBody:TJsonValue;var JSONResponse: TJSONObject): TObject; virtual;</code></td>
+<td class="itemcode"><a name="Release"></a><code>procedure <b>Release</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -216,7 +229,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="ExecuteDELETE"></a><code>function <b>ExecuteDELETE</b>(ABody:string; var JSONResponse: TJSONObject):Integer; virtual;</code></td>
+<td class="itemcode"><a name="ExecuteGET"></a><code>function <b>ExecuteGET</b>(AJsonBody: TJsonValue; var JSONResponse: TJSONObject) : TObject; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -224,7 +237,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="ExecutePOST"></a><code>function <b>ExecutePOST</b>(ABody:string; var JSON:TJsonObject):Integer; virtual;</code></td>
+<td class="itemcode"><a name="ExecuteDELETE"></a><code>function <b>ExecuteDELETE</b>(ABody: string; var JSONResponse: TJSONObject) : integer; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -232,7 +245,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="ExecutePATCH"></a><code>function <b>ExecutePATCH</b>(ABody:string;var JSON:TJSONObject):Integer; virtual;</code></td>
+<td class="itemcode"><a name="ExecutePOST"></a><code>function <b>ExecutePOST</b>(ABody: string; var JSON: TJSONObject) : integer; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -240,7 +253,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="ExecuteOPTIONS"></a><code>function <b>ExecuteOPTIONS</b>(var JSON:TJSONObject):Integer; virtual;</code></td>
+<td class="itemcode"><a name="ExecutePATCH"></a><code>function <b>ExecutePATCH</b>(ABody: string; var JSON: TJSONObject) : integer; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="ExecuteOPTIONS"></a><code>function <b>ExecuteOPTIONS</b>(var JSON: TJSONObject): integer; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -296,7 +317,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="create"></a><code>constructor <b>create</b>(); virtual;</code></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

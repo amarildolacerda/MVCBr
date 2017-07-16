@@ -1,9 +1,22 @@
+
+/// <summary>
+///  Objetivo: é um gerenciador de componentes de configura a serem persistindo
+///  localmente pro INI ou JSON
+///  Alterações:
+///  02/04/2017 - por: amarildo lacerda
+///  + Adicionado suporte a JsonFile para a gravação dos dados
+///  + Adicionado interface para IniFile e JSONFile
+/// </summary>
+
+unit MVCBr.ObjectConfigList;
 { *************************************************************************** }
 { }
+{ MVCBr é o resultado de esforços de um grupo }
 { }
-{ Copyright (C) Amarildo Lacerda }
+{ Copyright (C) 2017 MVCBr }
 { }
-{ https://github.com/amarildolacerda }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
 { }
 { }
 { *************************************************************************** }
@@ -21,17 +34,6 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-
-{
-  Objetivo: é um gerenciador de componentes de configura a serem persistindo
-  localmente pro INI ou JSON
-  Alterações:
-  02/04/2017 - por: amarildo lacerda
-  + Adicionado suporte a JsonFile para a gravação dos dados
-  + Adicionado interface para IniFile e JSONFile
-}
-
-unit MVCBr.ObjectConfigList;
 
 interface
 

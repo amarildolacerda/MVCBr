@@ -1,3 +1,4 @@
+unit MVCBr.Patterns.Adapter;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -23,7 +24,6 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-unit MVCBr.Patterns.Adapter;
 
 interface
 
