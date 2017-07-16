@@ -344,7 +344,7 @@ type
 
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
-    mtNavigate, mtOrmModel, mtComponent);
+    mtNavigate, mtOrmModel, mtComponent, mtPattern);
 
   // IModel Interfaces
   IModel = interface;

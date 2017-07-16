@@ -302,6 +302,12 @@ begin
     result := stringReplace(result, '%AncestorIdent', FAncestorIdent,
       [rfReplaceAll, rfIgnoreCase]);
 
+  result := stringReplace(result, '%guid2', GuidToString(TGuid.NewGuid),
+    [rfReplaceAll, rfIgnoreCase]);
+
+  result := stringReplace(result, '%guid1', GuidToString(TGuid.NewGuid),
+    [rfReplaceAll, rfIgnoreCase]);
+
   result := stringReplace(result, '%guid', GuidToString(TGuid.NewGuid),
     [rfReplaceAll, rfIgnoreCase]);
 

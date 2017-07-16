@@ -37,7 +37,6 @@ object FormNewFacadeModel: TFormNewFacadeModel
     PageIndex = 1
     ParentFont = False
     TabOrder = 3
-    OnPageChanged = nbPageChanged
     object TPage
       Left = 0
       Top = 0
@@ -150,8 +149,8 @@ object FormNewFacadeModel: TFormNewFacadeModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 297
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3383,6 +3382,7 @@ object FormNewFacadeModel: TFormNewFacadeModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
+      ExplicitWidth = 117
       ExplicitHeight = 305
     end
   end

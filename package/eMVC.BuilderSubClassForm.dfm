@@ -1,9 +1,9 @@
-object FormNewFacadeSubClass: TFormNewFacadeSubClass
+object FormNewFacadeModel: TFormNewFacadeModel
   Left = 280
   Top = 165
   ActiveControl = btnOKNext
   BorderStyle = bsDialog
-  Caption = 'Assistente para adicionar Model e View'
+  Caption = 'Assistente para adicionar Model'
   ClientHeight = 318
   ClientWidth = 503
   Color = clBtnFace
@@ -43,9 +43,9 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
       object Label1: TLabel
         Left = 9
         Top = 15
-        Width = 246
+        Width = 222
         Height = 16
-        Caption = 'Assistente para criar Facade Sub-Class'
+        Caption = 'Assistente para criar Builder Model'
         Font.Charset = ANSI_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -66,31 +66,17 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
         Font.Style = []
         ParentFont = False
       end
-      object Label2: TLabel
-        Left = 21
-        Top = 88
-        Width = 99
-        Height = 13
-        Caption = 'Facade Model Name'
-      end
-      object Label3: TLabel
-        Left = 22
-        Top = 131
-        Width = 97
-        Height = 13
-        Caption = 'Sub-Class Command'
-      end
       object edtSetName: TEdit
-        Left = 19
-        Top = 58
-        Width = 198
+        Left = 20
+        Top = 68
+        Width = 147
         Height = 21
         TabOrder = 0
-        Text = 'NewSubClass'
+        Text = 'New'
       end
       object cbCreateDir: TCheckBox
         Left = 19
-        Top = 175
+        Top = 123
         Width = 233
         Height = 17
         Caption = 'manter os artefatos na raiz'
@@ -98,25 +84,11 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
       end
       object chFMX: TCheckBox
         Left = 19
-        Top = 198
+        Top = 146
         Width = 190
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
-      end
-      object edFacadeModel: TEdit
-        Left = 22
-        Top = 101
-        Width = 195
-        Height = 21
-        TabOrder = 3
-      end
-      object edFacadeCommand: TEdit
-        Left = 22
-        Top = 146
-        Width = 195
-        Height = 21
-        TabOrder = 4
       end
     end
     object TPage

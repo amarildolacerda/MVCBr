@@ -17,6 +17,7 @@ uses
   System.TypInfo, System.Classes,
   MVCBr.Interf, MVCBr.Patterns.States,
   MVCBr.Patterns.Lazy,
+  MVCBr.BuilderModel,
   MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
 
 type
@@ -104,6 +105,7 @@ type
     procedure TestLazyBuilder;
     procedure TestLazyBuilderQueryInterface;
     procedure TestLazyBuilderInvokeClass;
+    Procedure TestBuilderModel;
   end;
   // Test methods for class TMVCBrAggregatedFactory
 
@@ -626,6 +628,33 @@ begin
   end;
 end;
 
+type
+  TBuilderModelTests = class(TBuilderModelFactory)
+
+  end;
+
+  TBuiltTests = class(TBuiltObjectFactory)
+  public
+    FCount: Integer;
+    function Execute(AParam: TValue): TValue; override;
+  end;
+
+procedure TestTMVCBrBuilderFactory.TestBuilderModel;
+var
+  ABuilder: TBuilderModelTests;
+begin
+  ABuilder := TBuilderModelTests.New();
+  try
+    with ABuilder.Add(1, TBuiltTests).instance do
+    begin
+      Execute(10);
+      CheckTrue(ABuilder.Query<TBuiltTests>(1).FCount=10, 'Não executou');
+    end;
+  finally
+    ABuilder.Free;
+  end;
+end;
+
 Type
 
   IBuildLazyObject = interface(IMVCBrBuilderObject)
@@ -853,6 +882,14 @@ end;
 procedure TLazyObject.Execute(AValue: Integer);
 begin
   FCount := AValue;
+end;
+
+{ TBuiltTests }
+
+function TBuiltTests.Execute(AParam: TValue): TValue;
+begin
+  FCount := AParam.asInteger;
+  result := FCount;
 end;
 
 initialization

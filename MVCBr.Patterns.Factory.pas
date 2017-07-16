@@ -50,6 +50,7 @@ Type
     FDefault: IInterface;
     function GetDefault: IInterface;
   public
+    Constructor New;virtual;
     constructor Create; overload; virtual;
     constructor Create(AInterface: IInterface; AUnsafe: boolean = true);
       overload; virtual;
@@ -167,6 +168,11 @@ end;
 procedure TMVCBrFactory.Lock;
 begin
   TMonitor.enter(FLock);
+end;
+
+constructor TMVCBrFactory.New;
+begin
+      Create;
 end;
 
 class function TMVCBrFactory.NewInstance<TInterface>(AClass: TClass)

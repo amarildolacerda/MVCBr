@@ -45,7 +45,8 @@ uses
   TestMVCBr.Facade in 'TestMVCBr.Facade.pas',
   MVCBr.Patterns.Builder in '..\MVCBr.Patterns.Builder.pas',
   MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas',
-  DataModuleMock in 'Models\DataModuleMock.pas' {DataModule1: TDataModule};
+  DataModuleMock in 'Models\DataModuleMock.pas' {DataModule1: TDataModule},
+  MVCBr.BuilderModel in '..\MVCBr.BuilderModel.pas';
 
 {$R *.RES}
 

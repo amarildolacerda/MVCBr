@@ -88,7 +88,12 @@ contains
   eMVC.FrameCreator in 'eMVC.FrameCreator.pas',
   eMVC.Patterns in 'eMVC.Patterns.pas',
   eMVC.shadow in 'eMVC.shadow.pas',
-  eMVC.FacadeModelWizard in 'eMVC.FacadeModelWizard.pas';
+  eMVC.FacadeModelWizard in 'eMVC.FacadeModelWizard.pas',
+  eMVC.BuilderSubClassCreator in 'eMVC.BuilderSubClassCreator.pas',
+  eMVC.BuilderSubClassWizard in 'eMVC.BuilderSubClassWizard.pas',
+  eMVC.BuilderSubClassForm in 'eMVC.BuilderSubClassForm.pas' {FormNewFacadeModel},
+  eMVC.BuilderModelWizard in 'eMVC.BuilderModelWizard.pas',
+  eMVC.BuilderCreator in 'eMVC.BuilderCreator.pas';
 
 end.
 

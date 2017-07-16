@@ -196,7 +196,7 @@ type
     constructor Create; Overload;
     destructor Destroy; override;
     class Function New(ABuilder: TMVCBrBuilder<TValue, TValue>;
-      ACommand: string): TMVCBrBuilderLazyItem;
+      ACommand: TValue): TMVCBrBuilderLazyItem;
     property Instance: TMVCBrBuilderObject read Invoke;
     procedure FreeInstance;
     [weak]
@@ -212,10 +212,12 @@ type
   private
   public
     class function New: TMVCBrBuilderLazyFactory; virtual;
-    function Add(ACommand: String; AClass: TMVCBrBuilderObjectClass)
+    function Add(ACommand: TValue; AClass: TMVCBrBuilderObjectClass)
       : TMVCBrBuilderLazyItem; virtual;
     [weak]
     function Query<T: Class>(ACommand: TValue): T; overload;
+    procedure FreeInstance(ACommand: TValue); virtual;
+    procedure FreeAllInstances; virtual;
   end;
 
 implementation
@@ -622,7 +624,7 @@ begin
 end;
 
 class function TMVCBrBuilderLazyItem.New
-  (ABuilder: TMVCBrBuilder<TValue, TValue>; ACommand: string)
+  (ABuilder: TMVCBrBuilder<TValue, TValue>; ACommand: TValue)
   : TMVCBrBuilderLazyItem;
 begin
   result := inherited Create();
@@ -653,13 +655,40 @@ end;
 
 { TMVCBBuilderLazyFactory }
 
-function TMVCBrBuilderLazyFactory.Add(ACommand: String;
+function TMVCBrBuilderLazyFactory.Add(ACommand: TValue;
   AClass: TMVCBrBuilderObjectClass): TMVCBrBuilderLazyItem;
 begin
   result := TMVCBrBuilderLazyItem.New(self, ACommand);
   result.FClass := AClass;
   result.FInstance := nil;
   inherited Add(ACommand, result);
+end;
+
+procedure TMVCBrBuilderLazyFactory.FreeAllInstances;
+var
+  i: Integer;
+begin
+  With FList.LockList do
+    try
+      for i := 0 to Count - 1 do
+        TMVCBrBuilderLazyItem(items[i]).FreeInstance;
+    finally
+      FList.UnlockList;
+    end;
+end;
+
+procedure TMVCBrBuilderLazyFactory.FreeInstance(ACommand: TValue);
+var
+  i: Integer;
+begin
+  i := IndexOf(ACommand);
+  if isValid(i) then
+    With FList.LockList do
+      try
+        TMVCBrBuilderLazyItem(items[i]).FreeInstance;
+      finally
+        FList.UnlockList;
+      end;
 end;
 
 class function TMVCBrBuilderLazyFactory.New: TMVCBrBuilderLazyFactory;

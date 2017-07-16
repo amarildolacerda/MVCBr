@@ -1,4 +1,4 @@
-unit eMVC.FacadeSubClassWizard;
+unit eMVC.BuilderSubClassWizard;
 
 { ********************************************************************** }
 { Copyright 2005 Reserved by Eazisoft.com }
@@ -39,15 +39,15 @@ uses
   eMVC.OTAUtilities,
   eMVC.toolBox,
   eMVC.BaseCreator,
-  eMVC.FacadeSubClassForm,
-  eMVC.FacadeSubClassCreator,
+  eMVC.BuilderSubClassForm,
+  eMVC.BuilderSubClassCreator,
   DesignIntf,
   ToolsApi;
 
 {$I .\translate\translate.inc}
 
 type
-  TNewMVCFacadeModelWizard = class(TNotifierObject, IOTAWizard,
+  TNewMVCBuilderSubClassWizard = class(TNotifierObject, IOTAWizard,
     IOTARepositoryWizard, IOTAProjectWizard{$IFDEF MENUDEBUG},
     IOTAMenuWizard{$ENDIF})
   private
@@ -82,23 +82,66 @@ uses eMVC.FileCreator;
 
 function TNewMVCSetPersistentModelWizard.GetMenuText: string;
 begin
-  result := '&Facade Subclass MVCBr';
+  result := '&BuilderSubClass MVCBr';
 end;
 {$ENDIF}
 
-procedure TNewMVCFacadeModelWizard.Execute;
+procedure TNewMVCBuilderSubClassWizard.Execute;
 var
   path: string;
   project: string;
-  Model: TFacadeSubClassCreator;
+  Model: TBuilderCreator;
   identProject: string;
-  LFacadeModelName: string;
-  LFacadeCommand: string;
+
   function getProjectName: string;
   var
     i: integer;
   begin
     result := GetCurrentProject.FileName;
+  end;
+  function GetAncestorX(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
+        text := 'Model';
+        result := Strings[idx];
+      finally
+        free;
+      end;
+  end;
+  function GetModelType(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
+        text := 'IModel';
+        result := Strings[idx];
+      finally
+        free;
+      end;
+  end;
+// %Interf
+  function GetModelUses(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
+        text := '';
+        result := Strings[idx];
+      finally
+        free;
+      end;
+
+  end;
+
+// %modelInher
+  function GetModelInher(idx: integer): string;
+  begin
+    with TStringList.create do
+      try
+        text := 'TModelFactory';
+        result := Strings[idx];
+      finally
+        free;
+      end;
   end;
 
 var
@@ -126,15 +169,13 @@ begin
     exit;
   end;
   path := extractFilePath(project);
-  with TFormNewFacadeSubClass.create(nil) do
+  with TFormNewFacadeModel.create(nil) do
   begin
     if showModal = mrOK then
     begin
       IsFMX := chFMX.Checked;
       setname := trim(edtSetname.text);
       identProject := stringReplace(setname, '.', '', [rfReplaceAll]);
-      LFacadeModelName := edFacadeModel.text;
-      LFacadeCommand := edFacadeCommand.text;
       if SetNameExists(setname) then
       begin
         eMVC.toolBox.showInfo(format(msgSorryFileExists, [setname]));
@@ -151,27 +192,36 @@ begin
 
         ChDir(extractFilePath(project));
 
-        Model := TFacadeSubClassCreator.create(GetNewPath('Models'),
+        debug('Pronto para criar o Modulo');
+        Model := TBuilderCreator.create(GetNewPath('Builders'),
           setname + '', false);
         if chFMX.Checked then
           Model.baseProjectType := bptFMX;
-
-         Model.Templates.add('%command='+LFacadeCommand);
-         Model.templates.add('%facadeClass='+LFacadeModelName);
-         Model.templates.add('%UnitIdent='+setname);
 
         if IsFMX then
           Model.Templates.Add('*.dfm=' + '*.fmx');
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
+        (*
+          debug('Criou o Model');
+
+          Model := TBuilderCreator.create(GetNewPath('Builders'),
+          setname + '', false);
+          if chFMX.Checked then
+          Model.baseProjectType := bptFMX;
+          Model.isInterf := true;
+          (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
+
+          debug('Criou o Builder Model Interf');
+        *)
       end; // else
     end; // if
     free;
   end;
 end;
 
-function TNewMVCFacadeModelWizard.GetAuthor: string;
+function TNewMVCBuilderSubClassWizard.GetAuthor: string;
 begin
   //
   // When Object Repository is in Detail mode used in the Author column
@@ -179,43 +229,43 @@ begin
   result := 'MVCBr'
 end;
 
-function TNewMVCFacadeModelWizard.GetComment: string;
+function TNewMVCBuilderSubClassWizard.GetComment: string;
 begin
   //
   // When Object Repository is in Detail mode used in the Comment column
   //
-  result := 'MVCBr Criar Facede sub-class '
+  result := 'MVCBr Criar BuilderSubClass Model '
 end;
 
-function TNewMVCFacadeModelWizard.GetGlyph:
+function TNewMVCBuilderSubClassWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
   result := LoadIcon(hInstance, 'FACADESUBCLASS');
 end;
 
-function TNewMVCFacadeModelWizard.GetIDString: string;
+function TNewMVCBuilderSubClassWizard.GetIDString: string;
 begin
   //
   // Unique name for the Wizard used internally by Delphi
   //
-  result := 'MVCBr.MVCSetFacadeSubClassWizard';
+  result := 'MVCBr.MVCSetBuilderSubClassWizard';
 end;
 
-function TNewMVCFacadeModelWizard.GetName: string;
+function TNewMVCBuilderSubClassWizard.GetName: string;
 begin
   //
   // Name used for user messages and in the Object Repository if
   // implementing a IOTARepositoryWizard object
   //
-  result := '7. Facade Sub-Class';
+  result := '8. Builder SubClass';
 end;
 
-function TNewMVCFacadeModelWizard.GetPage: string;
+function TNewMVCBuilderSubClassWizard.GetPage: string;
 begin
   result := 'MVCBr'
 end;
 
-function TNewMVCFacadeModelWizard.GetState: TWizardState;
+function TNewMVCBuilderSubClassWizard.GetState: TWizardState;
 begin
   //
   // For Menu Item Wizards only
@@ -223,14 +273,14 @@ begin
   result := [wsEnabled];
 end;
 
-procedure TNewMVCFacadeModelWizard.SetIsFMX(const Value: boolean);
+procedure TNewMVCBuilderSubClassWizard.SetIsFMX(const Value: boolean);
 begin
   FIsFMX := Value;
 end;
 
 procedure Register;
 begin
-  RegisterPackageWizard(TNewMVCFacadeModelWizard.create);
+  RegisterPackageWizard(TNewMVCBuilderSubClassWizard.create);
 
   { UnlistPublishedProperty(TModuleFactory, 'Font');
     UnlistPublishedProperty(TModuleFactory, 'ClientWidth');

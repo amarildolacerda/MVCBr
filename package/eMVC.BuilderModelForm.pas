@@ -1,4 +1,4 @@
-unit eMVC.FacadeModelForm;
+unit eMVC.BuilderModelForm;
 
 interface
 
@@ -65,10 +65,10 @@ end;
 
 procedure TFormNewFacadeModel.translate;
 begin
-  caption := 'Facade Model';
+  caption := 'Builder Model';
   cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
   Label4.caption := wizardForm_NameForArtefact;
-  Label1.caption := wizardForm_facade_Expert;
+  Label1.caption := wizardForm_builder_Expert;
   btnBack.caption := button_back_caption;
   btnOKNext.caption := button_next_caption;
   btnCancel.caption := button_cancel_caption;
