@@ -44,6 +44,11 @@ type
     FAdapter: IModel;
     procedure initBase;
   protected
+{$IFNDEF BPL}
+    procedure SetModelTypes(const AModelType: TModelTypes); virtual;
+    function GetModelTypes: TModelTypes; virtual;
+    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -56,12 +61,9 @@ type
     function ID(const AID: String): IModel;
     function Controller(const AController: IController): IModel; virtual;
     procedure SetController(const AController: IController); virtual;
-    function GetModelTypes: TModelTypes; virtual;
     function GetController: IController; virtual;
     function ResolveController(const AGuidController: TGuid)
       : IController; virtual;
-    procedure SetModelTypes(const AModelType: TModelTypes); virtual;
-    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure AfterInit; virtual;
     function Update: IModel; overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
@@ -129,10 +131,12 @@ begin
   result := FAdapter.GetID;
 end;
 
+{$IFNDEF BPL}
 function TComponentFactory.GetModelTypes: TModelTypes;
 begin
   result := FAdapter.GetModelTypes;
 end;
+{$ENDIF}
 
 function TComponentFactory.ID(const AID: String): IModel;
 begin
@@ -145,7 +149,9 @@ begin
   begin
     FAdapter := TModelFactory.Create;
     FAdapter.ID(Self.ClassName + '.' + Self.name);
+{$IFNDEF BPL}
     SetModelTypes([mtComponent]);
+{$ENDIF}
   end;
 end;
 
@@ -166,11 +172,13 @@ begin
   FAdapter.SetController(AController);
 end;
 
+{$IFNDEF BPL}
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
   if assigned(FAdapter) then
     FAdapter.SetModelTypes(AModelType);
 end;
+{$ENDIF}
 
 function TComponentFactory.This: TObject;
 begin

@@ -1,7 +1,7 @@
 /// <summary>
-///  MVCBr.FormView - implements base class of FormView
-///  Auth: amarildo lacerda
-///  Date: jan/2017
+/// MVCBr.FormView - implements base class of FormView
+/// Auth: amarildo lacerda
+/// Date: jan/2017
 /// </summary>
 
 unit MVCBr.FormView;
@@ -378,9 +378,12 @@ begin
   begin
     FController := ApplicationController.AttachController(AInterface)
       as IController;
-    FController.This.ViewOwnedFree := AOwnedFree;
     result := FController;
-    result.View(self);
+    if assigned(FController) then
+    begin
+      FController.This.ViewOwnedFree := AOwnedFree;
+      result.View(self);
+    end;
   end;
 end;
 
@@ -441,7 +444,7 @@ end;
 
 procedure TCustomFormFactory.SetController(const AController: IController);
 begin
-  FController := AController.This.Default as IController;
+  FController := AController;
 end;
 
 procedure TCustomFormFactory.SetOnCommandEvent(const Value: TViewCommandNotify);
@@ -818,4 +821,3 @@ begin
 end;
 
 end.
-

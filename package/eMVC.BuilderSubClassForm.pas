@@ -35,7 +35,7 @@ uses
 {$I ./translate/translate.inc}
 
 type
-  TFormNewFacadeModel = class(TForm)
+  TFormNewBuilderSubClassModel = class(TForm)
     btnBack: TBitBtn;
     btnCancel: TBitBtn;
     ScrollBox1: TScrollBox;
@@ -50,9 +50,14 @@ type
     Bevel1: TBevel;
     chFMX: TCheckBox;
     Image1: TImage;
+    rbBuilder: TRadioButton;
+    rbLazy: TRadioButton;
+    chMakeInterface: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
+    procedure rbBuilderClick(Sender: TObject);
+    procedure rbLazyClick(Sender: TObject);
   private
     procedure translate;
     { Private declarations }
@@ -69,7 +74,7 @@ type
   end;
 
 var
-  FormNewFacadeModel: TFormNewFacadeModel;
+  FormNewBuilderSubClassModel: TFormNewBuilderSubClassModel;
 
 implementation
 
@@ -77,7 +82,7 @@ uses eMVC.OTAUtilities;
 
 {$R *.dfm}
 
-procedure TFormNewFacadeModel.FormCreate(Sender: TObject);
+procedure TFormNewBuilderSubClassModel.FormCreate(Sender: TObject);
 begin
   nb.PageIndex := 0;
   // this two params for future use
@@ -86,10 +91,23 @@ begin
   chFMX.checked := GetFrameworkType = 'FMX';
 
   translate;
+  chMakeInterface.Enabled := not rbLazy.Checked;
 
 end;
 
-procedure TFormNewFacadeModel.translate;
+procedure TFormNewBuilderSubClassModel.rbBuilderClick(Sender: TObject);
+begin
+    rbBuilder.Checked := not rbLazy.Checked;
+    chMakeInterface.Enabled := not rbLazy.Checked;
+end;
+
+procedure TFormNewBuilderSubClassModel.rbLazyClick(Sender: TObject);
+begin
+    rbLazy.Checked := not rbBuilder.Checked;
+    chMakeInterface.Enabled := not rbLazy.Checked;
+end;
+
+procedure TFormNewBuilderSubClassModel.translate;
 begin
   caption := 'Built - Builder Subclass';
   cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
@@ -101,7 +119,7 @@ begin
   Label7.caption := msgCongratulation;
 end;
 
-procedure TFormNewFacadeModel.btnOKNextClick(Sender: TObject);
+procedure TFormNewBuilderSubClassModel.btnOKNextClick(Sender: TObject);
 begin
 
   case nb.PageIndex of
@@ -142,7 +160,7 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
-procedure TFormNewFacadeModel.btnBackClick(Sender: TObject);
+procedure TFormNewBuilderSubClassModel.btnBackClick(Sender: TObject);
 begin
   if nb.PageIndex > 0 then
   begin

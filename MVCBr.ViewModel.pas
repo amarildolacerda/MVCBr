@@ -61,8 +61,9 @@ implementation
 procedure TViewModelFactory.AfterConstruction;
 begin
   inherited;
+{$IFNDEF BPL}
   SetModelTypes( [mtViewModel] );
-
+{$ENDIF}
 end;
 
 procedure TViewModelFactory.AfterInit;

@@ -1,4 +1,4 @@
-object FormNewFacadeModel: TFormNewFacadeModel
+object FormNewBuilderSubClassModel: TFormNewBuilderSubClassModel
   Left = 280
   Top = 165
   ActiveControl = btnOKNext
@@ -69,7 +69,7 @@ object FormNewFacadeModel: TFormNewFacadeModel
       object edtSetName: TEdit
         Left = 20
         Top = 68
-        Width = 147
+        Width = 301
         Height = 21
         TabOrder = 0
         Text = 'New'
@@ -90,13 +90,39 @@ object FormNewFacadeModel: TFormNewFacadeModel
         Caption = 'Firemonkey Framework'
         TabOrder = 2
       end
+      object rbBuilder: TRadioButton
+        Left = 22
+        Top = 90
+        Width = 102
+        Height = 17
+        Caption = 'Builder Sub-Class'
+        TabOrder = 5
+        OnClick = rbBuilderClick
+      end
+      object chMakeInterface: TCheckBox
+        Left = 229
+        Top = 91
+        Width = 97
+        Height = 17
+        Caption = 'Make Interface'
+        TabOrder = 4
+      end
+      object rbLazy: TRadioButton
+        Left = 129
+        Top = 91
+        Width = 95
+        Height = 17
+        Caption = 'Lazy Sub-Class'
+        Checked = True
+        TabOrder = 3
+        TabStop = True
+        OnClick = rbLazyClick
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 99

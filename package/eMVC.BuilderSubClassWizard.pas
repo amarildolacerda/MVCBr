@@ -106,41 +106,42 @@ var
         free;
       end;
   end;
-  function GetModelType(idx: integer): string;
+
+{ function GetModelType(idx: integer): string;
   begin
-    with TStringList.create do
-      try
-        text := 'IModel';
-        result := Strings[idx];
-      finally
-        free;
-      end;
+  with TStringList.create do
+  try
+  text := 'IModel';
+  result := Strings[idx];
+  finally
+  free;
   end;
-// %Interf
+  end;
+  // %Interf
   function GetModelUses(idx: integer): string;
   begin
-    with TStringList.create do
-      try
-        text := '';
-        result := Strings[idx];
-      finally
-        free;
-      end;
+  with TStringList.create do
+  try
+  text := '';
+  result := Strings[idx];
+  finally
+  free;
+  end;
 
   end;
 
-// %modelInher
+  // %modelInher
   function GetModelInher(idx: integer): string;
   begin
-    with TStringList.create do
-      try
-        text := 'TModelFactory';
-        result := Strings[idx];
-      finally
-        free;
-      end;
+  with TStringList.create do
+  try
+  text := 'TModelFactory';
+  result := Strings[idx];
+  finally
+  free;
   end;
-
+  end;
+}
 var
   LCriarPathModule: boolean;
   function GetNewPath(ASubPath: string): string;
@@ -158,6 +159,9 @@ var
       ForceDirectories(result);
   end;
 
+var
+  LMakeInterface: boolean;
+  LBuilderSubClass: boolean;
 begin
   project := getProjectName;
   if project = '' then
@@ -166,11 +170,13 @@ begin
     exit;
   end;
   path := extractFilePath(project);
-  with TFormNewFacadeModel.create(nil) do
+  with TFormNewBuilderSubClassModel.create(nil) do
   begin
     if showModal = mrOK then
     begin
-      IsFMX := chFMX.Checked;
+      LMakeInterface := chMakeInterface.checked;
+      LBuilderSubClass := rbBuilder.checked;
+      IsFMX := chFMX.checked;
       setname := trim(edtSetname.text);
       identProject := stringReplace(setname, '.', '', [rfReplaceAll]);
       if SetNameExists(setname) then
@@ -179,8 +185,8 @@ begin
       end
       else
       begin
-        LCriarPathModule := cbCreateDir.Checked;
-        if cbCreateDir.Checked then
+        LCriarPathModule := cbCreateDir.checked;
+        if cbCreateDir.checked then
         begin
           path := path + (setname) + '\';
           if not directoryExists(path) then
@@ -192,26 +198,29 @@ begin
         debug('Pronto para criar o Modulo');
         Model := TBuilderCreator.create(GetNewPath('Builders'),
           setname + '', false);
-        if chFMX.Checked then
+        if chFMX.checked then
           Model.baseProjectType := bptFMX;
 
         if IsFMX then
           Model.Templates.Add('*.dfm=' + '*.fmx');
 
+        Model.SubClassType := ord(LBuilderSubClass);
+
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
-        (*
-          debug('Criou o Model');
-
+        debug('Criou o Model');
+        if LMakeInterface or (LBuilderSubClass = false) then
+        begin
           Model := TBuilderCreator.create(GetNewPath('Builders'),
-          setname + '', false);
-          if chFMX.Checked then
-          Model.baseProjectType := bptFMX;
+            setname + '', false);
+          if chFMX.checked then
+            Model.baseProjectType := bptFMX;
           Model.isInterf := true;
           (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 
           debug('Criou o Builder Model Interf');
-        *)
+        end;
+
       end; // else
     end; // if
     free;

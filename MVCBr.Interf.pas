@@ -71,8 +71,6 @@ unit MVCBr.Interf;
   - ApplicationController have a list of controllers
 }
 
-
-
 interface
 
 uses System.Classes, System.SysUtils,
@@ -243,7 +241,8 @@ type
     procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
     procedure Send(AJson: TJsonValue); overload;
     procedure Send(const AName: string; AJson: TJsonValue); overload;
-    function Register(const AName: string; AObserver: IMVCBrObserver):IMVCBrObservable;
+    function Register(const AName: string; AObserver: IMVCBrObserver)
+      : IMVCBrObservable;
   end;
 
   /// Classe Factory Base para incorporar RTTI e outros funcionalidades comuns
@@ -364,19 +363,22 @@ type
 
   end;
 
+{$IFNDEF BPL}
   // IModel representa a interface onde implementa as regras de negócio
   TModelTypes = set of TModelType;
-
+{$ENDIF}
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     procedure release;
     function Controller(const AController: IController): IModel;
     procedure SetController(const AController: IController);
     function ApplicationControllerInternal: IApplicationController;
-    function GetModelTypes: TModelTypes;
     function GetController: IController;
+{$IFNDEF BPL}
+    function GetModelTypes: TModelTypes;
     procedure SetModelTypes(const AModelType: TModelTypes);
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+{$ENDIF}
     procedure AfterInit;
   end;
 
@@ -829,30 +831,39 @@ procedure TControllerAbstract.release;
 var
   I: integer;
   Obj: IModel;
+  ctrl: IInterface;
 begin
   if not FReleased then
   begin
-    FReleased := true;
-    if assigned(FModels) then
-      with FModels.LockList do
-        try
-          repeat
-            I := Count - 1;
-            if I >= 0 then
-            begin
-              Obj := Items[I];
-              Obj.release;
+    ctrl := self;
+    try
+      FReleased := true;
+      try
+        if assigned(FModels) then
+          with FModels.LockList do
+            try
+              repeat
+                I := Count - 1;
+                if I >= 0 then
+                begin
+                  Obj := Items[I];
+                  Obj.release;
+                  if assigned(FModels) then
+                  begin
+                    Delete(I);
+                  end;
+                  Obj := nil;
+                end;
+              until (not assigned(FModels)) or (Count <= 0);
+            finally
               if assigned(FModels) then
-              begin
-                Delete(I);
-              end;
-              Obj := nil;
+                FModels.UnlockList;
             end;
-          until (not assigned(FModels)) or (Count <= 0);
-        finally
-          if assigned(FModels) then
-            FModels.UnlockList;
-        end;
+      except
+      end;
+    finally
+      ctrl := nil;
+    end;
   end;
   inherited;
 end;

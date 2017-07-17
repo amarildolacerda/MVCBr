@@ -48,7 +48,9 @@ type
     { Private declarations }
     FController: IController;
     FID: string;
+{$IFNDEF BPL}
     FModelTypes: TModelTypes;
+{$ENDIF}
     FOnUpdateModel: TNotifyEvent;
     FOnAfterInit: TNotifyEvent;
     procedure SetOnUpdateModel(const Value: TNotifyEvent);
@@ -58,23 +60,29 @@ type
     function GetID: string; virtual;
     function ID(const AID: String): IModel; virtual;
     function Update: IModel; overload; virtual;
-    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean); overload; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
+      overload; virtual;
 
     function Controller(const AController: IController): IModel; virtual;
     procedure SetController(const AController: IController);
-    function GetModelTypes: TModelTypes; virtual;
     function GetController: IController;
+{$IFNDEF BPL}
+    function GetModelTypes: TModelTypes; virtual;
     procedure SetModelTypes(const AModelType: TModelTypes);
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+{$ENDIF}
     procedure AfterInit; virtual;
-    property OnUpdateModel: TNotifyEvent read FOnUpdateModel write SetOnUpdateModel;
-    property OnAfterInitModel: TNotifyEvent read FOnAfterInit write SetOnAfterInit;
+    property OnUpdateModel: TNotifyEvent read FOnUpdateModel
+      write SetOnUpdateModel;
+    property OnAfterInitModel: TNotifyEvent read FOnAfterInit
+      write SetOnAfterInit;
   public
     { Public declarations }
-    constructor Create;overload;
-    constructor Create(AOwner: TComponent); overload;override;
+    constructor Create; overload;
+    constructor Create(AOwner: TComponent); overload; override;
     destructor Destroy; override;
-    class procedure New(AClass: TComponentClass; AController: IController; out obj);
+    class procedure New(AClass: TComponentClass;
+      AController: IController; out obj);
     procedure Release; virtual;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
@@ -83,7 +91,9 @@ type
 
   TModuleFactory = class(TCustomModuleFactory)
   published
+{$IFNDEF BPL}
     property ModelTypes;
+{$ENDIF}
     property OnUpdateModel;
     property OnAfterInitModel;
   end;
@@ -105,12 +115,14 @@ begin
   result := TApplicationController(ApplicationControllerInternal.This);
 end;
 
-function TCustomModuleFactory.ApplicationControllerInternal: IApplicationController;
+function TCustomModuleFactory.ApplicationControllerInternal
+  : IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
 
-function TCustomModuleFactory.Controller(const AController: IController): IModel;
+function TCustomModuleFactory.Controller(const AController
+  : IController): IModel;
 begin
   result := self as IModel;
   FController := AController;
@@ -118,7 +130,7 @@ end;
 
 constructor TCustomModuleFactory.Create;
 begin
-     Create(nil);
+  Create(nil);
 end;
 
 constructor TCustomModuleFactory.Create(AOwner: TComponent);
@@ -142,10 +154,12 @@ begin
   result := FID;
 end;
 
+{$IFNDEF BPL}
 function TCustomModuleFactory.GetModelTypes: TModelTypes;
 begin
   result := FModelTypes;
 end;
+{$ENDIF}
 
 function TCustomModuleFactory.ID(const AID: String): IModel;
 begin
@@ -153,7 +167,8 @@ begin
   FID := AID;
 end;
 
-class procedure TCustomModuleFactory.New(AClass: TComponentClass; AController: IController; out obj);
+class procedure TCustomModuleFactory.New(AClass: TComponentClass;
+  AController: IController; out obj);
 var
   o: TCustomModuleFactory;
 begin
@@ -168,7 +183,7 @@ end;
 procedure TCustomModuleFactory.Release;
 begin
   FController := nil;
-  inherited destroy;
+  inherited Destroy;
 end;
 
 procedure TCustomModuleFactory.SetController(const AController: IController);
@@ -176,10 +191,12 @@ begin
   FController := AController;
 end;
 
+{$IFNDEF BPL}
 procedure TCustomModuleFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
   FModelTypes := AModelType;
 end;
+{$ENDIF}
 
 procedure TCustomModuleFactory.SetOnAfterInit(const Value: TNotifyEvent);
 begin
@@ -196,7 +213,8 @@ begin
   result := self;
 end;
 
-procedure TCustomModuleFactory.Update(AJsonValue: TJsonValue; var AHandled: boolean);
+procedure TCustomModuleFactory.Update(AJsonValue: TJsonValue;
+  var AHandled: boolean);
 var
   AModel: IModel;
 begin

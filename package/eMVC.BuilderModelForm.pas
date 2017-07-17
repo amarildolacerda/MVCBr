@@ -9,7 +9,7 @@ uses
 {$I ./translate/translate.inc}
 
 type
-  TFormNewFacadeModel = class(TForm)
+  TFormNewBuilderModel = class(TForm)
     btnBack: TBitBtn;
     btnCancel: TBitBtn;
     ScrollBox1: TScrollBox;
@@ -43,7 +43,7 @@ type
   end;
 
 var
-  FormNewFacadeModel: TFormNewFacadeModel;
+  FormNewFacadeModel: TFormNewBuilderModel;
 
 implementation
 
@@ -51,7 +51,7 @@ uses eMVC.OTAUtilities;
 
 {$R *.dfm}
 
-procedure TFormNewFacadeModel.FormCreate(Sender: TObject);
+procedure TFormNewBuilderModel.FormCreate(Sender: TObject);
 begin
   nb.PageIndex := 0;
   // this two params for future use
@@ -63,7 +63,7 @@ begin
 
 end;
 
-procedure TFormNewFacadeModel.translate;
+procedure TFormNewBuilderModel.translate;
 begin
   caption := 'Builder Model';
   cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
@@ -75,7 +75,7 @@ begin
   Label7.caption := msgCongratulation;
 end;
 
-procedure TFormNewFacadeModel.btnOKNextClick(Sender: TObject);
+procedure TFormNewBuilderModel.btnOKNextClick(Sender: TObject);
 begin
 
   case nb.PageIndex of
@@ -116,7 +116,7 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
-procedure TFormNewFacadeModel.btnBackClick(Sender: TObject);
+procedure TFormNewBuilderModel.btnBackClick(Sender: TObject);
 begin
   if nb.PageIndex > 0 then
   begin

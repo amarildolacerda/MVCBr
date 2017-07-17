@@ -315,12 +315,14 @@ begin
       try
         for i := 0 to Count - 1 do
         begin
+         {$IFNDEF BPL}
           FModel := items[i] as IModel;
           if AModelType in FModel.ModelTypes then
           begin
             result := i;
             exit;
           end;
+          {$ENDIF}
         end;
       finally
         FModels.UnlockList;
@@ -415,6 +417,7 @@ begin
     FReleased := true;
     if assigned(FView) then
     begin
+      FView.SetController(nil);
       FView.Release;
       try
         if not FViewOwnedFree then
@@ -556,6 +559,7 @@ begin
   result := inherited AttachModel(AModel);
   AModel.setController(self);
 
+{$IFNDEF BPL}
   if mtViewModel in AModel.ModelTypes then
   begin
     if supports(AModel.This, IViewModel, vm) then
@@ -568,6 +572,7 @@ begin
       end;
     end;
   end;
+{$ENDIF}
 
 end;
 

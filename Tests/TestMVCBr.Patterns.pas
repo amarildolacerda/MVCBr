@@ -22,9 +22,29 @@ uses
 
 type
 
+  TLazyObject = class;
+
+  TLazyObject = class
+  public
+    FCount: Integer;
+    procedure Execute(AValue: Integer);
+  end;
+
+
   TestTMVCBrLazyObject = class(TTestCase)
+  Private
+    lzObject: TMVCBrLazyFactory<TObject>;
+
+  public
+    procedure SetUp; override;
+    procedure TearDown; override;
   published
     procedure TestCreateLazyObject;
+    procedure TestLazyFactoryCreate;
+    procedure TestAddCommand;
+    procedure TestQueryCommand;
+    procedure TestFreeInstance;
+    procedure TestDelegate;
   end;
 
 
@@ -630,12 +650,15 @@ end;
 
 type
   TBuilderModelTests = class(TBuilderModelFactory)
-
+  public
+    procedure CreateSubClasses; override;
+    // class Function New(AController:IController):IBuilderModel;
   end;
 
   TBuiltTests = class(TBuiltObjectFactory)
   public
     FCount: Integer;
+    Destructor Destroy; override;
     function Execute(AParam: TValue): TValue; override;
   end;
 
@@ -643,12 +666,12 @@ procedure TestTMVCBrBuilderFactory.TestBuilderModel;
 var
   ABuilder: TBuilderModelTests;
 begin
-  ABuilder := TBuilderModelTests.New();
+  ABuilder := TBuilderModelTests.Create;
   try
     with ABuilder.Add(1, TBuiltTests).instance do
     begin
       Execute(10);
-      CheckTrue(ABuilder.Query<TBuiltTests>(1).FCount=10, 'Não executou');
+      checkTrue(ABuilder.Query<TBuiltTests>(1).FCount = 10, 'Não executou');
     end;
   finally
     ABuilder.Free;
@@ -857,12 +880,25 @@ begin
 end;
 
 { TestTMVCBrLazyObject }
-Type
-  TLazyObject = class
-  public
-    FCount: Integer;
-    procedure Execute(AValue: Integer);
-  end;
+
+procedure TestTMVCBrLazyObject.SetUp;
+begin
+  inherited;
+  lzObject := TMVCBrLazyFactory<TObject>.Create;
+end;
+
+procedure TestTMVCBrLazyObject.TearDown;
+begin
+  inherited;
+  lzObject.Free;
+end;
+
+procedure TestTMVCBrLazyObject.TestAddCommand;
+begin
+  lzObject.Add(1, TObject);
+  lzObject.Add(2, TObject);
+  checkTrue(lzObject.count = 2, 'Não incluir os itens');
+end;
 
 procedure TestTMVCBrLazyObject.TestCreateLazyObject;
 var
@@ -877,6 +913,50 @@ begin
   checkTrue(LLazy.FCount = 10, 'Não Executou o LazyObject');
 end;
 
+procedure TestTMVCBrLazyObject.TestDelegate;
+begin
+  lzObject.Add<TLazyObject>(1)
+  .Delegate(
+    function: TLazyObject
+    begin
+      result := TLazyObject.Create;
+    end).Instance;
+
+  checkTrue(lzObject.Query(1).IsCreated,'Não inicilizou');
+
+  checkTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject) ,'Não inicilizou TLazyObject');
+
+
+end;
+
+procedure TestTMVCBrLazyObject.TestFreeInstance;
+begin
+  lzObject.Add(1, TObject);
+  checkTrue(lzObject.Query(1).IsCreated = false,
+    'Inicializou a instance antes de chama-la');
+
+  lzObject.Query(1).instance;
+  checkTrue(lzObject.Query(1).IsCreated, 'Não incializou a instancia');
+
+end;
+
+procedure TestTMVCBrLazyObject.TestLazyFactoryCreate;
+begin
+  lzObject.Add(1, TObject);
+  checkTrue(lzObject.count > 0, 'Não incluir o item');
+end;
+
+procedure TestTMVCBrLazyObject.TestQueryCommand;
+begin
+  lzObject.Add(1, TObject);
+  lzObject.Add(2, TComponent);
+  lzObject.Add(3, TObject);
+
+  checkTrue(lzObject.Query(2).instance.InheritsFrom(TComponent),
+    'Não achou o TComponent');
+
+end;
+
 { TLazyObject }
 
 procedure TLazyObject.Execute(AValue: Integer);
@@ -886,11 +966,35 @@ end;
 
 { TBuiltTests }
 
+destructor TBuiltTests.Destroy;
+begin
+
+  inherited;
+end;
+
 function TBuiltTests.Execute(AParam: TValue): TValue;
 begin
   FCount := AParam.asInteger;
   result := FCount;
 end;
+
+{ TBuilderModelTests }
+
+procedure TBuilderModelTests.CreateSubClasses;
+begin
+  inherited;
+
+end;
+
+(*
+  class function TBuilderModelTests.New(AController: IController): IBuilderModel;
+  var o: TBuilderModelTests;
+  begin
+  o:= TBuilderModelTests.create;
+  o.SetController(AController);
+  result := o;
+  end;
+*)
 
 initialization
 

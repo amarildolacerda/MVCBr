@@ -25,6 +25,7 @@ package MVCBr;
 {$IMAGEBASE $400000}
 {$DEFINE RELEASE}
 {$DEFINE VCL}
+{$DEFINE BPL}
 {$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'MVCBr Experts'}
 {$DESIGNONLY}
@@ -91,7 +92,7 @@ contains
   eMVC.FacadeModelWizard in 'eMVC.FacadeModelWizard.pas',
   eMVC.BuilderSubClassCreator in 'eMVC.BuilderSubClassCreator.pas',
   eMVC.BuilderSubClassWizard in 'eMVC.BuilderSubClassWizard.pas',
-  eMVC.BuilderSubClassForm in 'eMVC.BuilderSubClassForm.pas' {FormNewFacadeModel},
+  eMVC.BuilderSubClassForm in 'eMVC.BuilderSubClassForm.pas' {FormNewBuilderSubClassModel},
   eMVC.BuilderModelWizard in 'eMVC.BuilderModelWizard.pas',
   eMVC.BuilderCreator in 'eMVC.BuilderCreator.pas';
 

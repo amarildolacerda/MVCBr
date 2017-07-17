@@ -34,13 +34,13 @@ type
 
   public
     class function New(AController: IController): IPageViews;
-    function Update: IModel; virtual;
+    [weak]function Update: IModel; virtual;
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
     function NewTab(APageView: IPageView): TObject; override;
-    function AddView(AView: IView): IPageView; override;
-    function AddView(Const AController: TGuid): IPageView; overload; override;
+    [weak]function AddView(AView: IView): IPageView; override;
+    [weak]function AddView(Const AController: TGuid): IPageView; overload; override;
   published
     property PageControl: TPageControl read GetPageControlEx
       write SetPageControlEx;

@@ -50,7 +50,7 @@ Type
     FDefault: IInterface;
     function GetDefault: IInterface;
   public
-    Constructor New;virtual;
+    //Constructor New;virtual;
     constructor Create; overload; virtual;
     constructor Create(AInterface: IInterface; AUnsafe: boolean = true);
       overload; virtual;
@@ -170,10 +170,11 @@ begin
   TMonitor.enter(FLock);
 end;
 
-constructor TMVCBrFactory.New;
+{constructor TMVCBrFactory.New;
 begin
       Create;
 end;
+}
 
 class function TMVCBrFactory.NewInstance<TInterface>(AClass: TClass)
   : TInterface;

@@ -42,11 +42,15 @@ type
   TModelFactory = class(TModelFactoryAbstract, IModel)
   private
     FID: string;
+{$IFNDEF BPL}
     FModelTypes: TModelTypes;
+{$ENDIF}
     FController: IController;
   protected
+{$IFNDEF BPL}
     function GetModelTypes: TModelTypes; virtual;
     procedure SetModelTypes(const AModelTypes: TModelTypes); virtual;
+{$ENDIF}
     procedure SetID(const AID: string); override;
   public
     constructor Create; override;
@@ -54,7 +58,9 @@ type
     procedure Release; override;
     procedure AfterConstruction; override;
     procedure AfterInit; virtual;
+{$IFNDEF BPL}
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+{$ENDIF}
     procedure SetController(const AController: IController); virtual;
     function GetController: IController;
     function Controller(const AController: IController): IModel;
@@ -116,10 +122,12 @@ begin
   result := FID;
 end;
 
+{$IFNDEF BPL}
 function TModelFactory.GetModelTypes: TModelTypes;
 begin
   result := FModelTypes;
 end;
+{$ENDIF}
 
 function TModelFactory.ID(const AID: String): IModel;
 begin
@@ -143,15 +151,19 @@ begin
   FID := AID;
 end;
 
+{$IFNDEF BPL}
 procedure TModelFactory.SetModelTypes(const AModelTypes: TModelTypes);
 begin
   FModelTypes := AModelTypes;
 end;
+{$ENDIF}
 
 procedure TModelFactory.AfterConstruction;
 begin
   inherited;
+{$IFNDEF BPL}
   FModelTypes := [mtCommon];
+{$ENDIF}
   SetID(self.classname);
 end;
 

@@ -167,7 +167,7 @@ begin
     exit;
   end;
   path := extractFilePath(project);
-  with TFormNewFacadeModel.create(nil) do
+  with TFormNewBuilderModel.create(nil) do
   begin
     if showModal = mrOK then
     begin
@@ -192,7 +192,7 @@ begin
 
         debug('Pronto para criar o Modulo');
         Model := TBuilderCreator.create(GetNewPath('Builders'),
-          setname + '', false);
+          setname.Replace('.','')+ '', false);
         if chFMX.Checked then
           Model.baseProjectType := bptFMX;
 
@@ -204,7 +204,7 @@ begin
         debug('Criou o Model');
 
         Model := TBuilderCreator.create(GetNewPath('Builders'),
-          setname + '', false);
+          setname.Replace('.','') + '', false);
         if chFMX.Checked then
           Model.baseProjectType := bptFMX;
         Model.isInterf := true;

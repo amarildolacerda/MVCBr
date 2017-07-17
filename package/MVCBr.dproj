@@ -52,7 +52,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
-        <DCC_Define>VCL;$(DCC_Define)</DCC_Define>
+        <DCC_Define>VCL;BPL;$(DCC_Define)</DCC_Define>
         <DesignOnlyPackage>true</DesignOnlyPackage>
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
@@ -202,7 +202,7 @@
         <DCCReference Include="eMVC.BuilderSubClassCreator.pas"/>
         <DCCReference Include="eMVC.BuilderSubClassWizard.pas"/>
         <DCCReference Include="eMVC.BuilderSubClassForm.pas">
-            <Form>FormNewFacadeModel</Form>
+            <Form>FormNewBuilderSubClassModel</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="eMVC.BuilderModelWizard.pas"/>
@@ -228,10 +228,17 @@
                     <Source Name="MainSource">MVCBr.dpk</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBr.bpl">MVCBr Experts</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\uniGUI25dcl.bpl">File C:\Fontes\BPLTokyo\uniGUI25dcl.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrUnigui.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\uniGUI25Chartdcl.bpl">File C:\Fontes\BPLTokyo\uniGUI25Chartdcl.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\uniGUI25mdcl.bpl">File C:\Fontes\BPLTokyo\uniGUI25mdcl.bpl not found</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrOData.bpl">MVCBr OData</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\QRD_DESIGN.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WBACompDesign.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WBAControllers.bpl">(untitled)</Excluded_Packages>
                     <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">MVCBr FireDAC</Excluded_Packages>
                     <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Platforms>

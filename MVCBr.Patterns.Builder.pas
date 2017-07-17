@@ -182,6 +182,8 @@ type
 
   TMVCBrBuilderObjectClass = class of TMVCBrBuilderObject;
 
+  IMVCBrBuilderItemResult = IMVCBrBuilderItem<TValue, TValue>;
+  
   /// Lazy Builder Item
   TMVCBrBuilderLazyItem = class(TMVCBrBuilderItem<TValue, TValue>,
     IMVCBrBuilderItem<TMVCBrBuilderObject>)
@@ -201,7 +203,7 @@ type
     procedure FreeInstance;
     [weak]
     function Execute(AParam: TValue)
-      : IMVCBrBuilderItem<TValue, TValue>; override;
+      : IMVCBrBuilderItemResult; override;
     function Response: TValue; Override;
     function IsCreated: Boolean; virtual;
   end;
@@ -297,13 +299,13 @@ var
 begin
   result := nil;
   i := IndexOf(ACommand);
-  with FList.LockList do
-    try
-      if (i >= 0) and (i < FList.LockList.Count) then
-        result := items[i];
-    finally
-      FList.UnlockList;
-    end;
+  if isValid(i) then
+    with FList.LockList do
+      try
+          result := items[i];
+      finally
+        FList.UnlockList;
+      end;
 end;
 
 function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T)
@@ -311,7 +313,8 @@ function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T)
 begin
   result := Query(ACommand);
   Assert(assigned(result), 'Builder Command not found');
-  result.Execute(AParam)
+  if assigned(result) then
+    result.Execute(AParam);
 end;
 
 function TMVCBrBuilder<T, TResult>.IndexOf(ACommand: TValue): Integer;
@@ -595,7 +598,7 @@ begin
 end;
 
 function TMVCBrBuilderLazyItem.Execute(AParam: TValue)
-  : IMVCBrBuilderItem<TValue, TValue>;
+  : IMVCBrBuilderItemResult;
 begin
   result := self;
   Instance.Execute(AParam);

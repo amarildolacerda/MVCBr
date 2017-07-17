@@ -44,12 +44,15 @@ type
   private
     FisInterf: boolean;
     FUnitIdent: string;
+    FSubClassType: Integer;
     procedure SetisInterf(const Value: boolean);
+    procedure SetSubClassType(const Value: Integer);
   public
     constructor Create(const APath: string = ''; ABaseName: string = ''; AUnNamed: boolean = true); override;
     function GetImplFileName: string; override;
     function NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile; override;
     property isInterf: boolean read FisInterf write SetisInterf;
+    property SubClassType:Integer read FSubClassType write SetSubClassType;
   end;
 
 implementation
@@ -66,7 +69,7 @@ function TBuilderCreator.GetImplFileName: string;
 begin
   FUnitIdent := getBaseName + '.Built';
   if isInterf then
-    FUnitIdent := getBaseName + '.Interf';
+    FUnitIdent := getBaseName + '.Built.Interf';
 
   result := self.getpath + FUnitIdent + '.pas';
 
@@ -81,13 +84,16 @@ begin
     fc := TFileCreator.New(ModuleIdent, FormIdent, AncestorIdent,
       function: string
       begin
-        result := builderModelInterf;
+        result := builderSubClassInterf;
       end)
   else
     fc := TFileCreator.New(ModuleIdent, FormIdent, AncestorIdent,
       function: string
       begin
-        result := builderSubClassModel;
+        if SubClassType=1 then
+           result := builderSubClassModel
+        else
+           result := builderLazySubClassModel;
       end);
 
   fc.Templates.assign(Templates);
@@ -99,6 +105,11 @@ end;
 procedure TBuilderCreator.SetisInterf(const Value: boolean);
 begin
   FisInterf := Value;
+end;
+
+procedure TBuilderCreator.SetSubClassType(const Value: Integer);
+begin
+  FSubClassType := Value;
 end;
 
 end.

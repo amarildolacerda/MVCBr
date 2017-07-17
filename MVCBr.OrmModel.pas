@@ -47,7 +47,9 @@ implementation
 function TOrmModelFactory.Controller(const AController: IController): IModel;
 begin
   FController := AController;
+{$IFNDEF BPL}
   ModelTypes := [mtOrmModel];
+{$ENDIF}
 end;
 
 end.
