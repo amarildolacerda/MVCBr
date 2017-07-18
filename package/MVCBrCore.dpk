@@ -36,7 +36,8 @@ requires
   vcl,
   fmx,
   dbrtl,
-  DesignIDE;
+  DesignIDE,
+  RESTComponents;
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',

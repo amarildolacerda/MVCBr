@@ -43,7 +43,8 @@ requires
   FireDACCommonDriver,
   FireDACCommon,
   MVCBrCore,
-  MVCBrVCL;
+  MVCBrVCL,
+  RESTComponents;
 
 contains
   oData.Comp.Client in '..\oData\oData.Comp.Client.pas',

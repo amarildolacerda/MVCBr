@@ -163,6 +163,7 @@
         <DCCReference Include="FireDACCommon.dcp"/>
         <DCCReference Include="MVCBrCore.dcp"/>
         <DCCReference Include="MVCBrVCL.dcp"/>
+        <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="..\oData\oData.Comp.Client.pas"/>
         <DCCReference Include="..\oData\oData.Comp.Editor.pas">
             <Form>oDataResourceEditor</Form>
