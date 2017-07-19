@@ -20,7 +20,7 @@ uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
   MVCBr.View, MVCBr.FormView, MVCBr.Controller, VCL.StdCtrls, VCL.ComCtrls,
-  VCL.Controls, MVCBr.Component, MVCBr.PageView, MVCBr.VCL.PageView;
+  VCL.Controls, MVCBr.Component, MVCBr.PageView, MVCBr.VCL.PageView, Vcl.Menus;
 
 type
   /// Interface para a VIEW
@@ -40,9 +40,12 @@ type
     Edit1: TEdit;
     Button2: TButton;
     Button3: TButton;
+    MainMenu1: TMainMenu;
+    ViewFilha1: TMenuItem;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure ViewFilha1Click(Sender: TObject);
   private
     FInited: Boolean;
   protected
@@ -93,6 +96,12 @@ begin
 
 end;
 
+procedure TComoEnviarMensagemParaOutraViewView.ViewFilha1Click(Sender: TObject);
+begin
+  resolveController<IFilhaController>.Showview;
+
+end;
+
 class function TComoEnviarMensagemParaOutraViewView.New(aController: IController): IView;
 begin
   result := TComoEnviarMensagemParaOutraViewView.create(nil);
@@ -110,8 +119,10 @@ procedure TComoEnviarMensagemParaOutraViewView.Button1Click(Sender: TObject);
   end;
 }
 begin
+
   /// como abrir dentro do PageControl
   VCLPageViewManager1.AddView(IFilhaController);
+  //resolveController<IFilhaController>.Showview;
 
 end;
 

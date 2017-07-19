@@ -17,6 +17,8 @@ uses
   System.TypInfo, System.Classes,
   MVCBr.Interf, MVCBr.Patterns.States,
   MVCBr.Patterns.Lazy,
+  MVCBr.Patterns.Decorator,
+  MVCBr.Patterns.Strategy,
   MVCBr.BuilderModel,
   MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
 
@@ -30,6 +32,38 @@ type
     procedure Execute(AValue: Integer);
   end;
 
+  IVendas = interface
+    function Total: double;
+    function VenderItem(Value: double): IVendas;
+  end;
+
+  TVendas = class(TInterfacedObject, IVendas)
+  private
+    FTotal: double;
+  public
+    class function New: IVendas;
+    function Total: double;
+    function VenderItem(Value: double): IVendas;
+  end;
+
+  IDecorateVendas = interface(TFunc<IVendas>)
+  end;
+
+  TDecorateVendas = class(TMVCBrDecorator<IVendas>, IDecorateVendas)
+  private
+  public
+    class function New(Origem: IVendas): IDecorateVendas;
+  end;
+
+  TestTMVCBrDecorator = class(TTestCase)
+  published
+    procedure TestDecorate;
+  end;
+
+  TestTMVCBrStrategy = class(TTestCase)
+  published
+    procedure TestStrategy;
+  end;
 
   TestTMVCBrLazyObject = class(TTestCase)
   Private
@@ -320,7 +354,7 @@ begin
     procedure
     begin
       self.FStepSign := self.FStepSign + 10;
-    end);;
+    end);
 
   TestAdd;
   FMVCBrStates.Add<IMVCBrStateStep>('YYY', TTestMVCBrStateStep).Delegate(
@@ -915,17 +949,16 @@ end;
 
 procedure TestTMVCBrLazyObject.TestDelegate;
 begin
-  lzObject.Add<TLazyObject>(1)
-  .Delegate(
+  lzObject.Add<TLazyObject>(1).Delegate(
     function: TLazyObject
     begin
       result := TLazyObject.Create;
-    end).Instance;
+    end).instance;
 
-  checkTrue(lzObject.Query(1).IsCreated,'Não inicilizou');
+  checkTrue(lzObject.Query(1).IsCreated, 'Não inicilizou');
 
-  checkTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject) ,'Não inicilizou TLazyObject');
-
+  checkTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject),
+    'Não inicilizou TLazyObject');
 
 end;
 
@@ -996,6 +1029,72 @@ end;
   end;
 *)
 
+{ TDecorateVendas }
+
+class function TDecorateVendas.New(Origem: IVendas): IDecorateVendas;
+begin
+  result := TDecorateVendas.Create(Origem);
+end;
+
+{ TestTMVCBrDecorator }
+
+procedure TestTMVCBrDecorator.TestDecorate;
+begin
+  checkTrue(TDecorateVendas.New(TVendas.New).VenderItem(10).VenderItem(20)
+    .Total = 30, 'Nao acumulou');
+end;
+
+{ TVendas }
+
+{ function TVendas.Invoke: IVendas;
+  begin
+  result := self;
+  end;
+}
+class function TVendas.New: IVendas;
+begin
+  result := self.Create;
+end;
+
+function TVendas.Total: double;
+begin
+  result := FTotal;
+end;
+
+function TVendas.VenderItem(Value: double): IVendas;
+begin
+  FTotal := FTotal + Value;
+  result := self;
+end;
+
+{ TestTMVCBrStrategy }
+
+type
+  TStrategyPgto = (AVista, APrazo, ACheque);
+
+  StrategyPgto = record helper for TStrategyPgto
+    function New: IVendas;
+  end;
+
+procedure TestTMVCBrStrategy.TestStrategy;
+begin
+   checkTrue(   TStrategyPgto.AVista.New.Total = 0 , 'Nao incialiaou' );
+end;
+
+{ StrategyPgto }
+
+function StrategyPgto.New: IVendas;
+begin
+  case self of
+    AVista:
+      result := TVendas.New;
+    APrazo:
+      result := TVendas.New;
+    ACheque:
+      result := TVendas.New;
+  end;
+end;
+
 initialization
 
 // Register any test cases with the test runner
@@ -1008,5 +1107,7 @@ RegisterTest(TestTMVCBrContainedFactory.Suite);
 RegisterTest(TestTMVCBrHelperFactory.Suite);
 RegisterTest(TestTMVCBrStaticFactory.Suite);
 RegisterTest(TestTMVCBrLazyObject.Suite);
+RegisterTest(TestTMVCBrStrategy.Suite);
+RegisterTest(TestTMVCBrDecorator.Suite);
 
 end.

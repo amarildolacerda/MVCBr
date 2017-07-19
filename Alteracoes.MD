@@ -1,3 +1,6 @@
+19/07/2017 - AL
+   * correação BUG AttachContoller no MVCBr.FormView   (_addref)
+
 16/07/2017 - AL
    + adicionado Builder Expert ( and all)
 

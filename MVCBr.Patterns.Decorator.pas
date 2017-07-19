@@ -1,4 +1,3 @@
-
 unit MVCBr.Patterns.Decorator;
 { *************************************************************************** }
 { }
@@ -28,22 +27,25 @@ unit MVCBr.Patterns.Decorator;
 
 interface
 
-uses System.Classes,System.SysUtils;
+uses System.Classes, System.SysUtils;
 
 Type
 
   IMVCBrDecorator = interface
     ['{09068FF3-F838-4A09-BFDE-6E71174AF130}']
-    function This:TObject;
+    function This: TObject;
   end;
 
   TMVCBrDecorator<T> = class(TInterfacedObject, IMVCBrDecorator)
   private
-    FDecorator: T;
     FLock: TObject;
+  protected
+    FDecorate: T;
+    function Invoke:T;virtual;
   public
-    constructor create(ADecorator: T);
+    constructor create(ADecorate: T);
     destructor destroy; override;
+    property Decorate:T read Invoke;
     function This: TObject; virtual;
     function Lock: T; virtual;
     procedure UnLock; virtual;
@@ -53,11 +55,16 @@ implementation
 
 { TMVCBrDecorator<T> }
 
-constructor TMVCBrDecorator<T>.create(ADecorator: T);
+constructor TMVCBrDecorator<T>.create(ADecorate: T);
 begin
   inherited create;
   FLock := TObject.create;
-  FDecorator := ADecorator;
+  FDecorate := ADecorate;
+end;
+
+function TMVCBrDecorator<T>.Invoke: T;
+begin
+   result := FDecorate;
 end;
 
 destructor TMVCBrDecorator<T>.destroy;
@@ -70,7 +77,7 @@ end;
 function TMVCBrDecorator<T>.Lock: T;
 begin
   TMonitor.enter(FLock);
-  result := FDecorator;
+  result := FDecorate;
 end;
 
 function TMVCBrDecorator<T>.This: TObject;

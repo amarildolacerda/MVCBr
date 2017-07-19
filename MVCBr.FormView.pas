@@ -381,6 +381,7 @@ begin
     result := FController;
     if assigned(FController) then
     begin
+      FController._AddRef;   // workaround to keep an instance  when attached by view
       FController.This.ViewOwnedFree := AOwnedFree;
       result.View(self);
     end;
