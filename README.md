@@ -13,3 +13,20 @@ Model-view-controller (MVC), em português modelo-visão-controlador, é um padr
   Adicionar o local (pasta) no path do delphi para ele localizar a pasta raiz  \MVCBr 
   
 Ver o Video de apresentação do projeto no canal Youtube.  
+
+
+<b>Grupo MVCBr - Créditos</b>
+
+Kleberson TORO - fundador e idealizador do projeto;
+Amarildo Lacerda - fundador e implementação;
+Oteniel Furquim - contribuição com debates e definição;
+Ivan Cesar     - contribuição nos debates e implementação do MemDataset para o OData;
+Elizangela Borato - contribuição com driver Postgres para o servidor OData e implementação do gerador de metadata.
+Thulio Bittencourt - participação na definição de escopo;
+Juliomar Marchetti - implementação do instalador e inclusão no GETIT
+Regys Borges da Silveira - ajuda no controle de versão e coparticipação com o Instalador
+Mauricio Abreu/Leonardo - Sempre questionado  ();
+Carlos Dias (Dex) - testes e apresentação de usercase; criação dos icones dos experts
+Giovani Da Cruz - Criador do Servidor OData para rodar como serviço.
+
+tireideletra.com.br - plataforma de divulgação de artigos do MVCBr (Apoio: WBAGestão-Storeware)
