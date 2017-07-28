@@ -17,7 +17,7 @@ Ver o Video de apresentação do projeto no canal Youtube.
 
 <b>Grupo MVCBr - Créditos</b>
 <pre>
-Kleberson TORO - fundador e idealizador do projeto;
+Kleberson Toro - fundador e idealizador do projeto;
 Amarildo Lacerda - fundador e implementação;
 Oteniel Furquim - contribuição com debates e definição;
 Ivan Cesar     - contribuição nos debates e implementação do MemDataset para o OData;
