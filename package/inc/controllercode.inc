@@ -80,7 +80,7 @@ ControllerCode =
   '  //%view View(T%FormIdentView.New(self));' + #13#10 +
   '  add(T%FormIdentViewModel.New(self).ID(''{%FormIdent.ViewModel}''));' +
   '  ///  Inicializar os modulos                                  ' + #13#10 +
-  ' CreateModules; //< criar os modulos persolnizados      ' + #13#10 + #13#10 +
+ // ' CreateModules; //< criar os modulos persolnizados      ' + #13#10 + #13#10 +
   'end;                                                ' + #13#10 +
   '///  Finaliza o controller                                       ' + #13#10 +
   'Destructor T%FormIdentController.destroy;                        ' + #13#10 +
@@ -224,7 +224,6 @@ ControllerCodeWithoutViewModel =
   '  ///  Inicializar as Views...                                   ' + #13#10 +
   '  //%view View(T%FormIdentView.New(self));' + #13#10 +
   '  ///  Inicializar os modulos                                  ' + #13#10 +
-  ' CreateModules; //< criar os modulos persolnizados      ' + #13#10 + #13#10 +
   'end;                                                ' + #13#10 +
   '///  Finaliza o controller                                       ' + #13#10 +
   'Destructor T%FormIdentController.destroy;                        ' + #13#10 +
@@ -281,6 +280,7 @@ ControllerCodeWithoutViewModel =
   '      Application.RealCreateForms;                               ' + #13#10 +
   '  {$endif}                                                       ' + #13#10 +
   ' end;                                                            ' + #13#10 +
+  ' CreateModules; //< criar os modulos persolnizados      ' + #13#10 + #13#10 +
   ' AfterInit;                                                        ' + #13#10
   + 'end;                                                             '
   + #13#10 +
@@ -349,7 +349,6 @@ ControllerCodeOnly =
   'begin                                                            ' + #13#10 +
   ' inherited;                                                     ' + #13#10 +
   '// add(T%FormIdentViewModel.New(self).ID(''{%FormIdent.ViewModel}''));' +
-  ' CreateModules; //< criar os modulos persolnizados              ' + #13#10 +
   #13#10 + 'end;                                                ' + #13#10 +
   '                                                                 ' + #13#10 +
   'Destructor T%FormIdentController.destroy;                        ' + #13#10 +
@@ -408,7 +407,9 @@ ControllerCodeOnly =
   + '   Application.CreateForm( T%FormIdentView, ref );                 ' +
   #13#10 + '   supports(ref,IView,FView);                            ' + #13#10
   + ' end;}                                                            ' +
-  #13#10 + ' AfterInit;                                                        '
+  #13#10 +
+    ' CreateModules; //< criar os modulos persolnizados              ' + #13#10 +
+  ' AfterInit;                                                        '
   + #13#10 + 'end;                                                             '
   + #13#10 +
 
@@ -481,7 +482,6 @@ PromptControllerCode =
   ' inherited;                                                     ' + #13#10 +
   '  ///  Inicializar as Views...                                   ' + #13#10 +
   '  ///  Inicializar os modulos                                  ' + #13#10 +
-  ' CreateModules; //< criar os modulos persolnizados      ' + #13#10 + #13#10 +
   'end;                                                ' + #13#10 +
   '///  Finaliza o controller                                       ' + #13#10 +
   'Destructor T%FormIdentController.destroy;                        ' + #13#10 +

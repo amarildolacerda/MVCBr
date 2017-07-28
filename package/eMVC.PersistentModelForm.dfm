@@ -42,6 +42,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -97,6 +99,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 2'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object cbCreateModel: TCheckBox
         Left = 24
         Top = 56
@@ -120,6 +124,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16

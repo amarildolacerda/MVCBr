@@ -45,6 +45,8 @@ uses
   WS.Controller,
   WS.WebModule,
 
+  LoggerPro,
+  LoggerPro.FileAppender,
   MVCFramework.Logger,
   MVCFramework.Commons,
 
@@ -79,6 +81,11 @@ var
 begin
   Ini := TJsonFile.create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
   try
+
+    MVCFramework.Logger.SetDefaultLogger
+      (BuildLogWriter([TLoggerProFileAppender.Create(5, 2000, AppPath + 'logs')
+      ], nil, TLogType(ini.ReadInteger('Config', 'ErrorLevel',
+      ord(TLogType.Error)))));
 
     APort := Ini.ReadInteger('Config', 'WSPort', 8080);
 //    LogI('** MVCBr / DMVCFramework Server Service ** build ' +

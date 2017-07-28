@@ -288,17 +288,9 @@ type
       write SetColumnNames;
   end;
 
-procedure Register;
 
 implementation
 
-uses MVCBr.Comum;
-
-procedure Register;
-begin
-  RegisterComponents(mvcbr_pkg_component_title,
-    [TObjectConfigModel, TDBObjectConfigModel]);
-end;
 
 type
   TValueHelper = record helper for TValue

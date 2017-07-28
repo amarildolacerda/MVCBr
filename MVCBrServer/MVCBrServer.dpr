@@ -1,23 +1,26 @@
 program MVCBrServer;
 {$APPTYPE CONSOLE}
+
 uses
   System.SysUtils,
+  LoggerPro,
+  LoggerPro.FileAppender,
   MVCFramework.Logger,
   MVCFramework.Commons,
-  {$IFDEF LINUX}
+{$IFDEF LINUX}
   MVCFramework.REPLCommandsHandlerU,
-  {$ELSE}
+{$ELSE}
   Winapi.Windows,
-  {$ENDIF }
+{$ENDIF }
   Web.WebReq,
   Web.WebBroker,
   System.JsonFiles,
   IdHTTPWebBrokerBridge,
   MVCBr.ApplicationController,
-  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
+  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule} ,
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
-  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
+  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule} ,
   WS.Common in 'WS\WS.Common.pas',
   WSConfigView in 'WSConfig\WSConfigView.pas',
   config.Model in 'Models\config.Model.pas',
@@ -57,15 +60,23 @@ var
 begin
   ini := TJsonFile.Create(ExtractFilePath(ParamStr(0)) + 'MVCBrServer.config');
   try
+
+    MVCFramework.Logger.SetDefaultLogger
+      (BuildLogWriter([TLoggerProFileAppender.Create(5, 2000, AppPath + 'logs')
+      ], nil, TLogType(ini.ReadInteger('Config', 'ErrorLevel',
+      ord(TLogType.Error)))));
+
     APort := ini.ReadInteger('Config', 'WSPort', 8080);
     Writeln('** MVCBrOData powered by DMVCFramework Server ** build ' +
       DMVCFRAMEWORK_VERSION);
     Writeln(Format('Starting HTTP Server on port %d', [APort]));
     LServer := TIdHTTPWebBrokerBridge.Create(nil);
     try
+
       LServer.DefaultPort := APort;
       LServer.Active := True;
       LogI(Format('Server started on port %s', [APort.ToString]));
+      MVCFramework.Logger.LogLevelLimit := TLogLevel.levError;
       { more info about MaxConnections
         http://www.indyproject.org/docsite/html/frames.html?frmname=topic&frmfile=TIdCustomTCPServer_MaxConnections.html }
       LServer.MaxConnections := ini.ReadInteger('Config', 'MaxConnections', 0);
@@ -106,10 +117,10 @@ begin
       until false;
 
 {$ELSE}
-    {$ifdef WIN32}
-      //ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
-      //  nil, SW_SHOWMAXIMIZED);
-    {$endif}
+{$IFDEF WIN32}
+      // ShellExecute(0, 'open', PChar('http://localhost:' + inttostr(APort)), nil,
+      // nil, SW_SHOWMAXIMIZED);
+{$ENDIF}
       Writeln('Press ESC to stop the server');
       LHandle := GetStdHandle(STD_INPUT_HANDLE);
       while True do

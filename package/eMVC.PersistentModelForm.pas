@@ -119,7 +119,7 @@ end;
 procedure TFormNewSetPersistentModel.translate;
 begin
   caption := 'Models';
-  cbCreateDir.caption := wizardForm_createdir_checkbox_caption;
+  cbCreateDir.caption := wizardForm_groupdir_checkbox_caption;
   cbCreateModel.caption := wizardPersistentCreateModelFactory_caption;
   Label1.caption := wizardPersistentModel_Expert_Caption;
   Label4.caption := wizardForm_NameForArtefact;

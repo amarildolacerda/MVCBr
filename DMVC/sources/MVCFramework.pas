@@ -184,7 +184,7 @@ type
     function GetParamAsInt64(const AParamName: string): Int64;
     function GetFiles: TAbstractWebRequestFiles;
     function GetParamNames: TArray<string>;
-    function GetParamsMulti(const AParamName: string): TArray<String>;
+    function GetParamsMulti(const AParamName: string): TArray<string>;
   protected
     { protected declarations }
   public
@@ -221,7 +221,7 @@ type
     property ParamsTable: TMVCRequestParamsTable read FParamsTable write FParamsTable;
     property ParamNames: TArray<string> read GetParamNames;
     property Params[const AParamName: string]: string read GetParams;
-    property ParamsMulti[const AParamName: string]: TArray<String> read GetParamsMulti;
+    property ParamsMulti[const AParamName: string]: TArray<string> read GetParamsMulti;
     property ParamsAsInteger[const AParamName: string]: Integer read GetParamAsInteger;
     property ParamsAsInt64[const AParamName: string]: Int64 read GetParamAsInt64;
     property IsAjax: Boolean read GetIsAjax;
@@ -476,7 +476,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    procedure PushToView(const AModelName: string; const AModel: string);
+    // procedure PushToView(const AModelName: string; const AModel: string);
     procedure PushObjectToView(const AModelName: string; const AModel: TObject);
     procedure PushDataSetToView(const AModelName: string; const ADataSet: TDataSet);
   end;
@@ -550,7 +550,7 @@ type
       );
   end;
 
-  TMVCEngine = class
+  TMVCEngine = class(TComponent)
   private const
     ALLOWED_TYPED_ACTION_PARAMETERS_TYPES = 'Integer, Int64, Single, Double, Extended, Boolean, TDate, TTime, TDateTime and String';
   private
@@ -564,7 +564,7 @@ type
     FApplicationSession: TWebApplicationSession;
     FSavedOnBeforeDispatch: THTTPMethodEvent;
     function IsStaticFileRequest(const ARequest: TWebRequest; out AFileName: string): Boolean;
-    function SendStaticFileIfPresent(const AContext: TWebContext; const AFileName: String): Boolean;
+    function SendStaticFileIfPresent(const AContext: TWebContext; const AFileName: string): Boolean;
     procedure FillActualParamsForAction(
       const AContext: TWebContext;
       const AActionFormalParams: TArray<TRttiParameter>;
@@ -652,7 +652,7 @@ type
   protected
     { protected declarations }
   public
-    property Message: string read FMessage write FMessage;
+    property message: string read FMessage write FMessage;
   end;
 
   [MVCNameCase(ncLowerCase)]
@@ -667,12 +667,12 @@ type
     { protected declarations }
   public
     constructor Create; overload;
-    constructor Create(AStatusCode: Integer; AReasonString: String; AMessage: String); overload;
+    constructor Create(AStatusCode: Integer; AReasonString: string; AMessage: string); overload;
     destructor Destroy; override;
 
     property StatusCode: Integer read FStatusCode write FStatusCode;
     property ReasonString: string read FReasonString write fReasonString;
-    property Message: string read FMessage write FMessage;
+    property message: string read FMessage write FMessage;
     property Classname: string read FClassname write FClassname;
 
     [MVCListOf(TMVCErrorResponseItem)]
@@ -690,10 +690,9 @@ type
   protected
     function GetRealFileName(const AViewName: string): string; virtual;
     function IsCompiledVersionUpToDate(const AFileName, ACompiledFileName: string): Boolean; virtual; abstract;
-    procedure SetOutput(const AOutput: String);
+    procedure SetOutput(const AOutput: string);
   public
     constructor Create(
-      const AViewName: string;
       const AEngine: TMVCEngine;
       const AWebContext: TWebContext;
       const AViewModel: TMVCViewDataObject;
@@ -701,7 +700,7 @@ type
       const AContentType: string); virtual;
     destructor Destroy; override;
 
-    procedure Execute; virtual; abstract;
+    procedure Execute(const ViewName: String); virtual; abstract;
 
     property ViewName: string read FViewName;
     property WebContext: TWebContext read FWebContext;
@@ -718,7 +717,8 @@ implementation
 
 uses
   MVCFramework.Router,
-  MVCFramework.SysControllers;
+  MVCFramework.SysControllers,
+  MVCFramework.Serializer.JsonDataObjects;
 
 var
   _IsShuttingDown: Int64 = 0;
@@ -747,7 +747,7 @@ var
 begin
   Result := '';
 
-  for I := Low(TMVCHTTPMethodType) to High(TMVCHTTPMethodType) do
+  for I := low(TMVCHTTPMethodType) to high(TMVCHTTPMethodType) do
     if I in FMVCHTTPMethods then
       Result := Result + ',' + GetEnumName(TypeInfo(TMVCHTTPMethodType), Ord(I));
 
@@ -1087,10 +1087,10 @@ begin
 end;
 
 function TMVCWebRequest.GetParamsMulti(
-  const AParamName: string): TArray<String>;
+  const AParamName: string): TArray<string>;
 var
-  lList: TList<String>;
-  procedure AddParamsToList(const AStrings: TStrings; const AList: TList<String>);
+  lList: TList<string>;
+  procedure AddParamsToList(const AStrings: TStrings; const AList: TList<string>);
   var
     I: Integer;
   begin
@@ -1100,7 +1100,7 @@ var
   end;
 
 begin
-  lList := TList<String>.Create;
+  lList := TList<string>.Create;
   try
     AddParamsToList(FWebRequest.ContentFields, lList);
     AddParamsToList(FWebRequest.QueryFields, lList);
@@ -1607,7 +1607,7 @@ constructor TMVCEngine.Create(
   const AConfigAction: TProc<TMVCConfig>;
   const ACustomLogger: ILogWriter);
 begin
-  inherited Create;
+  inherited Create(AWebModule);
   FWebModule := AWebModule;
   FConfig := TMVCConfig.Create;
   FSerializers := TDictionary<string, IMVCSerializer>.Create;
@@ -2056,7 +2056,11 @@ end;
 
 procedure TMVCEngine.RegisterDefaultsSerializers;
 begin
-  FSerializers.Add(TMVCMediaType.APPLICATION_JSON, TMVCJSONSerializer.Create);
+  if not FSerializers.ContainsKey(TMVCMediaType.APPLICATION_JSON) then
+  begin
+    FSerializers.Add(TMVCMediaType.APPLICATION_JSON, TMVCJSONDataObjectsSerializer.Create);
+    // FSerializers.Add(TMVCMediaType.APPLICATION_JSON, TMVCJSONSerializer.Create);
+  end;
 end;
 
 procedure TMVCEngine.ResponseErrorPage(const AException: Exception; const ARequest: TWebRequest; const AResponse: TWebResponse);
@@ -2098,7 +2102,7 @@ begin
   Result := ASessionId;
 end;
 
-function TMVCEngine.SendStaticFileIfPresent(const AContext: TWebContext; const AFileName: String): Boolean;
+function TMVCEngine.SendStaticFileIfPresent(const AContext: TWebContext; const AFileName: string): Boolean;
 var
   LContentType: string;
 begin
@@ -2350,25 +2354,19 @@ begin
 end;
 
 procedure TMVCController.PushDataSetToView(const AModelName: string; const ADataSet: TDataSet);
-var
-  LSerializer: IMVCSerializer;
 begin
-  LSerializer := TMVCJSONSerializer.Create;
-  PushToView(AModelName, LSerializer.SerializeDataSet(ADataSet));
+  GetViewDataSets.Add(AModelName, ADataSet);
 end;
 
 procedure TMVCController.PushObjectToView(const AModelName: string; const AModel: TObject);
-var
-  LSerializer: IMVCSerializer;
-begin
-  LSerializer := TMVCJSONSerializer.Create;
-  PushToView(AModelName, LSerializer.SerializeObject(AModel));
-end;
-
-procedure TMVCController.PushToView(const AModelName: string; const AModel: string);
 begin
   GetViewModel.Add(AModelName, AModel);
 end;
+
+// procedure TMVCController.PushToView(const AModelName: string; const AModel: string);
+// begin
+// GetViewModel.Add(AModelName, AModel);
+// end;
 
 procedure TMVCController.RaiseSessionExpired;
 begin
@@ -2486,17 +2484,12 @@ end;
 
 procedure TMVCController.Render(const AObject: TObject; const AOwns: Boolean; const AType: TMVCSerializationType);
 begin
-  if Assigned(AObject) then
-  begin
-    try
-      Render(Serializer(ContentType).SerializeObject(AObject, AType));
-    finally
-      if AOwns then
-        AObject.Free;
-    end;
-  end
-  else
-    raise EMVCException.Create('Can not render an empty object.');
+  try
+    Render(Serializer(ContentType).SerializeObject(AObject, AType));
+  finally
+    if AOwns then
+      AObject.Free;
+  end;
 end;
 
 procedure TMVCController.Render(const AStream: TStream; const AOwns: Boolean);
@@ -2580,21 +2573,21 @@ begin
   SBuilder := TStringBuilder.Create;
   try
     try
-      for ViewName in AViewNames do
-      begin
-        View := FEngine.ViewEngineClass.Create(
-          ViewName,
-          Engine,
-          Context,
-          ViewModel,
-          ViewDataSets,
-          ContentType);
-        try
-          View.Execute;
+      View := FEngine.ViewEngineClass.Create(
+        Engine,
+        Context,
+        ViewModel,
+        ViewDataSets,
+        ContentType);
+      try
+
+        for ViewName in AViewNames do
+        begin
+          View.Execute(ViewName);
           SBuilder.Append(View.Output);
-        finally
-          View.Free;
         end;
+      finally
+        View.Free;
       end;
       Result := SBuilder.ToString;
     except
@@ -2770,12 +2763,12 @@ begin
 end;
 
 constructor TMVCErrorResponse.Create(AStatusCode: Integer; AReasonString,
-  AMessage: String);
+  AMessage: string);
 begin
   Create;
   StatusCode := AStatusCode;
   ReasonString := AReasonString;
-  Message := AMessage;
+  message := AMessage;
 end;
 
 destructor TMVCErrorResponse.Destroy;
@@ -2787,7 +2780,6 @@ end;
 { TMVCBaseView }
 
 constructor TMVCBaseViewEngine.Create(
-  const AViewName: string;
   const AEngine: TMVCEngine;
   const AWebContext: TWebContext;
   const AViewModel: TMVCViewDataObject;
@@ -2795,7 +2787,6 @@ constructor TMVCBaseViewEngine.Create(
   const AContentType: string);
 begin
   inherited Create;
-  FViewName := AViewName;
   Engine := AEngine;
   FWebContext := AWebContext;
   FViewModel := AViewModel;
@@ -2839,7 +2830,7 @@ begin
     Result := EmptyStr;
 end;
 
-procedure TMVCBaseViewEngine.SetOutput(const AOutput: String);
+procedure TMVCBaseViewEngine.SetOutput(const AOutput: string);
 begin
   FOutput := AOutput;
 end;

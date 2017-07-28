@@ -583,7 +583,7 @@ initialization
 
 ODataServices := TODataServices.create;
 try
-  ODataServices.LoadFromJsonFile(ExtractFilePath(ParamStr(0)) +
+  ODataServices.LoadFromJsonFile(GetODataConfigFilePath +
     'oData.ServiceModel.json');
 except
 end;

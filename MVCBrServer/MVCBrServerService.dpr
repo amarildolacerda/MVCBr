@@ -2,7 +2,7 @@ program MVCBrServerService;
 
 uses
   Vcl.SvcMgr,
-  MVCBr.Servico in 'MVCBr.Servico.pas' {MVCBrService: TService},
+  MVCBr.Servico in 'MVCBr.Servico.pas' {MVCBrService: TService} ,
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
@@ -18,7 +18,7 @@ uses
   oData.ServiceModel in '..\oData\oData.ServiceModel.pas',
   WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
   WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas',
-  WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView},
+  WSConfigView in 'WSConfig\WSConfigView.pas' {WSConfigView} ,
   MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
   oData.SQL in '..\oData\oData.SQL.pas',
   oData.SQL.FireDAC in '..\oData\oData.SQL.FireDAC.pas',
@@ -47,7 +47,8 @@ begin
   //
   ReportMemoryLeaksOnShutdown := True;
 
-  if not Vcl.SvcMgr.Application.DelayInitialize or Vcl.SvcMgr.Application.Installing then
+  if not Vcl.SvcMgr.Application.DelayInitialize or Vcl.SvcMgr.Application.Installing
+  then
     Vcl.SvcMgr.Application.Initialize;
   Vcl.SvcMgr.Application.CreateForm(TMVCBrService, MVCBrService);
   Vcl.SvcMgr.Application.Run;

@@ -12,24 +12,29 @@ unit MVCBr.ModuleModel;
 interface
 
 uses
-{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF} System.UITypes, System.SysUtils, System.Classes,
-  MVCBr.ApplicationController, MVCBr.Interf {$ifndef BPL},
-{$IFDEF FMX}MVCBr.FMX.DataModuleDummy{$ELSE} MVCBr.VCL.DataModuleDummy{$ENDIF}{$endif};
+{$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF}
+ System.UITypes, System.SysUtils, System.Classes, System.JSON,
+  MVCBr.ApplicationController, MVCBr.Interf;
 
 type
-  // TModuleFactory = class({$IFDEF BPL}TDataModule, {$ELSE} TForm,
-  // {$ENDIF} IModuleModel, IModel)
-  TModuleFactory = class( {$IFDEF BPL}TDataModule, {$ELSE}  TDataModuleDummy,{$endif} IModuleModel, IModel)
+
+  TCustomModuleFactory = class(TDataModule, IModuleModel, IModel)
   private
     { Private declarations }
     FController: IController;
     FID: string;
     FModelTypes: TModelTypes;
+    FOnUpdateModel: TNotifyEvent;
+    FOnAfterInit: TNotifyEvent;
+    procedure SetOnUpdateModel(const Value: TNotifyEvent);
+    procedure SetOnAfterInit(const Value: TNotifyEvent);
   protected
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel; virtual;
-    function Update: IModel; virtual;
+    function Update: IModel;overload; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
+      overload; virtual;
 
     function Controller(const AController: IController): IModel; virtual;
     function GetModelTypes: TModelTypes; virtual;
@@ -37,6 +42,9 @@ type
     procedure SetModelTypes(const AModelType: TModelTypes);
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure AfterInit; virtual;
+    property OnUpdateModel: TNotifyEvent read FOnUpdateModel
+      write SetOnUpdateModel;
+    property OnAfterInitModel: TNotifyEvent read FOnAfterInit write SetOnAfterInit;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -46,83 +54,109 @@ type
 
   end;
 
+  TModuleFactory = class(TCustomModuleFactory)
+  published
+    property ModelTypes;
+    property OnUpdateModel;
+    property OnAfterInitModel;
+  end;
+
 implementation
 
-{ %CLASSGROUP 'Vcl.Controls.TControl' }
-
 { .$R *.dfm }
-{ TModuleFactory }
+{ TCustomModuleFactory }
 
-procedure TModuleFactory.AfterInit;
+procedure TCustomModuleFactory.AfterInit;
 begin
   // chamado apos INIT;
+  if assigned(FOnAfterInit) then
+    FOnAfterInit(self);
 end;
 
-function TModuleFactory.ApplicationController: TApplicationController;
+function TCustomModuleFactory.ApplicationController: TApplicationController;
 begin
   result := TApplicationController(ApplicationControllerInternal.This);
 end;
 
-function TModuleFactory.ApplicationControllerInternal: IApplicationController;
+function TCustomModuleFactory.ApplicationControllerInternal
+  : IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
 
-function TModuleFactory.Controller(const AController: IController): IModel;
+function TCustomModuleFactory.Controller(const AController
+  : IController): IModel;
 begin
   result := self as IModel;
   FController := AController;
 end;
 
-constructor TModuleFactory.Create(AOwner: TComponent);
+constructor TCustomModuleFactory.Create(AOwner: TComponent);
 begin
   inherited;
   // BorderIcons:=[];
   // FFont:= TFont.Create;
 end;
 
-destructor TModuleFactory.destroy;
+destructor TCustomModuleFactory.Destroy;
 begin
   // FFont.Free;
   inherited;
 end;
 
-function TModuleFactory.GetController: IController;
+function TCustomModuleFactory.GetController: IController;
 begin
   result := FController;
 end;
 
-function TModuleFactory.GetID: string;
+function TCustomModuleFactory.GetID: string;
 begin
   result := FID;
 end;
 
-function TModuleFactory.GetModelTypes: TModelTypes;
+function TCustomModuleFactory.GetModelTypes: TModelTypes;
 begin
   result := FModelTypes;
 end;
 
-function TModuleFactory.ID(const AID: String): IModel;
+function TCustomModuleFactory.ID(const AID: String): IModel;
 begin
   result := self as IModel;
   FID := AID;
 end;
 
-
-
-procedure TModuleFactory.SetModelTypes(const AModelType: TModelTypes);
+procedure TCustomModuleFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
   FModelTypes := AModelType;
 end;
 
-function TModuleFactory.This: TObject;
+procedure TCustomModuleFactory.SetOnAfterInit(const Value: TNotifyEvent);
+begin
+  FOnAfterInit := Value;
+end;
+
+procedure TCustomModuleFactory.SetOnUpdateModel(const Value: TNotifyEvent);
+begin
+  FOnUpdateModel := Value;
+end;
+
+function TCustomModuleFactory.This: TObject;
 begin
   result := self;
 end;
 
-function TModuleFactory.Update: IModel;
+procedure TCustomModuleFactory.Update(AJsonValue: TJsonValue;
+  var AHandled: boolean);
+begin
+   Update;
+end;
+
+function TCustomModuleFactory.Update: IModel;
 begin
   result := self as IModel;
+  if assigned(FOnUpdateModel) then
+    FOnUpdateModel(self);
+
 end;
 
 initialization

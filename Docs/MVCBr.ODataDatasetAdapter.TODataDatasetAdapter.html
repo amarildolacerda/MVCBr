@@ -64,7 +64,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a></b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a></b>: THTTPRestClient;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -115,7 +115,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a></b>(const Value: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a></b>(const Value: THTTPRestClient);</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -211,7 +211,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ApplyUpdates">ApplyUpdates</a></b>(AProc: TFunc&lt;TJsonArray, boolean&gt;; AMethod: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a> = rmPATCH); overload;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ApplyUpdates">ApplyUpdates</a></b>(AProc: TFunc&lt;TJsonArray, boolean&gt;; AMethod: THTTPRestMethod = rmPATCH); overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -254,7 +254,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseJSON">ResponseJSON</a></b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#ResponseJSON">ResponseJSON</a></b>: THTTPRestClient read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
@@ -314,7 +314,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FResponseJSON"></a><code><b>FResponseJSON</b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>;</code></td>
+<td class="itemcode"><a name="FResponseJSON"></a><code><b>FResponseJSON</b>: THTTPRestClient;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -411,7 +411,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetResponseJSON"></a><code>procedure <b>SetResponseJSON</b>(const Value: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a>);</code></td>
+<td class="itemcode"><a name="SetResponseJSON"></a><code>procedure <b>SetResponseJSON</b>(const Value: THTTPRestClient);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -603,7 +603,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ApplyUpdates"></a><code>procedure <b>ApplyUpdates</b>(AProc: TFunc&lt;TJsonArray, boolean&gt;; AMethod: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a> = rmPATCH); overload;</code></td>
+<td class="itemcode"><a name="ApplyUpdates"></a><code>procedure <b>ApplyUpdates</b>(AProc: TFunc&lt;TJsonArray, boolean&gt;; AMethod: THTTPRestMethod = rmPATCH); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -686,7 +686,7 @@ Array's <code>changes</code></p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="ResponseJSON"></a><code>property <b>ResponseJSON</b>: <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html">TIdHTTPRestClient</a> read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
+<td class="itemcode"><a name="ResponseJSON"></a><code>property <b>ResponseJSON</b>: THTTPRestClient read <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#FResponseJSON">FResponseJSON</a> write <a  href="MVCBr.ODataDatasetAdapter.TODataDatasetAdapter.html#SetResponseJSON">SetResponseJSON</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

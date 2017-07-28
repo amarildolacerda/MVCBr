@@ -58,14 +58,24 @@ type
     function This: TObject; override;
   end;
 
+  TViewEventJsonNotify = procedure(AMessage: TJsonValue; var AHandled: boolean)
+    of object;
+  TViewCommandNotify = procedure(ACommand: string; const AArgs: array of TValue)
+    of object;
+
   /// <summary>
   /// TFormFactory é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr
   /// </summary>
-  TFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
-    IMVCBrBase, IView)
+  TCustomFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
+    IMVCBrBase, IView, IMVCBrObserver)
   private
     FEventRef: Integer;
     FID: string;
+    FOnViewEvent: TViewEventJsonNotify;
+    FOnCommandEvent: TViewCommandNotify;
+    FOnViewUpdate: TNotifyEvent;
+    FOnViewInit: TNotifyEvent;
+
 {$IFDEF LINUX}
     FCaption: string;
 {$ELSE}
@@ -74,6 +84,10 @@ type
 {$ENDIF}
     function GetPropertyValue(ANome: string): TValue;
     procedure SetPropertyValue(ANome: string; const Value: TValue);
+    procedure SetOnViewEvent(const Value: TViewEventJsonNotify);
+    procedure SetOnCommandEvent(const Value: TViewCommandNotify);
+    procedure SetOnViewUpdate(const Value: TNotifyEvent);
+    procedure SetOnViewInit(const Value: TNotifyEvent);
   protected
     FOnCloseProc: TProc<IView>;
     FController: IController;
@@ -88,8 +102,8 @@ type
     procedure SetShowModal(const AShowModal: boolean);
     /// Retorna se a apresentação do formulário é ShowModal
     function GetShowModal: boolean;
-    function GetTitle: string;virtual;
-    procedure SetTitle(const Value: string);virtual;
+    function GetTitle: string; virtual;
+    procedure SetTitle(const Value: string); virtual;
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
@@ -102,6 +116,8 @@ type
       overload; virtual;
     function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView;
       overload; virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
+      overload; virtual;
     function MainViewEvent(AMessage: string; var AHandled: boolean)
       : IView; virtual;
     function ViewEventOther(AMessage: string; var AHandled: boolean): IView;
@@ -111,6 +127,11 @@ type
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
     function GetController: IController; virtual;
+    function AttachController(AInterface: TGuid): IController;
+      overload; virtual;
+    function AttachController<TIController: IController>: TIController;
+      overload;
+    function AttachModel<TIModel:IModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
     /// Retorna o SELF
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
@@ -145,26 +166,53 @@ type
     /// Evento para atualizar os dados da VIEW
     function UpdateView: IView; virtual;
 
+    procedure UpdateObserver(AJson: TJsonValue); overload; virtual;
+    procedure UpdateObserver(AName: string; AJson: TJsonValue);
+      overload; virtual;
+    procedure UpdateObserver(AName: string; AMensagem: String);
+      overload; virtual;
+    function Observable: IMVCBrObservable; virtual;
+    procedure RegisterObserver(const AName: String);
+    procedure UnRegisterObserver(const AName: String);
+
     property Text: string read GetTitle write SetTitle;
 
-  published
 {$IFDEF LINUX}
 {$ELSE}
     property OnClose: TCloseEvent read FOnClose write SetOnClose;
 {$ENDIF}
+    property OnViewInit: TNotifyEvent read FOnViewInit write SetOnViewInit;
+    property OnViewEvent: TViewEventJsonNotify read FOnViewEvent
+      write SetOnViewEvent;
+    property OnViewCommand: TViewCommandNotify read FOnCommandEvent
+      write SetOnCommandEvent;
+    property OnViewUpdate: TNotifyEvent read FOnViewUpdate
+      write SetOnViewUpdate;
+  end;
+
+  TFormFactory = class(TCustomFormFactory)
+  published
+{$IFDEF LINUX}
+{$ELSE}
+    property OnClose;
+{$ENDIF}
+    property OnViewEvent;
+    property OnViewCommand;
+    property OnViewUpdate;
+    property OnViewInit;
   end;
 
 implementation
 
 { TViewFormFacotry }
-procedure TFormFactory.AfterConstruction;
+procedure TCustomFormFactory.AfterConstruction;
 begin
   inherited;
   FShowModal := true;
 end;
 
 /// Set Controller to VIEW
-function TFormFactory.Controller(const AController: IController): IView;
+function TCustomFormFactory.Controller(const AController: IController): IView;
 begin
   result := self;
   FController := AController;
@@ -174,7 +222,7 @@ var
   LViewsCount: Integer = 0;
   /// counter to instance of VIEW
 
-constructor TFormFactory.Create(AOwner: TComponent);
+constructor TCustomFormFactory.Create(AOwner: TComponent);
 begin
   inherited;
   FEventRef := 0;
@@ -182,7 +230,7 @@ begin
   FID := classname + '_' + intToStr(LViewsCount);
 end;
 
-destructor TFormFactory.Destroy;
+destructor TCustomFormFactory.Destroy;
 begin
   if assigned(FController) then
     FController.This.RevokeInstance(FController); // clear controller
@@ -190,52 +238,53 @@ begin
   inherited;
 end;
 
-function TFormFactory.GetController: IController;
+function TCustomFormFactory.GetController: IController;
 begin
   result := FController;
 end;
 
-function TFormFactory.GetGuid(AII: IInterface): TGuid;
+function TCustomFormFactory.GetGuid(AII: IInterface): TGuid;
 begin
   result := TMVCBr.GetGuid(AII);
 end;
 
-function TFormFactory.GetID: string;
+function TCustomFormFactory.GetID: string;
 begin
   result := FID;
 end;
 
-function TFormFactory.GetModel(AII: TGuid): IModel;
+function TCustomFormFactory.GetModel(AII: TGuid): IModel;
 begin
   FController.GetModel(AII, result);
 end;
 
-function TFormFactory.GetModel<TIModel>: TIModel;
+function TCustomFormFactory.GetModel<TIModel>: TIModel;
 begin
   result := FController.This.GetModel<TIModel>;
 end;
 
-function TFormFactory.GetView<TIView>: TIView;
-var AGuid:TGuid;
-    AView:IView;
+function TCustomFormFactory.GetView<TIView>: TIView;
+var
+  AGuid: TGuid;
+  AView: IView;
 begin
-    AGuid := TMVCBr.GetGuid<TIView>;
-    AView := FindView(AGuid);
-    if assigned(AView) then
-       result := TIView(AView);
+  AGuid := TMVCBr.GetGuid<TIView>;
+  AView := FindView(AGuid);
+  if assigned(AView) then
+    result := TIView(AView);
 end;
 
-function TFormFactory.GetPropertyValue(ANome: string): TValue;
+function TCustomFormFactory.GetPropertyValue(ANome: string): TValue;
 begin
   result := TMVCBr.GetProperty(self, ANome);
 end;
 
-function TFormFactory.GetShowModal: boolean;
+function TCustomFormFactory.GetShowModal: boolean;
 begin
   result := FShowModal;
 end;
 
-function TFormFactory.GetTitle: string;
+function TCustomFormFactory.GetTitle: string;
 begin
 {$IFDEF LINUX}
   result := FCaption;
@@ -248,53 +297,104 @@ begin
 {$ENDIF}
 end;
 
-function TFormFactory.GetViewModel: IViewModel;
+function TCustomFormFactory.GetViewModel: IViewModel;
 begin
   result := nil;
   if assigned(FController) then
     result := FController.GetModelByType(mtViewModel) as IViewModel;
 end;
 
-procedure TFormFactory.Init;
+procedure TCustomFormFactory.Init;
 begin
-
+  if assigned(FOnViewInit) then
+    FOnViewInit(self);
 end;
 
-function TFormFactory.InvokeMethod<T>(AMethod: string;
+function TCustomFormFactory.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
-function TFormFactory.ResolveController(const IID: TGuid): IController;
+function TCustomFormFactory.AttachController(AInterface: TGuid): IController;
+begin
+  result := ApplicationController.ResolveController(AInterface) as IController;
+  result.View(self);
+  SetController(result);
+end;
+
+function TCustomFormFactory.AttachController<TIController>: TIController;
+var
+  AGuid: TGuid;
+begin
+  AGuid := TMVCBr.GetGuid<TIController>;
+  result := AttachController(AGuid);
+end;
+
+function TCustomFormFactory.AttachModel<TIModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
+var o:TObject;
+    AGuid:TGuid;
+begin
+  o := aModelClass.Create;
+  AGuid := TMVCBr.GetGuid<TIModel>;
+  Supports(o,AGuid,result);
+  GetController.AttachModel(result);
+end;
+
+procedure TCustomFormFactory.RegisterObserver(const AName: String);
+begin
+  TMVCBr.RegisterObserver(AName, self);
+end;
+
+function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
 begin
   result := FController.This.ResolveController(IID);
 end;
 
-function TFormFactory.ResolveController<TIController>: TIController;
+function TCustomFormFactory.ResolveController<TIController>: TIController;
 begin
   result := GetController.This.ResolveController<TIController>();
 end;
 
-procedure TFormFactory.RevokeController(IID: TGuid);
+procedure TCustomFormFactory.RevokeController(IID: TGuid);
 begin
   ApplicationController.RevokeController(IID);
 end;
 
-procedure TFormFactory.SetController(const AController: IController);
+procedure TCustomFormFactory.SetController(const AController: IController);
 begin
   FController := AController;
+end;
+
+procedure TCustomFormFactory.SetOnCommandEvent(const Value: TViewCommandNotify);
+begin
+  FOnCommandEvent := Value;
+end;
+
+procedure TCustomFormFactory.SetOnViewEvent(const Value: TViewEventJsonNotify);
+begin
+  FOnViewEvent := Value;
+end;
+
+procedure TCustomFormFactory.SetOnViewInit(const Value: TNotifyEvent);
+begin
+  FOnViewInit := Value;
+end;
+
+procedure TCustomFormFactory.SetOnViewUpdate(const Value: TNotifyEvent);
+begin
+  FOnViewUpdate := Value;
 end;
 
 {$IFDEF LINUX}
 {$ELSE}
 
-procedure TFormFactory.SetOnClose(const Value: TCloseEvent);
+procedure TCustomFormFactory.SetOnClose(const Value: TCloseEvent);
 begin
   FOnClose := Value;
 end;
 
-procedure TFormFactory.DoCloseView(Sender: TObject;
+procedure TCustomFormFactory.DoCloseView(Sender: TObject;
   var ACloseAction: TCloseAction);
 begin
   if assigned(FOnCloseProc) then
@@ -304,35 +404,39 @@ begin
 end;
 {$ENDIF}
 
-function TFormFactory.ApplicationController: TApplicationController;
+function TCustomFormFactory.ApplicationController: TApplicationController;
 begin
   result := TApplicationController
     (MVCBr.ApplicationController.ApplicationController.This);
 end;
 
-function TFormFactory.ApplicationControllerInternal: IApplicationController;
+function TCustomFormFactory.ApplicationControllerInternal
+  : IApplicationController;
 begin
   result := MVCBr.ApplicationController.ApplicationController;
 end;
 
-procedure TFormFactory.DoCommand(ACommand: string;
+procedure TCustomFormFactory.DoCommand(ACommand: string;
   const AArgs: array of TValue);
 begin
-
+  if assigned(FOnCommandEvent) then
+    FOnCommandEvent(ACommand, AArgs);
 end;
 
-function TFormFactory.FindView(AGuid: TGuid): IView;
+function TCustomFormFactory.FindView(AGuid: TGuid): IView;
 begin
   result := ApplicationController.FindView(AGuid);
 end;
 
-function TFormFactory.ViewEvent(AMessage: TJsonValue;
+function TCustomFormFactory.ViewEvent(AMessage: TJsonValue;
   var AHandled: boolean): IView;
 begin
   result := self;
+  if assigned(FOnViewEvent) then
+    FOnViewEvent(AMessage, AHandled);
 end;
 
-function TFormFactory.ViewEventOther(AMessage: string;
+function TCustomFormFactory.ViewEventOther(AMessage: string;
   var AHandled: boolean): IView;
 begin
   result := self;
@@ -352,30 +456,49 @@ begin
   end;
 end;
 
-function TFormFactory.ViewEvent(AMessage: string; var AHandled: boolean): IView;
+function TCustomFormFactory.ViewEvent(AMessage: string;
+  var AHandled: boolean): IView;
+var
+  j: TJsonObject;
 begin
-  result := self;
   /// use inherited this method on child
   /// takecare put code here and start a loop whithout end
+  result := self;
+  if assigned(FOnViewEvent) then
+  begin
+    j := TJsonObject.Create();
+    try
+      j.addPair('message', AMessage);
+      FOnViewEvent(j, AHandled);
+    finally
+      j.free;
+    end;
+  end;
 end;
 
-function TFormFactory.MainViewEvent(AMessage: string;
+function TCustomFormFactory.MainViewEvent(AMessage: string;
   var AHandled: boolean): IView;
 begin
   ApplicationController.MainView.ViewEvent(AMessage, AHandled);
 end;
 
-procedure TFormFactory.SetPropertyValue(ANome: string; const Value: TValue);
+function TCustomFormFactory.Observable: IMVCBrObservable;
+begin
+  result := TMVCBr.Observable;
+end;
+
+procedure TCustomFormFactory.SetPropertyValue(ANome: string;
+  const Value: TValue);
 begin
   TMVCBr.SetProperty(self, ANome, Value);
 end;
 
-procedure TFormFactory.SetShowModal(const AShowModal: boolean);
+procedure TCustomFormFactory.SetShowModal(const AShowModal: boolean);
 begin
   FShowModal := AShowModal;
 end;
 
-procedure TFormFactory.SetTitle(const Value: string);
+procedure TCustomFormFactory.SetTitle(const Value: string);
 begin
 {$IFDEF LINUX}
   FCaption := Value;
@@ -388,7 +511,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TFormFactory.SetViewModel(const AViewModel: IViewModel);
+procedure TCustomFormFactory.SetViewModel(const AViewModel: IViewModel);
 begin
   // fazer herança
   if assigned(AViewModel) then
@@ -396,7 +519,7 @@ begin
 
 end;
 
-function TFormFactory.ShowView(const AProcBeforeShow,
+function TCustomFormFactory.ShowView(const AProcBeforeShow,
   AProcONClose: TProc<IView>): IView;
 begin
   FOnCloseProc := AProcONClose;
@@ -408,7 +531,7 @@ begin
   ShowView(AProcBeforeShow);
 end;
 
-function TFormFactory.ShowView(const IIDController: TGuid): IView;
+function TCustomFormFactory.ShowView(const IIDController: TGuid): IView;
 begin
   result := ShowView(IIDController,
     procedure(Sender: IView)
@@ -417,7 +540,7 @@ begin
     end);
 end;
 
-function TFormFactory.ShowView(const IIDController: TGuid;
+function TCustomFormFactory.ShowView(const IIDController: TGuid;
 const AProcBeforeShow: TProc<IView>): IView;
 var
   LController: IController;
@@ -431,7 +554,8 @@ begin
   end;
 end;
 
-function TFormFactory.ShowView(const AProcBeforeShow: TProc<IView>): Integer;
+function TCustomFormFactory.ShowView(const AProcBeforeShow
+  : TProc<IView>): Integer;
 begin
   result := 0;
   if assigned(AProcBeforeShow) then
@@ -452,7 +576,7 @@ begin
 {$ENDIF}
 end;
 
-function TFormFactory.ShowView(const IIDController: TGuid;
+function TCustomFormFactory.ShowView(const IIDController: TGuid;
 const AProcBeforeShow: TProc<IView>; const AProcONClose: TProc<IView>): IView;
 var
   ctrl: IController;
@@ -467,14 +591,51 @@ begin
   end;
 end;
 
-function TFormFactory.This: TObject;
+function TCustomFormFactory.This: TObject;
 begin
   result := self;
 end;
 
-function TFormFactory.UpdateView: IView;
+procedure TCustomFormFactory.UnRegisterObserver(const AName: String);
+begin
+  TMVCBr.UnRegisterObserver(AName, self);
+end;
+
+procedure TCustomFormFactory.Update(AJsonValue: TJsonValue;
+var AHandled: boolean);
+begin
+  ViewEvent(AJsonValue, AHandled);
+end;
+
+procedure TCustomFormFactory.UpdateObserver(AName, AMensagem: String);
+var
+  j: TJsonObject;
+begin
+  j := TJsonObject.Create;
+  try
+    j.addPair('message', AMensagem);
+    UpdateObserver(AName, j);
+  finally
+    j.free;
+  end;
+end;
+
+procedure TCustomFormFactory.UpdateObserver(AName: string; AJson: TJsonValue);
+begin
+  TMVCBr.UpdateObserver(AName, AJson);
+end;
+
+procedure TCustomFormFactory.UpdateObserver(AJson: TJsonValue);
+begin
+  TMVCBr.UpdateObserver(AJson);
+end;
+
+function TCustomFormFactory.UpdateView: IView;
 begin
   result := self;
+  if assigned(FOnViewUpdate) then
+    FOnViewUpdate(self);
+
 end;
 
 { TViewFactoryAdapter }
@@ -556,13 +717,13 @@ begin
   result := self;
 end;
 
-function TFormFactory.ShowView: IView;
+function TCustomFormFactory.ShowView: IView;
 begin
   result := self;
   ShowView(nil);
 end;
 
-function TFormFactory.ShowView(const AProcBeforeShow: TProc<IView>;
+function TCustomFormFactory.ShowView(const AProcBeforeShow: TProc<IView>;
 AShowModal: boolean): IView;
 begin
   FShowModal := AShowModal;

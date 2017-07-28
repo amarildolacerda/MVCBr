@@ -13,7 +13,8 @@ unit MVCBr.Component;
 
 interface
 
-uses MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController, System.Classes,
+uses MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController,
+  System.Classes, System.JSON,
   System.SysUtils;
 
 type
@@ -27,14 +28,13 @@ type
     procedure initBase;
   protected
   public
-    constructor Create(AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     procedure AfterConstruction; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
-    function Update: IModel; virtual;
     function Controller(const AController: IController): IModel; virtual;
     function GetModelTypes: TModelTypes; virtual;
     function GetController: IController; virtual;
@@ -43,6 +43,9 @@ type
     procedure SetModelTypes(const AModelType: TModelTypes); virtual;
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure AfterInit; virtual;
+    function Update: IModel; overload;virtual;
+    procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
+      overload; virtual;
 
   end;
 
@@ -77,7 +80,7 @@ begin
   result := FAdapter.Controller(AController);
 end;
 
-constructor TComponentFactory.create(AOwner: TComponent);
+constructor TComponentFactory.Create(AOwner: TComponent);
 begin
   inherited;
   initBase;
@@ -114,9 +117,9 @@ procedure TComponentFactory.initBase;
 begin
   if not assigned(FAdapter) then
   begin
-    FAdapter := TModelFactory.create;
+    FAdapter := TModelFactory.Create;
     FAdapter.ID(Self.ClassName + '.' + Self.name);
-    SetModelTypes( [mtComponent] );
+    SetModelTypes([mtComponent]);
   end;
 end;
 
@@ -129,12 +132,18 @@ end;
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
   if assigned(FAdapter) then
-    FAdapter.SetModelTypes( AModelType );
+    FAdapter.SetModelTypes(AModelType);
 end;
 
 function TComponentFactory.This: TObject;
 begin
   result := Self;
+end;
+
+procedure TComponentFactory.Update(AJsonValue: TJsonValue;
+  var AHandled: boolean);
+begin
+  Update;
 end;
 
 function TComponentFactory.Update: IModel;

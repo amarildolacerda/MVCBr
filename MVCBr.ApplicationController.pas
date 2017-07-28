@@ -67,6 +67,7 @@ type
     destructor Destroy; override;
 
     class function Default: IApplicationController;
+    class procedure Release;
     /// Loop que chama AProc para cada um dos controllers da lista
     function MainView: IView; virtual;
     procedure SetMainView(AView: IView);
@@ -292,6 +293,11 @@ begin
   result := self;
 end;
 
+class procedure TApplicationController.Release;
+begin
+  FApplicationController := nil;
+end;
+
 procedure TApplicationController.Remove(const AController: IController);
 var
   i: integer;
@@ -317,13 +323,14 @@ end;
 
 procedure TApplicationController.RevokeController(AGuid: TGuid);
 var
-  LController: IController;
+  AController: IController;
 begin
-  LController := FindController(AGuid);
-  if assigned(LController) then
+  AController := FindController(AGuid);
+  if assigned(AController) then
   begin
-    Remove(LController);
-    TControllerAbstract.RevokeInstance(LController);
+    Remove(AController);
+    TControllerAbstract.RevokeInstance(AController);
+    AController := nil;
   end;
 end;
 
@@ -506,5 +513,7 @@ end;
 initialization
 
 finalization
+
+    TApplicationController.Release;
 
 end.

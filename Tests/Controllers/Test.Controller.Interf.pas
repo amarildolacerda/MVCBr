@@ -25,7 +25,7 @@ type
   ITestController = interface(IController)
     ['{0BBB7F41-AD4C-4CB2-825D-ECB8F473BFDC}']
     // incluir especializações aqui
-
+    procedure IncContador;
     function GetStubInt: Integer;
   end;
 

@@ -28,7 +28,7 @@ interface
 
 Uses System.Classes,
   System.SysUtils, DB,
-  MVCBr.ODataDatasetAdapter, oData.Comp.Client, MVCBr.IdHttpRestClient,
+  MVCBr.ODataDatasetAdapter, oData.Comp.Client, MVCBr.HttpRestClient,
   MVCBr.ODataDatasetBuilder,
   MVCBr.Common, MVCBr.ODataFDMemTable,
   DesignIntf, DesignEditors;
@@ -87,7 +87,7 @@ begin
           begin
             if not assigned(ResponseJSON) then
             begin
-              ResponseJSON := TIdHTTPRestClient.Create(Component.Owner);
+              ResponseJSON := THTTPRestClient.Create(Component.Owner);
               ResponseJSON.Name := 'RestClient_'+Component.Name;
             end;
             if not assigned(Builder) then

@@ -7,7 +7,8 @@ const
   wizardForm_label_ident = 'Project name';
   wizardForm_label_folder = 'Project home path';
   wizardForm_button_search = 'Search';
-  wizardForm_createdir_checkbox_caption = 'keep artefact on home path';
+  wizardForm_createdir_checkbox_caption = 'keep artefact in the home folder';
+  wizardForm_groupdir_checkbox_caption = 'keep artefact in the same folder';
   wizardForm_NameFor = 'Name for %s';
   wizardForm_NameForArtefact = 'Artefact name';
 

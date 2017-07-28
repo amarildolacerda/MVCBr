@@ -83,6 +83,8 @@ type
   end;
 
   TFieldHelper = class helper for TField
+    function Round(ADec: integer): TField;
+    function Trunc: TField;
     function FromStream(stream: TStream): TField;
     function ToStream(stream: TStream): TField;
   end;
@@ -265,9 +267,9 @@ begin
     first;
     while Eof = false do
     begin
-     { if TThread.Current.CheckTerminated then
+      { if TThread.Current.CheckTerminated then
         break;
-        }
+      }
       if AEvent(self) then
         exit;
       /// TRUE - Finaliza   FALSE - Continua
@@ -695,10 +697,42 @@ begin
   TBlobField(self).LoadFromStream(stream);
 end;
 
+function RoundFloat(AValor: Double; ACasaDecimal: integer): Double;
+var
+  Ls: string;
+  s:string;
+begin
+  try
+    result := AValor;
+    if ACasaDecimal < 0 then
+      exit;
+    s := s.PadRight(ACasaDecimal, '0');
+    Ls := '0.'+  s;
+    if ACasaDecimal = 0 then
+      Ls := '0';
+    Ls := formatFloat(Ls, AValor);
+    result := StrToFloatDef(Ls, 0);
+  except
+    result := 0;
+  end;
+end;
+
+function TFieldHelper.Round(ADec: integer): TField;
+begin
+  if DataType in [ftFloat, ftCurrency, ftBCD] then
+    AsFloat := RoundFloat(AsFloat, ADec);
+end;
+
 function TFieldHelper.ToStream(stream: TStream): TField;
 begin
   result := self;
   TBlobField(self).SaveToStream(stream);
+end;
+
+function TFieldHelper.Trunc: TField;
+begin
+  if DataType in [ftFloat, ftCurrency, ftBCD] then
+     AsFloat := System.Trunc(AsFloat)
 end;
 
 procedure TDatasetHelper.ChangeAllValuesTo(AFieldName: string; AValue: Variant;

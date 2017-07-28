@@ -56,12 +56,21 @@ type
     procedure TestUpdateByModel;
     procedure TestUpdateByView;
     procedure TestResolveController;
+    procedure TestRevokeController;
+
+
+    procedure TestRegisterObserver;
+    procedure TestUnRegisterObserverNamed;
+    procedure TestUnRegisterObserverNamedOnly;
+    procedure TesteObserver;
+
+
   end;
 
 implementation
 
 
-uses test.Controller.interf;
+uses test.Controller.interf, TestSecond.Controller.Interf;
 
 procedure TestTControllerFactory.SetUp;
 begin
@@ -109,6 +118,11 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTControllerFactory.TesteObserver;
+begin
+
+end;
+
 procedure TestTControllerFactory.TestGetModel;
 var
   ReturnValue: IModel;
@@ -139,11 +153,40 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTControllerFactory.TestRegisterObserver;
+begin
+   FControllerFactory.RegisterObserver(FControllerFactory);
+end;
+
 procedure TestTControllerFactory.TestResolveController;
 var ctrl:ITestController;
 begin
   ctrl :=  FControllerFactory.ResolveController<ITestController>;
   CheckNotNull(ctrl,'Não inicializou o controller');
+end;
+
+procedure TestTControllerFactory.TestRevokeController;
+var AController:ITestSecondController2;
+    ARefCount:integer;
+begin
+   ApplicationController.RevokeController(ITestSecondController2);
+   AController := ApplicationController.resolveController(ITestSecondController2) as ITestSecondController2;
+   ARefCount := AController.this.RefCount;
+
+   CheckTrue(AController.GetStubInt=1,'Contador não foi incilizado com 1');
+   AController.IncContador;
+   CheckTrue(AController.GetStubInt=2,'Contador não foi incrementado para 2');
+
+//   AController := nil ; // mata o controller
+   ApplicationController.RevokeController(ITestSecondController2);
+   AController := ApplicationController.resolveController(ITestSecondController2) as ITestSecondController2;
+   checkTrue(AController.this.refCount=ARefCount,'Contador de referencia não se manteve');
+
+
+   CheckTrue(AController.GetStubInt2=1,'Instancia nao foi reinicializada');
+   AController := nil ; // mata o controller
+
+
 end;
 
 procedure TestTControllerFactory.TestBeforeInit;
@@ -291,6 +334,17 @@ begin
   FControllerFactory.ForEach(AProc);
   checkTrue(rt);
   // TODO: Validate method results
+end;
+
+procedure TestTControllerFactory.TestUnRegisterObserverNamed;
+begin
+   FControllerFactory.RegisterObserver('x');
+
+end;
+
+procedure TestTControllerFactory.TestUnRegisterObserverNamedOnly;
+begin
+
 end;
 
 procedure TestTControllerFactory.TestUpdateAll;

@@ -33,7 +33,7 @@ MVCBr
 <h1 class="unit">Unit MVCBr.FormView</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td>Funções e Procedimentos</td><td>Tipos</td><td>Constantes</td><td>Variáveis</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td>Funções e Procedimentos</td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
 <p>
 MVCBr.FormView - implements base class of FormView Auth: amarildo lacerda Date: jan/2017
@@ -56,9 +56,38 @@ MVCBr.FormView - implements base class of FormView Auth: amarildo lacerda Date: 
 <td class="itemdesc"> TViewFactoryAdpater é um conector para receber um <a class="normal" href="MVCBr.FormView.TViewFactoryAdapter.html#Form">FORM</a>, a ser utilizado para formularios que não herdam diretamente de <a class="normal" href="MVCBr.FormView.TFormFactory.html">TFormFactory</a> </td>
 </tr>
 <tr class="list">
-<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.FormView.TFormFactory.html"><code>TFormFactory</code></a></td>
-<td class="itemdesc"> <code>TFormFactory</code> é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr </td>
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.FormView.TCustomFormFactory.html"><code>TCustomFormFactory</code></a></td>
+<td class="itemdesc"> <a class="normal" href="MVCBr.FormView.TFormFactory.html">TFormFactory</a> é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr </td>
 </tr>
+<tr class="list2">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.FormView.TFormFactory.html"><code>TFormFactory</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a></b> = procedure(AMessage: TJsonValue; var AHandled: boolean) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a></b> = procedure(ACommand: string; const AArgs: array of TValue) of object;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Tipos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TViewEventJsonNotify"></a><code><b>TViewEventJsonNotify</b> = procedure(AMessage: TJsonValue; var AHandled: boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TViewCommandNotify"></a><code><b>TViewCommandNotify</b> = procedure(ACommand: string; const AArgs: array of TValue) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
 </table>
 tireideletra.com.br
 <hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>

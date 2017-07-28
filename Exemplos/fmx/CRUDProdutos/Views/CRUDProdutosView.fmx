@@ -4,10 +4,6 @@ object CRUDProdutosView: TCRUDProdutosView
   Caption = 'CRUDProdutosView'
   ClientHeight = 480
   ClientWidth = 640
-  FormFactor.Width = 320
-  FormFactor.Height = 480
-  FormFactor.Devices = [Desktop, iPhone, iPad]
-  DesignerMasterStyle = 0
   object StringGrid1: TStringGrid
     CanFocus = True
     ClipChildren = True

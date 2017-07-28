@@ -390,7 +390,7 @@ object tabelaPriceView: TtabelaPriceView
               Margins.Top = 5.000000000000000000
               Margins.Bottom = 5.000000000000000000
               Size.Width = 100.000000000000000000
-              Size.Height = 32.000000000000000000
+              Size.Height = 31.148956298828130000
               Size.PlatformDefault = False
               OnExit = edEqTaxaConhecidaExit
             end
@@ -412,7 +412,7 @@ object tabelaPriceView: TtabelaPriceView
               Margins.Top = 5.000000000000000000
               Margins.Bottom = 5.000000000000000000
               Size.Width = 59.000000000000000000
-              Size.Height = 32.000000000000000000
+              Size.Height = 31.148956298828130000
               Size.PlatformDefault = False
               OnExit = edEqPeriodoDadoExit
             end
@@ -434,7 +434,7 @@ object tabelaPriceView: TtabelaPriceView
               Margins.Top = 5.000000000000000000
               Margins.Bottom = 5.000000000000000000
               Size.Width = 59.000000000000000000
-              Size.Height = 32.000000000000000000
+              Size.Height = 28.844345092773440000
               Size.PlatformDefault = False
               OnExit = edEqPeriodoDesejadoExit
             end
@@ -457,7 +457,7 @@ object tabelaPriceView: TtabelaPriceView
               Margins.Top = 5.000000000000000000
               Margins.Bottom = 5.000000000000000000
               Size.Width = 100.000000000000000000
-              Size.Height = 32.000000000000000000
+              Size.Height = 28.857742309570310000
               Size.PlatformDefault = False
             end
           end
@@ -493,7 +493,7 @@ object tabelaPriceView: TtabelaPriceView
             RowCount = 0
             Options = [ColumnResize, ColumnMove, ColLines, RowLines, Tabs, Header, HeaderClick, AutoDisplacement]
             Viewport.Width = 312.000000000000000000
-            Viewport.Height = 407.000000000000000000
+            Viewport.Height = 439.000000000000000000
           end
         end
       end

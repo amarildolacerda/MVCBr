@@ -8,7 +8,7 @@ const
   wizardForm_label_folder = 'Pasta para o projeto';
   wizardForm_button_search = 'Localizar';
   wizardForm_createdir_checkbox_caption = 'manter os artefatos na raiz';
-
+  wizardForm_groupdir_checkbox_caption = 'manter os artefatos juntos na mesma pasta';
   wizardForm_NameFor = 'Nome identificador para %s';
   wizardForm_NameForArtefact = 'Nome para o artefato';
 

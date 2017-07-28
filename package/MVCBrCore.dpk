@@ -35,7 +35,8 @@ requires
   rtl,
   vcl,
   fmx,
-  dbrtl;
+  dbrtl,
+  DesignIDE;
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
@@ -48,17 +49,23 @@ contains
   MVCBr.IoC in '..\MVCBr.IoC.pas',
   MVCBr.Model in '..\MVCBr.Model.pas',
   MVCBr.PageView in '..\MVCBr.PageView.pas',
-  MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
   MVCBr.View in '..\MVCBr.View.pas',
-  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
-  MVCBr.Comum in '..\MVCBr.Comum.pas',
   System.JsonFiles in '..\helpers\System.JsonFiles.pas',
-  MVCBr.VCL.DataModuleDummy in '..\MVCBr.VCL.DataModuleDummy.pas' {DataModuleDummy: TDataModule},
+  MVCBr.Common in '..\VCL\MVCBr.Common.pas',
   MVCBr.Component in '..\MVCBr.Component.pas',
   MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
   MVCBr.NavigateModel in '..\MVCBr.NavigateModel.pas',
-  MVCBr.OrmModel in '..\MVCBr.OrmModel.pas';
+  MVCBr.OrmModel in '..\MVCBr.OrmModel.pas',
+  MVCBr.PersistentModel in '..\MVCBr.PersistentModel.pas',
+  MVCBr.ValidateModel in '..\MVCBr.ValidateModel.pas',
+  MVCBr.ViewModel in '..\MVCBr.ViewModel.pas',
+  MVCBr.Observable in '..\MVCBr.Observable.pas',
+  MVCBr.Observer in '..\MVCBr.Observer.pas',
+  MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
+  MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
+  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
+  MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas';
 
 end.
 

@@ -13,21 +13,29 @@ interface
 
 uses
   TestFramework, System.Classes, System.Generics.collections, MVCBr.Interf,
-  MVCBr.Controller,
+  MVCBr.Controller, System.JSON,
   MVCBr.Model, System.SysUtils;
 
 type
   // Test methods for class TModelFactory
 
+  TModelFactoryMock = class(TModelFactory)
+  private
+    FRefCount: Integer;
+    function GetStubInt: Integer;
+   function Update:IModel; override;
+
+  end;
+
   TestTModelFactory = class(TTestCase)
   strict private
-    FModelFactory: TModelFactory;
+    FModelFactory: TModelFactoryMock;
 
   Type
     TTesteController = class(TControllerFactory)
     end;
   protected
-    FController : IController;
+    FController: IController;
   public
 
     procedure SetUp; override;
@@ -41,6 +49,12 @@ type
     procedure TestID;
     procedure TestUpdate;
     procedure TestAfterInit;
+
+    procedure TestRegisterObserver;
+    procedure TestUnRegisterObserverNamed;
+    procedure TestUnRegisterObserverNamedOnly;
+    procedure TesteObserver;
+
   end;
 
 implementation
@@ -48,7 +62,7 @@ implementation
 procedure TestTModelFactory.SetUp;
 begin
   FController := TTesteController.Create;
-  FModelFactory := TModelFactory.Create;
+  FModelFactory := TModelFactoryMock.Create;
   with FController do
     add(FModelFactory);
 end;
@@ -90,6 +104,19 @@ begin
   // TODO: Validate method results
 end;
 
+procedure TestTModelFactory.TesteObserver;
+var
+  ref: Integer;
+begin
+  TMVCBr.RegisterObserver('x', FModelFactory);
+  ref := FModelFactory.GetStubInt;
+  FModelFactory.UpdateObserver('x', nil);
+
+  CheckTrue(FModelFactory.GetStubInt > ref, 'Não chamou o evento do Observer');
+
+  TMVCBr.UnRegisterObserver('x', FModelFactory);
+end;
+
 procedure TestTModelFactory.TestThis;
 var
   ReturnValue: TObject;
@@ -114,10 +141,35 @@ var
   AID: string;
 begin
   // TODO: Setup method call parameters
-  AID := FModelFactory.getID;
+  AID := FModelFactory.GetID;
   ReturnValue := FModelFactory.ID(AID);
   // TODO: Validate method results
   CheckNotNull(ReturnValue, 'Nao retornou');
+end;
+
+procedure TestTModelFactory.TestRegisterObserver;
+var
+  ref, ref2: Integer;
+begin
+  ref := TMVCBr.Observable.Count;
+  TMVCBr.RegisterObserver('z', FModelFactory);
+  ref2 := TMVCBr.Observable.Count;
+  CheckTrue(ref2 > ref, 'Não incrementou a lista de observable');
+  TMVCBr.UnRegisterObserver('z');
+end;
+
+procedure TestTModelFactory.TestUnRegisterObserverNamed;
+begin
+  TMVCBr.RegisterObserver('y', FModelFactory);
+  TMVCBr.UnRegisterObserver('y', FModelFactory);
+
+end;
+
+procedure TestTModelFactory.TestUnRegisterObserverNamedOnly;
+begin
+  TMVCBr.RegisterObserver('k', FModelFactory);
+  TMVCBr.UnRegisterObserver('k');
+
 end;
 
 procedure TestTModelFactory.TestUpdate;
@@ -131,9 +183,25 @@ end;
 
 procedure TestTModelFactory.TestAfterInit;
 begin
-   FModelFactory.AfterInit;
+  // FModelFactory.AfterInit;
   // TODO: Validate method results
 end;
+
+{ TModelFactoryMock }
+
+{ TModelFactoryMock }
+
+function TModelFactoryMock.GetStubInt: Integer;
+begin
+  result := FRefCount;
+end;
+
+function TModelFactoryMock.Update: IModel;
+begin
+  result := self;
+  inc(FRefCount);
+end;
+
 
 initialization
 
