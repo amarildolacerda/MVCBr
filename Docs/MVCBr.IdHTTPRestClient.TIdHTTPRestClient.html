@@ -39,10 +39,10 @@ MVCBr
 <a  href="MVCBr.IdHTTPRestClient.html">MVCBr.IdHTTPRestClient</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TIdHTTPRestClient = class(TComponent)</code></p>
+<code>type TIdHTTPRestClient = class(TMVCBrHttpRestClientAbstract)</code></p>
 <h2 class="description">Descrição</h2>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
-<ul class="hierarchy"><li class="ancestor">TComponent</li>
+<ul class="hierarchy"><li class="ancestor">TMVCBrHttpRestClientAbstract</li>
 <li class="thisitem">TIdHTTPRestClient</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
 <table class="summary wide_list">
@@ -50,104 +50,16 @@ MVCBr
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FIdHTTP">FIdHTTP</a></b>: TIdCustomHTTP;</code></td>
 </tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FContent">FContent</a></b>: string;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FBaseURL">FBaseURL</a></b>: string;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FResource">FResource</a></b>: string;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FMethod">FMethod</a></b>: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAcceptCharset">FAcceptCharset</a></b>: string;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAccept">FAccept</a></b>: String;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAcceptEncoding">FAcceptEncoding</a></b>: string;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FResourcePrefix">FResourcePrefix</a></b>: string;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FTimeout">FTimeout</a></b>: integer;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FBody">FBody</a></b>: TStrings;</code></td>
-</tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetBaseURL">SetBaseURL</a></b>(const Value: string);</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetResource">SetResource</a></b>(const Value: string);</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetMethod">SetMethod</a></b>(const Value: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a>);</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAcceptCharset">SetAcceptCharset</a></b>(const Value: string);</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAccept">SetAccept</a></b>(const Value: String);</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAcceptEncoding">SetAcceptEncoding</a></b>(const Value: string);</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetResourcePrefix">SetResourcePrefix</a></b>(const Value: string);</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetTimeout">SetTimeout</a></b>(const Value: integer);</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetBody">SetBody</a></b>(const Value: TStrings);</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#GetIdHTTP">GetIdHTTP</a></b>: TIdCustomHTTP;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#CreateURI">CreateURI</a></b>: string;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Loaded">Loaded</a></b>; override;</code></td>
-</tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Execute">Execute</a></b>(AProc: TProc): boolean; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#GetIdHTTP">GetIdHTTP</a></b>: TIdCustomHTTP; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Execute">Execute</a></b>(): boolean; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Execute">Execute</a></b>(AProc: TProc): boolean; overload; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -162,54 +74,47 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Content">Content</a></b>: String read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FContent">FContent</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#IdHTTP">IdHTTP</a></b>: TIdCustomHTTP read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#GetIdHTTP">GetIdHTTP</a>;</code></td>
 </tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#URL">URL</a></b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#CreateURI">CreateURI</a>;</code></td>
-</tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Body">Body</a></b>: TStrings read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FBody">FBody</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetBody">SetBody</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#URL">URL</a></b>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#BaseURL">BaseURL</a></b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FBaseURL">FBaseURL</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetBaseURL">SetBaseURL</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Body">Body</a></b>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Resource">Resource</a></b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FResource">FResource</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetResource">SetResource</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#BaseURL">BaseURL</a></b>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#ResourcePrefix">ResourcePrefix</a></b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FResourcePrefix">FResourcePrefix</a>
-      write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetResourcePrefix">SetResourcePrefix</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Resource">Resource</a></b>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Method">Method</a></b>: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a> read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FMethod">FMethod</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetMethod">SetMethod</a>
-      default rmGET;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#ResourcePrefix">ResourcePrefix</a></b>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#AcceptCharset">AcceptCharset</a></b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAcceptCharset">FAcceptCharset</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAcceptCharset">SetAcceptCharset</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Method">Method</a></b>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Accept">Accept</a></b>: String read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAccept">FAccept</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAccept">SetAccept</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#AcceptCharset">AcceptCharset</a></b>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#AcceptEncoding">AcceptEncoding</a></b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAcceptEncoding">FAcceptEncoding</a>
-      write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAcceptEncoding">SetAcceptEncoding</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Accept">Accept</a></b>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Timeout">Timeout</a></b>: integer read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FTimeout">FTimeout</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetTimeout">SetTimeout</a> default 30000;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#AcceptEncoding">AcceptEncoding</a></b>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#Timeout">Timeout</a></b>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -222,179 +127,11 @@ MVCBr
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FContent"></a><code><b>FContent</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FBaseURL"></a><code><b>FBaseURL</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FResource"></a><code><b>FResource</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FMethod"></a><code><b>FMethod</b>: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a>;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FAcceptCharset"></a><code><b>FAcceptCharset</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FAccept"></a><code><b>FAccept</b>: String;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FAcceptEncoding"></a><code><b>FAcceptEncoding</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FResourcePrefix"></a><code><b>FResourcePrefix</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FTimeout"></a><code><b>FTimeout</b>: integer;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FBody"></a><code><b>FBody</b>: TStrings;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
 <h3 class="detail">Métodos</h3>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetBaseURL"></a><code>procedure <b>SetBaseURL</b>(const Value: string);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetResource"></a><code>procedure <b>SetResource</b>(const Value: string);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetMethod"></a><code>procedure <b>SetMethod</b>(const Value: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a>);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetAcceptCharset"></a><code>procedure <b>SetAcceptCharset</b>(const Value: string);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetAccept"></a><code>procedure <b>SetAccept</b>(const Value: String);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetAcceptEncoding"></a><code>procedure <b>SetAcceptEncoding</b>(const Value: string);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetResourcePrefix"></a><code>procedure <b>SetResourcePrefix</b>(const Value: string);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetTimeout"></a><code>procedure <b>SetTimeout</b>(const Value: integer);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetBody"></a><code>procedure <b>SetBody</b>(const Value: TStrings);</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="GetIdHTTP"></a><code>function <b>GetIdHTTP</b>: TIdCustomHTTP;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="CreateURI"></a><code>function <b>CreateURI</b>: string;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="Loaded"></a><code>procedure <b>Loaded</b>; override;</code></td>
+<td class="itemcode"><a name="GetIdHTTP"></a><code>function <b>GetIdHTTP</b>: TIdCustomHTTP; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -402,15 +139,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(AProc: TProc): boolean; overload; virtual;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(): boolean; overload; virtual;</code></td>
+<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(AProc: TProc): boolean; overload; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -435,14 +164,6 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Content"></a><code>property <b>Content</b>: String read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FContent">FContent</a>;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="IdHTTP"></a><code>property <b>IdHTTP</b>: TIdCustomHTTP read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#GetIdHTTP">GetIdHTTP</a>;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -451,7 +172,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="URL"></a><code>property <b>URL</b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#CreateURI">CreateURI</a>;</code></td>
+<td class="itemcode"><a name="URL"></a><code>property <b>URL</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -459,7 +180,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="Body"></a><code>property <b>Body</b>: TStrings read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FBody">FBody</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetBody">SetBody</a>;</code></td>
+<td class="itemcode"><a name="Body"></a><code>property <b>Body</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -467,7 +188,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="BaseURL"></a><code>property <b>BaseURL</b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FBaseURL">FBaseURL</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetBaseURL">SetBaseURL</a>;</code></td>
+<td class="itemcode"><a name="BaseURL"></a><code>property <b>BaseURL</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -475,7 +196,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="Resource"></a><code>property <b>Resource</b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FResource">FResource</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetResource">SetResource</a>;</code></td>
+<td class="itemcode"><a name="Resource"></a><code>property <b>Resource</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -483,8 +204,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="ResourcePrefix"></a><code>property <b>ResourcePrefix</b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FResourcePrefix">FResourcePrefix</a>
-      write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetResourcePrefix">SetResourcePrefix</a>;</code></td>
+<td class="itemcode"><a name="ResourcePrefix"></a><code>property <b>ResourcePrefix</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -492,8 +212,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="Method"></a><code>property <b>Method</b>: <a  href="MVCBr.IdHTTPRestClient.html#TIdHTTPRestMethod">TIdHTTPRestMethod</a> read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FMethod">FMethod</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetMethod">SetMethod</a>
-      default rmGET;</code></td>
+<td class="itemcode"><a name="Method"></a><code>property <b>Method</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -501,7 +220,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="AcceptCharset"></a><code>property <b>AcceptCharset</b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAcceptCharset">FAcceptCharset</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAcceptCharset">SetAcceptCharset</a>;</code></td>
+<td class="itemcode"><a name="AcceptCharset"></a><code>property <b>AcceptCharset</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -509,7 +228,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="Accept"></a><code>property <b>Accept</b>: String read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAccept">FAccept</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAccept">SetAccept</a>;</code></td>
+<td class="itemcode"><a name="Accept"></a><code>property <b>Accept</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -517,8 +236,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="AcceptEncoding"></a><code>property <b>AcceptEncoding</b>: string read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FAcceptEncoding">FAcceptEncoding</a>
-      write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetAcceptEncoding">SetAcceptEncoding</a>;</code></td>
+<td class="itemcode"><a name="AcceptEncoding"></a><code>property <b>AcceptEncoding</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -526,7 +244,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
-<td class="itemcode"><a name="Timeout"></a><code>property <b>Timeout</b>: integer read <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#FTimeout">FTimeout</a> write <a  href="MVCBr.IdHTTPRestClient.TIdHTTPRestClient.html#SetTimeout">SetTimeout</a> default 30000;</code></td>
+<td class="itemcode"><a name="Timeout"></a><code>property <b>Timeout</b>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

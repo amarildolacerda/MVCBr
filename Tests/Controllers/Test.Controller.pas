@@ -15,7 +15,8 @@ interface
 uses
   System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
   System.Classes, MVCBr.Interf,
-  MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
+  MVCBr.Model, MVCBr.Controller,
+  MVCBr.ApplicationController,
   Test.Controller.Interf,
   System.RTTI;
 
@@ -24,8 +25,6 @@ type
     IThisAs<TTestController> { , IModelAs<ITestViewModel> } )
   protected
     FContador: integer;
-    Procedure DoCommand(ACommand: string;
-      const AArgs: array of TValue); override;
   public
     // inicializar os módulos personalizados em CreateModules
     Procedure CreateModules; virtual;
@@ -36,7 +35,7 @@ type
       : IController; overload;
     class function New(const AModel: IModel): IController; overload;
     function ThisAs: TTestController;
-    procedure init; override;
+    //procedure init; override;
     // function ModelAs: ITestViewModel;
 
     function GetStubInt: integer;
@@ -91,11 +90,6 @@ end;
   if count>=0 then
   supports(GetModelByType(mtViewModel), ITestViewModel, result);
   end; }
-Procedure TTestController.DoCommand(ACommand: string;
-  const AArgs: Array of TValue);
-begin
-  inherited;
-end;
 
 function TTestController.GetStubInt: integer;
 begin
@@ -107,7 +101,7 @@ begin
   inc(FContador);
 end;
 
-procedure TTestController.init;
+(*procedure TTestController.init;
 // var ref:TTestView;
 begin
   inherited;
@@ -118,6 +112,7 @@ begin
     end; }
   AfterInit;
 end;
+*)
 
 // Adicionar os modulos e MODELs personalizados
 Procedure TTestController.CreateModules;

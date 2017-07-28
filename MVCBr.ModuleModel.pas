@@ -8,12 +8,37 @@
 
 }
 unit MVCBr.ModuleModel;
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
 
 interface
 
 uses
 {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, VCL.Graphics, {$ENDIF}
- System.UITypes, System.SysUtils, System.Classes, System.JSON,
+  System.UITypes, System.SysUtils, System.Classes, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf;
 
 type
@@ -23,7 +48,9 @@ type
     { Private declarations }
     FController: IController;
     FID: string;
+{$IFNDEF BPL}
     FModelTypes: TModelTypes;
+{$ENDIF}
     FOnUpdateModel: TNotifyEvent;
     FOnAfterInit: TNotifyEvent;
     procedure SetOnUpdateModel(const Value: TNotifyEvent);
@@ -32,23 +59,31 @@ type
     function This: TObject; virtual;
     function GetID: string; virtual;
     function ID(const AID: String): IModel; virtual;
-    function Update: IModel;overload; virtual;
+    function Update: IModel; overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
 
     function Controller(const AController: IController): IModel; virtual;
-    function GetModelTypes: TModelTypes; virtual;
+    procedure SetController(const AController: IController);
     function GetController: IController;
+{$IFNDEF BPL}
+    function GetModelTypes: TModelTypes; virtual;
     procedure SetModelTypes(const AModelType: TModelTypes);
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+{$ENDIF}
     procedure AfterInit; virtual;
     property OnUpdateModel: TNotifyEvent read FOnUpdateModel
       write SetOnUpdateModel;
-    property OnAfterInitModel: TNotifyEvent read FOnAfterInit write SetOnAfterInit;
+    property OnAfterInitModel: TNotifyEvent read FOnAfterInit
+      write SetOnAfterInit;
   public
     { Public declarations }
-    constructor Create(AOwner: TComponent); override;
+    constructor Create; overload;
+    constructor Create(AOwner: TComponent); overload; override;
     destructor Destroy; override;
+    class procedure New(AClass: TComponentClass;
+      AController: IController; out obj);
+    procedure Release; virtual;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
 
@@ -56,7 +91,9 @@ type
 
   TModuleFactory = class(TCustomModuleFactory)
   published
+{$IFNDEF BPL}
     property ModelTypes;
+{$ENDIF}
     property OnUpdateModel;
     property OnAfterInitModel;
   end;
@@ -91,16 +128,19 @@ begin
   FController := AController;
 end;
 
+constructor TCustomModuleFactory.Create;
+begin
+  Create(nil);
+end;
+
 constructor TCustomModuleFactory.Create(AOwner: TComponent);
 begin
   inherited;
-  // BorderIcons:=[];
-  // FFont:= TFont.Create;
 end;
 
 destructor TCustomModuleFactory.Destroy;
 begin
-  // FFont.Free;
+  FController := nil;
   inherited;
 end;
 
@@ -114,10 +154,12 @@ begin
   result := FID;
 end;
 
+{$IFNDEF BPL}
 function TCustomModuleFactory.GetModelTypes: TModelTypes;
 begin
   result := FModelTypes;
 end;
+{$ENDIF}
 
 function TCustomModuleFactory.ID(const AID: String): IModel;
 begin
@@ -125,10 +167,36 @@ begin
   FID := AID;
 end;
 
+class procedure TCustomModuleFactory.New(AClass: TComponentClass;
+  AController: IController; out obj);
+var
+  o: TCustomModuleFactory;
+begin
+  application.CreateForm(AClass, obj);
+  o := TCustomModuleFactory(obj);
+  with o do
+  begin
+    SetController(AController);
+  end;
+end;
+
+procedure TCustomModuleFactory.Release;
+begin
+  FController := nil;
+  inherited Destroy;
+end;
+
+procedure TCustomModuleFactory.SetController(const AController: IController);
+begin
+  FController := AController;
+end;
+
+{$IFNDEF BPL}
 procedure TCustomModuleFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
   FModelTypes := AModelType;
 end;
+{$ENDIF}
 
 procedure TCustomModuleFactory.SetOnAfterInit(const Value: TNotifyEvent);
 begin
@@ -147,8 +215,11 @@ end;
 
 procedure TCustomModuleFactory.Update(AJsonValue: TJsonValue;
   var AHandled: boolean);
+var
+  AModel: IModel;
 begin
-   Update;
+  AModel := Update;
+  AModel := nil;
 end;
 
 function TCustomModuleFactory.Update: IModel;

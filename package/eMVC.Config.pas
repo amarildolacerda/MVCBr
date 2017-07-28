@@ -1,5 +1,31 @@
 unit eMVC.Config;
 
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
+
 interface
 
 uses
@@ -12,6 +38,7 @@ uses
 const
   mvc_maxConfig = 1;
   mvc_createSubFolder = 0;
+  mvc_comments = 2;
 
 type
 
@@ -23,6 +50,7 @@ type
     procedure ReadConfig;
     procedure WriteConfig;
     function IsCreateSubFolder: boolean;
+    function GetComments: string;
     procedure ShowView(AProc: TProc);
   end;
 
@@ -32,6 +60,8 @@ type
     Button1: TButton;
     GroupBox1: TGroupBox;
     CheckBox1: TCheckBox;
+    Comments: TMemo;
+    lbComments: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
@@ -51,6 +81,7 @@ type
     procedure WriteConfig;
     property Values[idx: Integer]: TValue read GetValues write SetValues;
     function IsCreateSubFolder: boolean;
+    function GetComments: string;
     procedure ShowView(AProc: TProc);
   end;
 
@@ -68,6 +99,11 @@ begin
   WriteConfig;
   FCanceled := false;
   close;
+end;
+
+function TMVCConfig.GetComments: string;
+begin
+  result := Comments.lines.text;
 end;
 
 procedure TMVCConfig.FormCreate(Sender: TObject);
@@ -101,7 +137,7 @@ class function TMVCConfig.New: IMVCConfig;
 var
   obj: TMVCConfig;
 begin
-  if LMvcConfig=nil then
+  if LMvcConfig = nil then
   begin
     obj := TMVCConfig.create(nil);
     LMvcConfig := obj;
@@ -113,18 +149,19 @@ end;
 
 procedure TMVCConfig.ReadConfig;
 begin
- try
-  FConfig.ReadConfig;
- except
-  on e:exception do
-     DEBUG(e.message);
- end;
+  try
+    FConfig.ReadConfig;
+  except
+    on e: exception do
+      DEBUG(e.message);
+  end;
 end;
 
 procedure TMVCConfig.RegisterControls;
 begin
 
   FConfig.Add(CheckBox1); // mvc_createSubFolder
+  FConfig.Add(Comments);
 
 end;
 
@@ -148,13 +185,13 @@ end;
 
 procedure TMVCConfig.WriteConfig;
 begin
- try
-  FConfig.WriteConfig;
- except
-  on e:exception do
-     DEBUG(e.message);
+  try
+    FConfig.WriteConfig;
+  except
+    on e: exception do
+      DEBUG(e.message);
 
- end;
+  end;
 end;
 
 end.

@@ -1,3 +1,4 @@
+unit MVCBr.ViewModel;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -23,7 +24,6 @@
 { limitations under the License. }
 { }
 { *************************************************************************** }
-unit MVCBr.ViewModel;
 
 interface
 
@@ -38,6 +38,8 @@ type
     FModel: IModel;
   public
     constructor Create; override;
+    Destructor Destroy;override;
+    procedure Release;override;
     procedure AfterConstruction;override;
     class function New(const AView: IView; const AModel: IModel)
       : IViewModel; virtual;
@@ -59,8 +61,9 @@ implementation
 procedure TViewModelFactory.AfterConstruction;
 begin
   inherited;
+{$IFNDEF BPL}
   SetModelTypes( [mtViewModel] );
-
+{$ENDIF}
 end;
 
 procedure TViewModelFactory.AfterInit;
@@ -80,6 +83,13 @@ begin
   inherited;
 end;
 
+destructor TViewModelFactory.Destroy;
+begin
+  FView := nil;
+  FModel := nil;
+  inherited;
+end;
+
 function TViewModelFactory.Model(const AModel: IModel): IViewModel;
 begin
   result := self;
@@ -96,6 +106,13 @@ begin
   result.Model(AModel);
 end;
 
+
+procedure TViewModelFactory.Release;
+begin
+  FView := nil;
+  FModel := nil;
+  inherited;
+end;
 
 function TViewModelFactory.This: TObject;
 begin

@@ -12,11 +12,17 @@ unit TestMVCBr.View;
 interface
 
 uses
-  TestFramework, system.SysUtils, system.Classes, VCL.Forms, MVCBr.Interf,
+  TestFramework, system.SysUtils,
+  system.Classes, VCL.Forms,
+  MVCBr.Interf,
   MVCBr.Model,
-  TestMVCBr.TestForm, MVCBr.Controller,
+  TestMVCBr.TestForm,
+  MVCBr.Controller,
   TestSecondView,
-  MVCBr.View, system.Rtti;
+  TestViewView,
+  MVCBr.View,
+  MVCBr.FormView,
+  system.Rtti;
 
 type
   // Test methods for class TViewFactory
@@ -24,6 +30,7 @@ type
   TestTViewFactory = class(TTestCase)
   strict private
     FViewFactory: TViewFactory;
+    FController: IController;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -37,7 +44,8 @@ type
 
   TestTFormFactory = class(TTestCase)
   strict private
-    FFormFactory: ITestSecondView;
+    FFormFactory: ITestViewView;
+    Controller: IController;
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -70,19 +78,17 @@ uses testSecond.Controller.Interf, TestView.Controller.Interf,
   test.Controller.Interf, test.Model.Interf;
 
 procedure TestTViewFactory.SetUp;
-var
-  Controller: IController;
 begin
-  Controller := TControllerFactory.create;
+  FController := TControllerFactory.create;
   FViewFactory := TViewFactory.create;
-  Controller.View(FViewFactory);
+  FController.View(FViewFactory);
   checkNotNull(FViewFactory);
 end;
 
 procedure TestTViewFactory.TearDown;
 begin
-  // FViewFactory.Free;
-  FViewFactory := nil;
+  FController.release;
+  FController := nil;
 end;
 
 procedure TestTViewFactory.TestNew;
@@ -128,17 +134,16 @@ begin
 end;
 
 procedure TestTFormFactory.SetUp;
-var
-  Controller: IController;
 begin
-  FFormFactory := TTestSecondView.create(nil);
-  Controller := TTestViewController.New(FFormFactory, nil);
+  Controller := TTestViewController.New(nil, nil);
+  FFormFactory := Controller.GetView as ITestViewView;
 end;
 
 procedure TestTFormFactory.TearDown;
 begin
-  // FFormFactory.Free;
-  FFormFactory := nil;
+  if assigned(Controller) then
+    Controller.release;
+  Controller := nil;
 end;
 
 procedure TestTFormFactory.TestGetController;
@@ -164,7 +169,7 @@ Type
 
 procedure TestTFormFactory.TestInterfaceStubInt;
 var
-  itf: ITestSecondView;
+  itf: ITestViewView;
 begin
   itf := FFormFactory;
   CheckTrue(itf.getStubInt = 1, 'Não obteve dados na interface');
@@ -178,7 +183,7 @@ begin
   FFormFactory.PropertyValue['isShowModal'] := true;
   CheckTrue(TTestSecondView(FFormFactory.This).isShowModal,
     'Não alterou o ShowModal');
-  ReturnValue := TTestSecondView(FFormFactory.This).InvokeMethod<Boolean>
+  ReturnValue := TTestViewView(FFormFactory.This).InvokeMethod<Boolean>
     ('GetShowModalStub', []);
   CheckTrue(ReturnValue, 'Não funcionou RTTI');
   // TODO: Validate method results
@@ -195,12 +200,13 @@ var
   inf: itestModel;
   ctrl: ITestViewController;
 begin
-  ApplicationController.SetMainView(FFormFactory);
-  checkNotNull(ApplicationController.MainView,
-    'Não incializou o form principal');
+//  ApplicationController.SetMainView(FFormFactory);
+//  checkNotNull(ApplicationController.MainView,
+//    'Não incializou o form principal');
 
   inf := FFormFactory.GetModel(itestModel) as itestModel;
   checkNotNull(inf, 'Não encontrou o model instanciado no controller');
+  inf := nil;
 
   ctrl := ApplicationController.ResolveController(ITestViewController)
     as ITestViewController;
@@ -210,6 +216,8 @@ begin
 
   inf := ctrl.GetModel(itestModel) as itestModel;
   checkNotNull(inf, 'Não encontrou o model instanciado no controller');
+  ctrl := nil;
+  inf := nil;
 
 end;
 
@@ -225,7 +233,7 @@ procedure TestTFormFactory.TestResolveController;
 var
   i: ITestController;
 begin
-  i := TTestSecondView(FFormFactory.This).ResolveController<ITestController>;
+  i := TTestSecondView(FFormFactory.This).ResolveController<ITestController> as ITestController;
   checkNotNull(i, 'Não retornou a interface do controller');
   CheckTrue(i.This.InheritsFrom(TControllerFactory),
     'Não herdou de TControllerFactory');
@@ -272,7 +280,7 @@ end;
 
 procedure TestTFormFactory.TestEnviarEventoParaUmView;
 var
-  inf: ITestSecondView;
+  inf: ITestViewView;
   LHandled: Boolean;
 begin
   inf := FFormFactory;
@@ -289,11 +297,12 @@ begin
   supports(FFormFactory.This, IMVCBrObserver, obs);
   TMVCBr.RegisterObserver('x', obs);
   ref := FFormFactory.getStubInt;
-  TMVCBr.UpdateObserver('x', nil );
+  TMVCBr.UpdateObserver('x', nil);
 
-  CheckTrue(FFormFactory.getStubInt>ref,'Não chamou o evento do Observer' );
+  CheckTrue(FFormFactory.getStubInt > ref, 'Não chamou o evento do Observer');
 
   TMVCBr.UnRegisterObserver('x', obs);
+  obs := nil;
 end;
 
 procedure TestTFormFactory.TestFindController;
@@ -307,24 +316,34 @@ var
   ctrl: IController;
   itf: ITestSecondView;
 begin
-  ctrl := FFormFactory.GetController.ResolveController(ITestSecondController);
+  ctrl := ApplicationController.ResolveController(ITestSecondController);
+  try
   checkNotNull(ctrl, 'Não achei o segundo controller');
   checkNotNull(ctrl.GetView, 'Não iniciou o segundo VEIW');
 
   itf := ctrl.GetView as ITestSecondView;
   CheckTrue(itf.GetStubString = 'test', 'Não obteve GetStubString');
 
+  finally
+    //ctrl.release;
+    //itf.release;
+  end;
 end;
 
 procedure TestTFormFactory.TestEnviarEventoJSONparaUmView;
 var
-  inf: ITestSecondView;
+  inf: ITestViewView;
   LHandled: Boolean;
+  j: TJsonObject;
 begin
   inf := FFormFactory;
   LHandled := false;
-  inf.ViewEvent(TJsonObject.create(TJsonPair.create('texto', 'test')),
-    LHandled);
+  j := TJsonObject.create(TJsonPair.create('texto', 'test'));
+  try
+    inf.ViewEvent(j, LHandled);
+  finally
+    j.free;
+  end;
   CheckTrue(LHandled, 'Não encontrou o evento');
 end;
 
@@ -335,3 +354,4 @@ RegisterTest(TestTViewFactory.Suite);
 RegisterTest(TestTFormFactory.Suite);
 
 end.
+

@@ -48,17 +48,21 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FChanges">FChanges</a></b>: TJSONArray;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FLoading">FLoading</a></b>: boolean;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FKeyFields">FKeyFields</a></b>: string;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FChanges">FChanges</a></b>: TJSONArray;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FUpdateTable">FUpdateTable</a></b>: string;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FKeyFields">FKeyFields</a></b>: string;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FUpdateTable">FUpdateTable</a></b>: string;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FApplyDelegate">FApplyDelegate</a></b>: TProc&lt;TDataset&gt;;</code></td>
 </tr>
@@ -76,6 +80,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#DoBeforeApplyUpdates">DoBeforeApplyUpdates</a></b>(Sender: TFDDataset);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#DoBeforeOpen">DoBeforeOpen</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#DoAfterOpen">DoAfterOpen</a></b>; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -106,6 +118,14 @@ MVCBr
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#SetApplyUpdateDelegate">SetApplyUpdateDelegate</a></b>(const AProc: TProc&lt;TDataset&gt;);</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#SetLoading">SetLoading</a></b>(const Value: boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#GetLoading">GetLoading</a></b>: boolean;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>constructor <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#Create">Create</a></b>(AOwner: TComponent); override;</code></td>
 </tr>
@@ -115,17 +135,21 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#UpdatesPending">UpdatesPending</a></b>: Boolean;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#ApplyDelegateTo">ApplyDelegateTo</a></b>(const AProc: TProc&lt;TDataset&gt;): <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html">TODataFDMemTable</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#ClearChanges">ClearChanges</a></b>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#UpdatesPending">UpdatesPending</a></b>: boolean;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#CancelUpdates">CancelUpdates</a></b>; reintroduce;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#ClearChanges">ClearChanges</a></b>;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#CancelUpdates">CancelUpdates</a></b>; reintroduce;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#MergeChangeLog">MergeChangeLog</a></b>; reintroduce;</code></td>
 </tr>
@@ -134,19 +158,31 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#Changes">Changes</a></b>: TJSONArray read <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#GetChanges">GetChanges</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#Loading">Loading</a></b>: boolean read <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FLoading">FLoading</a> write <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#SetLoading">SetLoading</a>;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#Changes">Changes</a></b>: TJSONArray read <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#GetChanges">GetChanges</a>;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
 <td class="itemcode"><code>property <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#KeyFields">KeyFields</a></b>: string read <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#GetKeyFields">GetKeyFields</a> write <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#SetKeyFields">SetKeyFields</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
 <td class="itemcode"><code>property <b><a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#UpdateTable">UpdateTable</a></b>: string read <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#GetUpdateTable">GetUpdateTable</a> write <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#SetUpdateTable">SetUpdateTable</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
 <h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FLoading"></a><code><b>FLoading</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -200,6 +236,22 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="DoBeforeApplyUpdates"></a><code>procedure <b>DoBeforeApplyUpdates</b>(Sender: TFDDataset);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="DoBeforeOpen"></a><code>procedure <b>DoBeforeOpen</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="DoAfterOpen"></a><code>procedure <b>DoAfterOpen</b>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -262,6 +314,22 @@ MVCBr
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetLoading"></a><code>procedure <b>SetLoading</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetLoading"></a><code>function <b>GetLoading</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(AOwner: TComponent); override;</code></td>
 </tr>
@@ -279,7 +347,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="UpdatesPending"></a><code>function <b>UpdatesPending</b>: Boolean;</code></td>
+<td class="itemcode"><a name="ApplyDelegateTo"></a><code>function <b>ApplyDelegateTo</b>(const AProc: TProc&lt;TDataset&gt;): <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html">TODataFDMemTable</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="UpdatesPending"></a><code>function <b>UpdatesPending</b>: boolean;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -309,6 +385,14 @@ MVCBr
 &nbsp;</td></tr>
 </table>
 <h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Loading"></a><code>property <b>Loading</b>: boolean read <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#FLoading">FLoading</a> write <a  href="MVCBr.ODataFDMemTable.TODataFDMemTable.html#SetLoading">SetLoading</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>

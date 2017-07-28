@@ -35,7 +35,9 @@ unit MVCBr.ODataDatasetBuilder;
 interface
 
 uses system.Classes, system.SysUtils, Data.db,
-  oData.Comp.Client, MVCBr.HTTPRestClient,
+  oData.Comp.Client,
+  MVCBr.HTTPRestClient.Common,
+  MVCBr.HTTPRestClient,
   MVCBr.ODataDatasetAdapter;
 
 type
@@ -49,7 +51,7 @@ type
     FOldBeforePost: TDatasetNotifyEvent;
     FOldAfterPost: TDatasetNotifyEvent;
     FOldBeforeDelete: TDatasetNotifyEvent;
-    FRestClient: THTTPRestClient;
+    FRestClient: TMVCBrHttpRestClientAbstract;
     FDataset: TDataset;
     FAdapter: TODataDatasetAdapter;
     FOnGetParams: TODataGetResourceParams;
@@ -60,7 +62,7 @@ type
     procedure SetFilter(const Value: string); override;
 
     procedure SetDataset(const Value: TDataset); virtual;
-    procedure SetRestClient(const Value: THTTPRestClient); virtual;
+    procedure SetRestClient(const Value: TMVCBrHttpRestClientAbstract); virtual;
     procedure SetAdapter(const Value: TODataDatasetAdapter); virtual;
     procedure ClearChanges; virtual;
     procedure DoBeforeOpen(sender: TDataset); virtual;
@@ -74,7 +76,7 @@ type
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     procedure ApplyUpdates(); virtual;
-    property RestClient: THTTPRestClient read FRestClient write SetRestClient;
+    property RestClient: TMVCBrHttpRestClientAbstract read FRestClient write SetRestClient;
     property Adapter: TODataDatasetAdapter read FAdapter write SetAdapter;
     function Execute: Boolean; override;
     function Builder: TODataCustomBuilder; virtual;
@@ -116,6 +118,7 @@ begin
   begin
     if FAdapter.Builder.ApplyUpdates(o.Changes) then
       ClearChanges;
+    o := nil;
   end
   else
   begin
@@ -137,6 +140,7 @@ begin
   if supports(FDataset, IODataDataSet, o) then
   begin
     o.ClearChanges;
+    o := nil;
   end
   else
     FAdapter.ClearChanges;
@@ -149,7 +153,7 @@ begin
   FAdapter := TODataDatasetAdapter.create(self);
   FAdapter.RootElement := 'value';
   FAdapter.Builder := self; // TODataBuilder.create(FAdapter);
-  RestClient := THTTPRestClient.create(self);
+  SetRestClient( TMVCBrHttpRestClientAbstract(THTTPRestClient.create(self) ) );
   with RestClient do
   begin
     AcceptCharset := 'UTF-8';
@@ -173,10 +177,8 @@ begin
 end;
 
 procedure TODataDatasetBuilder.DoAfterPost(sender: TDataset);
-var
-  o: IODataDataSet;
 begin
-  if supports(FDataset, IODataDataSet, o) then
+  if supports(FDataset, IODataDataSet) then
     // nao faz nada - controle é do component
   else if FState = dsInsert then
     FAdapter.AddRowSet(rctInserted, FDataset)
@@ -185,12 +187,10 @@ begin
 end;
 
 procedure TODataDatasetBuilder.DoBeforeDelete(sender: TDataset);
-var
-  o: IODataDataSet;
 begin
   if assigned(FOldBeforeDelete) then
     FOldBeforeDelete(sender);
-  if supports(FDataset, IODataDataSet, o) then
+  if supports(FDataset, IODataDataSet) then
     // nao faz nada - é responsabilidade do compoennt
   else
     FAdapter.AddRowSet(rctDeleted, FDataset);
@@ -221,10 +221,12 @@ begin
       begin
         o.KeyFields := FAdapter.ResourceKeys;
         o.UpdateTable := FAdapter.ResourceName;
+        o := nil;
       end;
     end);
   inc(FRef);
   try
+    FAdapter.Builder := self;
     FAdapter.OnGetParams := FOnGetParams;
     result := FAdapter.Execute;
   finally
@@ -337,7 +339,7 @@ begin
     FAdapter.Params := Value;
 end;
 
-procedure TODataDatasetBuilder.SetRestClient(const Value: THTTPRestClient);
+procedure TODataDatasetBuilder.SetRestClient(const Value: TMVCBrHttpRestClientAbstract);
 begin
   FRestClient := Value;
   FAdapter.Builder.RestClient := Value;

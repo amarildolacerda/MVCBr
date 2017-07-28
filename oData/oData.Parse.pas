@@ -15,20 +15,19 @@ type
 
   TTokenKind = (ptNone, ptIdentifier, ptNull, ptQuotation, ptSpace, ptComma,
     ptSlash, ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
-    ptSearch,
-    ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand, ptInLineCount,ptDebug,
-    ptCount, ptGroupBy, ptOperNe { not equal } , ptOperLt { less than } ,
-    ptOperLe { less equal } , ptOperGe { greater or equal } ,
-    ptOperGt { greater than } , ptOperAnd { and } , ptOperOr { or } ,
-    ptOperNot { not } , ptOperAdd { add } , ptOperSub { subtract } ,
-    ptOperMul { multiply } , ptOperDiv { divide } ,
-    ptOperMod { find remainder } , ptFuncFloor { floor } ,
-    ptFuncCeiling { ceiling } , ptFuncLength { length } , ptFuncTrim { trim } ,
-    ptFuncToUpper { toupper } , ptFuncSubstringOf { substringof } ,
-    ptFuncToLower { tolower } , ptFuncEndsWith { endswith } ,
-    ptFuncStartsWith { startswith } , ptFuncYear { year } ,
-    ptFuncMonth { month } , ptFuncDay { day } , ptFuncHour { hour } ,
-    ptFuncMinute { minute } , ptFuncSecond { second } ,
+    ptSearch, ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand,
+    ptInLineCount, ptDebug, ptCount, ptGroupBy, ptOperNe { not equal } ,
+    ptOperLt { less than } , ptOperLe { less equal } ,
+    ptOperGe { greater or equal } , ptOperGt { greater than } ,
+    ptOperAnd { and } , ptOperOr { or } , ptOperNot { not } ,
+    ptOperAdd { add } , ptOperSub { subtract } , ptOperMul { multiply } ,
+    ptOperDiv { divide } , ptOperMod { find remainder } ,
+    ptFuncFloor { floor } , ptFuncCeiling { ceiling } ,
+    ptFuncLength { length } , ptFuncTrim { trim } , ptFuncToUpper { toupper } ,
+    ptFuncSubstringOf { substringof } , ptFuncToLower { tolower } ,
+    ptFuncEndsWith { endswith } , ptFuncStartsWith { startswith } ,
+    ptFuncYear { year } , ptFuncMonth { month } , ptFuncDay { day } ,
+    ptFuncHour { hour } , ptFuncMinute { minute } , ptFuncSecond { second } ,
     ptOrderByDesc { desc } );
 
   {
@@ -43,6 +42,7 @@ type
     token: string;
     FParseCol: integer;
     FLevel: integer;
+    [unsafe]
     FOData: IODataDecode;
     FCurrentOData: IODataDecode;
 
@@ -66,6 +66,8 @@ type
   public
     constructor create;
     destructor destroy; override;
+    procedure Release;
+
     property oData: IODataDecode read GetOData; // write SetOData;
     function isTokenIsJunk(const tk: TTokenKind): boolean;
     procedure whileIn(AArry: Array of TTokenKind);
@@ -114,6 +116,7 @@ end;
 destructor TODataParse.destroy;
 begin
   FOData := nil;
+  FCurrentOData := nil;
   inherited;
 end;
 
@@ -334,8 +337,9 @@ end;
 class function TODataParse.OperatorToString(txt: String): string;
 begin
   result := '';
-  if txt='' then exit;
-  
+  if txt = '' then
+    exit;
+
   result := stringReplace(txt, ' lt ', ' < ', [rfReplaceAll]);
   result := stringReplace(result, ' ne ', ' <> ', [rfReplaceAll]);
   result := stringReplace(result, ' gt ', ' > ', [rfReplaceAll]);
@@ -396,6 +400,12 @@ var
 begin
   NextToken(true);
   s := GetToken;
+
+  if FTokenKindArray.TryGetValue(s, tk) then
+   case tk of
+     ptCount : oData.Count := 'true';
+   end;
+
   NextToken(true);
   if isTokenType(ptEqual) then
   begin
@@ -428,7 +438,7 @@ begin
             oData.count := 'true'; // compatibilidade versão V2 com V4
         ptExpand:
           oData.Expand := k;
-        ptDebug :
+        ptDebug:
           oData.Debug := k;
       end;
     end;
@@ -442,6 +452,11 @@ begin
   begin
     ParseParams;
   end;
+end;
+
+procedure TODataParse.Release;
+begin
+  FCurrentOData := nil;
 end;
 
 function TODataParse.Select: string;
@@ -465,7 +480,6 @@ begin
 
   if FOData.Expand <> '' then
     ParseExpand(FOData.Expand);
-
 end;
 
 function TODataParse.GetNextToken: string;
@@ -665,7 +679,7 @@ FTokenKindArray.Add('$count', ptCount);
 FTokenKindArray.Add('$expand', ptExpand);
 FTokenKindArray.Add('groupby', ptGroupBy);
 FTokenKindArray.Add('$group', ptGroupBy);
-FTokenKindArray.Add('debug',ptDebug);
+FTokenKindArray.Add('debug', ptDebug);
 FTokenKindArray.Add('''', ptQuotation);
 FTokenKindArray.Add('and', ptOperAnd);
 FTokenKindArray.Add('or', ptOperOr);

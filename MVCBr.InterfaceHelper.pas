@@ -116,7 +116,8 @@ end;
 
 class constructor TInterfaceHelper.Create;
 begin
-  FInterfaceTypes := TInterfaceTypes.Create;
+  if not assigned(FInterfaceTypes) then
+    FInterfaceTypes := TInterfaceTypes.Create;
   Cached := False;
   Caching := False;
   RefreshCache;
@@ -124,7 +125,9 @@ end;
 
 class destructor TInterfaceHelper.Destroy;
 begin
-  FInterfaceTypes.DisposeOf;
+  if assigned(FInterfaceTypes) then
+    FInterfaceTypes.Free;
+  FInterfaceTypes := nil;
 end;
 
 class function TInterfaceHelper.GetQualifiedName(AIntf: IInterface): String;
@@ -133,7 +136,7 @@ var
 begin
   Result := string.Empty;
   LType := GetType(AIntf);
-  if Assigned(LType) then
+  if assigned(LType) then
     Result := LType.QualifiedName;
 end;
 
@@ -144,7 +147,7 @@ var
 begin
   Result := nil;
   LType := GetType(AIntf);
-  if Assigned(LType) then
+  if assigned(LType) then
     Result := LType.GetMethod(MethodName);
 end;
 
@@ -155,7 +158,7 @@ var
 begin
   Result := [];
   LType := GetType(AIntf);
-  if Assigned(LType) then
+  if assigned(LType) then
     Result := LType.GetMethods;
 end;
 
@@ -165,7 +168,7 @@ var
 begin
   Result := string.Empty;
   LType := GetType(AGUID);
-  if Assigned(LType) then
+  if assigned(LType) then
     Result := LType.QualifiedName;
 end;
 
@@ -181,7 +184,7 @@ var
 begin
   Result := string.Empty;
   LType := GetType(AGUID);
-  if Assigned(LType) then
+  if assigned(LType) then
     Result := LType.Name;
 end;
 
@@ -192,9 +195,9 @@ var
   LType: TRttiInterfaceType;
 begin
   LType := GetType(AIntfInTValue);
-  if Assigned(LType) then
+  if assigned(LType) then
     LMethod := LType.GetMethod(MethodName);
-  if not Assigned(LMethod) then
+  if not assigned(LMethod) then
     raise Exception.Create('Method not found');
   Result := LMethod.Invoke(AIntfInTValue, Args);
 end;
@@ -205,7 +208,7 @@ var
   LMethod: TRttiMethod;
 begin
   LMethod := GetMethod(AIntf, MethodName);
-  if not Assigned(LMethod) then
+  if not assigned(LMethod) then
     raise Exception.Create('Method not found');
   Result := LMethod.Invoke(TValue.From<IInterface>(AIntf), Args);
 end;
@@ -216,7 +219,7 @@ var
 begin
   Result := string.Empty;
   LType := GetType(AIntf);
-  if Assigned(LType) then
+  if assigned(LType) then
     Result := LType.Name;
 end;
 

@@ -1,15 +1,32 @@
-{ //************************************************************// }
-{ //                                                            // }
-{ //         Projeto MVCBr                                      // }
-{ //         tireideletra.com.br  / amarildo lacerda            // }
-{ //                                                            // }
-{ //************************************************************// }
-{ // Data: 15/02/2017 23:07:44                                  // }
-{ //************************************************************// }
-///
+/// <summary>
 /// PageView é adapter para gerar controller para PageViews Abstract
-///
+/// </summary>
 unit MVCBr.PageView;
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
 
 interface
 
@@ -61,6 +78,7 @@ type
     FTab: TObject;
     FID: String;
     FView: IView;
+    FController:IController;
     procedure SetText(const Value: string);
     function GetText: string;
     procedure SetTab(const Value: TObject);
@@ -70,6 +88,7 @@ type
     FClassType: TClass;
     procedure SetID(const Value: String); override;
   public
+    Destructor Destroy;override;
     function GetOwner: TCustomPageViewFactory;
     function This: TPageView;
     property Text: string read GetText write SetText;
@@ -143,6 +162,13 @@ implementation
 
 { TPageControllerView }
 
+destructor TPageView.Destroy;
+begin
+  //FView := nil;
+  //FController := nil;
+  inherited;
+end;
+
 function TPageView.GetOwner: TCustomPageViewFactory;
 begin
   result := FOwner;
@@ -196,6 +222,7 @@ function TCustomPageViewFactory.AddView(AView: IView): IPageView;
 begin
   result := NewItem(AView.Title);
   result.This.View := AView;
+  result.this.FController := AView.GetController;
   DoViewCreate(AView.This);
   Init(result);
 end;

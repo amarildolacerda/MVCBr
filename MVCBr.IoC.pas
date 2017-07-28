@@ -43,24 +43,26 @@ type
   TResolveResult = (Unknown, Success, InterfaceNotRegistered, ImplNotRegistered,
     DeletegateFailedCreate);
 
-  TActivatorDelegate<TInterface: IInterface> = reference to function
-    : TInterface;
+  TActivatorDelegate<TInterface: IMVCBrIOC> = reference to function: TInterface;
 
   TMVCBrIoC = class
   private
     FRaiseIfNotFound: boolean;
 
   type
-    TIoCRegistration<T: IInterface> = class
+    TIoCRegistration<T: IMVCBrIOC> = class
       FGuid: TGuid;
       FName: string;
       FIInterface: PTypeInfo;
       FImplClass: TClass;
       FActivatorDelegate: TActivatorDelegate<T>;
       FIsSingleton: boolean;
-      FInstance: IInterface;
-      function ImplementClass(AImplements: TInterfacedClass): TIoCRegistration<T>;
-      function Delegate(const ADelegate: TActivatorDelegate<T>)
+      [unsafe]
+      FInstance: IMVCBrIOC;
+      Destructor Destroy; override;
+      function ImplementClass(AImplements: TInterfacedClass)
+        : TIoCRegistration<T>;
+      function DelegateTo(const ADelegate: TActivatorDelegate<T>)
         : TIoCRegistration<T>;
       function Singleton(const AValue: boolean): TIoCRegistration<T>;
       function isSingleton: boolean;
@@ -74,55 +76,58 @@ type
 
     FContainerInfo: TDictionary<string, TObject>;
     class var FDefault: TMVCBrIoC;
+    class var FReleased: boolean;
     class procedure ClassDestroy;
   protected
     function GetInterfaceKey<TInterface>(const AName: string = ''): string;
-    function InternalResolve<TInterface: IInterface>(out AInterface: TInterface;
+    function InternalResolve<TInterface: IMVCBrIOC>(out AInterface: TInterface;
       const AName: string = ''): TResolveResult;
-    function InternalRegisterType<TInterface: IInterface>(const Singleton
+    function InternalRegisterType<TInterface: IMVCBrIOC>(const Singleton
       : boolean; const AImplementation: TClass;
       const Delegate: TActivatorDelegate<TInterface>; const Name: string = '')
       : TIoCRegistration<TInterface>;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Release; virtual;
     // Default Container
     class function DefaultContainer: TMVCBrIoC;
 {$IFDEF DELPHI_XE_UP}
     // Exe's compiled with D2010 will crash when these are used.
     // NOTES: The issue is due to the two generics included in the functions. The constaints also seem to be an issue.
-    procedure RegisterType<TInterface: IInterface; TImplementation: class>
+    procedure RegisterType<TInterface: IMVCBrIOC; TImplementation: class>
       (const Name: string = ''); overload;
-    procedure RegisterType<TInterface: IInterface; TImplementation: class>
+    procedure RegisterType<TInterface: IMVCBrIOC; TImplementation: class>
       (const Singleton: boolean; const Name: string = ''); overload;
 {$ENDIF}
-    procedure RegisterType<TInterface: IInterface>(const Delegate
+    procedure RegisterType<TInterface: IMVCBrIOC>(const Delegate
       : TActivatorDelegate<TInterface>; const Name: string = ''); overload;
-    procedure RegisterType<TInterface: IInterface>(const Singleton: boolean;
+    procedure RegisterType<TInterface: IMVCBrIOC>(const Singleton: boolean;
       const Delegate: TActivatorDelegate<TInterface>;
       const Name: string = ''); overload;
-    function RegisterType<TInterface: IInterface>(const AName: String)
+    function RegisterType<TInterface: IMVCBrIOC>(const AName: String)
       : TIoCRegistration<TInterface>; overload;
+    procedure AttachInstance(AInstance: IMVCBrIOC);
 
     procedure RevokeInstance(AInstance: IInterface);
 
     // Register an instance as a signleton. If there is more than one instance that implements the interface
     // then use the name parameter
-    procedure RegisterSingleton<TInterface: IInterface>(const Instance
+    procedure RegisterSingleton<TInterface: IMVCBrIOC>(const Instance
       : TInterface; const Name: string = '');
 
     // Resolution
-    function Resolve<TInterface: IInterface>(const Name: string = '')
+    function Resolve<TInterface: IMVCBrIOC>(const Name: string = '')
       : TInterface;
     function GetName(AGuid: TGuid): string;
     function GetGuid(AName: string): TGuid;
 
-    function RegisterInterfaced<TInterface: IInterface>(AII: TGuid;
+    function RegisterInterfaced<TInterface: IMVCBrIOC>(AII: TGuid;
       AClass: TInterfacedClass; AName: String; bSingleton: boolean)
-      : TIoCRegistration<IUnknown>; overload;
+      : TIoCRegistration<IMVCBrIOC>; overload;
 
     // Returns true if we have such a service.
-    function HasService<T: IInterface>: boolean;
+    function HasService<T: IMVCBrIOC>: boolean;
 
     // Empty the Container.. usefull for testing only!
     procedure Clear;
@@ -144,6 +149,7 @@ type
   public
     constructor Create;
     class function CreateInstance(const AClass: TClass): IInterface;
+    class procedure CallReleaseMethod(FInstance: TObject);
   end;
 
 function GetInterfaceIID(const I: IInterface; var IID: TGuid): boolean;
@@ -178,6 +184,30 @@ begin
     end;
   end;
 
+end;
+
+class procedure TClassActivator.CallReleaseMethod(FInstance: TObject);
+var
+  rType: TRttiType;
+  method: TRttiMethod;
+  II: IMVCBrIOC;
+begin
+  if supports(FInstance, IMVCBrIOC, II) then
+  begin
+    II.Release;
+    II := nil;
+    exit;
+  end;
+  rType := FRttiCtx.GetType(FInstance.ClassType);
+  if not(rType is TRttiInstanceType) then
+    exit;
+  method := TRttiInstanceType(rType).GetMethod('release');
+  if assigned(method) and rType.IsInstance then
+    if (method.Visibility in [mvPublic, mvPublished]) and
+      (Length(method.GetParameters) = 0) then
+    begin
+      method.Invoke(FInstance, []);
+    end;
 end;
 
 function TMVCBrIoC.HasService<T>: boolean;
@@ -265,6 +295,7 @@ class procedure TMVCBrIoC.ClassDestroy;
 begin
   if FDefault <> nil then
     FDefault.Free;
+  FDefault := nil;
 end;
 
 procedure TMVCBrIoC.Clear;
@@ -274,12 +305,17 @@ end;
 
 constructor TMVCBrIoC.Create;
 begin
+  FReleased := false;
   FContainerInfo := TDictionary<string, TObject>.Create;
   FRaiseIfNotFound := false;
 end;
 
 class function TMVCBrIoC.DefaultContainer: TMVCBrIoC;
 begin
+  result := nil;
+  if FReleased then
+    exit;
+
   if FDefault = nil then
     FDefault := TMVCBrIoC.Create;
   result := FDefault;
@@ -288,14 +324,21 @@ end;
 destructor TMVCBrIoC.Destroy;
 var
   o: TObject;
+  rego: TIoCRegistration<IMVCBrIOC>;
 begin
   if FContainerInfo <> nil then
   begin
     for o in FContainerInfo.Values do
       if o <> nil then
-        o.Free;
+      begin
+        rego := TIoCRegistration<IMVCBrIOC>(o);
+        if assigned(o) then
+          o.Free;
+      end;
     FContainerInfo.Free;
+    FContainerInfo := nil;
   end;
+  FReleased := true;
   inherited;
 end;
 
@@ -320,12 +363,12 @@ end;
 function TMVCBrIoC.GetGuid(AName: string): TGuid;
 var
   LName: string;
-  rogo: TIoCRegistration<IController>;
+  rogo: TIoCRegistration<IMVCBrIOC>;
 begin
   for LName in FContainerInfo.keys do
     if LName.ToUpper.Equals(AName.ToUpper) then
     begin
-      rogo := TIoCRegistration<IController>(FContainerInfo.items[LName]);
+      rogo := TIoCRegistration<IMVCBrIOC>(FContainerInfo.items[LName]);
       result := rogo.FGuid;
     end;
 end;
@@ -333,13 +376,13 @@ end;
 function TMVCBrIoC.GetName(AGuid: TGuid): string;
 var
   LName: string;
-  rogo: TIoCRegistration<IController>;
+  rogo: TIoCRegistration<IMVCBrIOC>;
   achei: string;
 begin
   achei := '';
   for LName in FContainerInfo.keys do
   begin
-    rogo := TIoCRegistration<IController>(FContainerInfo.items[LName]);
+    rogo := TIoCRegistration<IMVCBrIOC>(FContainerInfo.items[LName]);
     if rogo.FGuid = AGuid then
     begin
       achei := rogo.FName;
@@ -354,7 +397,7 @@ function TMVCBrIoC.InternalResolve<TInterface>(out AInterface: TInterface;
 var
   key: string;
   errorMsg: string;
-  container: TDictionary<string, TObject>;
+  // container: TDictionary<string, TObject>;
   registrationObj: TObject;
   registration: TIoCRegistration<TInterface>;
   resolvedInf: IInterface;
@@ -367,9 +410,9 @@ begin
 
   // Get the key for the interace we are resolving and locate the container for that key.
   key := GetInterfaceKey<TInterface>(AName);
-  container := FContainerInfo;
+  // container := FContainerInfo;
 
-  if not container.TryGetValue(key, registrationObj) then
+  if not FContainerInfo.TryGetValue(key, registrationObj) then
   begin
     result := TResolveResult.InterfaceNotRegistered;
     exit;
@@ -401,7 +444,7 @@ begin
   if bInstanciate then
   begin
     // If the instance hasn't been instanciated then we need to lock and instanciate
-    MonitorEnter(container);
+    MonitorEnter(FContainerInfo);
     try
       // If we have a implementing class then used this to activate.
       if registration.FImplClass <> nil then
@@ -433,10 +476,10 @@ begin
         registration.FInstance := resolvedObj;
 
         // Reset the registration to show the instance which was created.
-        container.AddOrSetValue(key, registration);
+        FContainerInfo.AddOrSetValue(key, registration);
       end;
     finally
-      MonitorExit(container);
+      MonitorExit(FContainerInfo);
     end;
   end;
 end;
@@ -470,10 +513,10 @@ end;
 
 function TMVCBrIoC.RegisterInterfaced<TInterface>(AII: TGuid;
   AClass: TInterfacedClass; AName: String; bSingleton: boolean)
-  : TIoCRegistration<IUnknown>;
+  : TIoCRegistration<IMVCBrIOC>;
 var
   Interf: PInterfaceEntry;
-  rego: TIoCRegistration<IUnknown>;
+  rego: TIoCRegistration<IMVCBrIOC>;
   key: string;
 begin
 
@@ -481,7 +524,7 @@ begin
 
   key := GetInterfaceKey<TInterface>(AName);
 
-  rego := TIoCRegistration<IUnknown>.Create;
+  rego := TIoCRegistration<IMVCBrIOC>.Create;
   rego.FGuid := AII;
   rego.FName := AName;
   rego.FIInterface := nil;
@@ -489,12 +532,12 @@ begin
   rego.FIsSingleton := bSingleton;
   rego.FInstance := nil;
 
-  rego.FActivatorDelegate := function: IUnknown
+  rego.FActivatorDelegate := function: IMVCBrIOC
     var
       obj: TInterfacedObject;
     begin
       obj := AClass.Create;
-      Supports(obj, AII, result);
+      supports(obj, AII, result);
     end;
   FContainerInfo.Add(key, rego);
 
@@ -511,15 +554,17 @@ end;
 procedure TMVCBrIoC.RevokeInstance(AInstance: IInterface);
 var
   LName: string;
-  rogo: TIoCRegistration<IUnknown>;
+  rogo: TIoCRegistration<IMVCBrIOC>;
   achei: string;
   AOrigem, ALocal: TObject;
 begin
+  if FReleased then
+    exit;
   achei := '';
   AOrigem := AInstance as TObject;
   for LName in FContainerInfo.keys do
   begin
-    rogo := TIoCRegistration<IUnknown>(FContainerInfo.items[LName]);
+    rogo := TIoCRegistration<IMVCBrIOC>(FContainerInfo.items[LName]);
     if assigned(rogo) and assigned(rogo.FInstance) and (rogo.FIsSingleton) then
     begin
       ALocal := rogo.FInstance as TObject;
@@ -630,6 +675,42 @@ begin
 
 end;
 
+procedure TMVCBrIoC.Release;
+var
+  o: TObject;
+  rogo: TIoCRegistration<IMVCBrIOC>;
+  resolvedObj: TObject;
+begin
+  for o in FContainerInfo.Values do
+  begin
+    rogo := TIoCRegistration<IMVCBrIOC>(o);
+    if assigned(rogo.FInstance) then
+      rogo.FInstance.release;
+    rogo.FInstance := nil;
+  end;
+end;
+
+procedure TMVCBrIoC.AttachInstance(AInstance: IMVCBrIOC);
+var
+  o: TObject;
+  rogo: TIoCRegistration<IMVCBrIOC>;
+  resolvedObj: TObject;
+
+begin
+  for o in FContainerInfo.Values do
+  begin
+    rogo := TIoCRegistration<IMVCBrIOC>(o);
+    resolvedObj := AInstance as TObject;
+    if (not assigned(rogo.FInstance)) and assigned(rogo.FImplClass) and
+      (sametext(rogo.FImplClass.ClassName, resolvedObj.ClassName)) and
+      (rogo.isSingleton) then
+    begin
+      rogo.FInstance := AInstance;
+      Break;
+    end;
+  end;
+end;
+
 { TMVCBrIoC.TIoCRegistration<T> }
 
 function TMVCBrIoC.TIoCRegistration<T>.asGuid: TGuid;
@@ -642,11 +723,19 @@ begin
   result := FName;
 end;
 
-function TMVCBrIoC.TIoCRegistration<T>.Delegate(const ADelegate
+function TMVCBrIoC.TIoCRegistration<T>.DelegateTo(const ADelegate
   : TActivatorDelegate<T>): TIoCRegistration<T>;
 begin
   result := self;
   FActivatorDelegate := ADelegate;
+end;
+
+destructor TMVCBrIoC.TIoCRegistration<T>.Destroy;
+begin
+  if assigned(FInstance) then
+    FInstance.release;
+  FInstance := nil;
+  inherited;
 end;
 
 function TMVCBrIoC.TIoCRegistration<T>.Guid(AGuid: TGuid): TIoCRegistration<T>;
@@ -655,8 +744,8 @@ begin
   FGuid := AGuid;
 end;
 
-function TMVCBrIoC.TIoCRegistration<T>.ImplementClass(AImplements: TInterfacedClass)
-  : TIoCRegistration<T>;
+function TMVCBrIoC.TIoCRegistration<T>.ImplementClass
+  (AImplements: TInterfacedClass): TIoCRegistration<T>;
 begin
   result := self;
 
@@ -665,7 +754,7 @@ begin
       obj: TInterfacedObject;
     begin
       obj := AImplements.Create;
-      Supports(obj, FGuid, result);
+      supports(obj, FGuid, result);
     end;
 
   FImplClass := AImplements;

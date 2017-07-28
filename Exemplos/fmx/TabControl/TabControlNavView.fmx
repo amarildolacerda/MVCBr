@@ -4,10 +4,6 @@ object TabControlNavView: TTabControlNavView
   Caption = 'TabControlNavView'
   ClientHeight = 480
   ClientWidth = 640
-  FormFactor.Width = 320
-  FormFactor.Height = 480
-  FormFactor.Devices = [Desktop, iPhone, iPad]
-  DesignerMasterStyle = 0
   object TabControl1: TTabControl
     Position.X = 24.000000000000000000
     Position.Y = 32.000000000000000000

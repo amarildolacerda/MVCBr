@@ -53,7 +53,11 @@ type
     procedure DoBeforeDelete; override;
     procedure DoBeforePost; override;
     procedure DoBeforeApplyUpdates(Sender: TFDDataset);
+    procedure DoBeforeOpen; override;
+    procedure DoAfterOpen; override;
+
   private
+    FLoading: boolean;
     FChanges: TJSONArray;
     FKeyFields: string;
     FUpdateTable: string;
@@ -65,10 +69,16 @@ type
     function GetUpdateTable: string;
     procedure CheckKeyFields;
     procedure SetApplyUpdateDelegate(const AProc: TProc<TDataset>);
+    procedure SetLoading(const Value: boolean);
+    function GetLoading: boolean;
+
   public
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function UpdatesPending: Boolean;
+    Property Loading: boolean read FLoading write SetLoading;
+    function ApplyDelegateTo(const AProc: TProc<TDataset>): TODataFDMemTable;
+    function UpdatesPending: boolean;
     procedure ClearChanges;
     procedure CancelUpdates; reintroduce;
     procedure MergeChangeLog; reintroduce;
@@ -92,34 +102,63 @@ end;
 constructor TODataFDMemTable.Create(AOwner: TComponent);
 begin
   inherited;
+  FLoading := false;
   FChanges := TJSONArray.Create;
   BeforeApplyUpdates := DoBeforeApplyUpdates;
 end;
 
 destructor TODataFDMemTable.Destroy;
+var
+  i: integer;
 begin
-  FChanges.DisposeOf;
+  FChanges.free;//DisposeOf;
   inherited;
+end;
+
+procedure TODataFDMemTable.DoAfterOpen;
+begin
+  inherited;
+  FLoading := false;
 end;
 
 procedure TODataFDMemTable.DoBeforeApplyUpdates(Sender: TFDDataset);
 begin
-  if assigned(FApplyDelegate) then
-    FApplyDelegate(Sender);
+  if not FLoading then
+    if assigned(FApplyDelegate) then
+      FApplyDelegate(Sender);
 end;
 
 procedure TODataFDMemTable.DoBeforeDelete;
 begin
   inherited;
-  CheckKeyFields;
-  FChanges.AddElement(DeletedDataRowToJsonObject(Self, FKeyFields));
+  if not FLoading then
+  begin
+    CheckKeyFields;
+    FChanges.AddElement(DeletedDataRowToJsonObject(Self, FKeyFields));
+  end;
+end;
+
+procedure TODataFDMemTable.DoBeforeOpen;
+begin
+  inherited;
+  FLoading := true;
 end;
 
 procedure TODataFDMemTable.DoBeforePost;
 begin
   inherited;
-  CheckKeyFields;
-  FChanges.AddElement(ModifiedDataRowToJsonObject(Self, FKeyFields));
+  if not FLoading then
+  begin
+    CheckKeyFields;
+    FChanges.AddElement(ModifiedDataRowToJsonObject(Self, FKeyFields));
+  end;
+end;
+
+function TODataFDMemTable.ApplyDelegateTo(const AProc: TProc<TDataset>)
+  : TODataFDMemTable;
+begin
+  result := Self;
+  SetApplyUpdateDelegate(AProc);
 end;
 
 procedure TODataFDMemTable.CancelUpdates;
@@ -135,23 +174,28 @@ end;
 
 procedure TODataFDMemTable.ClearChanges;
 begin
-  while FChanges.Count > 0 do
+  while FChanges.count > 0 do
     FChanges.Remove(0);
 end;
 
 function TODataFDMemTable.GetChanges: TJSONArray;
 begin
-  Result := FChanges;
+  result := FChanges;
 end;
 
 function TODataFDMemTable.GetKeyFields: string;
 begin
-  Result := FKeyFields;
+  result := FKeyFields;
+end;
+
+function TODataFDMemTable.GetLoading: boolean;
+begin
+  result := FLoading;
 end;
 
 function TODataFDMemTable.GetUpdateTable: string;
 begin
-  Result := FUpdateTable;
+  result := FUpdateTable;
 end;
 
 procedure TODataFDMemTable.MergeChangeLog;
@@ -170,14 +214,19 @@ begin
   FKeyFields := AValue.Trim;
 end;
 
+procedure TODataFDMemTable.SetLoading(const Value: boolean);
+begin
+  FLoading := Value;
+end;
+
 procedure TODataFDMemTable.SetUpdateTable(const AValue: string);
 begin
   FUpdateTable := AValue.Trim;
 end;
 
-function TODataFDMemTable.UpdatesPending: Boolean;
+function TODataFDMemTable.UpdatesPending: boolean;
 begin
-  Result := FChanges.Count > 0;
+  result := FChanges.count > 0;
 end;
 
 end.

@@ -177,7 +177,8 @@ var
   CtrlConnection: IGeradorMetadataConnectionController;
   View: IView; {IFrmConnection;}
 begin
-  CtrlConnection := resolveController<IGeradorMetadataConnectionController>;
+
+  CtrlConnection := resolveController<IGeradorMetadataConnectionController> as IGeradorMetadataConnectionController;
   View := CtrlConnection.GetView {as IFrmConnection};
 
   with TForm(View.this) do
@@ -1024,3 +1025,4 @@ begin
 end;
 
 end.
+

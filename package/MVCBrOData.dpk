@@ -39,12 +39,12 @@ requires
   IndySystem,
   IndyProtocols,
   IndyCore,
-  RESTComponents,
   FireDAC,
   FireDACCommonDriver,
   FireDACCommon,
   MVCBrCore,
-  MVCBrVCL;
+  MVCBrVCL,
+  RESTComponents;
 
 contains
   oData.Comp.Client in '..\oData\oData.Comp.Client.pas',

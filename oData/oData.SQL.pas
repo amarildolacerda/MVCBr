@@ -22,6 +22,7 @@ type
     FResource: IJsonODataServiceResource;
     function EncodeFilterSql(AFilter: string): string; virtual;
   public
+    destructor Destroy;override;
     function GetConnection(ADataset: TDataset): TObject; virtual;
     function GetPrimaryKey(AConnection: TObject; ACollection: string)
       : string; virtual;
@@ -260,7 +261,6 @@ var
   url: string;
 begin
   inherited;
-  FODataParse := TODataParse.create;
   try
     url := FCTX.Request.PathInfo;
     if FCTX.Request.QueryStringParams.Count > 0 then
@@ -270,6 +270,12 @@ begin
     FODataParse.parse(url);
   finally
   end;
+end;
+
+destructor TODataSQL.Destroy;
+begin
+  FResource := nil;
+  inherited;
 end;
 
 function TODataSQL.EncodeFilterSql(AFilter: string): string;

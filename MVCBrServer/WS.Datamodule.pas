@@ -53,6 +53,7 @@ uses System.JSON, System.SyncObjs, WS.Common;
 {$R *.dfm}
 
 var
+  FContainer:TComponent;
   // ConnectionStrings: string;
 {$IFDEF LINUX}
 {$ELSE}
@@ -74,14 +75,14 @@ begin
   if not LInited then
   begin
     /// inicializa a estrutura do FireDAC
-    FDPhysFBDriverLink1 := TFDPhysFBDriverLink.create(WSDatamodule);
-    FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(WSDatamodule);
-    FDPhysMSSQLDriverLink1 := TFDPhysMSSQLDriverLink.create(WSDatamodule);
-    FDPhysPgDriverLink1 := TFDPhysPgDriverLink.create(WSDatamodule);
-    FDPhysOracleDriverLink1:= TFDPhysOracleDriverLink.create(WSDatamodule);
+    FDPhysFBDriverLink1 := TFDPhysFBDriverLink.create(FContainer);
+    FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(FContainer);
+    FDPhysMSSQLDriverLink1 := TFDPhysMSSQLDriverLink.create(FContainer);
+    FDPhysPgDriverLink1 := TFDPhysPgDriverLink.create(FContainer);
+    FDPhysOracleDriverLink1:= TFDPhysOracleDriverLink.create(FContainer);
 
 {$IFDEF MSWINDOWS}
-    FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(WSDatamodule);
+    FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(FContainer);
 {$ENDIF}
   end;
 end;
@@ -157,4 +158,9 @@ begin
 
 end;
 
+initialization
+   FContainer:=TComponent.create(nil);
+finalization
+   FreeAndNil(WSDatamodule);
+   FreeAndNil(FContainer);
 end.

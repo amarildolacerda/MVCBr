@@ -1,3 +1,5 @@
+
+unit MVCBr.Patterns.Factory;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -24,9 +26,6 @@
 { }
 { *************************************************************************** }
 
-unit MVCBr.Patterns.Factory;
-
-
 interface
 
 uses System.Classes, System.SysUtils, System.TypInfo;
@@ -38,21 +37,39 @@ Type
     function This: TObject;
     Procedure Lock;
     procedure UnLock;
+    procedure Release;
+    function RefCount:Integer;
   end;
 
   TMVCBrFactory = class(TInterfacedObject, IMVCBrFactory)
   private
     FLock: TObject;
+    FIsUnsafe: boolean;
+    FDefaultSafeted: IInterface;
+    [unsafe]
+    FDefault: IInterface;
+    function GetDefault: IInterface;
   public
-    constructor Create; virtual;
+    //Constructor New;virtual;
+    constructor Create; overload; virtual;
+    constructor Create(AInterface: IInterface; AUnsafe: boolean = true);
+      overload; virtual;
     destructor Destroy; override;
+    procedure SetUnsafe(AInterface: IInterface); virtual;
+    procedure SetSafeted(AInterface: IInterface); virtual;
+    property Default: IInterface read GetDefault;
     class function NewInstance<TInterface: IInterface>(AClass: TClass)
       : TInterface; static;
     function This: TObject; virtual;
     Procedure Lock; overload; virtual;
     procedure UnLock; virtual;
+    procedure Release; virtual;
+    function RefCount:Integer;
   end;
 
+  {
+    /// nao faz sentido um singleton para uma classe estática.
+    /// nao tem como manter mais de uma variavel ao logo da aplicacação
   TMVCBrSingletonFactory<T: Class> = class(TMVCBrFactory)
   private
     class var FSingleton: T;
@@ -61,13 +78,47 @@ Type
     class function Default: T;
     class procedure Release;
   end;
+  }
 
-  TMVCBrBuilderFactory<T> = class(TMVCBrFactory)
+  TMVCBrAggregatedFactory = class(TObject)
   private
-    FDelegate: TProc<T>;
+    [unsafe]
+    FController: IInterface;
+    FDisabledRefCount: boolean; // unsafe/weak reference to controller
+    function GetDefault: IInterface;
+    procedure SetDisabledRefCount(const Value: boolean);
   public
-    constructor Create(ADelegate: TProc<T>);
-    function Builder(AObject: T): TMVCBrBuilderFactory<T>;
+    property Default: IInterface read GetDefault;
+    function QueryInterface(const IID: TGUID; out Obj): HResult; STDCALL;
+    function _AddRef: Integer; STDCALL;
+    function _Release: Integer; STDCALL;
+    procedure Release; virtual;
+    constructor Create(const Controller: IInterface);
+    destructor Destroy; override;
+    property DisabledRefCount: boolean read FDisabledRefCount
+      write SetDisabledRefCount;
+  end;
+
+  TMVCBrContainedFactory = class(TMVCBrAggregatedFactory)
+  public
+    function QueryInterface(const IID: TGUID; out Obj): HResult; STDCALL;
+  end;
+
+  TMVCBrHelperFactory<T: Class> = class(TInterfacedObject)
+  protected
+    FInstance: T;
+  public
+    constructor Create(Instance: T);
+    destructor Destroy; override;
+    property Default: T read FInstance;
+  end;
+
+  TMVCBrStaticFactory<T> = class(TObject)
+  protected
+    FInstance: T;
+  public
+    constructor Create(AInstance: T);
+    property Default: T read FInstance;
   end;
 
 implementation
@@ -77,13 +128,41 @@ implementation
 constructor TMVCBrFactory.Create;
 begin
   inherited Create;
+  FDefaultSafeted := nil;
+  FIsUnsafe := false;
+  FDefault := nil;
+  FRefCount := 1;
   FLock := TObject.Create;
+end;
+
+constructor TMVCBrFactory.Create(AInterface: IInterface;
+  AUnsafe: boolean = true);
+begin
+  Create;
+  if AUnsafe then
+    SetUnsafe(AInterface)
+  else
+  begin
+    FDefaultSafeted := AInterface;
+  end;
 end;
 
 destructor TMVCBrFactory.Destroy;
 begin
+  FDefault := nil;
+  FDefaultSafeted := nil;
   FLock.free;
   inherited;
+end;
+
+function TMVCBrFactory.GetDefault: IInterface;
+begin
+  if FIsUnsafe then
+    result := FDefault
+  else if assigned(FDefaultSafeted) then
+    result := FDefaultSafeted
+  else
+    result := self;
 end;
 
 procedure TMVCBrFactory.Lock;
@@ -91,12 +170,18 @@ begin
   TMonitor.enter(FLock);
 end;
 
+{constructor TMVCBrFactory.New;
+begin
+      Create;
+end;
+}
+
 class function TMVCBrFactory.NewInstance<TInterface>(AClass: TClass)
   : TInterface;
 var
   o: TObject;
   pInfo: PTypeInfo;
-  IID: TGuid;
+  IID: TGUID;
 begin
   o := AClass.Create;
   pInfo := TypeInfo(TInterface);
@@ -106,6 +191,33 @@ begin
     o.free;
     raise Exception.Create('O objeto não implementa a interface solicitada');
   end;
+end;
+
+function TMVCBrFactory.RefCount: Integer;
+begin
+   result := inherited RefCount;
+end;
+
+procedure TMVCBrFactory.Release;
+begin
+end;
+
+procedure TMVCBrFactory.SetSafeted(AInterface: IInterface);
+begin
+  if FDefaultSafeted <> AInterface then
+  begin
+    FDefaultSafeted := AInterface;
+    FDefault := nil;
+  end;
+  FIsUnsafe := false;
+end;
+
+procedure TMVCBrFactory.SetUnsafe(AInterface: IInterface);
+begin
+  if FDefault <> AInterface then
+    FDefault := AInterface;
+  FDefaultSafeted := nil;
+  FIsUnsafe := true;
 end;
 
 function TMVCBrFactory.This: TObject;
@@ -119,7 +231,7 @@ begin
 end;
 
 { TMVCBrSingletonFactory<T> }
-
+(*
 constructor TMVCBrSingletonFactory<T>.Create();
 begin
   inherited Create;
@@ -141,25 +253,100 @@ begin
     FSingleton.disposeOf;
   FSingleton := nil;
 end;
+*)
 
-{ TMVCBrBuilderFactory<T> }
+{ TMVCBrAggregatedFactory }
 
-function TMVCBrBuilderFactory<T>.Builder(AObject: T): TMVCBrBuilderFactory<T>;
+constructor TMVCBrAggregatedFactory.Create(const Controller: IInterface);
 begin
-  result := self;
-  FDelegate(AObject);
+  // "unsafe" reference to controller - don't keep it alive
+  FController := Controller;
 end;
 
-constructor TMVCBrBuilderFactory<T>.Create(ADelegate: TProc<T>);
+destructor TMVCBrAggregatedFactory.Destroy;
+begin
+  FController := nil;
+  inherited;
+end;
+
+function TMVCBrAggregatedFactory.GetDefault: IInterface;
+begin
+  result := FController;
+end;
+
+function TMVCBrAggregatedFactory.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  result := FController.QueryInterface(IID, Obj);
+end;
+
+procedure TMVCBrAggregatedFactory.Release;
+begin
+  if FDisabledRefCount then
+  begin
+    FDisabledRefCount := false;
+  end;
+  _Release;
+end;
+
+procedure TMVCBrAggregatedFactory.SetDisabledRefCount(const Value: boolean);
+begin
+  FDisabledRefCount := Value;
+end;
+
+function TMVCBrAggregatedFactory._AddRef: Integer;
+begin
+  if not FDisabledRefCount then
+    result := FController._AddRef
+  else
+    result := 1;
+end;
+
+function TMVCBrAggregatedFactory._Release: Integer;
+begin
+  if not FDisabledRefCount then
+    result := FController._Release
+  else
+    result := 1;
+end;
+
+{ TMVCBrContainedFactory }
+
+function TMVCBrContainedFactory.QueryInterface(const IID: TGUID;
+  out Obj): HResult;
+begin
+  if GetInterface(IID, Obj) then
+    result := 0
+  else
+    result := E_NOINTERFACE;
+end;
+
+{ TMVCBrHelperFactory }
+
+constructor TMVCBrHelperFactory<T>.Create(Instance: T);
 begin
   inherited Create;
-  FDelegate := ADelegate;
+  FInstance := Instance;
+end;
+
+destructor TMVCBrHelperFactory<T>.Destroy;
+begin
+  FInstance.free;
+  inherited;
+end;
+
+{ TMVCBrStaticFactory<T> }
+
+constructor TMVCBrStaticFactory<T>.Create(AInstance: T);
+begin
+  inherited Create;
+  FInstance := AInstance;
 end;
 
 initialization
 
 finalization
 
-TMVCBrSingletonFactory<TObject>.Release;
+//TMVCBrSingletonFactory<TObject>.Release;
 
 end.

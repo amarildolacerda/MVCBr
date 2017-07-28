@@ -383,6 +383,8 @@ begin
 
       RenderA(JSONResponse);
     finally
+      FOData.release;
+      FOData := nil;
     end;
   except
     on e: Exception do

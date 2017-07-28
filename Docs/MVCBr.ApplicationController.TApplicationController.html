@@ -50,7 +50,7 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.ApplicationController.TApplicationController.html#FControllers">FControllers</a></b>: IInterfaceList;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.ApplicationController.TApplicationController.html#FControllers">FControllers</a></b>: TThreadSafeObjectList&lt;TAggregatedObject&gt;;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -77,95 +77,119 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#MainView">MainView</a></b>: IView; virtual;</code></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Release">Release</a></b>;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#MainView">MainView</a></b>: TObject; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#SetMainView">SetMainView</a></b>(AView: IView);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#FindController">FindController</a></b>(AGuid: TGuid): IController; virtual;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ResolveController">ResolveController</a></b>&lt;TIController: IController&gt; : TIController; overload;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ResolveController">ResolveController</a></b>(AGuid: TGuid): IController; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ResolveController">ResolveController</a></b>(AGuid: TGuid): IController; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#AttachController">AttachController</a></b>(AGuid: TGuid): IController; virtual;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#RevokeController">RevokeController</a></b>(AGuid: TGuid);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Count">Count</a></b>: integer;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Add">Add</a></b>(const AController: IController): integer;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Delete">Delete</a></b>(const idx: integer);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Remove">Remove</a></b>(const AController: IController);</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#FindView">FindView</a></b>(AGuid: TGuid): IView; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ViewEvent">ViewEvent</a></b>(AMessage: string; var AHandled: boolean) : IApplicationController; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ViewEventOther">ViewEventOther</a></b>(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ViewEvent">ViewEvent</a></b>(AView: TGuid; AMessage: String; var AHandled: boolean) : IView; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ViewEvent">ViewEvent</a></b>&lt;TViewInterface: IInterface&gt;(AMessage: String; var AHandled: boolean): IView; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ViewEvent">ViewEvent</a></b>(AMessage: TJsonValue; var AHandled: boolean) : IView; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#FindModel">FindModel</a></b>(AGuid: TGuid): IModel; overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#FindModel">FindModel</a></b>&lt;TIModel: IInterface&gt;: TIModel; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#This">This</a></b>: TObject;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ThisAs">ThisAs</a></b>: <a  href="MVCBr.ApplicationController.TApplicationController.html">TApplicationController</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Run">Run</a></b>(AClass: TComponentClass; AController: IController; AModel: IModel; AFunc: TFunc &lt; boolean &gt;= nil); overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Run">Run</a></b>(AController: IController; AFunc: TFunc &lt; boolean &gt;= nil); overload;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#Run">Run</a></b>; overload;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ForEach">ForEach</a></b>(AProc: TProc&lt;IController&gt;); overload;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#RunMainForm">RunMainForm</a></b>(ATFormClass: TComponentClass; out AFormVar; AControllerGuid: TGuid; AFunc: TFunc &lt; TObject, boolean &gt;= nil); overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ForEach">ForEach</a></b>(AProc: TProc&lt;IController&gt;); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ForEach">ForEach</a></b>(AProc: TFunc&lt;IController, boolean&gt;): boolean; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ApplicationController.TApplicationController.html#ForEachDown">ForEachDown</a></b>(AProc: TFunc&lt;IController, boolean&gt;): boolean;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -185,14 +209,14 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FControllers"></a><code><b>FControllers</b>: IInterfaceList;</code></td>
+<td class="itemcode"><a name="FControllers"></a><code><b>FControllers</b>: TThreadSafeObjectList&lt;TAggregatedObject&gt;;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
 Lista de controllers instanciados</p>
 <h6 class="description_section">Attributes</h6>
 <dl class="attributes">
-  <dt><code>unsafe</code></dt>
+  <dt><code>weak</code></dt>
   <dd></dd>
 </dl>
 </td></tr>
@@ -204,7 +228,7 @@ Lista de controllers instanciados</p>
 </tr>
 <tr><td colspan="2">
 <p>
-<a class="normal" href="MVCBr.ApplicationController.TApplicationController.html#MainView">MainView</a> para o Application</p>
+<a class="normal" href="MVCBr.ApplicationController.TApplicationController.html#MainView">MainView</a> para o Application [weak]</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -245,7 +269,15 @@ singleton</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="MainView"></a><code>function <b>MainView</b>: IView; virtual;</code></td>
+<td class="itemcode"><a name="Release"></a><code>class procedure <b>Release</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="MainView"></a><code>function <b>MainView</b>: TObject; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -268,15 +300,41 @@ Loop que chama AProc para cada um dos controllers da lista</p>
 <tr><td colspan="2">
 <p>
 Controllers methods</p>
+<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ResolveController"></a><code>function <b>ResolveController</b>(AGuid: TGuid): IController; virtual;</code></td>
+<td class="itemcode"><a name="ResolveController"></a><code>function <b>ResolveController</b>&lt;TIController: IController&gt; : TIController; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ResolveController"></a><code>function <b>ResolveController</b>(AGuid: TGuid): IController; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AttachController"></a><code>function <b>AttachController</b>(AGuid: TGuid): IController; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -332,6 +390,11 @@ Controllers methods</p>
 <tr><td colspan="2">
 <p>
 Views Methods</p>
+<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -340,7 +403,12 @@ Views Methods</p>
 <td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: string; var AHandled: boolean) : IApplicationController; overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -348,7 +416,12 @@ Views Methods</p>
 <td class="itemcode"><a name="ViewEventOther"></a><code>function <b>ViewEventOther</b>(ASender: IController; AMessage: string; var AHandled: boolean): IApplicationController;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -356,7 +429,12 @@ Views Methods</p>
 <td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AView: TGuid; AMessage: String; var AHandled: boolean) : IView; overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -364,7 +442,12 @@ Views Methods</p>
 <td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>&lt;TViewInterface: IInterface&gt;(AMessage: String; var AHandled: boolean): IView; overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -372,7 +455,12 @@ Views Methods</p>
 <td class="itemcode"><a name="ViewEvent"></a><code>function <b>ViewEvent</b>(AMessage: TJsonValue; var AHandled: boolean) : IView; overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -382,6 +470,11 @@ Views Methods</p>
 <tr><td colspan="2">
 <p>
 Models Methods</p>
+<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -390,7 +483,12 @@ Models Methods</p>
 <td class="itemcode"><a name="FindModel"></a><code>function <b>FindModel</b>&lt;TIModel: IInterface&gt;: TIModel; overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -433,6 +531,22 @@ Executa</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Run"></a><code>procedure <b>Run</b>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RunMainForm"></a><code>procedure <b>RunMainForm</b>(ATFormClass: TComponentClass; out AFormVar; AControllerGuid: TGuid; AFunc: TFunc &lt; TObject, boolean &gt;= nil); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="ForEach"></a><code>procedure <b>ForEach</b>(AProc: TProc&lt;IController&gt;); overload;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -442,6 +556,14 @@ Executa</p>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="ForEach"></a><code>function <b>ForEach</b>(AProc: TFunc&lt;IController, boolean&gt;): boolean; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ForEachDown"></a><code>function <b>ForEachDown</b>(AProc: TFunc&lt;IController, boolean&gt;): boolean;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

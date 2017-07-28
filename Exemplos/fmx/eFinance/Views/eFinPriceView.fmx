@@ -85,7 +85,7 @@ object eFinPriceView: TeFinPriceView
         object MultiView1: TMultiView
           MasterButton = SpeedButton1
           Mode = Panel
-          Opacity = 0.800000011920929000
+          Opacity = 0.800000011920928900
           Size.Width = 250.000000000000000000
           Size.Height = 494.000000000000000000
           Size.PlatformDefault = False

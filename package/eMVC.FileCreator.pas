@@ -302,6 +302,12 @@ begin
     result := stringReplace(result, '%AncestorIdent', FAncestorIdent,
       [rfReplaceAll, rfIgnoreCase]);
 
+  result := stringReplace(result, '%guid2', GuidToString(TGuid.NewGuid),
+    [rfReplaceAll, rfIgnoreCase]);
+
+  result := stringReplace(result, '%guid1', GuidToString(TGuid.NewGuid),
+    [rfReplaceAll, rfIgnoreCase]);
+
   result := stringReplace(result, '%guid', GuidToString(TGuid.NewGuid),
     [rfReplaceAll, rfIgnoreCase]);
 
@@ -332,8 +338,8 @@ begin
         if str[i] = '' then
         begin
           inc(c);
-          if c > 0 then
-            str.Delete(i);
+          //if c > 0 then
+          //  str.Delete(i);
         end
         else
           c := 0;

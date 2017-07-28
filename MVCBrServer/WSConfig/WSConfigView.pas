@@ -109,6 +109,7 @@ var
 begin
   j := TJsonObject.create() as TJsonObject;
   j.addPair('connection', GetServer);
+  result := j;
 end;
 
 function TWSConfigView.GetPort: integer;
@@ -125,17 +126,15 @@ begin
   try
     str.LoadFromFile(FList.FileName);
     j := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
+    try
+      result := TJsonObject.ParseJSONValue(j.GetValue('Config').ToJSON);
+      /// workaroud avoid memory leak
+    finally
+      j.free;
+    end;
   finally
     str.free;
   end;
-  result := j.GetValue('Config');
-  { result.addPair('driverid', driverid.Text);
-    result.addPair('server', Server.Text);
-    result.addPair('database', Database.Text);
-    result.addPair('user_name', user_name.Text);
-    result.addPair('password', Password.Text);
-    result.addPair('vendorlib',vendorlib.text);
-  }
 end;
 
 class function TWSConfigView.New(aController: IController): IView;
@@ -184,13 +183,12 @@ begin
   FList.Add(vendorlib);
 end;
 
-
 /// escreve os dados no arquivo de configuração
 procedure TWSConfigView.AfterConstruction;
 begin
   inherited;
   FList := TObjectConfigModel.create(self);
-  FList.FileName := GetODataConfigFilePath+'MVCBrServer.config';
+  FList.FileName := GetODataConfigFilePath + 'MVCBrServer.config';
   AddControls;
   try
     if not fileExists(FList.FileName, false) then

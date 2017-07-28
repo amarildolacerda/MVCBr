@@ -25,7 +25,8 @@ unit System.Classes.Helper;
 
 interface
 
-uses System.Classes, System.SysUtils, System.Rtti,
+uses System.Classes, System.SysUtils,
+  System.Rtti,
   System.Generics.Collections,
   System.TypInfo, System.Json;
 
@@ -145,7 +146,7 @@ Type
 {$IF compilerVersion<32}
     procedure addPair(AName, AValue: String);
 {$ENDIF}
-    class function New(AText: string; ADelimiter: char=','): TStringList;
+    class function New(AText: string; ADelimiter: char = ','): TStringList;
     function AsJsonArray: TJsonArray;
     function AsJsonObject: TJsonObject;
     function ToJson: string;
@@ -154,8 +155,11 @@ Type
 
 implementation
 
-uses {$IF CompilerVersion>28} System.Threading, {$ENDIF} System.DateUtils,
-  REST.Json;
+uses {$IF CompilerVersion>28} System.Threading, {$ENDIF}
+ {$ifndef BPL}
+  REST.Json,
+  {$endif}
+  System.DateUtils;
 
 class procedure TObjectHelper.Using<T>(O: T; Proc: TProc<T>);
 var
@@ -229,22 +233,28 @@ procedure TObjectHelper.FromJson(AJson: string);
 var
   oJs: TJsonObject;
 begin
+ {$ifndef BPL}
   oJs := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
   TJson.JsonToObject(self, oJs);
+ {$endif}
 end;
 
 function TObjectHelper.Clone: System.TObject;
 var
   oJs: TJsonObject;
 begin
+  {$ifndef BPL}
   oJs := TJsonObject.ParseJSONValue(ToJson) as TJsonObject;
   TJson.JsonToObject(self, oJs);
+  {$endif}
   result := self;
 end;
 
 class function TObjectHelper.FromJson<T>(AJson: string): T;
 begin
+ {$ifndef BPL}
   result := TJson.JsonToObject<T>(AJson);
+  {$endif}
 end;
 
 function TObjectHelper.GetContextFields(AName: string): TValue;
@@ -771,12 +781,16 @@ end;
 
 function TObjectHelper.ToJson: string;
 begin // System.uJson
+ {$ifndef BPL}
   result := TJson.ObjectToJsonString(self);
+  {$endif}
 end;
 
 function TObjectHelper.ToJsonObject: TJsonObject;
 begin
+  {$ifndef BPL}
   result := TJson.ObjectToJsonObject(self);
+  {$endif}
 end;
 
 class function TObjectHelper.Anonymous<T>(O: T; Proc: TProc<T>): TObject;
@@ -885,9 +899,10 @@ begin
 end;
 
 {$IF compilerVersion<32}
+
 procedure TStingListHelper.addPair(AName, AValue: String);
 begin
-   self.add(AName+'='+AValue);
+  self.Add(AName + '=' + AValue);
 end;
 {$ENDIF}
 
@@ -917,7 +932,7 @@ begin
   end;
 end;
 
-class function TStingListHelper.New(AText: string; ADelimiter: char=',')
+class function TStingListHelper.New(AText: string; ADelimiter: char = ',')
   : TStringList;
 begin
   result := TStringList.create;

@@ -21,7 +21,9 @@ uses
   System.SysUtils, System.Classes, MVCBr.Interf, System.types,
   MVCBr.View, MVCBr.FormView, MVCBr.Controller, FMX.MultiView, FMX.StdCtrls,
   FMX.types, FMX.Controls, FMX.Controls.Presentation, FMX.Layouts, FMX.Objects,
-  MVCBr.Component, MVCBr.PageView, MVCBr.FMX.LayoutViewManager, FMX.Gestures,
+  MVCBr.Component, MVCBr.PageView,
+  MVCBr.FMX.LayoutViewManager,
+  FMX.Gestures,
   FMX.ListBox;
 
 type
@@ -107,7 +109,7 @@ end;
 
 procedure TeFinPriceView.UpdateKBBounds;
 var
-  //LFocused: TControl;
+  LFocused: TControl;
   LFocusRect: TRectF;
 begin
   FNeedOffset := False;

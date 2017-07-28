@@ -16,6 +16,10 @@ program MVCBrTests;
 
 uses
   DUnitTestRunner,
+  MVCBr.ApplicationController,
+  MVCBr.Controller,
+  MVCBr.FormView,
+  MVCBr.View,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
   TestMVCBr.View in 'TestMVCBr.View.pas',
@@ -35,12 +39,21 @@ uses
   MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
   MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas',
   TestMVCBr.Patterns in 'TestMVCBr.Patterns.pas',
+  MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
+  MVCBr.Patterns.Lazy in '..\MVCBr.Patterns.Lazy.pas',
   MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
-  MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas';
+  TestMVCBr.Facade in 'TestMVCBr.Facade.pas',
+  MVCBr.Patterns.Builder in '..\MVCBr.Patterns.Builder.pas',
+  MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas',
+  DataModuleMock in 'Models\DataModuleMock.pas' {DataModule1: TDataModule},
+  MVCBr.BuilderModel in '..\MVCBr.BuilderModel.pas',
+  MVCBr.Patterns.Strategy in '..\MVCBr.Patterns.Strategy.pas';
 
 {$R *.RES}
 
 begin
-  DUnitTestRunner.RunRegisteredTests;
-end.
 
+  System.ReportMemoryLeaksOnShutdown := true;
+  DUnitTestRunner.RunRegisteredTests;
+
+end.

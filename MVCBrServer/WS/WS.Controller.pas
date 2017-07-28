@@ -56,14 +56,14 @@ type
     class function New(const AModel: IModel): IController; overload;
     function ThisAs: TWSController;
     procedure init; override;
-    function WSConfig:IWSConfigController;
+    function WSConfig: IWSConfigController;
     // function ModelAs: IWSViewModel;
   end;
 
 {$IFDEF DMVC2}
 {$ELSE}
 
-  TMVCControllerClass =  TMVCControllerClazz;  {class of TMVCController}
+  TMVCControllerClass = TMVCControllerClazz; { class of TMVCController }
 {$ENDIF}
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 
@@ -76,7 +76,6 @@ uses WS.Common, WSConfigView,
 
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 begin
-
 
   result := TMVCEngine.Create(ASender,
     procedure(Config: TMVCConfig)
@@ -99,7 +98,7 @@ begin
       // view path
       Config[TMVCConfigKey.ViewPath] := 'templates';
       // Enable STOMP messaging controller
-      //Config[TMVCConfigKey.Messaging] := 'false';
+      // Config[TMVCConfigKey.Messaging] := 'false';
       // Enable Server Signature in response
       Config[TMVCConfigKey.ExposeServerSignature] := 'true';
       // Define a default URL for requests that don't map to a route or a file (useful for client side web app)
@@ -184,5 +183,7 @@ FWSConfig := ApplicationController.resolveController(IWSConfigController)
 WSConnectionString := FWSConfig.ConnectionString;
 
 finalization
+
+FWSConfig := nil;
 
 end.

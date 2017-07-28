@@ -477,9 +477,23 @@ end;
 
 // adicionar o paths ao library path do delphi
 procedure TfrmPrincipal.AddLibrarySearchPath;
+  procedure AddLibrarySearchs();
+  begin
+    with oMVCBr.Installations[iVersion] do
+    begin
+      AddToLibrarySearchPath(sDirRoot+'', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'VCL', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'FMX', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'helpers', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'oData', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'DMVC\sources', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'DMVC\LIB\loggerpro', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'DMVC\LIB\dmustache', tPlatform);
+    end;
+  end;
 begin
   FindDirs(IncludeTrailingPathDelimiter(sDirRoot));
-  
+
   // --
   with oMVCBr.Installations[iVersion] do
   begin
@@ -487,6 +501,7 @@ begin
     AddToLibrarySearchPath(sDirLibrary, tPlatform);
     AddToDebugDCUPath(sDirLibrary, tPlatform);
   end;
+  AddLibrarySearchs();
 
   // -- adicionar a library path ao path do windows
   AddLibraryPathToDelphiPath(sDirLibrary, 'MVCBr');

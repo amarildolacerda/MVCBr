@@ -116,8 +116,38 @@ object Form61: TForm61
     Top = 248
   end
   object ODataFDMemTable2: TODataFDMemTable
+    Active = True
     AfterInsert = ODataFDMemTable2AfterInsert
-    FieldDefs = <>
+    FieldDefs = <
+      item
+        Name = 'codigo'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 30
+      end
+      item
+        Name = 'descricao'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 128
+      end
+      item
+        Name = 'grupo'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 10
+      end
+      item
+        Name = 'unidade'
+        Attributes = [faRequired]
+        DataType = ftString
+        Size = 5
+      end
+      item
+        Name = 'preco'
+        Attributes = [faRequired]
+        DataType = ftFloat
+      end>
     IndexDefs = <>
     MasterSource = DataSource1
     MasterFields = 'codigo'
@@ -129,6 +159,7 @@ object Form61: TForm61
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
+    KeyFields = 'codigo'
     UpdateTable = 'grupos'
     Left = 296
     Top = 176

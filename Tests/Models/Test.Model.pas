@@ -16,7 +16,8 @@ Unit Test.Model;
 interface
 
 { .$I ..\inc\mvcbr.inc }
-uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, MVCBr.Interf, MVCBr.Model,
+uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
+  System.Classes, MVCBr.Interf, MVCBr.Model,
   Test.Model.Interf, // %Interf,
   MVCBr.Controller;
 

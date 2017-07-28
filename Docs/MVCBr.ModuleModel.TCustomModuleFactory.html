@@ -91,11 +91,19 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Update">Update</a></b>: IModel; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Update">Update</a></b>: IModel; overload; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Update">Update</a></b>(AJsonValue: TJsonValue; var AHandled: boolean); overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Controller">Controller</a></b>(const AController: IController): IModel; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#SetController">SetController</a></b>(const AController: IController);</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -115,17 +123,29 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>constructor <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Create">Create</a></b>(AOwner: TComponent); override;</code></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Create">Create</a></b>; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>destructor <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Destroy">Destroy</a></b>; override;</code></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Create">Create</a></b>(AOwner: TComponent); overload; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#ApplicationControllerInternal">ApplicationControllerInternal</a></b>: IApplicationController; virtual;</code></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#New">New</a></b>(AClass: TComponentClass; AController: IController; out obj);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#Release">Release</a></b>; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#ApplicationControllerInternal">ApplicationControllerInternal</a></b>: IApplicationController; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#ApplicationController">ApplicationController</a></b>: <a  href="MVCBr.ApplicationController.TApplicationController.html">TApplicationController</a>; virtual;</code></td>
 </tr>
@@ -138,8 +158,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#OnUpdateModel">OnUpdateModel</a></b>: TNotifyEvent read <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#FOnUpdateModel">FOnUpdateModel</a>
-      write <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#SetOnUpdateModel">SetOnUpdateModel</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#OnUpdateModel">OnUpdateModel</a></b>: TNotifyEvent read <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#FOnUpdateModel">FOnUpdateModel</a> write <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#SetOnUpdateModel">SetOnUpdateModel</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -234,7 +253,15 @@ Private declarations</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: IModel; virtual;</code></td>
+<td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: IModel; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="Update"></a><code>procedure <b>Update</b>(AJsonValue: TJsonValue; var AHandled: boolean); overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -243,6 +270,14 @@ Private declarations</p>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="Controller"></a><code>function <b>Controller</b>(const AController: IController): IModel; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="SetController"></a><code>procedure <b>SetController</b>(const AController: IController);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -282,7 +317,7 @@ Private declarations</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(AOwner: TComponent); override;</code></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 <p>
@@ -292,7 +327,31 @@ Public declarations</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(AOwner: TComponent); overload; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="New"></a><code>class procedure <b>New</b>(AClass: TComponentClass; AController: IController; out obj);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Release"></a><code>procedure <b>Release</b>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -325,8 +384,7 @@ Public declarations</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="OnUpdateModel"></a><code>property <b>OnUpdateModel</b>: TNotifyEvent read <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#FOnUpdateModel">FOnUpdateModel</a>
-      write <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#SetOnUpdateModel">SetOnUpdateModel</a>;</code></td>
+<td class="itemcode"><a name="OnUpdateModel"></a><code>property <b>OnUpdateModel</b>: TNotifyEvent read <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#FOnUpdateModel">FOnUpdateModel</a> write <a  href="MVCBr.ModuleModel.TCustomModuleFactory.html#SetOnUpdateModel">SetOnUpdateModel</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

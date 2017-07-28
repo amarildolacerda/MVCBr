@@ -63,7 +63,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>:  IInterfaceList;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>: IInterfaceList;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
@@ -186,6 +186,14 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: TJsonValue); overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ViewEvent">ViewEvent</a></b>(AMessage: String); overload; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#IndexOf">IndexOf</a></b>(Const AGuid: TGuid): Integer;</code></td>
 </tr>
 </table>
@@ -240,7 +248,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="FList"></a><code><b>FList</b>:  IInterfaceList;</code></td>
+<td class="itemcode"><a name="FList"></a><code><b>FList</b>: IInterfaceList;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -476,6 +484,22 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEvent"></a><code>procedure <b>ViewEvent</b>(AMessage: TJsonValue); overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ViewEvent"></a><code>procedure <b>ViewEvent</b>(AMessage: String); overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

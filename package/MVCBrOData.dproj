@@ -86,6 +86,7 @@
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
+        <DCC_UnitSearchPath>..\DMVC\Sources;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>rtl;IndySystem;IndyProtocols;IndyCore;dbrtl;soaprtl;DbxCommonDriver;RESTComponents;FireDAC;FireDACCommonDriver;FireDACCommon;$(DCC_UsePackage)</DCC_UsePackage>
@@ -157,12 +158,12 @@
         <DCCReference Include="IndySystem.dcp"/>
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="IndyCore.dcp"/>
-        <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="FireDAC.dcp"/>
         <DCCReference Include="FireDACCommonDriver.dcp"/>
         <DCCReference Include="FireDACCommon.dcp"/>
         <DCCReference Include="MVCBrCore.dcp"/>
         <DCCReference Include="MVCBrVCL.dcp"/>
+        <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="..\oData\oData.Comp.Client.pas"/>
         <DCCReference Include="..\oData\oData.Comp.Editor.pas">
             <Form>oDataResourceEditor</Form>
@@ -194,10 +195,14 @@
                     <Source Name="MainSource">MVCBrOData.dpk</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrVCL.bpl">MVCBr VCL</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFMX.bpl">MVCBr FMX</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\MVCBrOData.bpl">MVCBr OData</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Fontes\BPLTokyo\QRD_DESIGN.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WBAControllers.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\WBACompDesign.bpl">(untitled)</Excluded_Packages>
+                    <Excluded_Packages Name="c:\fontes\BPLTokyo\MVCBrFireDAC.bpl">MVCBr FireDAC</Excluded_Packages>
                     <Excluded_Packages Name="c:\fontes\BPLTokyo\WbaComp.bpl">(untitled)</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k250.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp250.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">

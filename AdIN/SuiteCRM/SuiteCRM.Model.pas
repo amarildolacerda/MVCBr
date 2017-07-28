@@ -318,7 +318,7 @@ Type
 
 Implementation
 
-uses System.RTTI, System.Classes.Helper, MVCBr.HttpRestClient {idHttp} ,
+uses System.RTTI, System.Classes.Helper,MVCBr.HttpRestClient.common, MVCBr.HttpRestClient {idHttp} ,
   IdHashMessageDigest;
 
 function TSuiteCRMModel.Base(AModulo: string): ISuiteCRMComum;

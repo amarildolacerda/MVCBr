@@ -84,7 +84,7 @@
         <DCC_S>false</DCC_S>
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
-        <DCC_UsePackage>FireDAC;FireDACCommonDriver;FireDACCommon;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>FireDAC;FireDACCommonDriver;FireDACCommon;RESTComponents;$(DCC_UsePackage)</DCC_UsePackage>
         <DesignOnlyPackage>true</DesignOnlyPackage>
         <DCC_OutputNeverBuildDcps>true</DCC_OutputNeverBuildDcps>
     </PropertyGroup>
@@ -155,6 +155,7 @@
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="DesignIDE.dcp"/>
+        <DCCReference Include="RESTComponents.dcp"/>
         <DCCReference Include="..\MVCBr.ApplicationController.pas"/>
         <DCCReference Include="..\MVCBr.Controller.pas"/>
         <DCCReference Include="..\MVCBr.DatabaseModel.Interf.pas"/>

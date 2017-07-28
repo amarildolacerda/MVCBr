@@ -255,7 +255,7 @@ end;
 function TNewMVCViewModelWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
-  result := LoadIcon(hInstance, 'SAMPLEWIZARD');
+  result := LoadIcon(hInstance, 'VIEW');
 end;
 
 function TNewMVCViewModelWizard.GetIDString: string;

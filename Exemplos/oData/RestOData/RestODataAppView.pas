@@ -23,9 +23,12 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, MVCBr.ODataDatasetAdapter, oData.Comp.Client,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, MVCBr.IdHTTPRestClient,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option,
+
   VCL.Controls, VCL.Grids, VCL.DBGrids, VCL.StdCtrls,
-  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI;
+  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Comp.UI,
+
+  MVCBr.HTTPRestClient.Common, MVCBr.HTTPRestClient;
 
 type
   /// Interface para a VIEW
@@ -39,13 +42,13 @@ type
     IThisAs<TRestODataAppView>, IRestODataAppView, IViewAs<IRestODataAppView>)
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
-    IdHTTPRestClient1: TIdHTTPRestClient;
     ODataBuilder1: TODataBuilder;
     ODataDatasetAdapter1: TODataDatasetAdapter;
     FDMemTable1: TFDMemTable;
     Button1: TButton;
     Button2: TButton;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    HTTPRestClient1: THTTPRestClient;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FDMemTable1BeforeApplyUpdates(DataSet: TFDDataSet);
@@ -71,6 +74,7 @@ type
 Implementation
 
 {$R *.DFM}
+
 uses MVCBr.Common;
 
 function TRestODataAppView.UpdateView: IView;
@@ -113,7 +117,7 @@ end;
 
 procedure TRestODataAppView.FormCreate(Sender: TObject);
 begin
-  IdHTTPRestClient1.IdHTTP.Request.CustomHeaders.AddValue('token', 'abcdexz');
+  // HTTPRestClient1.IdHTTP.Request.CustomHeaders.AddValue('token', 'abcdexz');
 end;
 
 class function TRestODataAppView.New(aController: IController): IView;

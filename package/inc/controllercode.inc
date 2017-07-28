@@ -9,7 +9,7 @@ ControllerCodeInterf =
   ' ///  I%FormIdentController                                   ' + #13#10 +
   ' ///     Interaface de acesso ao object factory do controller ' + #13#10 +
   ' /// </summary>                                               ' + #13#10 +
-  ' ///                                                          ' + #13#10 +
+  ' {auth}                                                   ' + #13#10 +
   'interface                                                        ' + #13#10 +
   'uses                                                             ' + #13#10 +
   'System.SysUtils,{$ifdef LINUX} {$else} {$ifdef FMX} FMX.Forms,{$else}VCL.Forms,{$endif} {$endif}'
@@ -31,6 +31,7 @@ ControllerCode =
   ' ///   - pode localizar controller externos e instanciá-los   ' + #13#10 +
   ' ///     (resolveController<I..>)                             ' + #13#10 +
   ' /// </summary>                                               ' + #13#10 +
+  '  {auth} ' + #13#10 +
   'unit %ModelIdent;                                                ' + #13#10 +
   ' /// <summary>                                                ' + #13#10 +
   ' ///    Object Factory para implementar o Controller          ' + #13#10 +
@@ -43,17 +44,14 @@ ControllerCode =
   + #13#10 +
   'System.Classes, MVCBr.Interf,                                      ' + #13#10
   + 'MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,      ' + #13#10
-  + 'System.RTTI, %UnitIdent.interf, %FormIdent.ViewModel, %FormIdent.ViewModel.Interf,'
-  + #13#10 + '%FormIdentView;' + #13#10 +
+  + 'System.RTTI, %UnitIdent.interf, ' + #13#10 + '%FormIdentView;' + #13#10 +
   '                                                                 ' + #13#10 +
   'type                                                             ' + #13#10 +
   '                                                                 ' + #13#10 +
   '  T%FormIdentController = class(TControllerFactory,              ' + #13#10 +
   '    I%FormIdentController,                                       ' + #13#10 +
-  '    IThisAs<T%FormIdentController>, IModelAs<I%FormIdentViewModel>)  ' +
-  #13#10 + '  protected                                            ' + #13#10 +
-  '    Procedure DoCommand(ACommand: string;                      ' + #13#10 +
-  '        const AArgs: array of TValue); override;                 ' + #13#10 +
+  '    IThisAs<T%FormIdentController>)  ' + #13#10 +
+  '  protected                                            ' + #13#10 +
   '  public                                                         ' + #13#10 +
   '    // inicializar os módulos personalizados em CreateModules    ' + #13#10 +
   '    Procedure CreateModules;virtual;                             ' + #13#10 +
@@ -68,7 +66,6 @@ ControllerCode =
   ' /// Init após criado a instância é chamado para concluir init    ' + #13#10
   + '    procedure init;override;                                     ' + #13#10
   + ' /// ModeAs retornar a própria interface do controller        ' + #13#10 +
-  '    function ModelAs: I%FormIdentViewModel;                          ' +
   #13#10 + '  end;                                                  ' + #13#10 +
   '                                                                 ' + #13#10 +
   'implementation                                                   ' + #13#10 +
@@ -78,9 +75,6 @@ ControllerCode =
   ' inherited;                                                     ' + #13#10 +
   '  ///  Inicializar as Views...                                   ' + #13#10 +
   '  //%view View(T%FormIdentView.New(self));' + #13#10 +
-  '  add(T%FormIdentViewModel.New(self).ID(''{%FormIdent.ViewModel}''));' +
-  '  ///  Inicializar os modulos                                  ' + #13#10 +
- // ' CreateModules; //< criar os modulos persolnizados      ' + #13#10 + #13#10 +
   'end;                                                ' + #13#10 +
   '///  Finaliza o controller                                       ' + #13#10 +
   'Destructor T%FormIdentController.destroy;                        ' + #13#10 +
@@ -117,18 +111,6 @@ ControllerCode =
   'begin                                                            ' + #13#10 +
   '   result := self;                                               ' + #13#10 +
   'end;                                                             ' + #13#10 +
-  '///  Cast para o ViewModel local do controller                   ' + #13#10 +
-  'function T%FormIdentController.ModelAs: I%FormIdentViewModel;' + #13#10 +
-  'begin                                                            ' + #13#10 +
-  ' if count>=0 then                                                ' + #13#10 +
-  '  supports(GetModelByType(mtViewModel), I%FormIdentViewModel, result);' +
-  #13#10 + 'end;                                           ' + #13#10 +
-  '///  Executar algum comando customizavel                        ' + #13#10 +
-  'Procedure T%FormIdentController.DoCommand(ACommand: string;      ' + #13#10 +
-  '   const AArgs:Array of TValue);                                 ' + #13#10 +
-  'begin                                                            ' + #13#10 +
-  '    inherited;                                                   ' + #13#10 +
-  'end;                                                      ' + #13#10 +
   '///  Evento INIT chamado apos a inicializacao do controller     ' + #13#10 +
   'procedure T%FormIdentController.init;                            ' + #13#10 +
   'var ref:T%FormIdentView;                                               ' +
@@ -179,6 +161,7 @@ ControllerCodeWithoutViewModel =
   ' ///   - pode localizar controller externos e instanciá-los   ' + #13#10 +
   ' ///     (resolveController<I..>)                             ' + #13#10 +
   ' /// </summary>                                               ' + #13#10 +
+  '  {auth} ' + #13#10 +
   'unit %ModelIdent;                                                ' + #13#10 +
   ' /// <summary>                                                ' + #13#10 +
   ' ///    Object Factory para implementar o Controller          ' + #13#10 +
@@ -199,8 +182,6 @@ ControllerCodeWithoutViewModel =
   '    I%FormIdentController,                                       ' + #13#10 +
   '    IThisAs<T%FormIdentController>)  ' + #13#10 +
   '  protected                                            ' + #13#10 +
-  '    Procedure DoCommand(ACommand: string;                      ' + #13#10 +
-  '        const AArgs: array of TValue); override;                 ' + #13#10 +
   '  public                                                         ' + #13#10 +
   '    // inicializar os módulos personalizados em CreateModules    ' + #13#10 +
   '    Procedure CreateModules;virtual;                             ' + #13#10 +
@@ -223,7 +204,6 @@ ControllerCodeWithoutViewModel =
   ' inherited;                                                     ' + #13#10 +
   '  ///  Inicializar as Views...                                   ' + #13#10 +
   '  //%view View(T%FormIdentView.New(self));' + #13#10 +
-  '  ///  Inicializar os modulos                                  ' + #13#10 +
   'end;                                                ' + #13#10 +
   '///  Finaliza o controller                                       ' + #13#10 +
   'Destructor T%FormIdentController.destroy;                        ' + #13#10 +
@@ -260,12 +240,6 @@ ControllerCodeWithoutViewModel =
   'begin                                                            ' + #13#10 +
   '   result := self;                                               ' + #13#10 +
   'end;                                                             ' + #13#10 +
-  '///  Executar algum comando customizavel                        ' + #13#10 +
-  'Procedure T%FormIdentController.DoCommand(ACommand: string;      ' + #13#10 +
-  '   const AArgs:Array of TValue);                                 ' + #13#10 +
-  'begin                                                            ' + #13#10 +
-  '    inherited;                                                   ' + #13#10 +
-  'end;                                                      ' + #13#10 +
   '///  Evento INIT chamado apos a inicializacao do controller     ' + #13#10 +
   'procedure T%FormIdentController.init;                            ' + #13#10 +
   'var ref:T%FormIdentView;                                               ' +
@@ -325,10 +299,8 @@ ControllerCodeOnly =
   '                                                                 ' + #13#10 +
   '  T%FormIdentController = class(TControllerFactory,              ' + #13#10 +
   '    I%FormIdentController,                                       ' + #13#10 +
-  '    IThisAs<T%FormIdentController>{, IModelAs<I%FormIdentViewModel>})  ' +
+  '    IThisAs<T%FormIdentController>)  ' +
   #13#10 + '  protected                                            ' + #13#10 +
-  '    Procedure DoCommand(ACommand: string;                      ' + #13#10 +
-  '        const AArgs: array of TValue); override;                 ' + #13#10 +
   '  public                                                         ' + #13#10 +
   '    // inicializar os módulos personalizados em CreateModules    ' + #13#10 +
   '    Procedure CreateModules;virtual;                             ' + #13#10 +
@@ -386,17 +358,6 @@ ControllerCodeOnly =
   '   result := self;                                               ' + #13#10 +
   'end;                                                             ' + #13#10 +
   '                                                                 ' + #13#10 +
-  '{function T%FormIdentController.ModelAs: I%FormIdentViewModel;' + #13#10 +
-  'begin                                                            ' + #13#10 +
-  ' if count>=0 then                                                ' + #13#10 +
-  '  supports(GetModelByType(mtViewModel), I%FormIdentViewModel, result);' +
-  #13#10 + 'end;}                                           ' + #13#10 +
-  '                                                                 ' + #13#10 +
-  'Procedure T%FormIdentController.DoCommand(ACommand: string;      ' + #13#10 +
-  '   const AArgs:Array of TValue);                                 ' + #13#10 +
-  'begin                                                            ' + #13#10 +
-  '    inherited;                                                   ' + #13#10 +
-  'end;                                                      ' + #13#10 +
   '                                                                 ' + #13#10 +
   'procedure T%FormIdentController.init;                            ' + #13#10 +
   '//var ref:T%FormIdentView;                                               ' +
@@ -407,9 +368,8 @@ ControllerCodeOnly =
   + '   Application.CreateForm( T%FormIdentView, ref );                 ' +
   #13#10 + '   supports(ref,IView,FView);                            ' + #13#10
   + ' end;}                                                            ' +
-  #13#10 +
-    ' CreateModules; //< criar os modulos persolnizados              ' + #13#10 +
-  ' AfterInit;                                                        '
+  #13#10 + ' CreateModules; //< criar os modulos persolnizados              ' +
+  #13#10 + ' AfterInit;                                                        '
   + #13#10 + 'end;                                                             '
   + #13#10 +
 
@@ -459,8 +419,6 @@ PromptControllerCode =
   '  T%FormIdentController = class(TControllerFactory,              ' + #13#10 +
   '    I%FormIdentController)                                       ' + #13#10 +
   #13#10 + '  protected                                            ' + #13#10 +
-  '    Procedure DoCommand(ACommand: string;                      ' + #13#10 +
-  '        const AArgs: array of TValue); override;                 ' + #13#10 +
   '  public                                                         ' + #13#10 +
   '    // inicializar os módulos personalizados em CreateModules    ' + #13#10 +
   '    Procedure CreateModules;virtual;                             ' + #13#10 +
@@ -513,12 +471,6 @@ PromptControllerCode =
   '        vm.View(AView).Controller( result );                     ' + #13#10 +
   '      end;                                                       ' + #13#10 +
   'end;                                                             ' + #13#10 +
-  '///  Executar algum comando customizavel                        ' + #13#10 +
-  'Procedure T%FormIdentController.DoCommand(ACommand: string;      ' + #13#10 +
-  '   const AArgs:Array of TValue);                                 ' + #13#10 +
-  'begin                                                            ' + #13#10 +
-  '    inherited;                                                   ' + #13#10 +
-  'end;                                                      ' + #13#10 +
   '///  Evento INIT chamado apos a inicializacao do controller     ' + #13#10 +
   'procedure T%FormIdentController.init;                            ' + #13#10 +
   #13#10 + 'begin                                                            ' +

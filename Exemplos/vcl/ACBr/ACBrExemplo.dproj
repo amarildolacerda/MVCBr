@@ -81,6 +81,8 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
+        <DCC_Define>madExcept;LeakChecking;$(DCC_Define)</DCC_Define>
+        <DCC_MapFile>3</DCC_MapFile>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -99,10 +101,10 @@
         </DCCReference>
         <DCCReference Include="viewmodel\Main.ViewModel.Interf.pas"/>
         <DCCReference Include="viewmodel\Main.ViewModel.pas"/>
-        <DCCReference Include="..\..\..\3Models\ACBr\ACBrUtils.Model.Interf.pas"/>
-        <DCCReference Include="..\..\..\3Models\ACBr\ACBrUtils.Model.pas"/>
-        <DCCReference Include="..\..\..\3Models\ACBr\ACBrValidador.Model.Interf.pas"/>
-        <DCCReference Include="..\..\..\3Models\ACBr\ACBrValidador.Model.pas"/>
+        <DCCReference Include="..\..\..\ADIn\ACBr\ACBrUtils.Model.Interf.pas"/>
+        <DCCReference Include="..\..\..\ADIn\ACBr\ACBrUtils.Model.pas"/>
+        <DCCReference Include="..\..\..\ADIn\ACBr\ACBrValidador.Model.Interf.pas"/>
+        <DCCReference Include="..\..\..\ADIn\ACBr\ACBrValidador.Model.pas"/>
         <None Include="..\Exemplos\vcl\ACBr\include\inc\mvcbr.inc"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

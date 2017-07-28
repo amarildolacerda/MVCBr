@@ -18,6 +18,13 @@ object MVCConfig: TMVCConfig
     339)
   PixelsPerInch = 96
   TextHeight = 13
+  object lbComments: TLabel
+    Left = 137
+    Top = 135
+    Width = 50
+    Height = 13
+    Caption = 'Comments'
+  end
   object ScrollBox1: TScrollBox
     Left = 8
     Top = 18
@@ -3291,5 +3298,17 @@ object MVCConfig: TMVCConfig
       State = cbChecked
       TabOrder = 0
     end
+  end
+  object Comments: TMemo
+    Left = 135
+    Top = 152
+    Width = 296
+    Height = 89
+    Lines.Strings = (
+      'Author: {author}'
+      'Subject: '
+      'Description:'
+      'Date: {date}')
+    TabOrder = 3
   end
 end

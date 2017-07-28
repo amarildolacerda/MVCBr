@@ -1,4 +1,4 @@
-unit MVCBr.VCL.PageView;
+﻿unit MVCBr.VCL.PageView;
 
 interface
 
@@ -34,13 +34,13 @@ type
 
   public
     class function New(AController: IController): IPageViews;
-    function Update: IModel; virtual;
+    [weak]function Update: IModel; virtual;
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
     function NewTab(APageView: IPageView): TObject; override;
-    function AddView(AView: IView): IPageView; override;
-    function AddView(Const AController: TGuid): IPageView; overload; override;
+    [weak]function AddView(AView: IView): IPageView; override;
+    [weak]function AddView(Const AController: TGuid): IPageView; overload; override;
   published
     property PageControl: TPageControl read GetPageControlEx
       write SetPageControlEx;
@@ -53,10 +53,16 @@ type
       write SetOnQueryClose;
   end;
 
+procedure register;
 
 implementation
 
 uses MVCBr.Controller;
+
+procedure register;
+begin
+  RegisterComponents('MVCBr', [TVCLPageViewManager]);
+end;
 
 { TVCLPageViewFactory }
 
@@ -136,7 +142,7 @@ var
   form: TForm;
   ref: TVCLPageViewManager;
 begin
-  // chamado quando a tabsheet � apagada.
+  // chamado quando a tabsheet é apagada.
   ref := TVCLPageViewManager(PageView.This.GetOwner);
   if assigned(ref) and assigned(ref.OnQueryClose) then
     TVCLPageViewManager(ref).OnQueryClose(PageView, ACanClose);
@@ -151,8 +157,7 @@ begin
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
         begin
-          TControllerFactory.RevokeInstance(PageView.This.View.GetController);
-          // apaga a instancia da lista de controller instaciados.
+          TControllerAbstract.RevokeInstance(  PageView.This.View.GetController  );
         end;
 
       end;

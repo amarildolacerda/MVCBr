@@ -1,3 +1,39 @@
+19/07/2017 - AL
+   * correação BUG AttachContoller no MVCBr.FormView   (_addref)
+
+16/07/2017 - AL
+   + adicionado Builder Expert ( and all)
+
+14/07/2017 - AL
+   + adicionado Lazy Builder
+   + adicionado exemplo para UniGUI
+   + alterado instalador para incluir PATH completos para os fontes.
+   
+06/07/2017 - AL
+   + acrescentado dois nova assistentes     7-Facade Factory   8-Facade Sub-Class
+   
+03/07/2017 - AL
+   + acrescentado  MVCBr.Patterns.Builder
+   -+ Alterado MVCBr.Patters.Facade para herdar de Builder
+   * alterado Lista de Controller para acertar memory leaks *ainda*
+   * alterado observer com bugs de vazamento de memoria.
+   + adicionado tests para Builder 
+   
+28/06/2017 - AL
+   + MVCBr.Patterns.Adapter
+   * memory leak no TMVCBrComponentFactory
+   = alterado a lista de models para ser threadsafe
+   = trocado a lista de controlles para threadsafe
+   + MVCBr.Patterns.Facade
+   + adicionado tests para Facade
+26/06/2017 - AL
+   + adicionado parametro  OwnedFree no AttachController do FormFactory, para controlar se
+     o controller pode fazer um FREE no formulário (default=true, o controller nao pode fazer FREE na view )
+26/06/2017 - AL
+   + adicionado procedure release as interface para liberar referencia cruzada
+   * corrigido memory leaks nas classes com referencia cruzada
+   * corrigido servidor mermory leaks
+   
 16/06/2017 - AL
    + adicionado ISAPI para OData
    + adicionado pasta \bin  para os binários

@@ -2,10 +2,12 @@
   Application Controller - Singleton central para os controller
   Alterações:
   12/04/2017 - por: amarildo lacerda
-  + Introduzido Fucntion Default para Singleton
+  + Introduzido Function Default para Singleton
   + Incluido   class var FApplicationController
 }
 
+
+unit MVCBr.ApplicationController;
 { *************************************************************************** }
 { }
 { MVCBr é o resultado de esforços de um grupo }
@@ -32,8 +34,6 @@
 { }
 { *************************************************************************** }
 
-unit MVCBr.ApplicationController;
-
 interface
 
 uses
@@ -42,7 +42,9 @@ uses
   System.Classes,
   System.JSON,
   System.Generics.Collections,
-  System.SysUtils, MVCBr.Interf;
+  System.SysUtils,
+  System.ThreadSafe,
+  MVCBr.Interf;
 
 type
   /// <summary>
@@ -54,10 +56,11 @@ type
     IApplicationController)
   private
     /// Lista de controllers instanciados
-    [unsafe]
-    FControllers: IInterfaceList;
+    [weak]
+    FControllers: TThreadSafeObjectList<TAggregatedObject>;
   protected
     /// MainView para o Application
+    // [weak]
     FMainView: IView;
     /// singleton
     class var FApplicationController: IApplicationController;
@@ -69,12 +72,17 @@ type
     class function Default: IApplicationController;
     class procedure Release;
     /// Loop que chama AProc para cada um dos controllers da lista
-    function MainView: IView; virtual;
+    function MainView: TObject; virtual;
     procedure SetMainView(AView: IView);
 
     /// Controllers methods
+    [weak]
     function FindController(AGuid: TGuid): IController; virtual;
-    function ResolveController(AGuid: TGuid): IController; virtual;
+    function ResolveController<TIController: IController>
+      : TIController; overload;
+    function ResolveController(AGuid: TGuid): IController; overload; virtual;
+    [weak]
+    function AttachController(AGuid: TGuid): IController; virtual;
     procedure RevokeController(AGuid: TGuid);
     /// Count retorna a quantidade de controllers empilhados na lista
     function Count: integer;
@@ -85,20 +93,28 @@ type
     procedure Remove(const AController: IController);
 
     /// Views Methods
+    [weak]
     function FindView(AGuid: TGuid): IView; virtual;
+    [weak]
     function ViewEvent(AMessage: string; var AHandled: boolean)
       : IApplicationController; overload;
+    [weak]
     function ViewEventOther(ASender: IController; AMessage: string;
       var AHandled: boolean): IApplicationController;
+    [weak]
     function ViewEvent(AView: TGuid; AMessage: String; var AHandled: boolean)
       : IView; overload;
+    [weak]
     function ViewEvent<TViewInterface: IInterface>(AMessage: String;
       var AHandled: boolean): IView; overload;
+    [weak]
     function ViewEvent(AMessage: TJsonValue; var AHandled: boolean)
       : IView; overload;
 
     /// Models Methods
+    [weak]
     function FindModel(AGuid: TGuid): IModel; overload; virtual;
+    [weak]
     function FindModel<TIModel: IInterface>: TIModel; overload;
 
     /// This retorna o Self do ApplicationController Object Factory
@@ -111,9 +127,14 @@ type
     /// Executa
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
+    procedure Run; overload;
+    procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
+      AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
 
     procedure ForEach(AProc: TProc<IController>); overload;
     function ForEach(AProc: TFunc<IController, boolean>): boolean; overload;
+    function ForEachDown(AProc: TFunc<IController, boolean>): boolean;
+
     procedure Inited;
     /// Envia evnet de Update a todos os controllers da lista
 
@@ -124,38 +145,64 @@ type
 
   /// Singleton
   /// ApplicationController é uma instância que implementa a interface ...
+  [weak]
 function ApplicationController: IApplicationController;
 
 implementation
 
 uses System.TypInfo;
 
+var
+  LReleased: boolean;
+
 function ApplicationController(): IApplicationController;
 begin
-  result := TApplicationController.Default;
+  if LReleased then
+    result := nil
+  else
+    result := TApplicationController.Default;
 end;
 
 { TApplicationController }
 
 function TApplicationController.Add(const AController: IController): integer;
+var
+  agg: TAggregatedObject;
 begin
   result := -1;
   if assigned(AController) then
   begin
-    FControllers.Add(AController);
-    result := FControllers.Count - 1;
+    agg := TAggregatedObject.Create(AController);
+    with FControllers.LockList do
+      try
+        Add(agg);
+        result := Count - 1;
+      finally
+        FControllers.UnlockList;
+      end;
   end;
+end;
+
+function TApplicationController.AttachController(AGuid: TGuid): IController;
+begin
+  TControllerAbstract.AttachController(AGuid, result);
 end;
 
 function TApplicationController.Count: integer;
 begin
-  result := FControllers.Count;
+  with FControllers.LockList do
+    try
+      result := Count;
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 constructor TApplicationController.Create;
 begin
   inherited Create;
-  FControllers := TInterfaceList.Create;
+  LReleased := false;
+  FControllers := TThreadSafeObjectList<TAggregatedObject>.Create;
 end;
 
 class function TApplicationController.Default: IApplicationController;
@@ -167,12 +214,40 @@ end;
 
 procedure TApplicationController.Delete(const idx: integer);
 begin
-  FControllers.Delete(idx);
+  with FControllers.LockList do
+    try
+      Delete(idx);
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 destructor TApplicationController.Destroy;
+var
+  i: integer;
 begin
-  // FreeAndNil(FControllers);
+
+  LReleased := true;
+  if assigned(FMainView) then
+    FMainView.Release;
+  FMainView := nil;
+  TMVCBr.Release;
+  if assigned(FControllers) then
+  begin
+    with FControllers.LockList do
+      try
+        for i := Count - 1 downto 0 do
+        begin
+          (items[i].Controller as IController).Release;
+        end;
+        clear;
+      finally
+        if assigned(FControllers) then
+          FControllers.UnlockList;
+      end;
+    FControllers.free;
+    FControllers := nil;
+  end;
   inherited;
 end;
 
@@ -187,7 +262,11 @@ begin
     begin
       result := false;
       if supports(ACtrl.This, AGuid, rst) then
+      begin
         result := true;
+        rst := nil;
+        rst := ACtrl.This.Default as IController; // use [unsafe]
+      end;
     end);
   result := rst;
 end;
@@ -248,12 +327,44 @@ begin
   try
     LHandled := false;
     if assigned(AProc) then
-      for i := 0 to FControllers.Count - 1 do
-      begin
-        LHandled := AProc(FControllers.Items[i] as IController);
-        if LHandled then
-          break;
-      end;
+      with FControllers.LockList do
+        try
+          for i := 0 to Count - 1 do
+          begin
+            LHandled := AProc(items[i].Controller as IController);
+            if LHandled then
+              break;
+          end;
+        finally
+          FControllers.UnlockList;
+        end;
+    result := LHandled;
+  finally
+    UnLock;
+  end;
+end;
+
+function TApplicationController.ForEachDown
+  (AProc: TFunc<IController, boolean>): boolean;
+var
+  i: integer;
+  LHandled: boolean;
+begin
+  Lock;
+  try
+    LHandled := false;
+    if assigned(AProc) then
+      with FControllers.LockList do
+        try
+          for i := Count - 1 downto 0 do
+          begin
+            LHandled := AProc(items[i].Controller as IController);
+            if LHandled then
+              break;
+          end;
+        finally
+          FControllers.UnlockList;
+        end;
     result := LHandled;
   finally
     UnLock;
@@ -283,9 +394,10 @@ begin
     end);
 end;
 
-function TApplicationController.MainView: IView;
+function TApplicationController.MainView: TObject;
 begin
-  result := FMainView;
+  if assigned(FMainView) then
+    result := FMainView.This;
 end;
 
 function TApplicationController.ThisAs: TApplicationController;
@@ -296,29 +408,37 @@ end;
 class procedure TApplicationController.Release;
 begin
   FApplicationController := nil;
+  LReleased := true;
 end;
 
 procedure TApplicationController.Remove(const AController: IController);
 var
   i: integer;
 begin
-  for i := FControllers.Count - 1 downto 0 do
-    if (FControllers.Items[i] as IController).This.Equals(AController.This) then
-    begin
-      Delete(i);
+  with FControllers.LockList do
+    try
+      for i := Count - 1 downto 0 do
+        if (items[i].Controller as IController).This.Equals(AController.This)
+        then
+        begin
+          Delete(i);
+        end;
+    finally
+      FControllers.UnlockList;
     end;
 end;
 
 function TApplicationController.ResolveController(AGuid: TGuid): IController;
-var
-  stb: TControllerAbstract;
 begin
-  stb := TControllerAbstract.Create;
-  try
-    stb.ResolveController(AGuid, result);
-  finally
-    stb.disposeOf;
-  end;
+  TControllerAbstract.Resolve(AGuid, result);
+end;
+
+function TApplicationController.ResolveController<TIController>: TIController;
+var
+  IID: TGuid;
+begin
+  IID := TMVCBr.GetGuid<TIController>;
+  TControllerAbstract.Resolve(IID, result);
 end;
 
 procedure TApplicationController.RevokeController(AGuid: TGuid);
@@ -338,6 +458,9 @@ procedure TApplicationController.Run(AController: IController;
 AFunc: TFunc<boolean>);
 begin
   Run(nil, AController, nil, AFunc);
+  if assigned(AController) then
+    AController.Release;
+  AController := nil;
 end;
 
 procedure TApplicationController.SetMainView(AView: IView);
@@ -360,27 +483,27 @@ procedure TApplicationController.Update(const AIID: TGuid);
 var
   i: integer;
 begin
-  Lock;
-  try
-    for i := 0 to Count - 1 do
-      if supports(FControllers.Items[i], AIID) then
-        (FControllers.Items[i] as IController).UpdateAll;
-  finally
-    UnLock;
-  end;
+  with FControllers.LockList do
+    try
+      for i := 0 to Count - 1 do
+        if supports(items[i], AIID) then
+          (items[i].Controller as IController).UpdateAll;
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 procedure TApplicationController.UpdateAll;
 var
   i: integer;
 begin
-  Lock;
-  try
-    for i := 0 to FControllers.Count - 1 do
-      (FControllers.Items[i] as IController).UpdateAll;
-  finally
-    UnLock;
-  end;
+  with FControllers.LockList do
+    try
+      for i := 0 to Count - 1 do
+        (items[i].Controller as IController).UpdateAll;
+    finally
+      FControllers.UnlockList;
+    end;
 end;
 
 function TApplicationController.ViewEvent(AView: TGuid; AMessage: String;
@@ -482,31 +605,60 @@ begin
       application.CreateForm(AClass, reference);
       if not supports(reference, IView) then
         raise Exception.Create('Não é uma classe que implementa IView');
-      FMainView := reference as IView;
-      AController.view(FMainView);
     end;
 
     if assigned(AModel) then
       if AController.IndexOf(AModel) < 0 then
         AController.Add(AModel);
 
-    if assigned(application.MainForm) then
+    if (not assigned(FMainView)) and assigned(application.MainForm) then
     begin
-      if supports(application.MainForm, IView, FMainView) then
+      TComponent(reference) := application.MainForm;
+      if supports(reference, IView, FMainView) then
       begin
         if assigned(AController) then
           AController.view(FMainView);
         FMainView.ShowView(nil, false);
         application.Run;
       end;
+{$IFDEF UNIGUI}
+      application.Run;
+{$ENDIF}
     end {$IFDEF MSWINDOWS}
     else
       application.Run;
 {$ENDIF}
   end;
-  { if assigned(AController) then
-    AController.AfterInit;
-  }
+{$ENDIF}
+end;
+
+procedure TApplicationController.RunMainForm(ATFormClass: TComponentClass;
+out AFormVar; AControllerGuid: TGuid; AFunc: TFunc<TObject, boolean>);
+var
+  AController: IController;
+  obj: TObject;
+begin
+{$IFDEF LINUX}
+  Run(ResolveController(AControllerGuid));
+{$ELSE}
+  application.CreateForm(ATFormClass, AFormVar);
+  obj := TObject(AFormVar);
+  Run(ResolveController(AControllerGuid),
+    function: boolean
+    begin
+      result := true;
+      if assigned(AFunc) then
+        result := AFunc(obj);
+    end);
+{$ENDIF}
+end;
+
+procedure TApplicationController.Run;
+begin
+{$IFDEF LINUX}
+  Run(nil, nil);
+{$ELSE}
+  application.Run;
 {$ENDIF}
 end;
 
@@ -514,6 +666,6 @@ initialization
 
 finalization
 
-    TApplicationController.Release;
+TApplicationController.Release;
 
 end.

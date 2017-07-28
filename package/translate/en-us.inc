@@ -12,6 +12,11 @@ const
   wizardForm_NameFor = 'Name for %s';
   wizardForm_NameForArtefact = 'Artefact name';
 
+  wizardForm_bsc_Expert = 'Expert for Builder Subclass';
+  wizardForm_builder_Expert = 'Expert for Builder Model';
+  wizardForm_fsc_Expert = 'Expert for Facade Subclass';
+  wizardForm_facade_Expert = 'Expert for Facade Model';
+
   wizardForm_ViewModel_Expert = 'Expert for View/ViewModel or Model';
   wizardForm_checkBox_createmodel_caption = 'Create Model';
   wizardForm_checkBox_createview_caption = 'Create View';

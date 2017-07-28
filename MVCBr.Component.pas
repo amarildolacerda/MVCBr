@@ -1,15 +1,32 @@
-{ //************************************************************// }
-{ //                                                            // }
-{ //         Projeto MVCBr                                      // }
-{ //         tireideletra.com.br  / amarildo lacerda            // }
-{ //                                                            // }
-{ //************************************************************// }
-{ // Data: 15/02/2017 23:07:44                                  // }
-{ //************************************************************// }
 
 /// Implementa interface IModel para TComponent a ser herdado em
 /// Componentes que possom ser registrado para o Delphi
 unit MVCBr.Component;
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
 
 interface
 
@@ -27,8 +44,15 @@ type
     FAdapter: IModel;
     procedure initBase;
   protected
+{$IFNDEF BPL}
+    procedure SetModelTypes(const AModelType: TModelTypes); virtual;
+    function GetModelTypes: TModelTypes; virtual;
+    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
+{$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Release;
     procedure AfterConstruction; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
@@ -36,14 +60,12 @@ type
     function GetID: string; virtual;
     function ID(const AID: String): IModel;
     function Controller(const AController: IController): IModel; virtual;
-    function GetModelTypes: TModelTypes; virtual;
+    procedure SetController(const AController: IController); virtual;
     function GetController: IController; virtual;
     function ResolveController(const AGuidController: TGuid)
       : IController; virtual;
-    procedure SetModelTypes(const AModelType: TModelTypes); virtual;
-    property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
     procedure AfterInit; virtual;
-    function Update: IModel; overload;virtual;
+    function Update: IModel; overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
 
@@ -86,6 +108,12 @@ begin
   initBase;
 end;
 
+destructor TComponentFactory.Destroy;
+begin
+
+  inherited;
+end;
+
 function TComponentFactory.GetController: IController;
 var
   vw: IView;
@@ -103,10 +131,12 @@ begin
   result := FAdapter.GetID;
 end;
 
+{$IFNDEF BPL}
 function TComponentFactory.GetModelTypes: TModelTypes;
 begin
   result := FAdapter.GetModelTypes;
 end;
+{$ENDIF}
 
 function TComponentFactory.ID(const AID: String): IModel;
 begin
@@ -119,21 +149,36 @@ begin
   begin
     FAdapter := TModelFactory.Create;
     FAdapter.ID(Self.ClassName + '.' + Self.name);
+{$IFNDEF BPL}
     SetModelTypes([mtComponent]);
+{$ENDIF}
   end;
+end;
+
+procedure TComponentFactory.Release;
+begin
+  FAdapter.Release;
+  FAdapter := nil;
 end;
 
 function TComponentFactory.ResolveController(const AGuidController: TGuid)
   : IController;
 begin
-  result := GetController.ResolveController(AGuidController);
+  result := ApplicationController.ResolveController(AGuidController);
 end;
 
+procedure TComponentFactory.SetController(const AController: IController);
+begin
+  FAdapter.SetController(AController);
+end;
+
+{$IFNDEF BPL}
 procedure TComponentFactory.SetModelTypes(const AModelType: TModelTypes);
 begin
   if assigned(FAdapter) then
     FAdapter.SetModelTypes(AModelType);
 end;
+{$ENDIF}
 
 function TComponentFactory.This: TObject;
 begin

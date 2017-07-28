@@ -234,7 +234,7 @@ end;
 function TNewMVCSetControllerWizard.GetGlyph:
 {$IFDEF COMPILER_6_UP}Cardinal{$ELSE}HICON{$ENDIF};
 begin
-  result := LoadIcon(hInstance, 'SAMPLEWIZARD');
+  result := LoadIcon(hInstance, 'CONTROLLER');
 end;
 
 function TNewMVCSetControllerWizard.GetIDString: string;

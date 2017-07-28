@@ -1,16 +1,35 @@
-{
-
-  MVCBr.FormView - implements base class of FormView
-  Auth: amarildo lacerda
-  Date: jan/2017
-
-  Changes:
-  29-mar-2017
-  + MainViewEvent  - send ViewEvent to MainView   by: amarildo lacerda
-  + ViewEventOther  - send ViewEvent to other VIEW
-}
+/// <summary>
+/// MVCBr.FormView - implements base class of FormView
+/// Auth: amarildo lacerda
+/// Date: jan/2017
+/// </summary>
 
 unit MVCBr.FormView;
+{ *************************************************************************** }
+{ }
+{ MVCBr é o resultado de esforços de um grupo }
+{ }
+{ Copyright (C) 2017 MVCBr }
+{ }
+{ amarildo lacerda }
+{ http://www.tireideletra.com.br }
+{ }
+{ }
+{ *************************************************************************** }
+{ }
+{ Licensed under the Apache License, Version 2.0 (the "License"); }
+{ you may not use this file except in compliance with the License. }
+{ You may obtain a copy of the License at }
+{ }
+{ http://www.apache.org/licenses/LICENSE-2.0 }
+{ }
+{ Unless required by applicable law or agreed to in writing, software }
+{ distributed under the License is distributed on an "AS IS" BASIS, }
+{ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. }
+{ See the License for the specific language governing permissions and }
+{ limitations under the License. }
+{ }
+{ *************************************************************************** }
 
 interface
 
@@ -90,6 +109,7 @@ type
     procedure SetOnViewInit(const Value: TNotifyEvent);
   protected
     FOnCloseProc: TProc<IView>;
+    [weak]
     FController: IController;
     FShowModal: boolean;
     // FViewModel:IViewModel;
@@ -107,63 +127,92 @@ type
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
+    [weak]
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Release; virtual;
     function GetGuid(AII: IInterface): TGuid;
+    [weak]
     function ViewEvent(AMessage: string; var AHandled: boolean): IView;
       overload; virtual;
+    [weak]
     function ViewEvent(AMessage: TJsonValue; var AHandled: boolean): IView;
       overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
+    [weak]
+    function Update: IView; overload; virtual;
+    [weak]
     function MainViewEvent(AMessage: string; var AHandled: boolean)
       : IView; virtual;
+    [weak]
     function ViewEventOther(AMessage: string; var AHandled: boolean): IView;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
     function GetID: string;
     property isShowModal: boolean read GetShowModal write SetShowModal;
     /// Retorna o controller ao qual a VIEW esta conectada
+    [weak]
     function GetController: IController; virtual;
-    function AttachController(AInterface: TGuid): IController;
-      overload; virtual;
-    function AttachController<TIController: IController>: TIController;
-      overload;
-    function AttachModel<TIModel:IModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
+    [weak]
+    function AttachController(AInterface: TGuid; AOwnedFree: boolean = true)
+      : IController; overload; virtual;
+    [weak]
+    function AttachController<TIController: IInterface>: TIController; overload;
+    [weak]
+    function AttachModel<TIModel: IModel>(AModelClass
+      : TModelFactoryAbstractClass): TIModel;
     /// Retorna o SELF
     function This: TObject; virtual;
     /// Executa um method genérico do FORM/VIEW
+    [weak]
     function InvokeMethod<T>(AMethod: string; const Args: TArray<TValue>): T;
+    [weak]
     function ResolveController(const IID: TGuid): IController;
       overload; virtual;
-    procedure RevokeController(IID: TGuid);
-    function ResolveController<TIController>: TIController; overload;
+    procedure RevokeController(IID: TGuid); overload;
+    procedure RevokeController(TIController: IController); overload;
+    [weak]
+    function ResolveController<TIController: IController>
+      : TIController; overload;
+    [weak]
     function GetModel<TIModel>: TIModel; overload;
+    [weak]
     function GetModel(AII: TGuid): IModel; overload;
     /// Obter ou Alterar o valor de uma propriedade do ObjetoClass  (VIEW)
     property PropertyValue[ANome: string]: TValue read GetPropertyValue
       write SetPropertyValue;
+    [weak]
     function GetView<TIView: IInterface>: TIView; overload;
+    [weak]
     function FindView(AGuid: TGuid): IView;
     /// Apresenta o VIEW para o usuario
+    [weak]
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>; const AProcONClose: TProc<IView>)
       : IView; overload; virtual;
     function ShowView(const AProcBeforeShow: TProc<IView>): Integer;
       overload; virtual;
+    [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>; AShowModal: boolean)
       : IView; overload; virtual;
+    [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcONClose: TProc<IView>): IView; overload; virtual;
+    [weak]
     function ShowView(const IIDController: TGuid;
       const AProcBeforeShow: TProc<IView>): IView; overload; virtual;
+    [weak]
     function ShowView(const IIDController: TGuid): IView; overload; virtual;
+    [weak]
     function ShowView(): IView; overload;
     procedure SetViewModel(const AViewModel: IViewModel); virtual;
+    [weak]
     function GetViewModel: IViewModel; virtual;
     /// Evento para atualizar os dados da VIEW
+    [weak]
     function UpdateView: IView; virtual;
 
     procedure UpdateObserver(AJson: TJsonValue); overload; virtual;
@@ -171,6 +220,7 @@ type
       overload; virtual;
     procedure UpdateObserver(AName: string; AMensagem: String);
       overload; virtual;
+    [weak]
     function Observable: IMVCBrObservable; virtual;
     procedure RegisterObserver(const AName: String);
     procedure UnRegisterObserver(const AName: String);
@@ -215,7 +265,7 @@ end;
 function TCustomFormFactory.Controller(const AController: IController): IView;
 begin
   result := self;
-  FController := AController;
+  SetController(AController);
 end;
 
 var
@@ -233,8 +283,12 @@ end;
 destructor TCustomFormFactory.Destroy;
 begin
   if assigned(FController) then
-    FController.This.RevokeInstance(FController); // clear controller
-  FController := nil;
+  begin
+    FController.This.RevokeInstance(FController);
+    // clear controller
+    FController.Release;
+    FController := nil;
+  end;
   inherited;
 end;
 
@@ -316,11 +370,22 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
-function TCustomFormFactory.AttachController(AInterface: TGuid): IController;
+function TCustomFormFactory.AttachController(AInterface: TGuid;
+  AOwnedFree: boolean = true): IController;
 begin
-  result := ApplicationController.ResolveController(AInterface) as IController;
-  result.View(self);
-  SetController(result);
+  result := FController;
+  if not assigned(FController) then
+  begin
+    FController := ApplicationController.AttachController(AInterface)
+      as IController;
+    result := FController;
+    if assigned(FController) then
+    begin
+      FController._AddRef;   // workaround to keep an instance  when attached by view
+      FController.This.ViewOwnedFree := AOwnedFree;
+      result.View(self);
+    end;
+  end;
 end;
 
 function TCustomFormFactory.AttachController<TIController>: TIController;
@@ -331,13 +396,15 @@ begin
   result := AttachController(AGuid);
 end;
 
-function TCustomFormFactory.AttachModel<TIModel>( AModelClass : TModelFactoryAbstractClass ):TIModel;
-var o:TObject;
-    AGuid:TGuid;
+function TCustomFormFactory.AttachModel<TIModel>(AModelClass
+  : TModelFactoryAbstractClass): TIModel;
+var
+  o: TObject;
+  AGuid: TGuid;
 begin
-  o := aModelClass.Create;
+  o := AModelClass.Create;
   AGuid := TMVCBr.GetGuid<TIModel>;
-  Supports(o,AGuid,result);
+  Supports(o, AGuid, result);
   GetController.AttachModel(result);
 end;
 
@@ -346,14 +413,29 @@ begin
   TMVCBr.RegisterObserver(AName, self);
 end;
 
+procedure TCustomFormFactory.Release;
+begin
+  if assigned(FController) then
+    FController.Release;
+  FController := nil;
+end;
+
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
 begin
-  result := FController.This.ResolveController(IID);
+  result := ApplicationController.ThisAs.ResolveController(IID);
 end;
 
 function TCustomFormFactory.ResolveController<TIController>: TIController;
 begin
-  result := GetController.This.ResolveController<TIController>();
+  result := ApplicationController.ThisAs.ResolveController<TIController>();
+end;
+
+procedure TCustomFormFactory.RevokeController(TIController: IController);
+var
+  IID: TGuid;
+begin
+  IID := TMVCBr.GetGuid(TIController);
+  RevokeController(IID);
 end;
 
 procedure TCustomFormFactory.RevokeController(IID: TGuid);
@@ -478,8 +560,11 @@ end;
 
 function TCustomFormFactory.MainViewEvent(AMessage: string;
   var AHandled: boolean): IView;
+var
+  AView: IView;
 begin
-  ApplicationController.MainView.ViewEvent(AMessage, AHandled);
+  if Supports(ApplicationController.MainView, IView, AView) then
+    AView.ViewEvent(AMessage, AHandled);
 end;
 
 function TCustomFormFactory.Observable: IMVCBrObservable;
@@ -605,6 +690,11 @@ procedure TCustomFormFactory.Update(AJsonValue: TJsonValue;
 var AHandled: boolean);
 begin
   ViewEvent(AJsonValue, AHandled);
+end;
+
+function TCustomFormFactory.Update: IView;
+begin
+  result := self;
 end;
 
 procedure TCustomFormFactory.UpdateObserver(AName, AMensagem: String);

@@ -3,13 +3,14 @@ object ComoEnviarMensagemParaOutraViewView: TComoEnviarMensagemParaOutraViewView
   Top = 0
   Caption = 'ComoEnviarMensagemParaOutraViewView'
   ClientHeight = 487
-  ClientWidth = 585
+  ClientWidth = 613
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
@@ -22,18 +23,10 @@ object ComoEnviarMensagemParaOutraViewView: TComoEnviarMensagemParaOutraViewView
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
-      ExplicitLeft = 0
-      ExplicitTop = 64
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
     object TabSheet2: TTabSheet
       Caption = 'TabSheet2'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
   object Button1: TButton
@@ -75,5 +68,13 @@ object ComoEnviarMensagemParaOutraViewView: TComoEnviarMensagemParaOutraViewView
     PageControl = PageControl1
     Left = 280
     Top = 16
+  end
+  object MainMenu1: TMainMenu
+    Left = 392
+    Top = 24
+    object ViewFilha1: TMenuItem
+      Caption = 'View Filha'
+      OnClick = ViewFilha1Click
+    end
   end
 end
