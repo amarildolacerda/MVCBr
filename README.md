@@ -16,7 +16,7 @@ Ver o Video de apresentação do projeto no canal Youtube.
 
 
 <b>Grupo MVCBr - Créditos</b>
-
+<pre>
 Kleberson TORO - fundador e idealizador do projeto;
 Amarildo Lacerda - fundador e implementação;
 Oteniel Furquim - contribuição com debates e definição;
@@ -30,3 +30,4 @@ Carlos Dias (Dex) - testes e apresentação de usercase; criação dos icones do
 Giovani Da Cruz - Criador do Servidor OData para rodar como serviço.
 
 tireideletra.com.br - plataforma de divulgação de artigos do MVCBr (Apoio: WBAGestão-Storeware)
+</pre>
