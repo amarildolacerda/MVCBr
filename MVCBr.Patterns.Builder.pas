@@ -58,6 +58,7 @@ type
   private
     [weak]
     FList: TThreadList<IMVCBrBuilderItem<T, TResult>>;
+    function GetItems(index: integer): TMVCBrBuilderItem<T, TResult>;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -72,18 +73,19 @@ type
       : TMVCBrBuilderItem<T, TResult>; overload; virtual;
     [weak]
     function Execute(ACommand: TValue; AParam: T)
-      : IMVCBrBuilderItem<T, TResult>; virtual;
+      : TMVCBrBuilderItem<T, TResult>; virtual;
     [weak]
-    function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>; virtual;
+    function Query(ACommand: TValue): TMVCBrBuilderItem<T, TResult>; virtual;
     procedure Release; virtual;
     procedure Clear; virtual;
-    function Count: Integer; virtual;
-    function IndexOf(ACommand: TValue): Integer;
+    function Count: integer; virtual;
+    property Items[index: integer]: TMVCBrBuilderItem<T, TResult> read GetItems;
+    function IndexOf(ACommand: TValue): integer;
     procedure Remove(AItem: TMVCBrBuilderItem<T, TResult>); overload; virtual;
     procedure Remove(ACommand: TValue); overload; virtual;
     function Contains(ACommand: TValue): Boolean; virtual;
     function This: TObject; virtual;
-    function isValid(idx: Integer): Boolean;
+    function isValid(idx: integer): Boolean;
   end;
 
   IMVCBrBuilder<T, TResult> = interface
@@ -143,7 +145,7 @@ type
     property Builder: TMVCBrBuilder<T, TResult> read FWrapper;
     function This: TObject; virtual;
     procedure Release; virtual;
-    function Count: Integer; virtual;
+    function Count: integer; virtual;
     [weak]
     function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
       : IMVCBrBuilderItem<T, TResult>; overload; virtual;
@@ -183,29 +185,30 @@ type
   TMVCBrBuilderObjectClass = class of TMVCBrBuilderObject;
 
   IMVCBrBuilderItemResult = IMVCBrBuilderItem<TValue, TValue>;
-  
+
   /// Lazy Builder Item
   TMVCBrBuilderLazyItem = class(TMVCBrBuilderItem<TValue, TValue>,
-    IMVCBrBuilderItem<TMVCBrBuilderObject>)
+    IMVCBrBuilderItem<TObject>)
   private
-    FClass: TMVCBrBuilderObjectClass;
+    FDelegateTo: TFunc<TObject>;
+    FClass: TClass;
     [weak]
-    FInstance: TMVCBrBuilderObject;
+    FInstance: TObject;
     FCreated: Boolean;
   protected
-    function Invoke: TMVCBrBuilderObject;
+    function Invoke: TObject;
   public
     constructor Create; Overload;
     destructor Destroy; override;
     class Function New(ABuilder: TMVCBrBuilder<TValue, TValue>;
       ACommand: TValue): TMVCBrBuilderLazyItem;
-    property Instance: TMVCBrBuilderObject read Invoke;
+    property Instance: TObject read Invoke;
     procedure FreeInstance;
     [weak]
-    function Execute(AParam: TValue)
-      : IMVCBrBuilderItemResult; override;
+    function Execute(AParam: TValue): IMVCBrBuilderItemResult; override;
     function Response: TValue; Override;
     function IsCreated: Boolean; virtual;
+    function DelegateTo(AFunc:TFunc<TObject>):TMVCBrBuilderLazyItem;
   end;
 
   /// Lazy Builder Factory
@@ -214,7 +217,7 @@ type
   private
   public
     class function New: TMVCBrBuilderLazyFactory; virtual;
-    function Add(ACommand: TValue; AClass: TMVCBrBuilderObjectClass)
+    function Add(ACommand: TValue; AClass: TClass)
       : TMVCBrBuilderLazyItem; virtual;
     [weak]
     function Query<T: Class>(ACommand: TValue): T; overload;
@@ -225,7 +228,7 @@ type
 implementation
 
 { TMVCBrBuilderFactory<T> }
-uses MVCBr.Interf;
+uses MVCBr.Interf, System.Classes.Helper;
 
 function TMVCBrBuilder<T, TResult>.Add(ACommand: TValue;
   ABuilderFunc: TFunc<T, TResult>): TMVCBrBuilderItem<T, TResult>;
@@ -254,7 +257,7 @@ end;
 
 destructor TMVCBrBuilder<T, TResult>.Destroy;
 var
-  i: Integer;
+  i: integer;
 begin
   FList.free;
   FList := nil;
@@ -263,7 +266,7 @@ end;
 
 function TMVCBrBuilder<T, TResult>.Contains(ACommand: TValue): Boolean;
 var
-  i: Integer;
+  i: integer;
 begin
 
   try
@@ -275,7 +278,7 @@ begin
   end;
 end;
 
-function TMVCBrBuilder<T, TResult>.Count: Integer;
+function TMVCBrBuilder<T, TResult>.Count: integer;
 begin
   with FList.LockList do
     try
@@ -293,23 +296,23 @@ begin
 end;
 
 function TMVCBrBuilder<T, TResult>.Query(ACommand: TValue)
-  : IMVCBrBuilderItem<T, TResult>;
+  : TMVCBrBuilderItem<T, TResult>;
 var
-  i: Integer;
+  i: integer;
 begin
   result := nil;
   i := IndexOf(ACommand);
   if isValid(i) then
     with FList.LockList do
       try
-          result := items[i];
+        result := TMVCBrBuilderItem<T, TResult>(Items[i].This);
       finally
         FList.UnlockList;
       end;
 end;
 
 function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T)
-  : IMVCBrBuilderItem<T, TResult>;
+  : TMVCBrBuilderItem<T, TResult>;
 begin
   result := Query(ACommand);
   Assert(assigned(result), 'Builder Command not found');
@@ -317,16 +320,27 @@ begin
     result.Execute(AParam);
 end;
 
-function TMVCBrBuilder<T, TResult>.IndexOf(ACommand: TValue): Integer;
+function TMVCBrBuilder<T, TResult>.GetItems(index: integer)
+  : TMVCBrBuilderItem<T, TResult>;
+begin
+  with LockList do
+    try
+      result := TMVCBrBuilderItem<T, TResult>(Items[index].This);
+    finally
+      UnlockList;
+    end;
+end;
+
+function TMVCBrBuilder<T, TResult>.IndexOf(ACommand: TValue): integer;
 var
-  i: Integer;
+  i: integer;
 begin
   i := -1;
   with FList.LockList do
     try
       for i := Count - 1 downto 0 do
       begin
-        if TMVCBrBuilderItem<T, TResult>(items[i].This).FCommand.Equals(ACommand)
+        if TMVCBrBuilderItem<T, TResult>(Items[i].This).FCommand.Equals(ACommand)
         then
         begin
           result := i;
@@ -338,7 +352,7 @@ begin
     end;
 end;
 
-function TMVCBrBuilder<T, TResult>.isValid(idx: Integer): Boolean;
+function TMVCBrBuilder<T, TResult>.isValid(idx: integer): Boolean;
 begin
   result := (idx >= 0) and (idx < Count);
 end;
@@ -356,7 +370,7 @@ end;
 
 procedure TMVCBrBuilder<T, TResult>.Release;
 var
-  i: Integer;
+  i: integer;
 begin
   {
     with FList.LockList do
@@ -375,7 +389,7 @@ end;
 
 procedure TMVCBrBuilder<T, TResult>.Remove(ACommand: TValue);
 var
-  i: Integer;
+  i: integer;
 begin
   i := IndexOf(ACommand);
   if isValid(i) then
@@ -512,7 +526,7 @@ begin
   result := FWrapper.Contains(ACommand);
 end;
 
-function TMVCBrBuilderFactory<T, TResult>.Count: Integer;
+function TMVCBrBuilderFactory<T, TResult>.Count: integer;
 begin
   result := FWrapper.Count;
 end;
@@ -584,37 +598,48 @@ begin
     ('Abstract... Use NEW class function instead of create');
 end;
 
+function TMVCBrBuilderLazyItem.DelegateTo(
+  AFunc: TFunc<TObject>): TMVCBrBuilderLazyItem;
+begin
+   result := self;
+   FDelegateTo := AFunc;
+end;
+
 destructor TMVCBrBuilderLazyItem.Destroy;
 var
   Interf: IInterface;
 begin
   try
-    Interf := FInstance;
-    Interf := nil;
+    if supports(FInstance, IInterface, Interf) then
+      Interf := nil
+    else
+      FreeAndNil(FInstance);
     /// workaround - with Free blow Exception Error
   except
   end;
   inherited;
 end;
 
-function TMVCBrBuilderLazyItem.Execute(AParam: TValue)
-  : IMVCBrBuilderItemResult;
+function TMVCBrBuilderLazyItem.Execute(AParam: TValue): IMVCBrBuilderItemResult;
 begin
   result := self;
-  Instance.Execute(AParam);
+  Instance.ContextInvokeMethod('Execute', [AParam]);
 end;
 
 procedure TMVCBrBuilderLazyItem.FreeInstance;
 begin
-  freeAndNil(FInstance);
+  FreeAndNil(FInstance);
   FCreated := false;
 end;
 
-function TMVCBrBuilderLazyItem.Invoke: TMVCBrBuilderObject;
+function TMVCBrBuilderLazyItem.Invoke: TObject;
 begin
   if not FCreated then
   begin
-    FInstance := FClass.Create;
+    if assigned(FDelegateTo) then
+      FInstance := FDelegateTo;
+    if not assigned(FInstance) then
+      FInstance := FClass.Create;
     FCreated := true;
   end;
   result := FInstance;
@@ -637,7 +662,7 @@ end;
 
 function TMVCBrBuilderLazyItem.Response: TValue;
 begin
-  result := Instance.Response;
+  result := Instance.ContextProperties['Response'];
 end;
 
 { TMVCBBuilderObject }
@@ -658,8 +683,8 @@ end;
 
 { TMVCBBuilderLazyFactory }
 
-function TMVCBrBuilderLazyFactory.Add(ACommand: TValue;
-  AClass: TMVCBrBuilderObjectClass): TMVCBrBuilderLazyItem;
+function TMVCBrBuilderLazyFactory.Add(ACommand: TValue; AClass: TClass)
+  : TMVCBrBuilderLazyItem;
 begin
   result := TMVCBrBuilderLazyItem.New(self, ACommand);
   result.FClass := AClass;
@@ -669,12 +694,12 @@ end;
 
 procedure TMVCBrBuilderLazyFactory.FreeAllInstances;
 var
-  i: Integer;
+  i: integer;
 begin
   With FList.LockList do
     try
       for i := 0 to Count - 1 do
-        TMVCBrBuilderLazyItem(items[i]).FreeInstance;
+        TMVCBrBuilderLazyItem(Items[i]).FreeInstance;
     finally
       FList.UnlockList;
     end;
@@ -682,13 +707,13 @@ end;
 
 procedure TMVCBrBuilderLazyFactory.FreeInstance(ACommand: TValue);
 var
-  i: Integer;
+  i: integer;
 begin
   i := IndexOf(ACommand);
   if isValid(i) then
     With FList.LockList do
       try
-        TMVCBrBuilderLazyItem(items[i]).FreeInstance;
+        TMVCBrBuilderLazyItem(Items[i]).FreeInstance;
       finally
         FList.UnlockList;
       end;

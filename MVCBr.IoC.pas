@@ -561,6 +561,8 @@ begin
   if FReleased then
     exit;
   achei := '';
+  if not Assigned(AInstance) then exit;
+
   AOrigem := AInstance as TObject;
   for LName in FContainerInfo.keys do
   begin

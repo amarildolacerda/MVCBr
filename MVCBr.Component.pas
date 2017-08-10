@@ -53,6 +53,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Release;
+    function RefCount:Integer;
     procedure AfterConstruction; override;
     function ApplicationControllerInternal: IApplicationController; virtual;
     function ApplicationController: TApplicationController; virtual;
@@ -153,6 +154,12 @@ begin
     SetModelTypes([mtComponent]);
 {$ENDIF}
   end;
+end;
+
+function TComponentFactory.RefCount: Integer;
+begin
+   result := _AddRef;
+   _Release;
 end;
 
 procedure TComponentFactory.Release;

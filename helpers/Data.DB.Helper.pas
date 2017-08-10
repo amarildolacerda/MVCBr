@@ -33,7 +33,7 @@ unit Data.DB.Helper;
 
 interface
 
-uses Classes, SysUtils, DB, System.JSON;
+uses Classes, SysUtils, DB, System.JSON, System.JSON.Helper;
 
 type
 
@@ -79,6 +79,7 @@ type
     function JsonObject(var AJSONObject: TJsonObject;
       ANulls: boolean = true): integer;
     function ToJson(ANulls: boolean = true): string;
+    function JsonValue: TJsonValue;
     procedure FormJson(AJson: string);
   end;
 
@@ -91,7 +92,7 @@ type
 
 implementation
 
-uses System.JSON.Helper, System.DateUtils,
+uses System.Math, System.DateUtils,
   SqlTimSt, FmtBcd, System.Variants,
   Soap.EncdDecd;
 
@@ -650,7 +651,8 @@ begin
       ftWideString, ftMemo, ftWideMemo:
         AJSONObject.addPair(key, it.AsWideString);
       ftString:
-        AJSONObject.addPair(key, it.AsString);
+        AJSONObject.addPair(key, it.AsString.Replace('\', '\\',
+          [rfReplaceAll]));
       TFieldType.ftDate:
         AJSONObject.addPair(key, ISODateToString(it.AsDateTime));
       TFieldType.ftDateTime:
@@ -689,6 +691,14 @@ begin
   end;
 end;
 
+function TFieldsHelper.JsonValue: TJsonValue;
+var
+  s: string;
+begin
+  s := ToJson;
+  result := TJsonObject.ParseJSONValue(s);
+end;
+
 { TFieldHelper }
 
 function TFieldHelper.FromStream(stream: TStream): TField;
@@ -700,14 +710,17 @@ end;
 function RoundFloat(AValor: Double; ACasaDecimal: integer): Double;
 var
   Ls: string;
-  s:string;
+  s: string;
 begin
   try
+    AValor := SimpleRoundTo(AValor, -(ACasaDecimal + 2));
+    // resolver caso:  1,42xxxe-15
+
     result := AValor;
     if ACasaDecimal < 0 then
       exit;
     s := s.PadRight(ACasaDecimal, '0');
-    Ls := '0.'+  s;
+    Ls := '0.' + s;
     if ACasaDecimal = 0 then
       Ls := '0';
     Ls := formatFloat(Ls, AValor);
@@ -732,7 +745,7 @@ end;
 function TFieldHelper.Trunc: TField;
 begin
   if DataType in [ftFloat, ftCurrency, ftBCD] then
-     AsFloat := System.Trunc(AsFloat)
+    AsFloat := System.Trunc(AsFloat)
 end;
 
 procedure TDatasetHelper.ChangeAllValuesTo(AFieldName: string; AValue: Variant;

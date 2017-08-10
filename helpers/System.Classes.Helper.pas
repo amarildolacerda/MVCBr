@@ -30,6 +30,9 @@ uses System.Classes, System.SysUtils,
   System.Generics.Collections,
   System.TypInfo, System.Json;
 
+const
+  ObjAdapterGUID: TGUID = '{09B8DF51-13F9-478C-B592-3B73E65F8698}';
+
 Type
 
   HideAttribute = class(TCustomAttribute)
@@ -39,6 +42,40 @@ Type
     ['{BBC08E72-6518-4BF8-8BEE-0A46FD8B351C}']
     procedure SetOnEvent(const Value: TProc<TObject>);
     procedure FireEvent(Sender: TObject);
+  end;
+
+  IObjectAdapter<T: Class> = interface(TFunc<T>)
+    ['{17EB68E7-7212-4AE9-B686-FC4CC3A08F07}']
+    property Instance: T read Invoke;
+  end;
+
+  TObjectAdapter<T: Class> = class(TInterfacedObject, IObjectAdapter<T>,
+    IInterface)
+  private
+    FCreated: Boolean;
+    FDelegate: TFunc<T>;
+    FClass: TClass;
+    [weak]
+    FInstance: T;
+    procedure Initialize;
+    function Invoke: T;
+    function QueryInterface(const AIID: TGUID; out Obj): HResult;
+  public
+    constructor Create; overload; virtual;
+    constructor Create(AClass: T); overload; virtual;
+    Destructor Destroy; override;
+    procedure Release; virtual;
+    [weak]
+    class function New: IObjectAdapter<T>;
+    [weak]
+    function InstanceOf(AClass: TClass): IObjectAdapter<T>;
+    [weak]
+    function DelegateTo(AFunc: TFunc<T>): IObjectAdapter<T>;
+  end;
+
+  TStringsHelper = Class helper for TStrings
+  public
+    Function Items: TStrings;
   end;
 
   TObjectExt = class(System.TObject)
@@ -95,7 +132,7 @@ Type
     function ContextPropertyName(idx: Integer): string;
     property ContextProperties[AName: string]: TValue read GetContextProperties
       write SetContextProperties;
-    function IsContextProperty(AName: String): boolean;
+    function IsContextProperty(AName: String): Boolean;
     procedure GetContextPropertiesList(AList: TStrings;
       const AVisibility: TMemberVisibilitySet = [mvPublished, mvPublic]);
     procedure GetContextPropertiesItems(AList: TStrings;
@@ -110,7 +147,7 @@ Type
 
     class procedure &ContextGetRecordFieldsList<T: Record >(AStrings: TStrings;
       ARec: T; const AVisibility: TMemberVisibilitySet = [mvPublic];
-      AFunc: TFunc < string, boolean >= nil); static;
+      AFunc: TFunc < string, Boolean >= nil); static;
     class procedure &ContextRecordValuesList<T: Record >
       (AList: TList<TValueNamed>; ARec: T); static;
     class function GetRecordValue<T: Record >(rec: T; aNome: string)
@@ -121,12 +158,12 @@ Type
       const AVisibility: TMemberVisibilitySet = [mvPublic]);
 
     function ContextHasAttribute(aMethod: TRttiMethod;
-      attribClass: TCustomAttributeClass): boolean;
+      attribClass: TCustomAttributeClass): Boolean;
 
     function ContextInvokeAttribute(attribClass: TCustomAttributeClass;
-      params: array of TValue): boolean;
+      params: array of TValue): Boolean;
     function ContextInvokeMethod(AName: string;
-      params: array of TValue): boolean;
+      params: array of TValue): Boolean;
 
   end;
 
@@ -135,7 +172,7 @@ Type
     FMaxThread: Integer;
     procedure SetMaxThread(const Value: Integer);
   public
-    constructor create;
+    constructor Create;
     procedure DoDestroyThread(Value: TObject);
     procedure Run(Proc: TProc);
     property MaxThread: Integer read FMaxThread write SetMaxThread;
@@ -156,14 +193,14 @@ Type
 implementation
 
 uses {$IF CompilerVersion>28} System.Threading, {$ENDIF}
- {$ifndef BPL}
+{$IFNDEF BPL}
   REST.Json,
-  {$endif}
+{$ENDIF}
   System.DateUtils;
 
 class procedure TObjectHelper.Using<T>(O: T; Proc: TProc<T>);
 var
-  obj: TObject;
+  Obj: TObject;
 begin
   try
     Proc(O);
@@ -185,7 +222,7 @@ class procedure TObjectHelper.WaitFor<T>(O: T; Proc: TProc<T>);
 var
   th: {$IF CompilerVersion>28} ITask; {$ELSE} TThread; {$ENDIF}
 begin
-  th := {$IF CompilerVersion>28}TTask.create{$ELSE} TThread.
+  th := {$IF CompilerVersion>28}TTask.Create{$ELSE} TThread.
     CreateAnonymousThread{$ENDIF}
     (
     procedure
@@ -209,7 +246,7 @@ function TObjectHelper.&ContextFieldName(idx: Integer): string;
 var
   aCtx: TRttiContext;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     result := aCtx.GetType(self.ClassType).GetFields[idx].name;
   finally
@@ -221,7 +258,7 @@ function TObjectHelper.&ContextFieldsCount: Integer;
 var
   aCtx: TRttiContext;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     result := High(aCtx.GetType(self.ClassType).GetFields);
   finally
@@ -233,28 +270,28 @@ procedure TObjectHelper.FromJson(AJson: string);
 var
   oJs: TJsonObject;
 begin
- {$ifndef BPL}
+{$IFNDEF BPL}
   oJs := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
   TJson.JsonToObject(self, oJs);
- {$endif}
+{$ENDIF}
 end;
 
 function TObjectHelper.Clone: System.TObject;
 var
   oJs: TJsonObject;
 begin
-  {$ifndef BPL}
+{$IFNDEF BPL}
   oJs := TJsonObject.ParseJSONValue(ToJson) as TJsonObject;
   TJson.JsonToObject(self, oJs);
-  {$endif}
+{$ENDIF}
   result := self;
 end;
 
 class function TObjectHelper.FromJson<T>(AJson: string): T;
 begin
- {$ifndef BPL}
+{$IFNDEF BPL}
   result := TJson.JsonToObject<T>(AJson);
-  {$endif}
+{$ENDIF}
 end;
 
 function TObjectHelper.GetContextFields(AName: string): TValue;
@@ -263,7 +300,7 @@ var
   AField: TRttiField;
 begin
   result := nil;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     AField := aCtx.GetType(self.ClassType).GetField(AName);
     if assigned(AField) then
@@ -279,10 +316,10 @@ var
   aCtx: TRttiContext;
   AFld: TRttiField;
   LAttr: TCustomAttribute;
-  LTemAtributo: boolean;
+  LTemAtributo: Boolean;
 begin
   AList.clear;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     for AFld in aCtx.GetType(self.ClassType).GetFields do
     begin
@@ -303,7 +340,7 @@ end;
 
 class procedure TObjectHelper.&ContextGetRecordFieldsList<T>(AStrings: TStrings;
 ARec: T; const AVisibility: TMemberVisibilitySet = [mvPublic];
-AFunc: TFunc < string, boolean >= nil);
+AFunc: TFunc < string, Boolean >= nil);
 var
   AContext: TRttiContext;
   ARecord: TRttiRecordType;
@@ -314,9 +351,9 @@ var
   j: TJsonObject;
   APair: TJsonPair;
   LAttr: TCustomAttribute;
-  LContinue: boolean;
+  LContinue: Boolean;
 begin
-  AContext := TRttiContext.create;
+  AContext := TRttiContext.Create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     for AField in ARecord.GetFields do
@@ -347,7 +384,7 @@ var
   LRecord: TRttiRecordType;
   LField: TRttiField;
 begin
-  LContext := TRttiContext.create;
+  LContext := TRttiContext.Create;
   try
     LRecord := LContext.GetType(TypeInfo(T)).AsRecord;
     for LField in LRecord.GetFields do
@@ -367,7 +404,7 @@ function TObjectHelper.GetContextMethods(AName: String): TRttiMethod;
 var
   aCtx: TRttiContext;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     result := aCtx.GetType(self.ClassType).GetMethod(AName);
   finally
@@ -381,10 +418,10 @@ var
   aMethod: TRttiMethod;
   aCtx: TRttiContext;
   LAttr: TCustomAttribute;
-  LTemAtributo: boolean;
+  LTemAtributo: Boolean;
 begin
   AList.clear;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     for aMethod in aCtx.GetType(self.ClassType).GetMethods do
     begin
@@ -409,7 +446,7 @@ var
   aProperty: TRttiProperty;
 begin
   result := nil;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     aProperty := aCtx.GetType(self.ClassType).GetProperty(AName);
     if assigned(aProperty) then
@@ -423,49 +460,49 @@ type
   // Adiciona funções ao TValue
   TValueHelper = record helper for TValue
   private
-    function IsNumeric: boolean;
-    function IsFloat: boolean;
+    function IsNumeric: Boolean;
+    function IsFloat: Boolean;
     function AsFloat: Extended;
-    function IsBoolean: boolean;
-    function IsDate: boolean;
-    function IsDateTime: boolean;
-    function IsDouble: boolean;
+    function IsBoolean: Boolean;
+    function IsDate: Boolean;
+    function IsDateTime: Boolean;
+    function IsDouble: Boolean;
     function AsDouble: Double;
-    function IsInteger: boolean;
+    function IsInteger: Boolean;
   end;
 
-function TValueHelper.IsNumeric: boolean;
+function TValueHelper.IsNumeric: Boolean;
 begin
   result := Kind in [tkInteger, tkChar, tkEnumeration, tkFloat,
     tkWChar, tkInt64];
 end;
 
-function TValueHelper.IsFloat: boolean;
+function TValueHelper.IsFloat: Boolean;
 begin
   result := Kind = tkFloat;
 end;
 
-function TValueHelper.IsBoolean: boolean;
+function TValueHelper.IsBoolean: Boolean;
 begin
-  result := TypeInfo = System.TypeInfo(boolean);
+  result := TypeInfo = System.TypeInfo(Boolean);
 end;
 
-function TValueHelper.IsDate: boolean;
+function TValueHelper.IsDate: Boolean;
 begin
   result := TypeInfo = System.TypeInfo(TDate);
 end;
 
-function TValueHelper.IsDateTime: boolean;
+function TValueHelper.IsDateTime: Boolean;
 begin
   result := TypeInfo = System.TypeInfo(TDatetime);
 end;
 
-function TValueHelper.IsDouble: boolean;
+function TValueHelper.IsDouble: Boolean;
 begin
   result := TypeInfo = System.TypeInfo(Double);
 end;
 
-function TValueHelper.IsInteger: boolean;
+function TValueHelper.IsInteger: Boolean;
 begin
   result := TypeInfo = System.TypeInfo(Integer);
 end;
@@ -499,7 +536,7 @@ var
   AValue: TValue;
 begin
   AList.clear;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     aRtti := aCtx.GetType(self.ClassType);
     for aProperty in aRtti.GetProperties do
@@ -530,7 +567,7 @@ var
 begin
 
   AList.clear;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     aRtti := aCtx.GetType(self.ClassType);
     for aProperty in aRtti.GetProperties do
@@ -545,7 +582,7 @@ begin
 end;
 
 function TObjectHelper.ContextHasAttribute(aMethod: TRttiMethod;
-attribClass: TCustomAttributeClass): boolean;
+attribClass: TCustomAttributeClass): Boolean;
 var
   attributes: TArray<TCustomAttribute>;
   attrib: TCustomAttribute;
@@ -558,13 +595,13 @@ begin
 end;
 
 function TObjectHelper.ContextInvokeAttribute(attribClass
-  : TCustomAttributeClass; params: array of TValue): boolean;
+  : TCustomAttributeClass; params: array of TValue): Boolean;
 var
   aCtx: TRttiContext;
   aMethod: TRttiMethod;
 begin
   result := false;
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     for aMethod in aCtx.GetType(self.ClassType).GetMethods do
     begin
@@ -581,7 +618,7 @@ begin
 end;
 
 function TObjectHelper.ContextInvokeMethod(AName: string;
-params: array of TValue): boolean;
+params: array of TValue): Boolean;
 var
   aMethod: TRttiMethod;
 begin
@@ -596,7 +633,7 @@ begin
   end;
 end;
 
-function TObjectHelper.IsContextProperty(AName: String): boolean;
+function TObjectHelper.IsContextProperty(AName: String): Boolean;
 var
   v: TValue;
 begin
@@ -608,7 +645,7 @@ function TObjectHelper.ContextPropertyCount: Integer;
 var
   aCtx: TRttiContext;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     result := High(aCtx.GetType(self.ClassType).GetProperties);
   finally
@@ -620,7 +657,7 @@ function TObjectHelper.ContextPropertyName(idx: Integer): string;
 var
   aCtx: TRttiContext;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     result := aCtx.GetType(self.ClassType).GetProperties[idx].name;
   finally
@@ -636,7 +673,7 @@ var
   LField: TRttiField;
   LNamed: TValueNamed;
 begin
-  LContext := TRttiContext.create;
+  LContext := TRttiContext.Create;
   try
     LRecord := LContext.GetType(TypeInfo(T)).AsRecord;
     for LField in LRecord.GetFields do
@@ -681,7 +718,7 @@ end;
 class procedure TObjectHelper.Run<T>(O: T; Proc: TProc<T>);
 begin
 {$IF CompilerVersion>28}
-  TTask.create(
+  TTask.Create(
     procedure
     begin
       Proc(O);
@@ -698,7 +735,7 @@ end;
 class procedure TObjectHelper.RunQueue(Proc: TProc);
 begin
 {$IF CompilerVersion>28}
-  TTask.create(
+  TTask.Create(
     procedure
     begin
       TThread.Queue(nil,
@@ -725,7 +762,7 @@ var
   AField: TRttiField;
   aCtx: TRttiContext;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     AField := aCtx.GetType(self.ClassType).GetField(AName);
     if assigned(AField) then
@@ -742,7 +779,7 @@ var
   aCtx: TRttiContext;
   AValue: TValue;
 begin
-  aCtx := TRttiContext.create;
+  aCtx := TRttiContext.Create;
   try
     aProperty := aCtx.GetType(self.ClassType).GetProperty(AName);
     if assigned(aProperty) and aProperty.IsWritable then
@@ -781,16 +818,17 @@ end;
 
 function TObjectHelper.ToJson: string;
 begin // System.uJson
- {$ifndef BPL}
+{$IFNDEF BPL}
   result := TJson.ObjectToJsonString(self);
-  {$endif}
+{$ENDIF}
 end;
+
 
 function TObjectHelper.ToJsonObject: TJsonObject;
 begin
-  {$ifndef BPL}
+{$IFNDEF BPL}
   result := TJson.ObjectToJsonObject(self);
-  {$endif}
+{$ENDIF}
 end;
 
 class function TObjectHelper.Anonymous<T>(O: T; Proc: TProc<T>): TObject;
@@ -814,7 +852,7 @@ end;
 
 { TThreadedPool }
 
-constructor TTaskList.create;
+constructor TTaskList.Create;
 begin
   inherited;
   FMaxThread := 10;
@@ -831,22 +869,22 @@ type
   TTaskHack = class(TTask, ITask)
   public
     onTerminate: TNotifyEvent;
-    Constructor create(AProc: TProc; AEvent: TNotifyEvent);
-    destructor destroy; override;
+    Constructor Create(AProc: TProc; AEvent: TNotifyEvent);
+    destructor Destroy; override;
   end;
 
-Constructor TTaskHack.create(AProc: TProc; AEvent: TNotifyEvent);
+Constructor TTaskHack.Create(AProc: TProc; AEvent: TNotifyEvent);
 begin
   // inherited create(nil, nil, AProc, TThreadPool.Default, nil);
-  inherited create(AProc, TThreadPool.Default);
+  inherited Create(AProc, TThreadPool.Default);
   onTerminate := AEvent;
 end;
 
-destructor TTaskHack.destroy;
+destructor TTaskHack.Destroy;
 begin
   if assigned(onTerminate) then
     onTerminate(self);
-  inherited destroy;
+  inherited Destroy;
 end;
 {$ENDIF}
 
@@ -855,7 +893,7 @@ var
   T: {$IF CompilerVersion>28} TTaskHack; {$ELSE} TThread; {$ENDIF}
 begin
 {$IF CompilerVersion>28}
-  T := TTaskHack.create(Proc, DoDestroyThread);
+  T := TTaskHack.Create(Proc, DoDestroyThread);
   Add(T);
   (T as ITask).Start;
 {$ELSE}
@@ -893,7 +931,7 @@ function TStingListHelper.AsJsonArray: TJsonArray;
 var
   i: Integer;
 begin
-  result := TJsonArray.create;
+  result := TJsonArray.Create;
   for i := 0 to count - 1 do
     result.Add(self[i]);
 end;
@@ -910,7 +948,7 @@ function TStingListHelper.AsJsonObject: TJsonObject;
 var
   i: Integer;
 begin
-  result := TJsonObject.create;
+  result := TJsonObject.Create;
   for i := 0 to count - 1 do
     result.addPair(self.Names[i], self.ValueFromIndex[i]);
 end;
@@ -935,7 +973,7 @@ end;
 class function TStingListHelper.New(AText: string; ADelimiter: char = ',')
   : TStringList;
 begin
-  result := TStringList.create;
+  result := TStringList.Create;
   result.Delimiter := ADelimiter;
   result.DelimitedText := AText;
 end;
@@ -948,6 +986,93 @@ begin
     finally
       Free;
     end;
+end;
+
+{ TClassAdapter<T> }
+
+constructor TObjectAdapter<T>.Create(AClass: T);
+begin
+  inherited Create;
+  FInstance := AClass;
+  if assigned(AClass) then
+    InstanceOf(AClass.ClassType)
+  else
+    InstanceOf(TClass(T));
+end;
+
+constructor TObjectAdapter<T>.Create;
+begin
+  Create(nil);
+end;
+
+function TObjectAdapter<T>.DelegateTo(AFunc: TFunc<T>): IObjectAdapter<T>;
+begin
+  result := self;
+  FDelegate := AFunc;
+end;
+
+destructor TObjectAdapter<T>.Destroy;
+begin
+  freeAndNil(FInstance);
+  inherited;
+end;
+
+procedure TObjectAdapter<T>.Initialize;
+var
+  Obj: TObject;
+begin
+  if not assigned(FInstance) then
+  begin
+    if assigned(FDelegate) then
+      Obj := FDelegate()
+    else
+      Obj := FClass.Create;
+    FInstance := T(Obj);
+    FCreated := assigned(FInstance);
+  end;
+end;
+
+function TObjectAdapter<T>.InstanceOf(AClass: TClass): IObjectAdapter<T>;
+begin
+  result := self;
+  FClass := AClass;
+end;
+
+function TObjectAdapter<T>.Invoke: T;
+begin
+  Initialize;
+  result := FInstance;
+end;
+
+function TObjectAdapter<T>.QueryInterface(const AIID: TGUID; out Obj): HResult;
+begin
+  if IsEqualGUID(AIID, ObjAdapterGUID) then
+  begin
+    Initialize;
+  end;
+  result := inherited QueryInterface(AIID, Obj);
+end;
+
+procedure TObjectAdapter<T>.Release;
+begin
+  freeAndNil(FInstance);
+  FCreated := false;
+end;
+
+class function TObjectAdapter<T>.New: IObjectAdapter<T>;
+var
+  Obj: TObjectAdapter<T>;
+begin
+  Obj := TObjectAdapter<T>.Create(nil);
+  Obj.InstanceOf(TClass(T));
+  result := Obj;
+end;
+
+{ TStringsHelper }
+
+function TStringsHelper.Items: TStrings;
+begin
+  result := self;
 end;
 
 end.

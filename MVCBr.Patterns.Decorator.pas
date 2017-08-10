@@ -36,16 +36,30 @@ Type
     function This: TObject;
   end;
 
-  TMVCBrDecorator<T> = class(TInterfacedObject, IMVCBrDecorator)
+  IMVCBrDecorator<T> = interface
+    ['{C7232C1A-A389-45B8-B760-0916E5B645A2}']
+    function Invoke: T;
+    function This: TObject;
+    property Decorate: T read Invoke;
+  end;
+
+  IMVCBrDecorate<T> = interface(TFunc<T>)
+    ['{8A452998-C520-4289-99EE-12527FD5D3D9}']
+    function This: TObject;
+    property Decorate: T read Invoke;
+  end;
+
+  TMVCBrDecorator<T> = class(TInterfacedObject, IMVCBrDecorator,
+    IMVCBrDecorate<T>, IMVCBrDecorator<T>)
   private
     FLock: TObject;
   protected
     FDecorate: T;
-    function Invoke:T;virtual;
+    function Invoke: T; virtual;
   public
     constructor create(ADecorate: T);
     destructor destroy; override;
-    property Decorate:T read Invoke;
+    property Decorate: T read Invoke;
     function This: TObject; virtual;
     function Lock: T; virtual;
     procedure UnLock; virtual;
@@ -64,7 +78,7 @@ end;
 
 function TMVCBrDecorator<T>.Invoke: T;
 begin
-   result := FDecorate;
+  result := FDecorate;
 end;
 
 destructor TMVCBrDecorator<T>.destroy;

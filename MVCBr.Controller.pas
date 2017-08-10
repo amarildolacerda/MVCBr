@@ -74,28 +74,40 @@ type
     function IsModel(AIModel: TGuid): Boolean;
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
+    [weak]
     function ShowView: IView; overload; virtual;
+    [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcOnClose: TProc<IView>): IView; overload; virtual;
 
+    [weak]
     function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
       overload; virtual;
+    [weak]
     function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean)
       : IView; overload;
+    [weak]
     function ID(const AID: string): IController; virtual;
     function GetID: String; override;
+    [weak]
     function GetModelByID(const AID: String): IModel; virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
+    [weak]
     function GetModel(const idx: integer): IModel; overload; virtual;
 
+    [weak]
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
+    [weak]
     procedure Init; virtual;
+    [weak]
     function Start: IController; virtual;
     procedure BeforeInit; virtual;
     procedure AfterInit; virtual;
+    [weak]
     function GetView: IView; virtual;
     procedure SetView(AView: IView); virtual;
+    [weak]
     function View(const AView: IView): IController; virtual;
     function This: TControllerAbstract; virtual;
     Function ControllerAs: TControllerFactory; virtual;
@@ -107,10 +119,13 @@ type
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
+    [weak]
     function UpdateAll: IController; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);
       overload; override;
+    [weak]
     function UpdateByModel(AModel: IModel): IController; virtual;
+    [weak]
     function UpdateByView(AView: IView): IController; virtual;
   end;
 
@@ -315,14 +330,14 @@ begin
       try
         for i := 0 to Count - 1 do
         begin
-         {$IFNDEF BPL}
+{$IFNDEF BPL}
           FModel := items[i] as IModel;
           if AModelType in FModel.ModelTypes then
           begin
             result := i;
             exit;
           end;
-          {$ENDIF}
+{$ENDIF}
         end;
       finally
         FModels.UnlockList;
@@ -417,7 +432,6 @@ begin
     FReleased := true;
     if assigned(FView) then
     begin
-      FView.SetController(nil);
       FView.Release;
       try
         if not FViewOwnedFree then
@@ -427,7 +441,7 @@ begin
             begin
               obj := FView.This;
               FView := nil; // tenta encerrar o formulario
-              obj.DisposeOf;
+              //obj.DisposeOf;
             end;
           end;
       except
@@ -573,7 +587,6 @@ begin
     end;
   end;
 {$ENDIF}
-
 end;
 
 procedure TControllerFactory.AttachView(const AView: IView);

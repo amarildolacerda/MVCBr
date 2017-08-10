@@ -65,6 +65,7 @@ Type
     procedure UnLock; virtual;
     procedure Release; virtual;
     function RefCount:Integer;
+
   end;
 
   {

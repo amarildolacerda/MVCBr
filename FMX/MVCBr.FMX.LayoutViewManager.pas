@@ -30,7 +30,7 @@ type
   public
     LayoutContainer: TLayout;
     Text: string;
-    PageView: IPageView;
+    PageView: TPageView;
     constructor create(AOwner: TComponent); override;
     destructor destroy; override;
     procedure CanClose(var ACanClose: boolean);
@@ -44,7 +44,7 @@ type
     FOnQueryClose: TFMXpageViewOnQueryClose;
     FAfterTabCreate: TNotifyEvent;
     FAfterCreate: TNotifyEvent;
-    procedure Init(APageView: IPageView); override;
+    procedure Init(APageView: TPageView); override;
     procedure SetLayoutContainer(const Value: TLayout);
     function GetLayoutContainer: TLayout;
     procedure SetOnQueryClose(const Value: TFMXpageViewOnQueryClose);
@@ -53,7 +53,7 @@ type
     procedure DoPageChange(Sender: TObject);
     function GetActiveTab: TLayoutTabItem;
   protected
-    Procedure DoQueryClose(const APageView: IPageView;
+    Procedure DoQueryClose(const APageView: TPageView;
       var ACanClose: boolean); override;
 
   public
@@ -64,9 +64,9 @@ type
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
-    function NewTab(APageView: IPageView): TObject; override;
-    function AddView(AView: IView): IPageView; override;
-    function AddView(Const AController: TGuid): IPageView; overload; override;
+    function NewTab(APageView: TPageView): TObject; override;
+    function AddView(AView: IView): TPageView; override;
+    function AddView(Const AController: TGuid): TPageView; overload; override;
     property ActiveTab: TLayoutTabItem read GetActiveTab;
   published
     property Layout: TLayout read GetLayoutContainer write SetLayoutContainer;
@@ -90,12 +90,12 @@ end;
 
 { TVCLPageViewFactory }
 
-function TFMXLayoutViewManager.AddView(AView: IView): IPageView;
+function TFMXLayoutViewManager.AddView(AView: IView): TPageView;
 begin
   result := inherited AddView(AView);
 end;
 
-function TFMXLayoutViewManager.AddView(const AController: TGuid): IPageView;
+function TFMXLayoutViewManager.AddView(const AController: TGuid): TPageView;
 begin
   result := inherited AddView(AController);
 end;
@@ -119,7 +119,7 @@ begin
   inherited;
 end;
 
-procedure TFMXLayoutViewManager.DoQueryClose(const APageView: IPageView;
+procedure TFMXLayoutViewManager.DoQueryClose(const APageView: TPageView;
   var ACanClose: boolean);
 begin
   inherited;
@@ -161,15 +161,15 @@ begin
     if assigned(PageView) then
       if assigned(PageView.This.View) then
       begin
-        form := TForm(PageView.This.View.This);
+        form := TForm(PageView.View);
         if assigned(form) then
           if assigned(form.OnCloseQuery) then
             form.OnCloseQuery(self, ACanClose);
         if ACanClose then
-          //with PageView.This.View.GetController do
-          begin
-            TControllerAbstract.RevokeInstance(PageView.This.View.GetController);
-          end;
+        // with PageView.This.View.GetController do
+        begin
+          TControllerAbstract.RevokeInstance(PageView.Controller);
+        end;
       end;
 end;
 
@@ -178,7 +178,7 @@ begin
   result := TLayoutTabItem;
 end;
 
-procedure TFMXLayoutViewManager.Init(APageView: IPageView);
+procedure TFMXLayoutViewManager.Init(APageView: TPageView);
 var
   frm: TForm;
   tl: TLayout;
@@ -186,17 +186,18 @@ var
   LLayout: ILayout;
   base: TObject;
   iChild: Integer;
+  v: IView;
 begin
   if assigned(APageView) then
     if assigned(APageView.This.View) then
     begin
-      if APageView.This.View.This.InheritsFrom(TViewFactoryAdapter) then
+      if APageView.View.InheritsFrom(TViewFactoryAdapter) then
       begin
-        frm := TForm(TViewFactoryAdapter(APageView.This.View.This).form);
+        frm := TForm(TViewFactoryAdapter(APageView.View).form);
         APageView.This.Text := frm.Caption;
       end
       else
-        frm := TForm(APageView.This.View.This);
+        frm := TForm(APageView.View);
       with frm do
       begin
         if supports(frm, ILayout, LLayout) and
@@ -212,11 +213,12 @@ begin
             else
               Layout.RemoveObject(iChild);
           end;
-          TFormFactory(APageView.This.View.This).isShowModal := false;
+          TFormFactory(APageView.View).isShowModal := false;
           if iChild = 0 then
           begin
             Layout.AddObject(TLayout(LLayout.GetLayout));
-            APageView.This.View.init();
+            if supports(APageView.View, IView, v) then
+              v.Init();
           end;
           if assigned(AfterCreateComplete) then
             AfterCreateComplete(APageView.This);
@@ -231,10 +233,11 @@ begin
           Layout.AddObject(TLayoutTabItem(APageView.This.Tab).FViewer);
           BorderStyle := TFmxFormBorderStyle.None;
           TLayoutTabItem(APageView.This.Tab).Text := APageView.This.Text;
-          if APageView.This.View.This.InheritsFrom(TFormFactory) then
+          if APageView.View.InheritsFrom(TFormFactory) then
           begin
-            TFormFactory(APageView.This.View.This).isShowModal := false;
-            APageView.This.View.ShowView(nil);
+            TFormFactory(APageView.View).isShowModal := false;
+            if supports(APageView.View, IView, v) then
+              v.ShowView(nil);
           end
           else if assigned(AfterCreateComplete) then
             AfterCreateComplete(APageView.This);
@@ -250,12 +253,12 @@ begin
   result.Controller(AController);
 end;
 
-function TFMXLayoutViewManager.NewTab(APageView: IPageView): TObject;
+function TFMXLayoutViewManager.NewTab(APageView: TPageView): TObject;
 var
   Tab: TLayoutTabItem;
 begin
+  //APageView.Tab := APageView;
   Tab := TLayoutTabItem.create(self);
-  FList.Add(Tab);
   Tab.LayoutContainer := GetLayoutContainer;
   Tab.Parent := GetLayoutContainer;
   Tab.PageView := APageView;
@@ -288,7 +291,7 @@ end;
 
 function TFMXLayoutViewManager.Update: IModel;
 var
-  APageView: IPageView;
+  APageView: TPageView;
 begin
   APageView := ActivePage;
   Init(APageView);

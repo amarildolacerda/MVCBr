@@ -1,3 +1,7 @@
+01/08/2017 - AL
+   + MVCBr.FrameView - Herda TFrame para implementar IView
+   + MVCBr.MiddlewareFactory - usado para interceptar a entrada e saida da VIEW
+                               
 19/07/2017 - AL
    * correação BUG AttachContoller no MVCBr.FormView   (_addref)
 

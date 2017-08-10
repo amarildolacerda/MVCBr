@@ -88,6 +88,7 @@ type
   TCustomFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
     IMVCBrBase, IView, IMVCBrObserver)
   private
+    FTimeInit: TDateTime;
     FEventRef: Integer;
     FID: string;
     FOnViewEvent: TViewEventJsonNotify;
@@ -117,6 +118,7 @@ type
 {$ELSE}
     procedure DoCloseView(Sender: TObject; var ACloseAction: TCloseAction);
 {$ENDIF}
+    function RefCount:integer;
     procedure SetController(const AController: IController);
     function Controller(const AController: IController): IView; virtual;
     procedure SetShowModal(const AShowModal: boolean);
@@ -254,11 +256,14 @@ type
 
 implementation
 
+uses MVCBr.MiddlewareFactory;
+
 { TViewFormFacotry }
 procedure TCustomFormFactory.AfterConstruction;
 begin
   inherited;
   FShowModal := true;
+  TMVCBrMiddlewareFactory.SendBeforeEvent(middView, self);
 end;
 
 /// Set Controller to VIEW
@@ -282,11 +287,15 @@ end;
 
 destructor TCustomFormFactory.Destroy;
 begin
+  TThread.NameThreadForDebugging('ViewDestroying');
+  TMVCBrMiddlewareFactory.SendAfterEvent(middView, self);
   if assigned(FController) then
   begin
+    FController.SetView(nil);
     FController.This.RevokeInstance(FController);
     // clear controller
     FController.Release;
+    //Release;
     FController := nil;
   end;
   inherited;
@@ -360,6 +369,7 @@ end;
 
 procedure TCustomFormFactory.Init;
 begin
+  FTimeInit := now;
   if assigned(FOnViewInit) then
     FOnViewInit(self);
 end;
@@ -381,9 +391,11 @@ begin
     result := FController;
     if assigned(FController) then
     begin
-      FController._AddRef;   // workaround to keep an instance  when attached by view
+      FController._AddRef;
+      // workaround to keep an instance  when attached by view
       FController.This.ViewOwnedFree := AOwnedFree;
       result.View(self);
+      Init;
     end;
   end;
 end;
@@ -408,6 +420,12 @@ begin
   GetController.AttachModel(result);
 end;
 
+function TCustomFormFactory.RefCount: integer;
+begin
+    result := _AddRef;
+    _Release;
+end;
+
 procedure TCustomFormFactory.RegisterObserver(const AName: String);
 begin
   TMVCBr.RegisterObserver(AName, self);
@@ -416,8 +434,11 @@ end;
 procedure TCustomFormFactory.Release;
 begin
   if assigned(FController) then
+  begin
+    FController.SetView(nil);
     FController.Release;
-  FController := nil;
+    FController := nil;
+  end;
 end;
 
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
@@ -483,6 +504,7 @@ begin
     FOnCloseProc(self);
   if assigned(FOnClose) then
     FOnClose(Sender, ACloseAction);
+  TMVCBrMiddlewareFactory.SendAfterEvent(middView, self);
 end;
 {$ENDIF}
 

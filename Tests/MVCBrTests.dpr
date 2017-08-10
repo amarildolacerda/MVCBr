@@ -38,7 +38,7 @@ uses
   TestSecondView in 'TestSecond\TestSecondView.pas' {TestSecondView},
   MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
   MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas',
-  TestMVCBr.Patterns in 'TestMVCBr.Patterns.pas',
+  TestMVCBr.Patterns.Lazy in 'TestMVCBr.Patterns.Lazy.pas',
   MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
   MVCBr.Patterns.Lazy in '..\MVCBr.Patterns.Lazy.pas',
   MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
@@ -47,7 +47,15 @@ uses
   MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas',
   DataModuleMock in 'Models\DataModuleMock.pas' {DataModule1: TDataModule},
   MVCBr.BuilderModel in '..\MVCBr.BuilderModel.pas',
-  MVCBr.Patterns.Strategy in '..\MVCBr.Patterns.Strategy.pas';
+  MVCBr.Patterns.Strategy in '..\MVCBr.Patterns.Strategy.pas',
+  TestMVCBr.Patterns.Prototype in 'TestMVCBr.Patterns.Prototype.pas',
+  MVCBr.Patterns.Prototype in '..\MVCBr.Patterns.Prototype.pas',
+  TestMVCBr.Patterns in 'TestMVCBr.Patterns.pas',
+  MVCBr.Patterns.Composite in '..\MVCBr.Patterns.Composite.pas',
+  MVCBr.Patterns.Mediator in '..\MVCBr.Patterns.Mediator.pas',
+  TestMVCBr.Patterns.Mediator in 'TestMVCBr.Patterns.Mediator.pas',
+  MVCBr.MiddlewareFactory in '..\MVCBr.MiddlewareFactory.pas',
+  testODataServer in 'testODataServer.pas';
 
 {$R *.RES}
 

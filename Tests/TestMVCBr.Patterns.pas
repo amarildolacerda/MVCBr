@@ -949,7 +949,7 @@ end;
 
 procedure TestTMVCBrLazyObject.TestDelegate;
 begin
-  lzObject.Add<TLazyObject>(1).Delegate(
+  lzObject.Add<TLazyObject>(1).DelegateTo(
     function: TLazyObject
     begin
       result := TLazyObject.Create;

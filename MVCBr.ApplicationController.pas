@@ -56,7 +56,7 @@ type
     IApplicationController)
   private
     /// Lista de controllers instanciados
-    [weak]
+//    [weak]
     FControllers: TThreadSafeObjectList<TAggregatedObject>;
   protected
     /// MainView para o Application
@@ -225,6 +225,7 @@ end;
 destructor TApplicationController.Destroy;
 var
   i: integer;
+  AController:IInterface;
 begin
 
   LReleased := true;
@@ -236,9 +237,12 @@ begin
   begin
     with FControllers.LockList do
       try
-        for i := Count - 1 downto 0 do
+        while count>0 do
         begin
-          (items[i].Controller as IController).Release;
+          AController := items[0].Controller;
+          if assigned(AController) then
+             (AController as IController).Release;
+          delete(0);
         end;
         clear;
       finally

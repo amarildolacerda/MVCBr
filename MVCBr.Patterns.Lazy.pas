@@ -35,12 +35,13 @@ type
   public
     constructor Create(AValueFactory: TFunc<T>); virtual;
     destructor Destroy; override;
-    function Delegate(ADelegate: TFunc<T>): TMVCBrLazy<T>; virtual;
+    function New: TMVCBrLazy<T>;
+    function DelegateTo(ADelegate: TFunc<T>): TMVCBrLazy<T>; virtual;
     function Implements(AGuid: TGUID): TMVCBrLazy<T>; virtual;
     procedure Release; virtual;
     function IsCreated: Boolean;
     property Instance: T read Invoke;
-    function AsInstance<TBaseClass:Class>:TBaseClass;overload;
+    function AsInstance<TBaseClass: Class>: TBaseClass; overload;
     function AsInterface<T: IInterface>: T; overload;
     function AsInterface: IInterface; overload;
     procedure FreeInstance; virtual;
@@ -67,11 +68,14 @@ type
   MVCBrLazy<T: class> = record
   strict private
     FLazy: IMVCBrLazy<T>;
+    FInstance: T;
+    FIsCreated: Boolean;
     function GetInstance: T;
   private
   public
     class constructor Create;
     property Instance: T read GetInstance;
+    procedure Release;
     class operator Implicit(const Value: MVCBrLazy<T>): IMVCBrLazy<T>; overload;
     class operator Implicit(const Value: MVCBrLazy<T>): T; overload;
     class operator Implicit(const Value: TFunc<T>): MVCBrLazy<T>; overload;
@@ -125,12 +129,13 @@ uses {$IFNDEF BPL}
 {$ENDIF}MVCBr.Interf;
 
 function TMVCBrLazy<T>.AsInstance<TBaseClass>: TBaseClass;
-var obj:TObject;
+var
+  Obj: TObject;
 begin
-    result := nil;
-    obj := Instance;
-    if obj.InheritsFrom(TBaseClass) then
-      result := TBaseClass( obj );
+  result := nil;
+  Obj := Instance;
+  if Obj.InheritsFrom(TBaseClass) then
+    result := TBaseClass(Obj);
 end;
 
 function TMVCBrLazy<T>.AsInterface: IInterface;
@@ -152,7 +157,7 @@ begin
   FFactory := AValueFactory;
 end;
 
-function TMVCBrLazy<T>.Delegate(ADelegate: TFunc<T>): TMVCBrLazy<T>;
+function TMVCBrLazy<T>.DelegateTo(ADelegate: TFunc<T>): TMVCBrLazy<T>;
 begin
   FFactory := ADelegate;
   result := self;
@@ -200,6 +205,19 @@ begin
   result := FCreated;
 end;
 
+function TMVCBrLazy<T>.New: TMVCBrLazy<T>;
+begin
+  result := TMVCBrLazy<T>.Create(nil);
+  result.DelegateTo(
+    function: T
+    var
+      Obj: TObject;
+    begin
+      Obj := TClass(T).Create;
+      result := T(Obj);
+    end)
+end;
+
 function TMVCBrLazy<T>.QueryInterface(const AIID: TGUID; out Obj): HResult;
 begin
   if IsEqualGUID(AIID, ObjCastGUID) then
@@ -222,7 +240,17 @@ end;
 
 function MVCBrLazy<T>.GetInstance: T;
 begin
-  result := FLazy();
+  if not FIsCreated then
+  begin
+    if Assigned(FLazy) then
+    begin
+      FInstance := FLazy();
+    end
+    else
+      TObject(FInstance) := TClass(T).Create;
+    FIsCreated := FInstance <> nil;
+  end;
+  result := FInstance;
 end;
 
 class operator MVCBrLazy<T>.Implicit(const Value: MVCBrLazy<T>): IMVCBrLazy<T>;
@@ -238,6 +266,12 @@ end;
 class operator MVCBrLazy<T>.Implicit(const Value: TFunc<T>): MVCBrLazy<T>;
 begin
   result.FLazy := TMVCBrLazy<T>.Create(Value);
+end;
+
+procedure MVCBrLazy<T>.Release;
+begin
+   if assigned(FInstance) then
+      FInstance.disposeOf;
 end;
 
 { TMVCBrAggregatedLazy<T> }
@@ -278,7 +312,7 @@ begin
 end;
 
 function TMVCBrAggregatedLazy<T>.QueryInterface(const AIID: TGUID;
-  out Obj): HResult;
+out Obj): HResult;
 begin
   if IsEqualGUID(AIID, ObjCastGUID) then
   begin

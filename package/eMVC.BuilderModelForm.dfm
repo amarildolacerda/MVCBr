@@ -1,4 +1,4 @@
-object FormNewFacadeModel: TFormNewFacadeModel
+object FormNewBuilderModel: TFormNewBuilderModel
   Left = 280
   Top = 165
   ActiveControl = btnOKNext
@@ -95,6 +95,8 @@ object FormNewFacadeModel: TFormNewFacadeModel
       Left = 0
       Top = 0
       Caption = 'Finish'
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 99
@@ -148,8 +150,8 @@ object FormNewFacadeModel: TFormNewFacadeModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 114
-      Height = 300
+      Width = 117
+      Height = 297
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3381,7 +3383,6 @@ object FormNewFacadeModel: TFormNewFacadeModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitWidth = 117
       ExplicitHeight = 305
     end
   end

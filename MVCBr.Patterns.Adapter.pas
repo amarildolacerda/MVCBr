@@ -44,13 +44,18 @@ type
     procedure Release; virtual;
   end;
 
-  TMVCBrAdapter<T: Class> = class(TMVCBrAdapter)
+  IMVCBrAdapter<T: Class> = interface(TFunc<T>)
+    property Adapter: T read Invoke;
+  end;
+
+  TMVCBrAdapter<T: Class> = class(TMVCBrAdapter, IMVCBrAdapter<T>)
   private
     FAdapter: T;
+    function Invoke: T; virtual;
   public
     constructor Create(AObject: T);
     destructor Destroy; override;
-    property Adapter: T read FAdapter;
+    property Adapter: T read Invoke;
     procedure Release; override;
     function This: TObject; override;
   end;
@@ -86,8 +91,13 @@ end;
 
 destructor TMVCBrAdapter<T>.Destroy;
 begin
-  /// need free on calls class (FAdapter)
+  Release;
   inherited;
+end;
+
+function TMVCBrAdapter<T>.Invoke: T;
+begin
+  result := FAdapter;
 end;
 
 procedure TMVCBrAdapter<T>.Release;

@@ -42,8 +42,9 @@ type
     ViewParentClass: string;
   end;
 
-var
-  FormNewFacadeModel: TFormNewBuilderModel;
+{var
+  FormNewBuilderModel: TFormNewBuilderModel;
+}
 
 implementation
 

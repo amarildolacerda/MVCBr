@@ -107,8 +107,7 @@ Type
     function Get_Entry_List(AWhere: string; AOrderBy: String;
       AOffSet: Integer = 0; ADeleted: Boolean = false): string;
     function Get_Module_Fields: string;
-    function Get_Entry(AIds: string;
-      ASelect_Fields: string): string;
+    function Get_Entry(AIds: string; ASelect_Fields: string): string;
   end;
 
   ISuiteCRMUsers = interface(ISuiteCRMComum)
@@ -163,9 +162,8 @@ Type
     function Get_Entry_List(AWhere: string; AOrderBy: String;
       AOffSet: Integer = 0; ADeleted: Boolean = false): string; virtual;
 
-    function Get_Module_Fields: string;virtual;
-    function Get_Entry(AIds: string;
-      ASelect_Fields: string): string;virtual;
+    function Get_Module_Fields: string; virtual;
+    function Get_Entry(AIds: string; ASelect_Fields: string): string; virtual;
 
   end;
 
@@ -195,7 +193,7 @@ Type
     class function New(AModel: ISuiteCRMModel): ISuiteCRMContacts;
     function CreateID(AJson: TSuiteCRMContact): string; overload;
     function UpdateID(AJson: TSuiteCRMContact): string; overload;
-    function Get_Entry(AContact:TSuiteCRMContact): string;overload;
+    function Get_Entry(AContact: TSuiteCRMContact): string; overload;
   end;
 
   TSuiteCRMProducts = class(TSuiteCRMComum, ISuiteCRMProducts)
@@ -318,7 +316,8 @@ Type
 
 Implementation
 
-uses System.RTTI, System.Classes.Helper,MVCBr.HttpRestClient.common, MVCBr.HttpRestClient {idHttp} ,
+uses System.RTTI, System.Classes.Helper, MVCBr.HttpRestClient.common,
+  MVCBr.HttpRestClient {idHttp} ,
   IdHashMessageDigest;
 
 function TSuiteCRMModel.Base(AModulo: string): ISuiteCRMComum;
@@ -747,6 +746,7 @@ var
   sl: TStringList;
   i: Integer;
   JSON: IJsonObject;
+  ja:TJsonArray;
 begin
   try
     JSON := FModel.GetEntryPoint(FModuleName);
@@ -754,11 +754,11 @@ begin
     try
       sl.Delimiter := ',';
       sl.DelimitedText := AIds;
-      with JSON.addArray('ids', TJsonArray.Create) do
-        for i := 0 to sl.count - 1 do
-        begin
-          Add(sl[i]);
-        end;
+      ja:=JSON.addArray('ids', TJsonArray.Create);
+      for i := 0 to sl.count - 1 do
+      begin
+        ja.Add(sl[i]);
+      end;
 
       JSON.addArray('select_fields', GetArrayFromString(FSelect_fields));
 
@@ -782,11 +782,10 @@ begin
   result := TJsonArray.Create;
   st := TStringList.Create;
   try
-    with result do
-      for s in st do
-      begin
-        Add(s);
-      end;
+    for s in st do
+    begin
+      result.Add(s);
+    end;
   finally
     st.Free;
   end;
@@ -813,10 +812,9 @@ begin
 
 end;
 
-function TSuiteCRMComum.Get_Entry(AIds,
-  ASelect_Fields: string): string;
+function TSuiteCRMComum.Get_Entry(AIds, ASelect_Fields: string): string;
 begin
-   result := Get_EntryBASE(FModuleName,AIds,ASelect_Fields);
+  result := Get_EntryBASE(FModuleName, AIds, ASelect_Fields);
 end;
 
 function TSuiteCRMComum.Get_EntryBASE(AModule: string; AIds: string;
@@ -1128,7 +1126,8 @@ end;
 
 function TSuiteCRMContacts.Get_Entry(AContact: TSuiteCRMContact): string;
 begin
-   result := Get_EntryBASE(moduleName,AContact.id, TJsonRecord<TSuiteCRMContact>.FieldNamesAsString(AContact) );
+  result := Get_EntryBASE(moduleName, AContact.id,
+    TJsonRecord<TSuiteCRMContact>.FieldNamesAsString(AContact));
 end;
 
 class function TSuiteCRMContacts.New(AModel: ISuiteCRMModel): ISuiteCRMContacts;

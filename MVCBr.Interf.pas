@@ -92,6 +92,7 @@ type
   IMVCBrIOC = interface
     ['{96C9AF3D-BF98-4024-BA4E-80B141EB90B2}']
     procedure release;
+    // function RefCount:integer;
   end;
 
   ///
@@ -100,7 +101,8 @@ type
   ///
   TMVCBr = record
     class procedure release; static;
-    class function GetQualifiedName(AII: TGuid): string; static;
+    class function GetQualifiedName(AII: TGuid): string; overload; static;
+    class function GetQualifiedName(AII: IInterface): string; overload; static;
     /// compare two GUIDs
     class function IsSame(I1, I2: TGuid): boolean; static;
     /// compare two interfaces
@@ -198,6 +200,8 @@ type
     procedure SetObserver(const Value: IMVCBrObserver);
     function GetObserver: IMVCBrObserver;
     procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
+    procedure SetContainer(AObject: TObject);
+    function GetContainer: TObject;
   end;
 
   /// <summary>
@@ -206,10 +210,13 @@ type
   TMVCBrObserverItemAbstract = class(TMVCBrFactory, IMVCBrObserverItem)
   private
     FIDInstance: TGuid;
+    FContainer: TObject;
   protected
     procedure SetIDInstance(const Value: TGuid); virtual;
     function GetIDInstance: TGuid; virtual;
   public
+    procedure SetContainer(AObject: TObject);
+    function GetContainer: TObject;
     procedure SetTopic(const Value: string); virtual; abstract;
     function GetTopic: string; virtual; abstract;
     function GetSubscribeProc: TMVCBrObserverProc; virtual; abstract;
@@ -240,7 +247,8 @@ type
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
     procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
     procedure Send(AJson: TJsonValue); overload;
-    procedure Send(const AName: string; AJson: TJsonValue); overload;
+    procedure Send(const AName: string; AJson: TJsonValue;
+      AOwned: boolean = true); overload;
     function Register(const AName: string; AObserver: IMVCBrObserver)
       : IMVCBrObservable;
   end;
@@ -364,9 +372,11 @@ type
   end;
 
 {$IFNDEF BPL}
+
   // IModel representa a interface onde implementa as regras de negócio
   TModelTypes = set of TModelType;
 {$ENDIF}
+
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     procedure release;
@@ -1036,6 +1046,11 @@ begin
   end;
 end;
 
+class function TMVCBr.GetQualifiedName(AII: IInterface): string;
+begin
+  result := GetQualifiedName(GetGuid(AII));
+end;
+
 class function TMVCBr.GetQualifiedName(AII: TGuid): string;
 begin
 {$IFNDEF BPL}
@@ -1351,9 +1366,19 @@ end;
 
 { TMVCBrObserverItemAbstract }
 
+function TMVCBrObserverItemAbstract.GetContainer: TObject;
+begin
+  result := FContainer;
+end;
+
 function TMVCBrObserverItemAbstract.GetIDInstance: TGuid;
 begin
   result := FIDInstance;
+end;
+
+procedure TMVCBrObserverItemAbstract.SetContainer(AObject: TObject);
+begin
+  FContainer := AObject;
 end;
 
 procedure TMVCBrObserverItemAbstract.SetIDInstance(const Value: TGuid);

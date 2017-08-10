@@ -39,16 +39,16 @@ type
   TJsonRecord<T: Record > = class
   public
     class function AsJsonObject(O: T; const AIgnoreEmpty: Boolean = true;
-      const AProcBefore: TProc < TJsonObject >= nil): TJsonObject;
+      const AProcBefore: TProc<TJsonObject> = nil): TJsonObject;
     class function ToJson(O: T; const AIgnoreEmpty: Boolean = true;
-      const AProcBefore: TProc < TJsonObject >= nil): string;
+      const AProcBefore: TProc<TJsonObject> = nil): string;
     class procedure FromJson(O: T; AJson: string);
     class function FieldNamesAsJsonArray(O: T): TJsonArray;
     class function FieldNamesAsString(O: T): String;
 
   end;
 
-type
+  TJsonStringResult = string;
 
   TJsonType = (jtUnknown, jtObject, jtArray, jtString, jtTrue, jtFalse,
     jtNumber, jtDate, jtDateTime, jtBytes, jtNull);
@@ -77,13 +77,17 @@ type
     property Value[chave: string]: string read GetValueBase write SetValueBase;
   end;
 
-  TInterfacedJSON = class(TInterfacedObject, IJsonObject)
+  IJsonValue = interface(TFunc<TJsonValue>)
+  end;
+
+  TInterfacedJSON = class(TInterfacedObject, IJsonObject, IJsonValue)
   private
     FInstanceOwned: Boolean;
     function GetValueBase(chave: string): string;
     procedure SetValueBase(chave: string; const Value: string);
   protected
     FJson: TJsonValue;
+    function Invoke: TJsonValue;
   public
     constructor create(AJson: string); overload;
     constructor create; overload;
@@ -131,10 +135,10 @@ type
     function S(chave: string): string;
     function D(chave: string): Double;
     function I(chave: string): integer;
-    function O(chave: string): TJsonObject; overload;
-    function O(index: integer): TJsonObject; overload;
     function F(chave: string): Extended;
     function B(chave: string): Boolean;
+    function O(chave: string): TJsonObject; overload;
+    function O(index: integer): TJsonObject; overload;
     function A(chave: string): TJsonArray;
     function AsArray: TJsonArray;
     function Contains(chave: string): Boolean;
@@ -142,9 +146,9 @@ type
 
 {$IFNDEF BPL}
     function asObject: System.TObject;
-    class function FromRecord<T>(rec: T): TJsonObject;
+    class function FromRecord<T: Record >(rec: T): TJsonObject;
 {$ENDIF}
-    class function FromObject<T>(AObject: T;
+    class function FromObject<T: Class>(AObject: T;
       AVisibility: TMemberVisibilitySet = [mvPublic, mvPublished])
       : TJsonObject; overload;
 {$IFDEF CompilerVersion<=30}
@@ -190,6 +194,13 @@ type
     function asObject: TJsonObject;
     function AsInteger: integer;
     function AsString: string;
+    function AsFloat: Double;
+    function S(chave: string): string;
+    function D(chave: string): Double;
+    function I(chave: string): integer;
+    function F(chave: string): Extended;
+    function B(chave: string): Boolean;
+
   end;
 
   TJSONPairHelper = class helper for TJsonPair
@@ -712,7 +723,7 @@ var
   m: TJSONMarshal;
   js: TJsonValue;
 begin
-  result := TJsonObject.FromObject<T>(rec);
+  result := TJsonRecord<T>.AsJsonObject(rec); // TJsonObject.FromObject<T>(rec);
 end;
 {$ENDIF}
 
@@ -723,7 +734,7 @@ var
   ctx: TRttiContext;
   field: TRttiField;
   tk: TTypeKind;
-  P: Pointer;
+  P: TObject;
   key: String;
   FRecord: TRttiRecordType;
   FMethod: TRttiMethod;
@@ -733,7 +744,7 @@ begin
   result := TJsonObject.create;
   ctx := TRttiContext.create;
   typ := ctx.GetType(TypeInfo(T));
-  P := @AObject;
+  P := TObject(AObject);
   for field in typ.GetFields do
   begin
     try
@@ -1034,6 +1045,11 @@ begin
   result := self as TJsonArray;
 end;
 
+function TJSONValueHelper.AsFloat: Double;
+begin
+  TryGetValue<Double>(result);
+end;
+
 function TJSONValueHelper.AsInteger: integer;
 begin
   TryGetValue<integer>(result);
@@ -1062,9 +1078,24 @@ begin
   end;
 end;
 
+function TJSONValueHelper.B(chave: string): Boolean;
+begin
+  result := (self as TJsonObject).B(chave);
+end;
+
+function TJSONValueHelper.D(chave: string): Double;
+begin
+  result := (self as TJsonObject).D(chave);
+end;
+
 function TJSONValueHelper.Datatype: TJsonType;
 begin
   result := TJsonObject.GetJsonType(self);
+end;
+
+function TJSONValueHelper.F(chave: string): Extended;
+begin
+  result := (self as TJsonObject).F(chave);
 end;
 
 class procedure TJSONValueHelper.GetRecordList<T>
@@ -1111,12 +1142,22 @@ begin
 
 end;
 
+function TJSONValueHelper.I(chave: string): integer;
+begin
+  result := (self as TJsonObject).I(chave);
+end;
+
 class function TJSONValueHelper.New(AKey, AValue: String): TJsonValue;
 var
   APair: TJsonPair;
 begin
   APair := TJsonPair.create(AKey, AValue);
   result := TJsonObject.create(APair);
+end;
+
+function TJSONValueHelper.S(chave: string): string;
+begin
+  result := (self as TJsonObject).S(chave);
 end;
 
 { TJSONPairHelper }
@@ -1141,7 +1182,7 @@ end;
 
 function ISODateTimeToString(ADateTime: TDatetime): string;
 begin
-  result := System.DateUtils.DateToISO8601(ADateTime, false);
+  result := System.DateUtils.DateToISO8601(ADateTime, true); // mssql ok
 end;
 
 function ISOStrToDateTime(DateTimeAsString: string): TDatetime;
@@ -1288,6 +1329,11 @@ end;
 function TInterfacedJSON.GetValueBase(chave: string): string;
 begin
   result := JSONObject.Value[chave];
+end;
+
+function TInterfacedJSON.Invoke: TJsonValue;
+begin
+  result := self.JsonValue;
 end;
 
 function TInterfacedJSON.JsonValue: TJsonValue;

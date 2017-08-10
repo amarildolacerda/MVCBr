@@ -115,7 +115,7 @@ type
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
       AMethod: String; ARelations: TJsonValue);
-    function This:TObject;
+    function This: TObject;
   end;
 
   TODataServices = class(TInterfacedObject, IODataServices)
@@ -131,7 +131,7 @@ type
     destructor destroy; override;
     function LockJson: TJsonObject; virtual;
     procedure UnlockJson; virtual;
-    function This:TObject;
+    function This: TObject;
     procedure LoadFromJsonFile(AJson: String);
     function hasResource(AName: String): boolean; virtual;
     function resource(AName: string): IJsonODataServiceResource; virtual;
@@ -266,7 +266,8 @@ var
   LResource: TJsonObject;
 begin
   LServices := GetRoot;
-
+  if not assigned(LServices) then
+    exit;
   LResource := TJsonObject.create as TJsonObject;
   try
     LResource.addPair('resource', AResource);
@@ -342,7 +343,7 @@ end;
 
 function TODataServices.This: TObject;
 begin
-   result := self;
+  result := self;
 end;
 
 procedure TODataServices.UnlockJson;
@@ -613,12 +614,16 @@ begin
 
 end;
 
+var
+  ODataConfig: string;
+
 initialization
 
 ODataServices := TODataServices.create;
 try
-  ODataServices.LoadFromJsonFile(GetODataConfigFilePath +
-    'oData.ServiceModel.json');
+  ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
+  if fileExists(ODataConfig) then
+    ODataServices.LoadFromJsonFile(ODataConfig);
 except
 end;
 

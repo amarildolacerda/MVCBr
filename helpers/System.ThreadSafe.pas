@@ -98,7 +98,8 @@ type
     procedure Remove(const AText: string);
     function LockList: TStringList;
     procedure UnlockList; inline;
-    property Items[AIndex: integer]: string read Getitems write Setitems; default;
+    property Items[AIndex: integer]: string read Getitems
+      write Setitems; default;
     property Delimiter: Char read GetDelimiter write SetDelimiter;
     property DelimitedText: string read GetDelimitedText write SetDelimitedText;
     function Text: string;
@@ -109,7 +110,8 @@ type
     procedure AddTo(AStrings: TStrings);
     property Values[AName: string]: String read GetValues write SetValues;
     property Names[AIndex: integer]: String read GetNames write SetNames;
-    property ValueFromIndex[idx: integer]: string read GetValueFromIndex write SetValueFromIndex;
+    property ValueFromIndex[idx: integer]: string read GetValueFromIndex
+      write SetValueFromIndex;
     property OnNotify: TNotifyEvent read FOnNotify write SetOnNotify;
   end;
 
@@ -141,6 +143,7 @@ type
     procedure Delete(AIndex: integer);
     procedure Remove(AValue: T);
     function Add: T; overload; virtual;
+    procedure ForEach(AFunc: TFunc<T, boolean>);
     function ToJson: string; overload;
     function ToJsonArray: TJsonArray;
   end;
@@ -156,7 +159,8 @@ type
     property Items[idx: integer]: T read Getitems write Setitems;
   end;
 
-  TThreadSafeInterfaceList<T: IInterface> = class(TInterfacedObject, IObjectLock)
+  TThreadSafeInterfaceList<T: IInterface> = class(TInterfacedObject,
+    IObjectLock)
   private
     FOwned: boolean;
     FList: TThreadList<T>;
@@ -275,7 +279,8 @@ begin
   UnLock;
 end;
 
-procedure TThreadSafeStringList.Add(const AText: string; const ADupl: boolean = true);
+procedure TThreadSafeStringList.Add(const AText: string;
+  const ADupl: boolean = true);
 begin
   Lock;
   try
@@ -518,7 +523,8 @@ begin
   end;
 end;
 
-procedure TThreadSafeStringList.SetValueFromIndex(idx: integer; const Value: string);
+procedure TThreadSafeStringList.SetValueFromIndex(idx: integer;
+  const Value: string);
 begin
   with LockList do
     try
@@ -661,14 +667,14 @@ end;
 
 constructor TThreadSafeObjectList<T>.create(AClass: TClass);
 begin
-  Create(true);
+  create(true);
   FItemClass := AClass;
 end;
 
 constructor TThreadSafeObjectList<T>.create(AOwnedObject: boolean = true);
 begin
   inherited create;
-  FLock:=TObject.create;
+  FLock := TObject.create;
   FList := TObjectList<T>.create(AOwnedObject);
 end;
 
@@ -699,6 +705,21 @@ begin
   result := nil;
   if Count > 0 then
     result := Items[Count - 1];
+end;
+
+procedure TThreadSafeObjectList<T>.ForEach(AFunc: TFunc<T, boolean>);
+var
+  i: integer;
+begin
+  if Assigned(AFunc) then
+    with LockList do
+      try
+        for i := 0 to Count - 1 do
+          if AFunc(Items[i]) then
+            break;
+      finally
+        UnlockList;
+      end;
 end;
 
 function TThreadSafeObjectList<T>.Getitems(AIndex: integer): T;
@@ -948,7 +969,8 @@ begin
     Delete(i);
 end;
 
-procedure TThreadSafeInterfaceList<T>.Setitems(AIndex: integer; const AValue: T);
+procedure TThreadSafeInterfaceList<T>.Setitems(AIndex: integer;
+  const AValue: T);
 begin
   with LockList do
     try
