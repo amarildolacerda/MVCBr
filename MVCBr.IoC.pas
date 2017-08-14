@@ -110,6 +110,7 @@ type
     procedure AttachInstance(AInstance: IMVCBrIOC);
 
     procedure RevokeInstance(AInstance: IInterface);
+    procedure Revoke(AGuid: TGuid; ACount: Integer = 1);
 
     // Register an instance as a signleton. If there is more than one instance that implements the interface
     // then use the name parameter
@@ -551,6 +552,26 @@ begin
   InternalRegisterType<TInterface>(Singleton, nil, Delegate, name);
 end;
 
+procedure TMVCBrIoC.Revoke(AGuid: TGuid; ACount: Integer = 1);
+var
+  rogo: TIoCRegistration<IMVCBrIOC>;
+  n: Integer;
+  LName:string;
+begin
+  n := 0;
+  for LName in FContainerInfo.keys do
+  begin
+    rogo := TIoCRegistration<IMVCBrIOC>(FContainerInfo.items[LName]);
+    if rogo.FGuid.ToString = AGuid.ToString then
+    begin
+      inc(n);
+      rogo.FInstance := nil;
+      if (ACount > 0) and (n >= ACount) then
+        exit;
+    end;
+  end;
+end;
+
 procedure TMVCBrIoC.RevokeInstance(AInstance: IInterface);
 var
   LName: string;
@@ -561,7 +582,8 @@ begin
   if FReleased then
     exit;
   achei := '';
-  if not Assigned(AInstance) then exit;
+  if not assigned(AInstance) then
+    exit;
 
   AOrigem := AInstance as TObject;
   for LName in FContainerInfo.keys do
@@ -620,7 +642,7 @@ function GetInterfaceEntry2(const I: IInterface): PInterfaceEntry;
 var
   Instance: TObject;
   InterfaceTable: PInterfaceTable;
-  j: integer;
+  j: Integer;
   CurrentClass: TClass;
 begin
   Instance := I as TObject;
@@ -687,7 +709,7 @@ begin
   begin
     rogo := TIoCRegistration<IMVCBrIOC>(o);
     if assigned(rogo.FInstance) then
-      rogo.FInstance.release;
+      rogo.FInstance.Release;
     rogo.FInstance := nil;
   end;
 end;
@@ -735,7 +757,7 @@ end;
 destructor TMVCBrIoC.TIoCRegistration<T>.Destroy;
 begin
   if assigned(FInstance) then
-    FInstance.release;
+    FInstance.Release;
   FInstance := nil;
   inherited;
 end;

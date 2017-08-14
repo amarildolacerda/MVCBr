@@ -143,7 +143,7 @@ type
     class function ResolveInterfaced<TInterface: IMVCBrIOC>(const ANome: string)
       : TInterface; static;
     class procedure AttachInstance(AInstance: IMVCBrIOC); static;
-
+    class Procedure Revoke( AGuid:TGuid);static;
     /// <summary>
     /// Observers procedures
     /// </summary>
@@ -586,7 +586,8 @@ type
     function ShowView: IView; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>;
       Const AProcOnClose: TProc<IView>): IView; overload;
-
+    function ShowView(const AProcBeforeShow:TProc<IView>;
+             const bShowModal:Boolean):IView;overload;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
@@ -985,6 +986,11 @@ class function TMVCBr.ResolveInterfaced<TInterface>(const ANome: string)
   : TInterface;
 begin
   result := TMVCBrIoc.DefaultContainer.Resolve<TInterface>(ANome);
+end;
+
+class procedure TMVCBr.Revoke(AGuid: TGuid);
+begin
+   TMVCBrIoC.DefaultContainer.Revoke(AGuid);
 end;
 
 class procedure TMVCBr.AttachInstance(AInstance: IMVCBrIOC);

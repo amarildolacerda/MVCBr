@@ -79,6 +79,9 @@ type
     [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcOnClose: TProc<IView>): IView; overload; virtual;
+    [weak]
+    function ShowView(const AProcBeforeShow:TProc<IView>;
+             const bShowModal:Boolean):IView;overload;virtual;
 
     [weak]
     function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
@@ -498,6 +501,15 @@ end;
 procedure TControllerFactory.SetView(AView: IView);
 begin
   View(AView);
+end;
+
+function TControllerFactory.ShowView(const AProcBeforeShow: TProc<IView>;
+  const bShowModal: Boolean): IView;
+begin
+  result := FView;
+  if assigned(result) then
+    result.ShowView(AProcBeforeShow, bShowModal);
+
 end;
 
 function TControllerFactory.ShowView(const AProcBeforeShow,

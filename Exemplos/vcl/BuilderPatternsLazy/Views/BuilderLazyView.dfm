@@ -20,6 +20,7 @@ object BuilderLazyView: TBuilderLazyView
     Height = 25
     Caption = 'Classe 1'
     TabOrder = 0
+    OnClick = Button1Click
   end
   object Button2: TButton
     Left = 168

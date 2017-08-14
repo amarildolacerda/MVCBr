@@ -86,6 +86,8 @@ type
       : TPageView; override;
     function AddView(AView: IView): TPageView; override;
     function AddView(Const AController: TGuid): TPageView; overload; override;
+    function AddView(const AController: TGuid;
+      ABeforeShow: TProc<IView>): TPageView; overload;override;
   published
     property PageControl: TPageControl read GetPageControlEx
       write SetPageControlEx;
@@ -114,6 +116,7 @@ type
 
   TTabSheetView = class(TTabSheet)
   private
+    FPageFactory: TCustomPageViewFactory;
     FCloseButtonRect: TRect;
     FOnClose: TNotifyEvent;
     FShowTabClose: boolean;
@@ -123,6 +126,7 @@ type
     function GetCaption: string;
     procedure SetCaption(const Value: string);
   protected
+    FControllerGuid: TGuid;
     FPageView: TPageView;
     Procedure DoCloseMessage(var TMessage); message WM_TABSHEET_CLOSE;
   public
@@ -131,6 +135,7 @@ type
     procedure DoClose; virtual;
     procedure canClose(var ACanClose: boolean);
   published
+
     property OnClose: TNotifyEvent read FOnClose write SetOnClose;
     Property ShowTabClose: boolean read FShowTabClose write SetShowTabClose;
     property Caption: string read GetCaption write SetCaption;
@@ -397,6 +402,13 @@ begin
     FOnQueryClose(APageView, ACanClose);
 end;
 
+function TVCLPageViewManager.AddView(Const AController: TGuid;
+  ABeforeShow: TProc<IView>): TPageView;
+begin
+  result := inherited addView(AController,ABeforeShow);
+  ttabSheetView( result.tab ).FControllerGuid := AController;
+end;
+
 function TVCLPageViewManager.AddView(AView: IView; ABoforeShow: TProc<IView>)
   : TPageView;
 begin
@@ -406,11 +418,13 @@ end;
 procedure TVCLPageViewManager.DoFormCloseQuery(Sender: TObject;
   var canClose: boolean);
 var
-  LPageView: IPageView;
+  LPageView: TPageView;
 begin
   LPageView := FindViewByClassName(Sender.ClassName);
   if not assigned(LPageView) then
     exit;
+  if LPageView.view.InheritsFrom(TFormFactory) then
+    TFormFactory(LPageView.view).OnCloseQuery := nil;
   postMessage(TTabSheet(LPageView.This.tab).Handle, WM_TABSHEET_CLOSE, 0, 0);
 end;
 
@@ -433,7 +447,7 @@ end;
 
 procedure TTabSheetView.canClose(var ACanClose: boolean);
 var
-  form: TForm;
+  form: TFormFactory;
   ref: TVCLPageViewManager;
   s: string;
   v: IView;
@@ -441,46 +455,46 @@ begin
   // chamado quando a tabsheet é apagada.
   ACanClose := True;
   if assigned(FPageView) and (GetOwner <> nil) then
-    try
-      { ref := TVCLPageViewManager(FPageView.GetOwner);
-        if assigned(ref) then
-        ref.DoQueryClose(FPageView, ACanClose);
-      } if ACanClose then
-        if assigned(FPageView) then
-          if assigned(FPageView.View) then
+    if ACanClose then
+      if assigned(FPageView) then
+      begin
+        try
+          if assigned(FPageView.view) and
+            (FPageView.view.InheritsFrom(TFormFactory)) then
           begin
-            form := TForm(FPageView.View);
+            form := TFormFactory(FPageView.view);
             if assigned(form) then
               if assigned(form.OnCloseQuery) then
                 form.OnCloseQuery(self, ACanClose);
             if ACanClose then
             begin
-              if supports(FPageView.View, IView, v) then
-                TControllerAbstract.RevokeInstance(v.GetController.This);
             end;
-
           end;
-    except
-    end;
-
+        except
+        end;
+      end;
 end;
 
 destructor TTabSheetView.Destroy;
 var
   LCanClose: boolean;
+  AGuid: TGuid;
 begin
   FReleased := True;
   LCanClose := True;
   if assigned(FPageView) then
   begin
+    AGuid := FPageView.ControllerGuid;
     canClose(LCanClose);
     if not LCanClose then
       abort;
-    TForm(FPageView.View).OnCloseQuery := nil;
-    // FPageView.remove;
-    FreeAndNil(FPageView);
-    // FPageView := nil;
+    try
+      FPageFactory.Remove(FControllerGuid);
+    except
+    end;
+    FPageView := nil;
   end;
+  TMVCBr.Revoke(AGuid);
   inherited Destroy;
 end;
 
@@ -502,7 +516,7 @@ begin
   begin
     pg := TPageView(FList.items[nPage]);
     LOnClose := pg.This.OnCloseDelegate;
-    frm := TForm(pg.This.View);
+    frm := TForm(pg.This.view);
     DoQueryClose(pg, canClose);
     if not canClose then
       abort;
@@ -518,7 +532,7 @@ begin
   result := -1;
   try
     with FList do
-      for I := 0 to Count - 1 do
+      for I := Count - 1 downto 0 do
         if TPageView(items[I]).tab.Equals(Sender) then
         begin
           result := I;
@@ -534,15 +548,15 @@ var
   v: IView;
 begin
   if assigned(APageView) then
-    if assigned(APageView.This.View) then
+    if assigned(APageView.This.view) then
     begin
-      if APageView.This.View.InheritsFrom(TViewFactoryAdapter) then
+      if APageView.This.view.InheritsFrom(TViewFactoryAdapter) then
       begin
-        frm := TForm(TViewFactoryAdapter(APageView.This.View).form);
+        frm := TForm(TViewFactoryAdapter(APageView.This.view).form);
         APageView.This.text := frm.Caption;
       end
       else
-        frm := TForm(APageView.This.View);
+        frm := TForm(APageView.This.view);
       with frm do
       begin
         parent := TTabSheet(APageView.This.tab);
@@ -555,13 +569,13 @@ begin
         BorderStyle := bsNone;
         TTabSheetView(APageView.This.tab).Caption := APageView.This.text;
 
-        supports(APageView.View, IView, v);
-        if APageView.View.InheritsFrom(TFormFactory) then
+        supports(APageView.view, IView, v);
+        if APageView.view.InheritsFrom(TFormFactory) then
         begin
           OnCloseQuery := DoFormCloseQuery;
-          TFormFactory(APageView.View).isShowModal := false;
+          TFormFactory(APageView.view).isShowModal := false;
 
-          with TFormFactory(APageView.View) do
+          with TFormFactory(APageView.view) do
             if assigned(APageView.This.OnBeforeShowDelegate) then
               APageView.This.OnBeforeShowDelegate(v);
           v.ShowView(nil);
@@ -600,6 +614,7 @@ begin
   tab := GetPageTabClass.Create(FPageContainer) as TTabSheetView;
   tab.PageControl := TPageControl(FPageContainer);
   tab.FPageView := APageView;
+  tab.FPageFactory := self;
   TPageControl(FPageContainer).ActivePage := tab;
   result := tab;
   if assigned(FAfterTabCreate) then
@@ -700,7 +715,7 @@ procedure TTabSheetView.DoClose;
 begin
   if assigned(FOnClose) then
     FOnClose(self);
-  free;
+  Free;
 end;
 
 procedure TTabSheetView.DoCloseMessage(var TMessage);

@@ -19,6 +19,7 @@ interface
 uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
+  System.Json,
   MVCBr.View, MVCBr.FormView, MVCBr.Controller, VCL.Controls, VCL.ExtCtrls,
   Vcl.StdCtrls;
 
@@ -34,6 +35,7 @@ type
     IThisAs<TembededFormView>, IembededFormView, IViewAs<IembededFormView>)
     Panel1: TPanel;
     Memo1: TMemo;
+    procedure FormFactoryViewEvent(AMessage: TJSONValue; var AHandled: Boolean);
   private
     FInited: Boolean;
   protected
@@ -85,6 +87,12 @@ begin
     Init;
     FInited := true;
   end;
+end;
+
+procedure TembededFormView.FormFactoryViewEvent(AMessage: TJSONValue;
+  var AHandled: Boolean);
+begin
+   Memo1.lines.add(AMessage.toJson);
 end;
 
 procedure TembededFormView.Init;

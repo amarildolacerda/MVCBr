@@ -143,6 +143,8 @@ type
     function AsArray: TJsonArray;
     function Contains(chave: string): Boolean;
     function Find(chave: string): TJsonValue; virtual;
+    function MappingTo(FMapping: TStrings; includeNoFind: Boolean = false)
+      : TJsonObject;
 
 {$IFNDEF BPL}
     function asObject: System.TObject;
@@ -667,6 +669,27 @@ end;
 constructor TJSONObjectHelper.create(AKey, AValue: String);
 begin
   inherited create(TJsonPair.create(AKey, AValue));
+end;
+
+function TJSONObjectHelper.MappingTo(FMapping: TStrings;
+  includeNoFind: Boolean = false): TJsonObject;
+var
+  AFrom, ATo: string;
+  j: TJsonPair;
+begin
+  result := TJsonObject.create as TJsonObject;
+  for j in self do
+  begin
+    AFrom := j.JsonString.Value;
+    ATo := FMapping.Values[AFrom];
+    if ATo = '' then
+    begin
+      if includeNoFind =false then
+         continue;
+      ATo := AFrom;
+    end;
+    result.addPair(ATo, j.JsonValue);
+  end;
 end;
 
 function TJSONObjectHelper.D(chave: string): Double;

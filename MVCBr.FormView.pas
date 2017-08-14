@@ -675,7 +675,8 @@ begin
   result := 0;
 {$ELSE}
   if FShowModal then
-    result := ord(ShowModal);
+    result := ord(ShowModal)
+  else show;
 {$ENDIF}
 {$ELSE}
   Show;

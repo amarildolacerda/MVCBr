@@ -1,79 +1,110 @@
-{//************************************************************//}
-{//                                                            //}
-{//         Código gerado pelo assistente                      //}
-{//                                                            //}
-{//         Projeto MVCBr                                      //}
-{//         tireideletra.com.br  / amarildo lacerda            //}
-{//************************************************************//}
-{// Data: 15/07/2017 20:30:26                                  //}
-{//************************************************************//}
+{ //************************************************************// }
+{ //                                                            // }
+{ //         Código gerado pelo assistente                      // }
+{ //                                                            // }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 15/07/2017 20:30:26                                  // }
+{ //************************************************************// }
 
 /// <summary>
-///    Uma View representa a camada de apresentação ao usuário
-///    deve esta associado a um controller onde ocorrerá
-///    a troca de informações e comunicação com os Models
+/// Uma View representa a camada de apresentação ao usuário
+/// deve esta associado a um controller onde ocorrerá
+/// a troca de informações e comunicação com os Models
 /// </summary>
 unit BuilderLazyView;
 
 interface
+
 uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
-  System.SysUtils, System.Classes,MVCBr.Interf,System.JSON,
-  MVCBr.View,MVCBr.FormView,MVCBr.Controller, Vcl.Controls, Vcl.StdCtrls;
-
+  System.SysUtils, System.Classes, MVCBr.Interf, System.JSON,
+  FormulasCustos.Builder.Interf,
+  MVCBr.View, MVCBr.FormView, MVCBr.Controller,
+  VCL.Controls, VCL.StdCtrls;
 
 type
-/// Interface para a VIEW
+  /// Interface para a VIEW
   IBuilderLazyView = interface(IView)
     ['{B4BF06E2-4157-4FF4-8FCD-F0D6C5FB8805}']
     // incluir especializacoes aqui
   end;
 
-/// Object Factory que implementa a interface da VIEW
-  TBuilderLazyView = class(TFormFactory {TFORM} ,IView,IThisAs<TBuilderLazyView>,
-  IBuilderLazyView,IViewAs<IBuilderLazyView>)
+  /// Object Factory que implementa a interface da VIEW
+  TBuilderLazyView = class(TFormFactory { TFORM } , IView,
+    IThisAs<TBuilderLazyView>, IBuilderLazyView, IViewAs<IBuilderLazyView>)
     Button1: TButton;
     Button2: TButton;
-  private FInited:boolean;
+    procedure Button1Click(Sender: TObject);
+  private
+    FInited: boolean;
   protected
-    function Controller(const aController:IController):IView;override;
+    FFormulasCalculoCusto: IFormulasCustosBuilderModel;
+    function Controller(const aController: IController): IView; override;
+    procedure Init; override;
   public
-   { Public declarations }
-    class function New(AController:IController):IView;
-    function ThisAs:TBuilderLazyView;
-    function ViewAs:IBuilderLazyView;
-    function ShowView(const AProc: TProc<IView>): integer;override;
-end;
+    { Public declarations }
+    class function New(aController: IController): IView;
+    function ThisAs: TBuilderLazyView;
+    function ViewAs: IBuilderLazyView;
+    function ShowView(const AProc: TProc<IView>): integer; override;
+  end;
 
 Implementation
+
 {$R *.DFM}
 
+uses Dialogs, FormulasCustos.Builder;
 
-function TBuilderLazyView.ViewAs:IBuilderLazyView;
+function TBuilderLazyView.ViewAs: IBuilderLazyView;
 begin
   result := self;
 end;
 
-class function TBuilderLazyView.new(AController:IController):IView;
+procedure TBuilderLazyView.Init;
 begin
-   result := TBuilderLazyView.create(nil);
-   result.controller(AController);
+  FFormulasCalculoCusto := TFormulasCustosBuilderModel.New(GetController);
 end;
 
-function TBuilderLazyView.Controller(const AController:IController):IView;
+class function TBuilderLazyView.New(aController: IController): IView;
 begin
-  result := inherited Controller(AController);
-  if not FInited then begin init; FInited:=true; end;
+  result := TBuilderLazyView.create(nil);
+  result.Controller(aController);
+
 end;
 
-function TBuilderLazyView.ThisAs:TBuilderLazyView;
+procedure TBuilderLazyView.Button1Click(Sender: TObject);
+var
+  idProduto: double;
 begin
-   result := self;
-end;
+  idProduto := 2;
+  FFormulasCalculoCusto.Lazy.Query
+    (TFormulasCustosModelCommands.cmd_margem_comercial)
+  { with FFormulasCalculoCusto.Execute( TFormulasCustosModelCommands.cmd_margem_comercial, IdProduto  ) do
+    begin
+    ShowMessage( Response.asString );
+    end; }
+    end;
 
-function TBuilderLazyView.ShowView(const AProc:TProc<IView>):integer;
-begin
-  inherited;
-end;
+  function TBuilderLazyView.Controller(const aController: IController): IView;
+  begin
+    result := inherited Controller(aController);
+    if not FInited then
+    begin
+      Init;
+      FInited := true;
+    end;
+  end;
+
+  function TBuilderLazyView.ThisAs: TBuilderLazyView;
+  begin
+    result := self;
+  end;
+
+  function TBuilderLazyView.ShowView(const AProc: TProc<IView>): integer;
+  begin
+    inherited;
+  end;
 
 end.
