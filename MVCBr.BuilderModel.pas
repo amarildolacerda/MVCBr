@@ -20,7 +20,7 @@ Type
     procedure FreeAllInstances;
     procedure FreeInstance(ACommand: TValue);
     Function Query(ACommand: TValue): TMVCBrBuilderObject;
-    function Execute(ACommand: TValue; AParam: TValue): IMVCBrBuilderItemResult;
+    function Execute(ACommand: TValue; AParam: TValue):TValue; {IMVCBrBuilderItemResult}
     function Lazy: TMVCBrLazyFactory<TObject>;
   end;
 
@@ -33,7 +33,7 @@ Type
 
   IBuiltObject = IMVCBrBuilderObject;
 
-  TBuiltResult = TValue;
+  //TBuiltResult = TValue;
 
   /// <summary>
   /// Builder Model Factory to support command into Models
@@ -61,7 +61,7 @@ Type
     procedure FreeAllInstances;
     procedure FreeInstance(ACommand: TValue);
     /// execute builder command
-    function Execute(ACommand: TValue; AParam: TValue): IMVCBrBuilderItemResult;
+    function Execute(ACommand: TValue; AParam: TValue): TValue;
     /// search for builder command
     Function Query(ACommand: TValue): TMVCBrBuilderObject; overload;
     /// search and cast builder command
@@ -102,7 +102,7 @@ begin
 end;
 
 function TBuilderModelFactory.Execute(ACommand, AParam: TValue)
-  : IMVCBrBuilderItemResult;
+  : TValue;
 begin
   result := Builder.Execute(ACommand, AParam);
 end;

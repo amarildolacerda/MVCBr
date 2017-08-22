@@ -26,6 +26,7 @@ uses
 procedure Register;
 begin
   RegisterCustomModule(TFormFactory, TCustomModule);
+  //RegisterCustomModule(TFMXFormFactory, TCustomModule);
   RegisterCustomModule(TModuleFactory, TCustomModule);
   RegisterCustomModule(TFrameFactory, TCustomModule);
 
@@ -39,6 +40,7 @@ begin
 
 
   RegisterClass(TFormFactory);
+  //RegisterClass(TFMXFormFactory);
   RegisterClass(TModuleFactory);
   RegisterClass(TFrameFactory);
 

@@ -55,7 +55,9 @@ uses
   MVCBr.Patterns.Mediator in '..\MVCBr.Patterns.Mediator.pas',
   TestMVCBr.Patterns.Mediator in 'TestMVCBr.Patterns.Mediator.pas',
   MVCBr.MiddlewareFactory in '..\MVCBr.MiddlewareFactory.pas',
-  testODataServer in 'testODataServer.pas';
+  testODataServer in 'testODataServer.pas',
+  MVCBr.Patterns.Singleton in '..\MVCBr.Patterns.Singleton.pas',
+  TestMVCBr.Patterns.Singleton in 'TestMVCBr.Patterns.Singleton.pas';
 
 {$R *.RES}
 

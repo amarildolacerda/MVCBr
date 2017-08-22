@@ -47,7 +47,7 @@ type
     ['{0EA84140-4B56-494B-8C09-B39A3E7F400F}']
     procedure Release;
     function This: TObject;
-    function Execute(AParam: T): IMVCBrBuilderItem<T, TResult>;
+    function Execute(AParam: T): TResult;
     function Response: TResult;
     function Delegate: TFunc<T, TResult>;
     function Command: TValue;
@@ -72,8 +72,7 @@ type
     function Add(ACommand: TValue; AItem: TMVCBrBuilderItem<T, TResult>)
       : TMVCBrBuilderItem<T, TResult>; overload; virtual;
     [weak]
-    function Execute(ACommand: TValue; AParam: T)
-      : TMVCBrBuilderItem<T, TResult>; virtual;
+    function Execute(ACommand: TValue; AParam: T): TResult; virtual;
     [weak]
     function Query(ACommand: TValue): TMVCBrBuilderItem<T, TResult>; virtual;
     procedure Release; virtual;
@@ -96,7 +95,7 @@ type
       : IMVCBrBuilderItem<T, TResult>;
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>;
     function Execute(ACommand: TValue; AParam: T)
-      : IMVCBrBuilderItem<T, TResult>;
+      : TResult;
     function Contains(ACommand: TValue): Boolean;
     procedure Remove(ACommand: TValue);
   end;
@@ -119,7 +118,7 @@ type
     class function New(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue)
       : TMVCBrBuilderItem<T, TResult>; overload;
     [weak]
-    function Execute(AParam: T): IMVCBrBuilderItem<T, TResult>; virtual;
+    function Execute(AParam: T): TResult; virtual;
     function Response: TResult; virtual;
     function Delegate: TFunc<T, TResult>; virtual;
     function Command: TValue; virtual;
@@ -151,7 +150,7 @@ type
       : IMVCBrBuilderItem<T, TResult>; overload; virtual;
     [weak]
     function Execute(ACommand: TValue; AParam: T)
-      : IMVCBrBuilderItem<T, TResult>; virtual;
+      : TResult; virtual;
     [weak]
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>; virtual;
     procedure Remove(ACommand: TValue); overload; virtual;
@@ -205,10 +204,10 @@ type
     property Instance: TObject read Invoke;
     procedure FreeInstance;
     [weak]
-    function Execute(AParam: TValue): IMVCBrBuilderItemResult; override;
+    function Execute(AParam: TValue): TValue; override;
     function Response: TValue; Override;
     function IsCreated: Boolean; virtual;
-    function DelegateTo(AFunc:TFunc<TObject>):TMVCBrBuilderLazyItem;
+    function DelegateTo(AFunc: TFunc<TObject>): TMVCBrBuilderLazyItem;
   end;
 
   /// Lazy Builder Factory
@@ -311,13 +310,16 @@ begin
       end;
 end;
 
-function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T)
-  : TMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T): TResult;
+var
+  AQuery: TMVCBrBuilderItem<T, TResult>;
 begin
-  result := Query(ACommand);
-  Assert(assigned(result), 'Builder Command not found');
-  if assigned(result) then
-    result.Execute(AParam);
+  AQuery := Query(ACommand);
+  Assert(assigned(AQuery), 'Builder Command not found');
+  if assigned(AQuery) then
+  begin
+    result := AQuery.Execute(AParam);
+  end;
 end;
 
 function TMVCBrBuilder<T, TResult>.GetItems(index: integer)
@@ -437,12 +439,13 @@ begin
   inherited;
 end;
 
-function TMVCBrBuilderItem<T, TResult>.Execute(AParam: T)
-  : IMVCBrBuilderItem<T, TResult>;
+function TMVCBrBuilderItem<T, TResult>.Execute(AParam: T): TResult;
 begin
-  result := self;
   if assigned(FDelegate) then
+  begin
     FResult := FDelegate(AParam);
+    result := FResult;
+  end;
 end;
 
 function TMVCBrBuilderItem<T, TResult>.LockList
@@ -546,7 +549,7 @@ begin
 end;
 
 function TMVCBrBuilderFactory<T, TResult>.Execute(ACommand: TValue; AParam: T)
-  : IMVCBrBuilderItem<T, TResult>;
+  : TResult;
 begin
   result := FWrapper.Execute(ACommand, AParam);
 end;
@@ -598,11 +601,11 @@ begin
     ('Abstract... Use NEW class function instead of create');
 end;
 
-function TMVCBrBuilderLazyItem.DelegateTo(
-  AFunc: TFunc<TObject>): TMVCBrBuilderLazyItem;
+function TMVCBrBuilderLazyItem.DelegateTo(AFunc: TFunc<TObject>)
+  : TMVCBrBuilderLazyItem;
 begin
-   result := self;
-   FDelegateTo := AFunc;
+  result := self;
+  FDelegateTo := AFunc;
 end;
 
 destructor TMVCBrBuilderLazyItem.Destroy;
@@ -620,10 +623,13 @@ begin
   inherited;
 end;
 
-function TMVCBrBuilderLazyItem.Execute(AParam: TValue): IMVCBrBuilderItemResult;
+function TMVCBrBuilderLazyItem.Execute(AParam: TValue): TValue;
 begin
-  result := self;
-  Instance.ContextInvokeMethod('Execute', [AParam]);
+  with TMVCBrBuilderObject(Instance) do
+  begin
+    Response := Execute(AParam);
+    result := response;
+  end;
 end;
 
 procedure TMVCBrBuilderLazyItem.FreeInstance;
@@ -662,7 +668,7 @@ end;
 
 function TMVCBrBuilderLazyItem.Response: TValue;
 begin
-  result := Instance.ContextProperties['Response'];
+  result := TMVCBrBuilderObject(Instance).Response;
 end;
 
 { TMVCBBuilderObject }

@@ -78,7 +78,7 @@ uses System.Classes, System.SysUtils,
   System.JSON,
 {$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
 {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
-  MVCBr.Patterns.Factory,
+  MVCBr.Factory,
   MVCBr.Patterns.Adapter,
   System.TypInfo,
   System.RTTI;
@@ -178,6 +178,10 @@ type
       write SetPropertyValue;
     function GetGuid(AII: IInterface): TGuid;
   end;
+
+  IMVCBrBase<T:Class> = interface(TFunc<T>)
+  end;
+
 
   /// <summary>
   /// who want be an observer item

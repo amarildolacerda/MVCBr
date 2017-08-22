@@ -119,7 +119,7 @@
         <DCCReference Include="vcl.dcp"/>
         <DCCReference Include="rtl.dcp"/>
         <DCCReference Include="vclie.dcp"/>
-        <DCCReference Include="designide.dcp"/>
+        <DCCReference Include="DesignIDE.dcp"/>
         <DCCReference Include="xmlrtl.dcp"/>
         <DCCReference Include="vclactnband.dcp"/>
         <DCCReference Include="vclx.dcp"/>

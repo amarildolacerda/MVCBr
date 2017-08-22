@@ -20,7 +20,7 @@ uses
   MVCBr.Patterns.Decorator,
   MVCBr.Patterns.Strategy,
   MVCBr.BuilderModel,
-  MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
+  MVCBr.Factory, MVCBr.Patterns.Builder;
 
 type
 
@@ -631,7 +631,7 @@ begin
   LResult := LBuilder.Query(LCommand);
   /// check result
   CheckNotNull(LResult, 'Não encontrou o comando');
-  checkTrue(LResult.Execute(nil).Response.equals(LCommand), 'Não executou');
+  checkTrue(LResult.Execute(nil).equals(LCommand), 'Não executou');
 
   /// look or unknown command
   LResult := LBuilder.Query('XXX');
@@ -639,7 +639,7 @@ begin
 
   LResult := LBuilder.Query(2);
   CheckNotNull(LResult, 'Command 2 not found on list item os commands');
-  checkTrue(LResult.Execute(nil).Response.equals('2'), 'Command 2 not found');
+  checkTrue(LResult.Execute(nil).equals('2'), 'Command 2 not found');
 
   LBuilder := nil;
 end;
@@ -653,13 +653,13 @@ begin
     function(sender: string): string
     begin
       result := 'SUCESSO';
-    end).Execute('TESTE').Response.equals('SUCESSO'), 'Não Executou o builder')
+    end).Execute('TESTE').equals('SUCESSO'), 'Não Executou o builder')
 
 end;
 
 procedure TestTMVCBrBuilderFactory.TestBuilder;
 var
-  ReturnValue: IMVCBrBuilderItem<TObject, string>;
+  ReturnValue: string;
   AObject: TObject;
 begin
   // TODO: Setup method call parameters
@@ -675,7 +675,7 @@ begin
 
     ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
 
-    checkTrue(ReturnValue.Response = 'OK', 'Não executou o builder');
+    checkTrue(ReturnValue = 'OK', 'Não executou o builder');
 
   finally
     AObject.Free;
@@ -702,7 +702,7 @@ var
 begin
   ABuilder := TBuilderModelTests.Create;
   try
-    with ABuilder.Add(1, TBuiltTests).instance do
+    with ABuilder.Add(1, TBuiltTests) { .instance } do
     begin
       Execute(10);
       checkTrue(ABuilder.Query<TBuiltTests>(1).FCount = 10, 'Não executou');
@@ -726,23 +726,10 @@ Type
     procedure IncValor;
   end;
 
+
 procedure TestTMVCBrBuilderFactory.TestLazyBuilder;
-var
-  LazyBuilderFac: TMVCBrBuilderLazyFactory;
-  ret: IMVCBrBuilderItem<TValue, TValue>;
-
 begin
-  LazyBuilderFac := TMVCBrBuilderLazyFactory.New;
-  try
-    LazyBuilderFac.Add('comandoA', TBuildLazyObject);
-
-    ret := LazyBuilderFac.Execute('comandoA', 10);
-
-    checkTrue(ret.Response.asInteger = 10, 'Não executou o comando');
-
-  finally
-    LazyBuilderFac.Free;
-  end;
+   raise Exception.Create('nao implementado');
 end;
 
 procedure TestTMVCBrBuilderFactory.TestLazyBuilderInvokeClass;
@@ -812,7 +799,7 @@ begin
   LResult := LBuilder.Query(LCommand);
   /// check result
   CheckNotNull(LResult, 'Não encontrou o comando');
-  checkTrue(LResult.Execute(nil).Response, 'Não executou');
+  checkTrue(LResult.Execute(nil), 'Não executou');
 
   /// look or unknown command
   LResult := LBuilder.Query('XXX');
@@ -823,7 +810,7 @@ end;
 
 procedure TestTMVCBrBuilderFactory.TestRemoveCommand;
 var
-  ReturnValue: IMVCBrBuilderItem<TObject, string>;
+  ReturnValue: string;
   AObject: TObject;
 begin
   // TODO: Setup method call parameters
@@ -840,7 +827,7 @@ begin
     ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
     // TODO: Validate method results
 
-    checkTrue(ReturnValue.Response = 'OK', 'Não executou o builder');
+    checkTrue(ReturnValue = 'OK', 'Não executou o builder');
 
     /// remove
     ///
@@ -1078,7 +1065,7 @@ type
 
 procedure TestTMVCBrStrategy.TestStrategy;
 begin
-   checkTrue(   TStrategyPgto.AVista.New.Total = 0 , 'Nao incialiaou' );
+  checkTrue(TStrategyPgto.AVista.New.Total = 0, 'Nao incialiaou');
 end;
 
 { StrategyPgto }

@@ -163,7 +163,7 @@ Type
     function ContextInvokeAttribute(attribClass: TCustomAttributeClass;
       params: array of TValue): Boolean;
     function ContextInvokeMethod(AName: string;
-      params: array of TValue): Boolean;
+      params: array of TValue): TValue;
 
   end;
 
@@ -618,17 +618,22 @@ begin
 end;
 
 function TObjectHelper.ContextInvokeMethod(AName: string;
-params: array of TValue): Boolean;
+params: array of TValue): TValue;
 var
   aMethod: TRttiMethod;
 begin
-  result := false;
   aMethod := ContextMethods[AName];
   if not assigned(aMethod) then
     exit(false);
   try
-    aMethod.Invoke(self, params);
-    result := true;
+    if aMethod.MethodKind = mkFunction then
+      result := aMethod.Invoke(self, params)
+    else
+    begin
+      result := false;
+      aMethod.Invoke(self, params);
+      result := true;
+    end;
   finally
   end;
 end;
@@ -822,7 +827,6 @@ begin // System.uJson
   result := TJson.ObjectToJsonString(self);
 {$ENDIF}
 end;
-
 
 function TObjectHelper.ToJsonObject: TJsonObject;
 begin

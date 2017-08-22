@@ -118,7 +118,7 @@ type
 {$ELSE}
     procedure DoCloseView(Sender: TObject; var ACloseAction: TCloseAction);
 {$ENDIF}
-    function RefCount:integer;
+    function RefCount: Integer;
     procedure SetController(const AController: IController);
     function Controller(const AController: IController): IView; virtual;
     procedure SetShowModal(const AShowModal: boolean);
@@ -159,8 +159,8 @@ type
     [weak]
     function GetController: IController; virtual;
     [weak]
-    function AttachController(AInterface: TGuid; AOwnedFree: boolean = true)
-      : IController; overload; virtual;
+    function AttachController(AGuidController: TGuid;
+      AOwnedFree: boolean = true): IController; overload; virtual;
     [weak]
     function AttachController<TIController: IInterface>: TIController; overload;
     [weak]
@@ -254,6 +254,18 @@ type
     property OnViewInit;
   end;
 
+  TFMXFormFactory = class(TCustomFormFactory)
+  published
+{$IFDEF LINUX}
+{$ELSE}
+    property OnClose;
+{$ENDIF}
+    property OnViewEvent;
+    property OnViewCommand;
+    property OnViewUpdate;
+    property OnViewInit;
+  end;
+
 implementation
 
 uses MVCBr.MiddlewareFactory;
@@ -295,7 +307,7 @@ begin
     FController.This.RevokeInstance(FController);
     // clear controller
     FController.Release;
-    //Release;
+    // Release;
     FController := nil;
   end;
   inherited;
@@ -323,7 +335,8 @@ end;
 
 function TCustomFormFactory.GetModel<TIModel>: TIModel;
 begin
-  result := FController.This.GetModel<TIModel>;
+  if assigned(FController) then
+    result := FController.This.GetModel<TIModel>;
 end;
 
 function TCustomFormFactory.GetView<TIView>: TIView;
@@ -380,13 +393,13 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
-function TCustomFormFactory.AttachController(AInterface: TGuid;
+function TCustomFormFactory.AttachController(AGuidController: TGuid;
   AOwnedFree: boolean = true): IController;
 begin
   result := FController;
   if not assigned(FController) then
   begin
-    FController := ApplicationController.AttachController(AInterface)
+    FController := ApplicationController.AttachController(AGuidController)
       as IController;
     result := FController;
     if assigned(FController) then
@@ -420,10 +433,10 @@ begin
   GetController.AttachModel(result);
 end;
 
-function TCustomFormFactory.RefCount: integer;
+function TCustomFormFactory.RefCount: Integer;
 begin
-    result := _AddRef;
-    _Release;
+  result := _AddRef;
+  _Release;
 end;
 
 procedure TCustomFormFactory.RegisterObserver(const AName: String);
@@ -676,7 +689,8 @@ begin
 {$ELSE}
   if FShowModal then
     result := ord(ShowModal)
-  else show;
+  else
+    Show;
 {$ENDIF}
 {$ELSE}
   Show;

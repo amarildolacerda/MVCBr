@@ -18,7 +18,7 @@ uses
   MVCBr.Model,
   TestMVCBr.TestForm,
   MVCBr.Controller,
-  TestSecondView,
+  //TestSecondView,
   TestViewView,
   MVCBr.View,
   MVCBr.FormView,
@@ -179,14 +179,16 @@ procedure TestTFormFactory.TestInvokeMethod;
 var
   ReturnValue: Boolean;
 begin
+  raise Exception.Create('Error Message');
+
   // TODO: Setup method call parameters
-  FFormFactory.PropertyValue['isShowModal'] := true;
+  {FFormFactory.PropertyValue['isShowModal'] := true;
   CheckTrue(TTestSecondView(FFormFactory.This).isShowModal,
     'Não alterou o ShowModal');
   ReturnValue := TTestViewView(FFormFactory.This).InvokeMethod<Boolean>
     ('GetShowModalStub', []);
   CheckTrue(ReturnValue, 'Não funcionou RTTI');
-  // TODO: Validate method results
+ } // TODO: Validate method results
 end;
 
 procedure TestTFormFactory.TestIsModel;
@@ -233,10 +235,11 @@ procedure TestTFormFactory.TestResolveController;
 var
   i: ITestController;
 begin
-  i := TTestSecondView(FFormFactory.This).ResolveController<ITestController> as ITestController;
+  raise Exception.Create('Error Message');
+  {i := TTestSecondView(FFormFactory.This).ResolveController<ITestController> as ITestController;
   checkNotNull(i, 'Não retornou a interface do controller');
   CheckTrue(i.This.InheritsFrom(TControllerFactory),
-    'Não herdou de TControllerFactory');
+    'Não herdou de TControllerFactory');}
 end;
 
 procedure TestTFormFactory.TestShowView;
@@ -244,11 +247,7 @@ var
   ReturnValue: Integer;
   AProc: TProc<IView>;
 begin
-  // TODO: Setup method call parameters
-  TTestSecondView(FFormFactory.This).isShowModal := false;
-  ReturnValue := FFormFactory.ShowView(AProc);
-
-  // TODO: Validate method results
+   raise Exception.Create('nao implementado');
 end;
 
 procedure TestTFormFactory.TestUnRegisterObserverNamed;
@@ -314,9 +313,10 @@ end;
 procedure TestTFormFactory.TestChamarViewSecundaria;
 var
   ctrl: IController;
-  itf: ITestSecondView;
+  //itf: ITestSecondView;
 begin
-  ctrl := ApplicationController.ResolveController(ITestSecondController);
+  raise Exception.Create('Error Message');
+  {ctrl := ApplicationController.ResolveController(ITestSecondController);
   try
   checkNotNull(ctrl, 'Não achei o segundo controller');
   checkNotNull(ctrl.GetView, 'Não iniciou o segundo VEIW');
@@ -328,6 +328,7 @@ begin
     //ctrl.release;
     //itf.release;
   end;
+  }
 end;
 
 procedure TestTFormFactory.TestEnviarEventoJSONparaUmView;

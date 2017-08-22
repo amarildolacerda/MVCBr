@@ -86,8 +86,8 @@ type
       : TPageView; override;
     function AddView(AView: IView): TPageView; override;
     function AddView(Const AController: TGuid): TPageView; overload; override;
-    function AddView(const AController: TGuid;
-      ABeforeShow: TProc<IView>): TPageView; overload;override;
+    function AddView(const AController: TGuid; ABeforeShow: TProc<IView>)
+      : TPageView; overload; override;
   published
     property PageControl: TPageControl read GetPageControlEx
       write SetPageControlEx;
@@ -378,6 +378,10 @@ begin
   else
   begin
     OnDrawTab := nil;
+    OnMouseUp := nil;
+    OnMouseDown := nil;
+    OnMouseLeave := nil;
+    OnMouseMove := nil;
   end;
 
 end;
@@ -405,8 +409,9 @@ end;
 function TVCLPageViewManager.AddView(Const AController: TGuid;
   ABeforeShow: TProc<IView>): TPageView;
 begin
-  result := inherited addView(AController,ABeforeShow);
-  ttabSheetView( result.tab ).FControllerGuid := AController;
+  result := inherited AddView(AController, ABeforeShow);
+  if assigned(result) then
+     TTabSheetView(result.tab).FControllerGuid := AController;
 end;
 
 function TVCLPageViewManager.AddView(AView: IView; ABoforeShow: TProc<IView>)
@@ -694,9 +699,15 @@ end;
 procedure TTabSheetView.SetCaption(const Value: string);
 var
   X: integer;
+  b:boolean;
 begin
+  b := IsPgShowTabClose(PageControl);
+
+  if not b then
+     ShowTabClose := false;
+
   if ShowTabClose then
-    inherited Caption := Trim(Value) + '   X'
+    inherited Caption := Trim(Value) + '     X'
   else
     inherited Caption := Trim(Value);
 end;
@@ -806,8 +817,8 @@ begin
   for LIndex := 0 to TabCount - 1 do
     if PtInRect(GetButtonCloseRect(LIndex), LPoint) then
     begin
-      if (Control is TPageControl) and
-        (IsShowTabClose(TPageControl(Control).Pages[LIndex])) then
+      if (Control is TPageControl) and IsPgShowTabClose(TPageControl(Control))
+        and (IsShowTabClose(TPageControl(Control).Pages[LIndex])) then
       begin
         postMessage(TPageControl(Control).Pages[LIndex].Handle,
           WM_TABSHEET_CLOSE, 0, 0);

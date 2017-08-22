@@ -98,7 +98,7 @@ begin
   begin
     with LockList do
       try
-        result := Items[i].Execute(AValue).Response;
+        result := Items[i].Execute(AValue);
       finally
         unlocklist;
       end;

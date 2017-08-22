@@ -120,8 +120,7 @@ begin
   // project := (BorlandIDEServices as IOTAModuleServices).GetActiveProject;
   if project = '' then
   begin
-    eMVC.toolBox.showInfo
-      (msgDontFindCreateProjectBefore );
+    eMVC.toolBox.showInfo(msgDontFindCreateProjectBefore);
     exit;
   end;
   path := extractFilePath(project);
@@ -163,7 +162,10 @@ begin
           false, CreateModule, CreateView, ModelAlone, ViewAlone,
           trim(lowercase(edtClassName.Text)) = 'tform');
         if chFMX.Checked then
+        begin
           Ctrl.baseProjectType := bptFMX;
+          Ctrl.Templates.Add('TFormFactory=TFMXFormFactory');
+        end;
         Ctrl.IsInterf := false;
         Ctrl.Templates.Values['%MdlInterf'] := setname + '.Controller.Interf';
         if CreateView then
@@ -187,7 +189,10 @@ begin
         begin
           view := TViewCreator.create(GetNewPath('Views'), setname, false);
           if chFMX.Checked then
+          begin
             view.baseProjectType := bptFMX;
+            view.Templates.Add('TFormFactory=TFMXFormFactory');
+          end;
           view.SetAncestorName(trim(edtClassName.Text));
           (BorlandIDEServices as IOTAModuleServices).CreateModule(view);
         end;
@@ -202,7 +207,10 @@ begin
 
           Model := TModelCreator.create(GetNewPath('Models'), setname, false);
           if chFMX.Checked then
+          begin
             Model.baseProjectType := bptFMX;
+            Model.Templates.Add('TFormFactory=TFMXFormFactory');
+          end;
           Model.Templates.Add('%MdlInterf=' + setname + '.Model.Interf');
           Model.IsInterf := true;
           (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
@@ -214,7 +222,10 @@ begin
             setname, false);
           viewModel.IsInterf := false;
           if chFMX.Checked then
+          begin
             viewModel.baseProjectType := bptFMX;
+            viewModel.Templates.Add('TFormFactory=TFMXFormFactory');
+          end;
           viewModel.Templates.Add('%MdlInterf=' + setname +
             '.ViewModel.Interf');
           (BorlandIDEServices as IOTAModuleServices).CreateModule(viewModel);
@@ -223,7 +234,10 @@ begin
             setname, false);
           viewModel.IsInterf := false;
           if chFMX.Checked then
+          begin
             viewModel.baseProjectType := bptFMX;
+            viewModel.Templates.Add('TFormFactory=TFMXFormFactory');
+          end;
           viewModel.Templates.Add('%MdlInterf=' + setname +
             '.ViewModel.Interf');
           viewModel.IsInterf := true;

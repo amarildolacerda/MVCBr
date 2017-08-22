@@ -103,7 +103,7 @@ end;
 procedure TMVCBrAdapter<T>.Release;
 begin
   if assigned(FAdapter) then
-    FAdapter.free;
+    FAdapter.DisposeOf;
   FAdapter := nil;
 end;
 

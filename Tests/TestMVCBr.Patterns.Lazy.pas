@@ -20,7 +20,7 @@ uses
   MVCBr.Patterns.Decorator,
   MVCBr.Patterns.Strategy,
   MVCBr.BuilderModel,
-  MVCBr.Patterns.Factory, MVCBr.Patterns.Builder;
+  MVCBr.Factory, MVCBr.Patterns.Builder;
 
 type
 

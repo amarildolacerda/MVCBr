@@ -153,8 +153,8 @@ type
     function GetPageTabClass: TComponentClass; virtual;
     function GetPageContainerClass: TComponentClass; virtual;
     function Count: integer;
-    procedure Remove(APageView: TPageView); overload;virtual;
-    procedure Remove(AGuid:TGuid);overload;virtual;
+    procedure Remove(APageView: TPageView); overload; virtual;
+    procedure Remove(AGuid: TGuid); overload; virtual;
     function ActivePage: TPageView; virtual;
     procedure SetActivePage(Const Tab: TObject); virtual;
     property ActivePageIndex: integer read FActivePageIndex
@@ -175,13 +175,14 @@ type
 
     function FindViewByID(Const AID: String): TPageView; virtual;
     function FindViewByClassName(const AClassName: String): TPageView; virtual;
-    function FindView(Const AGuid: TGuid): TPageView; overload; virtual;
+    function FindView(Const AGuidController: TGuid): TPageView;
+      overload; virtual;
     function FindView(Const AView: IView): TPageView; overload; virtual;
 
     procedure ViewEvent(AMessage: TJsonValue); overload; virtual;
     procedure ViewEvent(AMessage: String); overload; virtual;
 
-    function IndexOf(Const AGuid: TGuid): integer;
+    function IndexOf(Const AGuidController: TGuid): integer;
     property AfterViewCreate: TNotifyEvent read FAfterViewCreate
       write SetAfterViewCreate;
   end;
@@ -254,12 +255,10 @@ begin
   FGuid := Value;
 end;
 
-
 procedure TPageView.SetID(const Value: String);
 begin
   FID := Value;
 end;
-
 
 procedure TPageView.SetOnBeforeShowDelegate(const Value: TProc<IView>);
 begin
@@ -358,11 +357,17 @@ var
   LController: IController;
   LView: IView;
   LGuid: TGuid;
+  LPageView: TPageView;
 begin
   result := nil;
 
   if IndexOfController(AController) >= 0 then
+  begin
+    LPageView := FindView(AController);
+    if assigned(LPageView) and assigned(LPageView.Tab) then
+      SetActivePage(LPageView.Tab);
     exit;
+  end;
 
   LController := ResolveController(AController);
 
@@ -384,12 +389,6 @@ begin
     Init(result);
     exit;
   end;
-
-  // criar nova aba
-  if assigned(ABeforeShow) then
-    ABeforeShow(LView);
-
-  // LController._AddRef;
 
   result := AddView(LView, ABeforeShow);
   result.ControllerGuid := AController;
@@ -429,14 +428,14 @@ begin
   inherited;
 end;
 
-function TCustomPageViewFactory.IndexOf(const AGuid: TGuid): integer;
+function TCustomPageViewFactory.IndexOf(const AGuidController: TGuid): integer;
 var
   i: integer;
   obj: TPageView;
   p: string;
 begin
   result := -1;
-  p := AGuid.ToString;
+  p := AGuidController.ToString;
   for i := 0 to Count - 1 do
   begin
     obj := TPageView(Items[i]);
@@ -452,12 +451,13 @@ procedure TCustomPageViewFactory.Init(APageView: TPageView);
 begin
 end;
 
-function TCustomPageViewFactory.FindView(const AGuid: TGuid): TPageView;
+function TCustomPageViewFactory.FindView(const AGuidController: TGuid)
+  : TPageView;
 var
   i: integer;
 begin
   result := nil;
-  i := IndexOf(AGuid);
+  i := IndexOf(AGuidController);
   if i >= 0 then
     result := Items[i];
 end;
@@ -596,7 +596,7 @@ var
 begin
   if assigned(FList) then
     for i := FList.Count - 1 downto 0 do
-      if AGuid.toString = FList.Items[i].ControllerGuid.ToString then
+      if AGuid.ToString = FList.Items[i].ControllerGuid.ToString then
       begin
         FList.Delete(i);
         exit;
@@ -609,7 +609,8 @@ var
 begin
   if assigned(FList) then
     for i := FList.Count - 1 downto 0 do
-      if APageView.ControllerGuid.toString = FList.Items[i].ControllerGuid.ToString then
+      if APageView.ControllerGuid.ToString = FList.Items[i].ControllerGuid.ToString
+      then
       begin
         FList.Delete(i);
         exit;

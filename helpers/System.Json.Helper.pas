@@ -129,7 +129,11 @@ type
     class function GetTypeAsString(AType: TJsonType): string; static;
     class function GetJsonType(AJsonValue: TJsonValue): TJsonType; static;
     class function Stringify(so: TJsonObject): string;
-    class function Parse(const dados: string): TJsonObject;
+    class function Parse(const dados: string): TJsonObject; overload;
+    procedure Parse(dados: string; pos: integer;
+      useBool: Boolean = false); overload;
+    procedure SaveToFile(AFileName: String);
+    procedure LoadFromFile(AFileName: String);
     constructor create(AKey, AValue: String); overload;
     function V(chave: String): variant;
     function S(chave: string): string;
@@ -684,8 +688,8 @@ begin
     ATo := FMapping.Values[AFrom];
     if ATo = '' then
     begin
-      if includeNoFind =false then
-         continue;
+      if includeNoFind = false then
+        continue;
       ATo := AFrom;
     end;
     result.addPair(ATo, j.JsonValue);
@@ -718,11 +722,34 @@ begin
     TryGetValue<integer>(chave, result);
 end;
 
+procedure TJSONObjectHelper.LoadFromFile(AFileName: String);
+var
+  stream: TStringStream;
+begin
+  stream := TStringStream.create('');
+  try
+    if fileExists(AFileName) then
+      try
+        stream.LoadFromFile(AFileName);
+        Parse(stream.DataString, 0, false);
+      except
+      end;
+  finally
+    stream.free;
+  end;
+end;
+
 function TJSONObjectHelper.O(index: integer): TJsonObject;
 var
   pair: TJsonPair;
 begin
   result := TJsonObject(Get(index));
+end;
+
+procedure TJSONObjectHelper.Parse(dados: string; pos: integer;
+  useBool: Boolean);
+begin
+  inherited Parse(TEncoding.UTF8.GetBytes(dados), pos, useBool);
 end;
 
 function TJSONObjectHelper.O(chave: string): TJsonObject;
@@ -827,6 +854,18 @@ end;
 function TJSONObjectHelper.S(chave: string): string;
 begin
   TryGetValue<string>(chave, result);
+end;
+
+procedure TJSONObjectHelper.SaveToFile(AFileName: String);
+var
+  stream: TStringStream;
+begin
+  stream := TStringStream.create(TEncoding.UTF8.GetBytes(self.ToJson));
+  try
+    stream.SaveToFile(AFileName);
+  finally
+    stream.free;
+  end;
 end;
 
 procedure TJSONObjectHelper.SetValueBase(chave: string; const Value: string);
