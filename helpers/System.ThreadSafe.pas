@@ -127,25 +127,25 @@ type
     constructor create(AOwnedObject: boolean = true); overload; virtual;
     constructor create(AClass: TClass); overload; virtual;
     destructor destroy; override;
-    procedure Push(AValue: T);
-    procedure Pop;
-    function Peek: T;
-    function Extract: T;
+    procedure Push(AValue: T); virtual;
+    procedure Pop; virtual;
+    function Peek: T; virtual;
+    function Extract: T; virtual;
     function LockList: TList<T>;
     function TryLockList: TList<T>;
     procedure UnlockList;
-    procedure Clear;
-    function Add(AValue: T): integer; overload;
-    function Append(AValue: T): T; overload;
-    function Count: integer;
+    procedure Clear; virtual;
+    function Add(AValue: T): integer; overload; virtual;
+    function Append(AValue: T): T; overload; virtual;
+    function Count: integer; virtual;
     property Items[AIndex: integer]: T read Getitems write Setitems; default;
-    function IndexOf(AValue: T): integer;
-    procedure Delete(AIndex: integer);
-    procedure Remove(AValue: T);
+    function IndexOf(AValue: T): integer; virtual;
+    procedure Delete(AIndex: integer); virtual;
+    procedure Remove(AValue: T); virtual;
     function Add: T; overload; virtual;
-    procedure ForEach(AFunc: TFunc<T, boolean>);
-    function ToJson: string; overload;
-    function ToJsonArray: TJsonArray;
+    procedure ForEach(AFunc: TFunc<T, boolean>); virtual;
+    function ToJson: string; overload; virtual;
+    function ToJsonArray: TJsonArray; virtual;
   end;
 
   TThreadedList<T: Class> = class(TThreadList)
@@ -157,6 +157,7 @@ type
     function Count: integer;
     function Add(const AItem: T): integer; overload;
     property Items[idx: integer]: T read Getitems write Setitems;
+    function Pop: T; virtual;
   end;
 
   TThreadSafeInterfaceList<T: IInterface> = class(TInterfacedObject,
@@ -1069,6 +1070,19 @@ begin
       result := FList.Items[idx];
   finally
     UnlockList;
+  end;
+end;
+
+function TThreadedList<T>.Pop: T;
+var
+  i: integer;
+begin
+  result := nil;
+  i := Count - 1;
+  if i >= 0 then
+  begin
+    result := Items[i];
+    Delete(i);
   end;
 end;
 

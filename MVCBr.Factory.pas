@@ -68,19 +68,6 @@ Type
 
   end;
 
-  {
-    /// nao faz sentido um singleton para uma classe estática.
-    /// nao tem como manter mais de uma variavel ao logo da aplicacação
-  TMVCBrSingletonFactory<T: Class> = class(TMVCBrFactory)
-  private
-    class var FSingleton: T;
-  public
-    constructor Create; override;
-    class function Default: T;
-    class procedure Release;
-  end;
-  }
-
   TMVCBrAggregatedFactory = class(TObject)
   private
     [unsafe]
@@ -119,7 +106,8 @@ Type
     FInstance: T;
   public
     constructor Create(AInstance: T);
-    property Default: T read FInstance;
+    function GetInstance:T;virtual;
+    property Default: T read GetInstance;
   end;
 
 implementation
@@ -342,6 +330,11 @@ constructor TMVCBrStaticFactory<T>.Create(AInstance: T);
 begin
   inherited Create;
   FInstance := AInstance;
+end;
+
+function TMVCBrStaticFactory<T>.GetInstance: T;
+begin
+   result := FInstance;
 end;
 
 initialization

@@ -94,8 +94,7 @@ type
     function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
       : IMVCBrBuilderItem<T, TResult>;
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>;
-    function Execute(ACommand: TValue; AParam: T)
-      : TResult;
+    function Execute(ACommand: TValue; AParam: T): TResult;
     function Contains(ACommand: TValue): Boolean;
     procedure Remove(ACommand: TValue);
   end;
@@ -109,6 +108,8 @@ type
     FResult: TResult;
     [weak]
     FBuilder: TMVCBrBuilder<T, TResult>;
+  protected
+    function GetInstance: TMVCBrBuilder<T, TResult>; virtual;
   public
     constructor Create(ABuilder: TMVCBrBuilder<T, TResult>; ACommand: TValue;
       ADelegate: TFunc<T, TResult>); overload; virtual;
@@ -126,7 +127,7 @@ type
     procedure Release; virtual;
     function This: TObject; virtual;
     function ThisAs: TMVCBrBuilderItem<T, TResult>; virtual;
-    property DefaultBuilder: TMVCBrBuilder<T, TResult> read FBuilder;
+    property DefaultBuilder: TMVCBrBuilder<T, TResult> read GetInstance;
     function LockList: TList<IMVCBrBuilderItem<T, TResult>>; virtual;
     procedure UnlockList;
   end;
@@ -149,8 +150,7 @@ type
     function Add(ACommand: TValue; ABuilderFunc: TFunc<T, TResult>)
       : IMVCBrBuilderItem<T, TResult>; overload; virtual;
     [weak]
-    function Execute(ACommand: TValue; AParam: T)
-      : TResult; virtual;
+    function Execute(ACommand: TValue; AParam: T): TResult; virtual;
     [weak]
     function Query(ACommand: TValue): IMVCBrBuilderItem<T, TResult>; virtual;
     procedure Remove(ACommand: TValue); overload; virtual;
@@ -310,7 +310,8 @@ begin
       end;
 end;
 
-function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T): TResult;
+function TMVCBrBuilder<T, TResult>.Execute(ACommand: TValue; AParam: T)
+  : TResult;
 var
   AQuery: TMVCBrBuilderItem<T, TResult>;
 begin
@@ -448,6 +449,11 @@ begin
   end;
 end;
 
+function TMVCBrBuilderItem<T, TResult>.GetInstance: TMVCBrBuilder<T, TResult>;
+begin
+  result := FBuilder;
+end;
+
 function TMVCBrBuilderItem<T, TResult>.LockList
   : TList<IMVCBrBuilderItem<T, TResult>>;
 begin
@@ -548,8 +554,8 @@ begin
   inherited;
 end;
 
-function TMVCBrBuilderFactory<T, TResult>.Execute(ACommand: TValue; AParam: T)
-  : TResult;
+function TMVCBrBuilderFactory<T, TResult>.Execute(ACommand: TValue;
+  AParam: T): TResult;
 begin
   result := FWrapper.Execute(ACommand, AParam);
 end;
@@ -628,7 +634,7 @@ begin
   with TMVCBrBuilderObject(Instance) do
   begin
     Response := Execute(AParam);
-    result := response;
+    result := Response;
   end;
 end;
 

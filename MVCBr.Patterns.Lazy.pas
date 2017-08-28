@@ -35,7 +35,7 @@ type
   public
     constructor Create(AValueFactory: TFunc<T>); virtual;
     destructor Destroy; override;
-    function New: TMVCBrLazy<T>;
+    function New: IMVCBrLazy<T>;
     function DelegateTo(ADelegate: TFunc<T>): TMVCBrLazy<T>; virtual;
     function Implements(AGuid: TGUID): TMVCBrLazy<T>; virtual;
     procedure Release; virtual;
@@ -205,17 +205,20 @@ begin
   result := FCreated;
 end;
 
-function TMVCBrLazy<T>.New: TMVCBrLazy<T>;
+function TMVCBrLazy<T>.New: IMVCBrLazy<T>;
+var
+  LInstance: TMVCBrLazy<T>;
 begin
-  result := TMVCBrLazy<T>.Create(nil);
-  result.DelegateTo(
+  LInstance := TMVCBrLazy<T>.Create(nil);
+  LInstance.DelegateTo(
     function: T
     var
       Obj: TObject;
     begin
       Obj := TClass(T).Create;
       result := T(Obj);
-    end)
+    end);
+  result := LInstance;
 end;
 
 function TMVCBrLazy<T>.QueryInterface(const AIID: TGUID; out Obj): HResult;
@@ -270,8 +273,8 @@ end;
 
 procedure MVCBrLazy<T>.Release;
 begin
-   if assigned(FInstance) then
-      FInstance.disposeOf;
+  if Assigned(FInstance) then
+    FInstance.disposeOf;
 end;
 
 { TMVCBrAggregatedLazy<T> }
@@ -377,7 +380,7 @@ begin
       for i := Count - 1 downto 0 do
       begin
         o := items[i];
-        o.DisposeOf;
+        o.disposeOf;
         delete(i);
       end;
     finally

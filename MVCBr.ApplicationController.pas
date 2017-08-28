@@ -76,7 +76,7 @@ type
     [weak]
     function ControllerAsGuid: TGuid; virtual;
     [weak]
-    function MainController:IController;virtual;
+    function MainController: IController; virtual;
 
     /// Controllers methods
     [weak]
@@ -685,6 +685,13 @@ initialization
 
 finalization
 
-TApplicationController.Release;
+TThread.Queue(nil,
+  procedure
+  begin
+    try
+      TApplicationController.Release;
+    except
+    end;
+  end);
 
 end.

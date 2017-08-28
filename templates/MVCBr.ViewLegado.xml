@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mv.conv" invoke="auto">
+		<description>
+              Create Complete TViewFactory for an pre-existent TForm Class
+		</description>
+		<author>
+             amarildo lacerda
+		</author>
+        <point name="BaseName" default="true">
+           <text>
+              Name
+           </text>
+           <hint>
+              type base name
+           </hint>
+        </point>
+        <point name="GuidController">
+           <text>
+              new guid controller
+           </text>
+           <hint>
+              type CTRL+SHIFT+G  to create new guid
+           </hint>
+        </point>
+        <point name="GuidView">
+           <text>
+              new guid view
+           </text>
+           <hint>
+              type CTRL+SHIFT+G  to create new guid
+           </hint>
+        </point>
+
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+/// **uses**********************************************************
+MVCBr.Interf, MVCBr.FormView, MVCBr.Controller, System.RTTI,
+
+
+           /// interface to View
+           I|BaseName|View = interface(IView)
+                |GuidView|
+           end;
+
+           /// interface to Controller
+           I|BaseName|Controller = interface(IController)
+                 |GuidController|
+           end;
+
+           /// implements controller
+           T|BaseName|Controller = class(TControllerFactory, I|BaseName|Controller)
+             public
+               procedure Init;override;
+           end;
+
+/// **Implemantation*************************************************
+/// Init TFormViewClass
+/// Move to Implementation block
+procedure T|BaseName|Controller.Init;
+var
+  ref: T|BaseName|;
+begin
+  inherited;
+  if not assigned(FView) then
+  begin
+    Application.CreateForm(T|BaseName|View, ref);
+    supports(ref, IView, FView);
+{$IFDEF FMX}
+    if Application.MainForm = nil then
+      Application.RealCreateForms;
+{$ENDIF}
+  end;
+  // CreateModules; // < criar os modulos persolnizados
+
+  AfterInit;
+end;
+
+
+/// **Initialization****************************************************
+/// move this block to initialization
+initialization
+     RegisterInterfacedClass(T|BaseName|Controler.ClassName,
+        I|BaseName|Controler, T|BaseName|Controler);
+
+
+        ]]>
+		</code>
+	</template>
+</codetemplate>

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="ormbr.Criteria" invoke="auto">
+		<description>
+			  Obter um ResultSet dinamico com TCriteria
+		</description>
+		<author>
+			  amarildo lacerda
+		</author>
+        <point name="class">
+          <text>Class</text>
+          <hint></hint>
+          </point>
+        <point name="table">
+          <text>table</text>
+          <hint></hint>
+          </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+   ///Usando Criteria
+   function T|class|.Get|table|(AWhere:string):IDBResultSet;
+   begin
+        result := TCriteria.New
+          .SetConnection(FConnection)
+          .SQL(CreateCriteria
+          .Select
+          .All
+          .From('|table|')
+          .Where(AWhere)
+          .AsString)
+          .AsResultSet;
+  end;
+        ]]>
+		</code>
+	</template>
+</codetemplate>

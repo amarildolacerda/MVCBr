@@ -1,3 +1,14 @@
+27/08/2017 - AL
+   + criado a pasta Templates e adicionado templates para ela;
+   + MVCBr.Patterns.Memento.pas
+
+22/08/2017 - AL
+   = renomeado MVCBr.Patterns.Factory para MVCBr.Factory (para se utilizando somente interno no MVCBr)
+   + MVCBr.Patterns.Factory - para uso geral
+   
+21/08/2017 - AL
+   + MVCBr.Patterns.Singleton
+   
 01/08/2017 - AL
    + MVCBr.FrameView - Herda TFrame para implementar IView
    + MVCBr.MiddlewareFactory - usado para interceptar a entrada e saida da VIEW

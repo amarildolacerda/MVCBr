@@ -64,9 +64,10 @@ type
   private
     FAdapter: T;
   public
+    function GetInstance:T;virtual;
     constructor Create(AInterface: T);
     destructor Destroy; override;
-    property Default: T read FAdapter;
+    property Default: T read GetInstance;
   end;
 
 implementation
@@ -124,6 +125,11 @@ destructor TMVCBrInterfacedAdapter<T>.Destroy;
 begin
   /// need freed interface on owner caller
   inherited;
+end;
+
+function TMVCBrInterfacedAdapter<T>.GetInstance: T;
+begin
+   result := FAdapter;
 end;
 
 end.

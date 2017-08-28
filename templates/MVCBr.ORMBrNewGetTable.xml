@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mm.ormbr.createGetTable" invoke="manual">
+		<description>
+			 Create new function get table to MVCBr Model
+		</description>
+		<author>
+			 amarildo lacerda
+		</author>
+        <point name="Table">
+           <text>Table</text>
+        </point>
+        <point name="class">
+           <text>class</text>
+        </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+type
+  I|Table| = IContainerDataset<T|Table|>; { move to right place }
+
+function T|class|.Get|Table|(AMemTable: TFdMemTable): I|Table|;
+begin
+  result := TContainerFDMemTable<T|Table|>.Create(FConnection, AMemTable);
+end;
+
+
+]]>
+		</code>
+	</template>
+</codetemplate>

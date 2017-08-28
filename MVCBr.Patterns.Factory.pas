@@ -40,6 +40,7 @@ type
     /// <summary> Default check if instance exists, is not create it..</summary>
     /// <returns>instance of class</returns>
     function Default: T;
+    function GetInstance:T;virtual;
     /// <summary> Release Disposeof only instance, not factory class </summary>
     procedure Release;
 {$IFDEF DUNIT}
@@ -67,7 +68,7 @@ end;
 
 function TMVCBrFactoryClass<T>.Default: T;
 begin
-  result := Invoke;
+  result := GetInstance;
 end;
 
 destructor TMVCBrFactoryClass<T>.Destroy;
@@ -75,6 +76,11 @@ begin
   if FOwned and assigned(FInstance) then
     FInstance.DisposeOf;
   inherited;
+end;
+
+function TMVCBrFactoryClass<T>.GetInstance: T;
+begin
+   result := invoke;
 end;
 
 constructor TMVCBrFactoryClass<T>.InternalCreate;

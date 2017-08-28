@@ -34,11 +34,14 @@ requires
   dbrtl,
   vcldb,
   vclwinx,
-  MVCBrCore;
+  MVCBrCore,
+  VclSmp;
 
 contains
   MVCBr.DataControl in '..\VCL\MVCBr.DataControl.pas',
   MVCBr.VCL.DBToggleSwitch in '..\VCL\MVCBr.VCL.DBToggleSwitch.pas',
-  MVCBr.VCL.StaticText in '..\VCL\MVCBr.VCL.StaticText.pas';
+  MVCBr.VCL.DBStaticText in '..\VCL\MVCBr.VCL.DBStaticText.pas',
+  MVCBr.VCL.DBGauge in '..\VCL\MVCBr.VCL.DBGauge.pas',
+  MVCBr.VCL.DBCalendarPick in '..\VCL\MVCBr.VCL.DBCalendarPick.pas';
 
 end.

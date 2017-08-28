@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="ormbr.nullable" invoke="auto">
+		<description>
+			 Nullable type
+		</description>
+		<author>
+			 amarildo lacerda
+		</author>
+        <point name="type"><text>type</text></point>
+		<code language=""><![CDATA[nullable<|type|>;]]>
+		</code>
+	</template>
+</codetemplate>

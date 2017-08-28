@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mm.creator" invoke="auto">
+		<description>
+             Model Creator Template
+		</description>
+		<author>
+             amarildo lacerda
+		</author>
+        <point name="BaseModel">
+           <text> BaseModel</text>
+           <hint></hint>
+        </point>
+        <point name="guid">
+           <text> TGuid</text>
+           <hint> CTRL+Shift+G to create new Guid </hint>
+        </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+/// <summary>
+///   Abstract Model Model Creator Templete
+/// </summary>
+///  <auth> amarildo lacerda, MVCBr </auth>
+
+interface
+
+uses System.Classes, System.SysUtils,
+  System.JSON, System.RTTI,
+  MVCBr.Interf, MVCBr.Model;
+
+type
+  /// <summary>
+  ///   Interface abstract
+  /// </summary>
+  T|BaseModel|Model = class;
+
+  I|BaseModel|Model = interface(IModel)
+    |guid|
+    function This: T|BaseModel|Model;
+  end;
+
+  /// <summary>
+  ///   Implementation for Abstract Model
+  /// </summary>
+  T|BaseModel|Model = class(TModelModel, I|BaseModel|Model)
+  public
+    function This: T|BaseModel|Model;
+  end;
+
+implementation
+
+{ TBaseModelModel }
+
+function T|BaseModel|Model.This: T|BaseModel|Model;
+begin
+    result := self;
+end;
+
+end.
+        ]]>
+		</code>
+	</template>
+</codetemplate>

@@ -20,7 +20,8 @@ Type
     procedure FreeAllInstances;
     procedure FreeInstance(ACommand: TValue);
     Function Query(ACommand: TValue): TMVCBrBuilderObject;
-    function Execute(ACommand: TValue; AParam: TValue):TValue; {IMVCBrBuilderItemResult}
+    function Execute(ACommand: TValue; AParam: TValue): TValue;
+    { IMVCBrBuilderItemResult }
     function Lazy: TMVCBrLazyFactory<TObject>;
   end;
 
@@ -33,7 +34,7 @@ Type
 
   IBuiltObject = IMVCBrBuilderObject;
 
-  //TBuiltResult = TValue;
+  // TBuiltResult = TValue;
 
   /// <summary>
   /// Builder Model Factory to support command into Models
@@ -47,10 +48,10 @@ Type
     function invoke: TMVCBrBuilderLazyFactory;
     function InvokeLazy: TMVCBrLazyFactory<TObject>;
   public
-
+    Function GetInstance: TMVCBrBuilderLazyFactory;virtual;
     Constructor Create; override;
     /// builder class
-    property Builder: TMVCBrBuilderLazyFactory read invoke;
+    property Builder: TMVCBrBuilderLazyFactory read GetInstance;
     Destructor Destroy; override;
     procedure CreateSubClasses; virtual; Abstract;
 
@@ -87,7 +88,7 @@ begin
   inherited;
 {$IFNDEF BPL}
   ModelTypes := [mtPattern];
-  {$ENDIF}
+{$ENDIF}
   CreateSubClasses;
 
 end;
@@ -101,8 +102,7 @@ begin
   inherited;
 end;
 
-function TBuilderModelFactory.Execute(ACommand, AParam: TValue)
-  : TValue;
+function TBuilderModelFactory.Execute(ACommand, AParam: TValue): TValue;
 begin
   result := Builder.Execute(ACommand, AParam);
 end;
@@ -121,6 +121,11 @@ begin
     FBuilder.FreeInstance(ACommand);
   if assigned(FLazy) then
     FLazy.FreeInstance(ACommand);
+end;
+
+function TBuilderModelFactory.GetInstance: TMVCBrBuilderLazyFactory;
+begin
+  result := invoke;
 end;
 
 function TBuilderModelFactory.InvokeLazy: TMVCBrLazyFactory<TObject>;

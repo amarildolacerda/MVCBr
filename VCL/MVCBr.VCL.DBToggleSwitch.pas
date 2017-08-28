@@ -38,7 +38,7 @@ uses MVCBr.Interf, System.RTTI.helper;
 
 procedure Register;
 begin
-  RegisterComponents('MVCBr', [TDBToggleSwitch]);
+  RegisterComponents('MVCBrDB', [TDBToggleSwitch]);
 end;
 
 { TDbToggleSwitch }

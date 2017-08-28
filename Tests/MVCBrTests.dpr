@@ -15,6 +15,11 @@ program MVCBrTests;
 {$ENDIF}
 
 uses
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
   DUnitTestRunner,
   MVCBr.ApplicationController,
   MVCBr.Controller,
@@ -41,7 +46,7 @@ uses
   TestMVCBr.Patterns.Lazy in 'TestMVCBr.Patterns.Lazy.pas',
   MVCBr.Patterns.Adapter in '..\MVCBr.Patterns.Adapter.pas',
   MVCBr.Patterns.Lazy in '..\MVCBr.Patterns.Lazy.pas',
-  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
+  MVCBr.Factory in '..\MVCBr.Factory.pas',
   TestMVCBr.Facade in 'TestMVCBr.Facade.pas',
   MVCBr.Patterns.Builder in '..\MVCBr.Patterns.Builder.pas',
   MVCBr.Patterns.Facade in '..\MVCBr.Patterns.Facade.pas',
@@ -56,8 +61,11 @@ uses
   TestMVCBr.Patterns.Mediator in 'TestMVCBr.Patterns.Mediator.pas',
   MVCBr.MiddlewareFactory in '..\MVCBr.MiddlewareFactory.pas',
   testODataServer in 'testODataServer.pas',
-  MVCBr.Patterns.Singleton in '..\MVCBr.Patterns.Singleton.pas',
-  TestMVCBr.Patterns.Singleton in 'TestMVCBr.Patterns.Singleton.pas';
+  MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
+  TestMVCBr.Patterns.Singleton in 'TestMVCBr.Patterns.Singleton.pas',
+  TestsMVCBr.Patterns.Factory in 'TestsMVCBr.Patterns.Factory.pas',
+  MVCBr.Patterns.Memento in '..\MVCBr.Patterns.Memento.pas',
+  TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas';
 
 {$R *.RES}
 

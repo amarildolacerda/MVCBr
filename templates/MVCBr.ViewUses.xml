@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mv.uses" invoke="auto">
+		<description>
+			 uses dependencies for views
+		</description>
+		<author>
+			 amarildo lacerda
+		</author>
+		<code language="Delphi" delimiter="|"><![CDATA[
+  MVCBr.Interf, MVCBr.FormView, MVCBr.Controller, System.RTTI,
+        ]]>
+		</code>
+	</template>
+</codetemplate>

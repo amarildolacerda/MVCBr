@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mc.addmodel" invoke="auto">
+		<description>
+			 Add model to Controller
+		</description>
+		<author>
+             amarildo lacerda
+		</author>
+        <point name="Model">
+         <text>Model</text>
+         </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+    add( T|Model|.new(self) );
+        ]]>
+		</code>
+	</template>
+</codetemplate>

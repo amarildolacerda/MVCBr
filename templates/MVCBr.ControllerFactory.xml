@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mc.factory" invoke="auto">
+		<description>
+              Create TControllerFactory to new controller
+		</description>
+		<author>
+              amarildo lacerda
+		</author>
+        <point name="BaseName" default="true">
+           <text>
+              Name
+           </text>
+           <hint>
+              type base name
+           </hint>
+        </point>
+
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+           /// implements controller
+           T|BaseName|Controller = class(TControllerFactory, I|BaseName|Controller)
+             public
+               procedure Init;override;
+           end;
+
+        ]]>
+		</code>
+	</template>
+</codetemplate>
