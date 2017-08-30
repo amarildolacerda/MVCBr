@@ -5,7 +5,7 @@
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
-{ // Data: 27/08/2017 11:16:03                                  // }
+{ // Data: 29/08/2017 22:34:39                                  // }
 { //************************************************************// }
 
 /// <summary>
@@ -13,91 +13,81 @@
 /// deve esta associado a um controller onde ocorrerá
 /// a troca de informações e comunicação com os Models
 /// </summary>
-unit ORMBrSampleView;
+unit LiveMVC_com_ORMBrView;
 
 interface
 
 uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf, System.JSON,
-  MVCBr.View, MVCBr.FormView, MVCBr.Controller, FireDAC.Stan.Intf,
-  ORMBrClienteModel,
-  FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
-  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
-  FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait, Data.DB,
-  FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
-  FireDAC.Comp.DataSet, VCL.Controls, VCL.Grids, VCL.DBGrids, VCL.StdCtrls;
+  MVCBr.View, MVCBr.FormView, MVCBr.Controller, Data.DB, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client, VCL.Controls, VCL.Grids, VCL.DBGrids, Vcl.StdCtrls;
 
 type
   /// Interface para a VIEW
-  IORMBrSampleView = interface(IView)
-    ['{1EC23089-EDA5-44EB-9796-201EC782005E}']
+  ILiveMVC_com_ORMBrView = interface(IView)
+    ['{97A93305-E058-4786-8142-1E12515669E2}']
     // incluir especializacoes aqui
   end;
 
   /// Object Factory que implementa a interface da VIEW
-  TORMBrSampleView = class(TFormFactory { TFORM } , IView,
-    IThisAs<TORMBrSampleView>, IORMBrSampleView, IViewAs<IORMBrSampleView>)
+  TLiveMVC_com_ORMBrView = class(TFormFactory { TFORM } , IView,
+    IThisAs<TLiveMVC_com_ORMBrView>, ILiveMVC_com_ORMBrView,
+    IViewAs<ILiveMVC_com_ORMBrView>)
     DBGrid1: TDBGrid;
     FDMemTable1: TFDMemTable;
     DataSource1: TDataSource;
     Button1: TButton;
     Button2: TButton;
-    procedure FormFactoryShow(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
   private
     FInited: boolean;
-    FClientes: IClientes;
   protected
     function Controller(const aController: IController): IView; override;
   public
     { Public declarations }
     class function New(aController: IController): IView;
-    function ThisAs: TORMBrSampleView;
-    function ViewAs: IORMBrSampleView;
+    function ThisAs: TLiveMVC_com_ORMBrView;
+    function ViewAs: ILiveMVC_com_ORMBrView;
     function ShowView(const AProc: TProc<IView>): integer; override;
-    function InvokeClientes: IClientes;
   end;
 
 Implementation
 
+uses
+  LiveORM.Model;
+
 {$R *.DFM}
 
-function TORMBrSampleView.ViewAs: IORMBrSampleView;
+function TLiveMVC_com_ORMBrView.ViewAs: ILiveMVC_com_ORMBrView;
 begin
   result := self;
 end;
 
-procedure TORMBrSampleView.FormFactoryShow(Sender: TObject);
+class function TLiveMVC_com_ORMBrView.New(aController: IController): IView;
 begin
-  InvokeClientes.open;
-end;
-
-function TORMBrSampleView.InvokeClientes: IClientes;
-begin
-  if not assigned(FClientes) then
-    FClientes := getModel<IClientesFactoryModel>.this.GetClientes(FDMemTable1 );
-  result := FClientes;
-end;
-
-class function TORMBrSampleView.New(aController: IController): IView;
-begin
-  result := TORMBrSampleView.create(nil);
+  result := TLiveMVC_com_ORMBrView.create(nil);
   result.Controller(aController);
 end;
 
-procedure TORMBrSampleView.Button1Click(Sender: TObject);
+procedure TLiveMVC_com_ORMBrView.Button1Click(Sender: TObject);
+var LCli : iClientes;
 begin
-  InvokeClientes.ApplyUpdates(0);
+   LCli:=GetModel<IClientesModel>.this.GetClientes( FDMemTable1 );
+   LCli.openWhere('codigo=1'  );
 end;
 
-procedure TORMBrSampleView.Button2Click(Sender: TObject);
+procedure TLiveMVC_com_ORMBrView.Button2Click(Sender: TObject);
 begin
-   InvokeClientes.open;
+    //FDMemTable1.ApplyUpdates(0);
+    GetModel<IClientesModel>.this.GetClientes( NIL ).ApplyUpdates(0);
 end;
 
-function TORMBrSampleView.Controller(const aController: IController): IView;
+function TLiveMVC_com_ORMBrView.Controller(const aController
+  : IController): IView;
 begin
   result := inherited Controller(aController);
   if not FInited then
@@ -107,12 +97,12 @@ begin
   end;
 end;
 
-function TORMBrSampleView.ThisAs: TORMBrSampleView;
+function TLiveMVC_com_ORMBrView.ThisAs: TLiveMVC_com_ORMBrView;
 begin
   result := self;
 end;
 
-function TORMBrSampleView.ShowView(const AProc: TProc<IView>): integer;
+function TLiveMVC_com_ORMBrView.ShowView(const AProc: TProc<IView>): integer;
 begin
   inherited;
 end;

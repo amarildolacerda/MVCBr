@@ -1,9 +1,9 @@
-object ORMBrSampleView: TORMBrSampleView
+object LiveMVC_com_ORMBrView: TLiveMVC_com_ORMBrView
   Left = 0
   Top = 0
-  Caption = 'ORMBrSampleView'
-  ClientHeight = 434
-  ClientWidth = 681
+  Caption = 'LiveMVC_com_ORMBrView'
+  ClientHeight = 417
+  ClientWidth = 532
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,14 +11,13 @@ object ORMBrSampleView: TORMBrSampleView
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
-  OnShow = FormFactoryShow
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
     Left = 16
-    Top = 48
-    Width = 657
-    Height = 313
+    Top = 24
+    Width = 497
+    Height = 225
     DataSource = DataSource1
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
@@ -28,20 +27,20 @@ object ORMBrSampleView: TORMBrSampleView
     TitleFont.Style = []
   end
   object Button1: TButton
-    Left = 16
-    Top = 367
-    Width = 121
+    Left = 24
+    Top = 255
+    Width = 75
     Height = 25
-    Caption = 'ApplyUpdates'
+    Caption = 'Abrir'
     TabOrder = 1
     OnClick = Button1Click
   end
   object Button2: TButton
-    Left = 16
-    Top = 17
+    Left = 128
+    Top = 255
     Width = 75
     Height = 25
-    Caption = 'Abrir'
+    Caption = 'Button2'
     TabOrder = 2
     OnClick = Button2Click
   end
@@ -53,12 +52,12 @@ object ORMBrSampleView: TORMBrSampleView
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 224
-    Top = 160
+    Left = 112
+    Top = 152
   end
   object DataSource1: TDataSource
     DataSet = FDMemTable1
-    Left = 440
-    Top = 200
+    Left = 208
+    Top = 152
   end
 end

@@ -1,7 +1,17 @@
-unit ORMBrClienteModel;
+{ //************************************************************// }
+{ //                                                            // }
+{ //         Código gerado pelo assistente                      // }
+{ //                                                            // }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 29/08/2017 22:42:33                                  // }
+{ //************************************************************// }
+
+Unit LiveORM.Model;
 
 /// <summary>
-/// ORMBrClientesFactoryModel; Create by Template MVCBrORMBrFBModel
+/// ORMBrClientesModel; Create by Template MVCBrORMBrFBModel
 /// Dependencies:  FireDAC, MVCBr and ORMBr
 /// </summary>
 /// <auth> amarildo lacerda, MVCBr </auth>
@@ -32,31 +42,30 @@ uses System.Classes, System.SysUtils,
   OrmBr.Model.Clientes;
 
 type
-  TClientesFactoryModel = class;
+  TClientesModel = class;
 
   /// <summary> Interface Model for FB Model </summary>
-  IClientesFactoryModel = interface(IModel)
+  IClientesModel = interface(IModel)
 
-    function This: TClientesFactoryModel;
+    function This: TClientesModel;
   end;
 
   IClientes = IContainerDataset<TClientes>;
 
   /// <summary>   Implements Interface Model for FB</summary>
-  TClientesFactoryModel = class(TOrmModelFactory, IClientesFactoryModel)
+  TClientesModel = class(TOrmModelFactory, IClientesModel)
   private
     FConnection: IDBConnection;
-    function ValidateEstadoExiste(AValue: String): boolean;
-    function GetProdutos(AWhere: string): IDBResultSet;
+    function GetBuscarCidade(AWhere: string): IDBResultSet;
   protected
     FClientes: IClientes; // FClientes: IContainerObjectSet<TClientes>;
   public
     procedure CreateDependencies; virtual;
     constructor Create(AController: IController; AConnection: TFDConnection);
     class function New(AController: IController; AConnection: TFDConnection)
-      : IClientesFactoryModel;
+      : IClientesModel;
     destructor Destroy; override;
-    function This: TClientesFactoryModel;
+    function This: TClientesModel;
     procedure Release; override;
     function GetMemDataset<T: Class, Constructor>(AMemDataset: TFdMemTable)
       : IContainerDataset<T>;
@@ -66,13 +75,21 @@ type
 
 Implementation
 
-procedure TClientesFactoryModel.CreateDependencies;
+/// Usando Criteria
+function TClientesModel.GetBuscarCidade(AWhere: string): IDBResultSet;
+begin
+  result := TCriteria.New.SetConnection(FConnection)
+    .SQL(CreateCriteria.Select.All.From('BuscarCidade').Where(AWhere).AsString)
+    .AsResultSet;
+end;
+
+procedure TClientesModel.CreateDependencies;
 begin
   // FClientes:= TContainerObjectSet<TClientes>.Create(FConnection);
   /// put here yours dependencies and init vars
 end;
 
-function TClientesFactoryModel.GetClientes(AMemTable: TFdMemTable): IClientes;
+function TClientesModel.GetClientes(AMemTable: TFdMemTable): IClientes;
 begin
   if assigned(AMemTable) then
     if not assigned(FClientes) then
@@ -80,7 +97,7 @@ begin
   result := FClientes;
 end;
 
-constructor TClientesFactoryModel.Create(AController: IController;
+constructor TClientesModel.Create(AController: IController;
   AConnection: TFDConnection);
 begin
   inherited Create;
@@ -93,58 +110,39 @@ end;
 /// <summary>Class Function NEW to create new instance for interfaced object</summary>
 /// <param name="AController">IController implementation</param>
 /// <param name="AConnection">Instance of FireDAC FDConnections</param>
-class function TClientesFactoryModel.New(AController: IController;
-  AConnection: TFDConnection): IClientesFactoryModel;
+class function TClientesModel.New(AController: IController;
+  AConnection: TFDConnection): IClientesModel;
 begin
-  result := TClientesFactoryModel.Create(AController, AConnection);
+  result := TClientesModel.Create(AController, AConnection);
 end;
 
 /// <summary>Release to free internal vars</summary>
-procedure TClientesFactoryModel.Release;
+procedure TClientesModel.Release;
 begin
   FConnection := nil;
   inherited;
 end;
 
-destructor TClientesFactoryModel.Destroy;
+destructor TClientesModel.Destroy;
 begin
   Release;
   inherited;
 end;
 
-function TClientesFactoryModel.This: TClientesFactoryModel;
+function TClientesModel.This: TClientesModel;
 begin
   result := self;
 end;
 
-function TClientesFactoryModel.GetMemDataset<T>(AMemDataset: TFdMemTable)
+function TClientesModel.GetMemDataset<T>(AMemDataset: TFdMemTable)
   : IContainerDataset<T>;
 begin
   result := TContainerFDMemTable<T>.Create(FConnection, AMemDataset);
 end;
 
-function TClientesFactoryModel.GetObjectSet<T>: IContainerObjectSet<T>;
+function TClientesModel.GetObjectSet<T>: IContainerObjectSet<T>;
 begin
   result := TContainerObjectSet<T>.Create(FConnection);
-end;
-
-/// Validacao usando Criteria
-function TClientesFactoryModel.ValidateEstadoExiste(AValue: String): boolean;
-var
-  LValidarSet: IDBResultSet;
-begin
-  LValidarSet := TCriteria.New.SetConnection(FConnection)
-    .SQL(CreateCriteria.Select.All.From('estados').First(1)
-    .Where('nome=' + quotedstr(AValue)).AsString).AsResultSet;
-  result := LValidarSet.RecordCount > 0;
-end;
-
-/// Usando Criteria
-function TClientesFactoryModel.GetProdutos(AWhere: string): IDBResultSet;
-begin
-  result := TCriteria.New.SetConnection(FConnection)
-    .SQL(CreateCriteria.Select.All.From('Produtos').Where(AWhere).AsString)
-    .AsResultSet;
 end;
 
 end.
