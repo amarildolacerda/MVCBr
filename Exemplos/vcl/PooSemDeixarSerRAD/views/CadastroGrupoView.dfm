@@ -2,8 +2,8 @@ object CadastroGrupoView: TCadastroGrupoView
   Left = 0
   Top = 0
   Caption = 'Cadastro Produtos'
-  ClientHeight = 394
-  ClientWidth = 816
+  ClientHeight = 265
+  ClientWidth = 554
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object CadastroGrupoView: TCadastroGrupoView
   object DBGrid1: TDBGrid
     Left = 0
     Top = 41
-    Width = 816
-    Height = 353
+    Width = 554
+    Height = 224
     Align = alClient
     BorderStyle = bsNone
     DataSource = DataSource1
@@ -31,45 +31,47 @@ object CadastroGrupoView: TCadastroGrupoView
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 816
+    Width = 554
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 413
+    ExplicitWidth = 816
     object Button1: TButton
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 75
+      Width = 190
       Height = 35
       Align = alLeft
-      Caption = 'Abrir'
+      Caption = 'Abrir (OData - Amazon)'
       TabOrder = 0
       OnClick = Button1Click
     end
     object Button2: TButton
       AlignWithMargins = True
-      Left = 738
+      Left = 402
       Top = 3
-      Width = 75
+      Width = 149
       Height = 35
       Align = alRight
-      Caption = 'Enviar'
+      Caption = 'Enviar (ApplyUpdates)'
       TabOrder = 1
       OnClick = Button2Click
-      ExplicitLeft = 335
+      ExplicitLeft = 664
     end
     object Button3: TButton
       AlignWithMargins = True
-      Left = 84
+      Left = 199
       Top = 3
-      Width = 75
+      Width = 101
       Height = 35
       Align = alLeft
       Caption = 'Fechar'
       TabOrder = 2
       OnClick = Button3Click
+      ExplicitLeft = 132
+      ExplicitTop = 0
     end
   end
   object ODataDatasetBuilder1: TODataDatasetBuilder

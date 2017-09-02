@@ -21,7 +21,8 @@ uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf, System.JSON,
   MVCBr.View, MVCBr.FormView, MVCBr.Controller, VCL.StdCtrls, VCL.Controls,
-  VCL.ComCtrls, MVCBr.Component, MVCBr.PageView, MVCBr.VCL.PageView;
+  VCL.ComCtrls, MVCBr.Component, MVCBr.PageView, MVCBr.VCL.PageView,
+  Vcl.ExtCtrls;
 
 type
 
@@ -34,15 +35,17 @@ type
   /// Object Factory que implementa a interface da VIEW
   TNewMVCAppView = class(TFormFactory { TFORM } , IView,
     IThisAs<TNewMVCAppView>, INewMVCAppView, IViewAs<INewMVCAppView>)
-    Button1: TButton;
-    Edit1: TEdit;
-    Button2: TButton;
     PageControl1: TPageControl;
     TabSheet1: TTabSheet;
     Memo1: TMemo;
-    Button3: TButton;
     PageViewAdapter: TVCLPageViewManager;
+    Panel1: TPanel;
+    Button1: TButton;
+    Button3: TButton;
     Button4: TButton;
+    Panel2: TPanel;
+    Edit1: TEdit;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
     procedure FormFactoryViewEvent(AMessage: TJSONValue; var AHandled: Boolean);
     procedure Button2Click(Sender: TObject);

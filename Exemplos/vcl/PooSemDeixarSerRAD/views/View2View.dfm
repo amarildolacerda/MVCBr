@@ -2,8 +2,8 @@ object View2View: TView2View
   Left = 0
   Top = 0
   Caption = 'View2View'
-  ClientHeight = 231
-  ClientWidth = 505
+  ClientHeight = 152
+  ClientWidth = 427
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,23 +19,23 @@ object View2View: TView2View
     Width = 330
     Height = 21
     TabOrder = 0
-    Text = 'Edit1'
+    TextHint = 'Mensagem a enviar'
   end
   object Button1: TButton
-    Left = 384
-    Top = 54
-    Width = 75
+    Left = 239
+    Top = 81
+    Width = 139
     Height = 25
-    Caption = 'Enviar'
+    Caption = 'Enviar ViewEvent'
     TabOrder = 1
     OnClick = Button1Click
   end
   object Button2: TButton
     Left = 48
-    Top = 120
-    Width = 75
+    Top = 81
+    Width = 185
     Height = 25
-    Caption = 'Notify'
+    Caption = 'Windows Notification'
     TabOrder = 2
     OnClick = Button2Click
   end
