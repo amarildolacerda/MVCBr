@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{13CFCAC9-D726-498B-A025-57AF973E0A2C}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MVCBrDelphiBuilderApp.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="C:\lixo\Views\NewMVCAppBuild.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MVCBrDelphiBuilderApp">
+        <MSBuild Projects="MVCBrDelphiBuilderApp.dproj"/>
+    </Target>
+    <Target Name="MVCBrDelphiBuilderApp:Clean">
+        <MSBuild Projects="MVCBrDelphiBuilderApp.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrDelphiBuilderApp:Make">
+        <MSBuild Projects="MVCBrDelphiBuilderApp.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="NewMVCAppBuild">
+        <MSBuild Projects="C:\lixo\Views\NewMVCAppBuild.dproj"/>
+    </Target>
+    <Target Name="NewMVCAppBuild:Clean">
+        <MSBuild Projects="C:\lixo\Views\NewMVCAppBuild.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="NewMVCAppBuild:Make">
+        <MSBuild Projects="C:\lixo\Views\NewMVCAppBuild.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MVCBrDelphiBuilderApp;NewMVCAppBuild"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MVCBrDelphiBuilderApp:Clean;NewMVCAppBuild:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MVCBrDelphiBuilderApp:Make;NewMVCAppBuild:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
