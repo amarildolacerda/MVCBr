@@ -1,12 +1,16 @@
-FROM ubuntu:16.04
-MAINTAINER amarildo lacerda <amarildo_51@msn.com>
-RUN apt-get update && apt-get install nginx -y
+FROM ubuntu:16.04 \
+MAINTAINER amarildo lacerda <amarildo_51@msn.com> \
+RUN apt-get update && apt-get install nginx -y \
+\
+ENV origem https://github.com/amarildolacerda/MVCBr/blob/master \
+ENV dest /mvcbr \
 
-RUN mkdir -p /mvcbr
+RUN mkdir -p ${dest} \
+\
 
-ADD https://github.com/amarildolacerda/MVCBr/blob/master/bin/MVCBrServer_Linux /mvcbr/MVCBrServer_Linux
-ADD https://github.com/amarildolacerda/MVCBr/blob/master/dados/MVCBR.FDB /mvcbr/MVCBR.FDB
+ADD ${origem}/bin/MVCBrServer_Linux ${dest}/MVCBrServer_Linux \
+ADD ${origem}/dados/MVCBR.FDB ${dest}/MVCBR.FDB \
 
-EXPOSE 8080
-ENTRYPOINT mvcbr/MVCBrServer_Linux
-CMD bash
+EXPOSE 8080 \
+ENTRYPOINT ${dest}/MVCBrServer_Linux \
+#CMD bash \
