@@ -19,6 +19,7 @@ uses
 type
   [Entity]
   [Table('PRODUTOS', '')]
+  [PrimaryKey('CODIGO')]
   TPRODUTOS = class
   private
     { Private declarations } 
@@ -26,7 +27,7 @@ type
     FDESCRICAO: Nullable<String>;
     FGRUPO: Nullable<String>;
     FUNIDADE: Nullable<String>;
-    FPRECO: Nullable<Currency>;
+    FPRECO: Nullable<Double>;
   public 
     { Public declarations } 
     [Column('CODIGO', ftString, 30)]
@@ -45,9 +46,9 @@ type
     [Dictionary('UNIDADE', 'Mensagem de validação', '', '', '', taLeftJustify)]
     property UNIDADE: Nullable<String> read FUNIDADE write FUNIDADE;
 
-    [Column('PRECO', ftCurrency)]
-    [Dictionary('PRECO', 'Mensagem de validação', '0', '', '', taRightJustify)]
-    property PRECO: Nullable<Currency> read FPRECO write FPRECO;
+    [Column('PRECO', ftFloat,15,4)]
+    [Dictionary('PRECO', 'Mensagem de validação', '0', '0.00', '0.00', taRightJustify)]
+    property PRECO: Nullable<double> read FPRECO write FPRECO;
   end;
 
 implementation

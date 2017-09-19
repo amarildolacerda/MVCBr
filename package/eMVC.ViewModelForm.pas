@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
-  Graphics, Controls, Forms, Dialogs, ExtCtrls, eMVC.toolBox, StdCtrls, Buttons;
+  Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  eMVC.toolBox, StdCtrls, Buttons;
 
 {$I ./translate/translate.inc}
 
@@ -62,14 +63,21 @@ type
     chFMX: TCheckBox;
     Image1: TImage;
     Label2: TLabel;
+    edFolder: TEdit;
+    SpeedButton1: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure listClassNameClick(Sender: TObject);
     procedure nbPageChanged(Sender: TObject);
     procedure cbCreateModelClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure cbCreateDirClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     procedure translate;
+    function GetFolder: string;
+    procedure SetFolder(const Value: string);
     { Private declarations }
   public
     { Public declarations }
@@ -81,6 +89,7 @@ type
     ModelAlone: boolean;
     viewAlone: boolean;
     ViewParentClass: string;
+    property Folder: string read GetFolder write SetFolder;
   end;
 
 var
@@ -107,6 +116,24 @@ begin
 
 end;
 
+procedure TFormNewSet.FormShow(Sender: TObject);
+var
+  project: string;
+begin
+
+  project := GetCurrentProject.FileName;
+  if project <> '' then
+  begin
+    edFolder.text := extractFilePath(project) + 'Views';
+  end;
+  cbCreateDirClick(Sender);
+end;
+
+function TFormNewSet.GetFolder: string;
+begin
+  result := edFolder.text;
+end;
+
 procedure TFormNewSet.translate;
 begin
   caption := 'View/ViewModel - Model';
@@ -120,7 +147,7 @@ begin
   cbCreateModel.caption := wizardForm_checkBox_createmodel_caption;
   cbCreateView.caption := wizardForm_checkBox_createview_caption;
   cbViewModel.caption := wizardForm_checkBox_createviewmodel_caption;
-  label10.caption := wizarForm_createview_tipoview_caption;
+  Label10.caption := wizarForm_createview_tipoview_caption;
 end;
 
 procedure TFormNewSet.btnOKNextClick(Sender: TObject);
@@ -129,18 +156,18 @@ begin
   case nb.PageIndex of
     0:
       begin
-        if trim(edtSetName.Text) = '' then
+        if trim(edtSetName.text) = '' then
         begin
           eMVC.toolBox.showInfo(format(msgNeedNameFor, ['View']));
           exit;
         end;
-        if SetNameExists(edtSetName.Text) then
+        if SetNameExists(edtSetName.text) then
         begin
-          eMVC.toolBox.showInfo(format(msgSorryFileExists, [edtSetName.Text]));
+          eMVC.toolBox.showInfo(format(msgSorryFileExists, [edtSetName.text]));
           exit;
         end;
 
-        self.Setname := trim(edtSetName.Text);
+        self.Setname := trim(edtSetName.text);
         self.CreateSubDir := cbCreateDir.checked;
       end;
     1:
@@ -155,8 +182,8 @@ begin
     2:
       begin
         viewAlone := not cbViewInCtrl.checked;
-        if trim(edtClassName.Text) <> '' then
-          ViewParentClass := trim(edtClassName.Text)
+        if trim(edtClassName.text) <> '' then
+          ViewParentClass := trim(edtClassName.text)
         else if (listClassName.ItemIndex >= 0) and
           (listClassName.ItemIndex < listClassName.Items.Count) then
           ViewParentClass := listClassName.Items[listClassName.ItemIndex]
@@ -192,6 +219,12 @@ begin
   btnBack.visible := (nb.PageIndex > 0);
 end;
 
+procedure TFormNewSet.cbCreateDirClick(Sender: TObject);
+begin
+  edFolder.visible := cbCreateDir.checked;
+  SpeedButton1.visible := cbCreateDir.checked;
+end;
+
 procedure TFormNewSet.cbCreateModelClick(Sender: TObject);
 begin
   cbCreateView.checked := not cbCreateModel.checked;
@@ -221,16 +254,33 @@ end;
 procedure TFormNewSet.listClassNameClick(Sender: TObject);
 begin
   if listClassName.ItemIndex >= 0 then
-    edtClassName.Text := listClassName.Items[listClassName.ItemIndex];
+    edtClassName.text := listClassName.Items[listClassName.ItemIndex];
 end;
 
 procedure TFormNewSet.nbPageChanged(Sender: TObject);
 begin
-  if (nb.PageIndex = 2) and (trim(edtClassName.Text) = '') then
+  if (nb.PageIndex = 2) and (trim(edtClassName.text) = '') then
   begin
     listClassName.ItemIndex := 0;
     listClassName.OnClick(listClassName);
   end;
+end;
+
+procedure TFormNewSet.SetFolder(const Value: string);
+begin
+  edFolder.text := Value;
+end;
+
+procedure TFormNewSet.SpeedButton1Click(Sender: TObject);
+begin
+  with TFileOpenDialog.create(self) do
+    try
+      Options := Options + [TFileDialogOption.fdoPickFolders];
+      if execute then
+        edFolder.text := FileName;
+    finally
+      free;
+    end;
 end;
 
 end.

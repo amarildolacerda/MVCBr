@@ -8,7 +8,7 @@ uses System.Classes, System.SysUtils,
 
 type
 
-  TMVCBrMiddlewareType = (middView, middController, middFrame);
+  TMVCBrMiddlewareType = (middView, middController, middFrame, middReport);
 
   IMVCBrMiddleware = interface
     ['{2A015FEE-754D-41AE-A4C9-64398FEBBAAD}']
@@ -53,16 +53,29 @@ type
       ASender: TObject);
   end;
 
-Function RegisterViewMiddleware(AInstance: TMVCBrMiddleware): string;
+Function MVCBrRegisterMiddleware(AType: TMVCBrMiddlewareType;
+  AInstance: TMVCBrMiddleware): string;
 
+{
+  [Depredicated]
+  [Obsoleted]
+  Function RegisterViewMiddleware(AInstance: TMVCBrMiddleware): string;
+}
 implementation
 
 var
   LMiddlewareFactory: TMVCBrMiddlewareFactory;
 
-Function RegisterViewMiddleware(AInstance: TMVCBrMiddleware): string;
+  {
+    Function RegisterViewMiddleware(AInstance: TMVCBrMiddleware): string;
+    begin
+    result := MVCBrRegisterMiddleware(middView, AInstance);
+    end;
+  }
+Function MVCBrRegisterMiddleware(AType: TMVCBrMiddlewareType;
+  AInstance: TMVCBrMiddleware): string;
 begin
-  AInstance.MiddType := middView;
+  AInstance.MiddType := AType;
   result := TMVCBrMiddlewareFactory.Add(AInstance);
 end;
 
@@ -88,7 +101,6 @@ begin
   inherited;
 end;
 
-
 Threadvar FReleased: Boolean;
 
 function TMVCBrMiddlewareFactory.Invoke: TMVCBrMediator<TMVCBrMiddleware>;
@@ -100,7 +112,6 @@ begin
   end;
   result := FMiddleware;
 end;
-
 
 procedure TMVCBrMiddlewareFactory.Release;
 begin

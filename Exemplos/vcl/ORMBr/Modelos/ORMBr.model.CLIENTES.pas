@@ -20,7 +20,8 @@ type
 
   [Entity]
   [Table('CLIENTES', '')]
-  [PrimaryKey('CODIGO')]
+  [PrimaryKey('CODIGO', NotInc, NoSort, false,
+    'Código do Cliente é controle único')]
   TCLIENTES = class
   private
     { Private declarations }
@@ -28,8 +29,15 @@ type
     FNOME: nullable<String>;
     FENDERECO: nullable<String>;
     FCIDADE: nullable<String>;
-    FESTADO: nullable<String>;
+    FESTADO: nullable<string>;
+    Finativo: nullable<Integer>;
   public
+
+    [Column('inativo', ftInteger)]
+    [Dictionary('inativo', 'Indicar se o cliente é inativo', '', '',
+      '', taLeftJustify)]
+    property inativo: nullable<Integer> read Finativo write Finativo;
+
     { Public declarations }
     [Column('CODIGO', ftInteger)]
     [Dictionary('CODIGO', 'Mensagem de validação', '', '', '', taCenter)]

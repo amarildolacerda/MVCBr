@@ -62,6 +62,8 @@ type
 
     constructor Create; override;
     destructor Destroy; override;
+    [weak]
+    class function NewController(AController: TGuid): IController;
     procedure CreateModule(AClass: TComponentClass; var AModule);
     procedure Release; override;
     [weak]
@@ -80,8 +82,8 @@ type
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcOnClose: TProc<IView>): IView; overload; virtual;
     [weak]
-    function ShowView(const AProcBeforeShow:TProc<IView>;
-             const bShowModal:Boolean):IView;overload;virtual;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const bShowModal: Boolean): IView; overload; virtual;
 
     [weak]
     function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
@@ -101,7 +103,7 @@ type
 
     [weak]
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
-    [weak]
+
     procedure Init; virtual;
     [weak]
     function Start: IController; virtual;
@@ -444,7 +446,7 @@ begin
             begin
               obj := FView.This;
               FView := nil; // tenta encerrar o formulario
-              //obj.DisposeOf;
+              // obj.DisposeOf;
             end;
           end;
       except
@@ -457,6 +459,13 @@ begin
   begin
     // FView := nil;
   end;
+end;
+
+class function TControllerFactory.NewController(AController: TGuid)
+  : IController;
+begin
+  result := MVCBr.ApplicationController.ApplicationController.ResolveController
+    (AController);
 end;
 
 function TControllerFactory.ViewEvent(AMessage: String;

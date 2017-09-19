@@ -73,6 +73,11 @@ type
     function Editing: boolean;
   end;
 
+  TFieldsHack = class(TFields)
+  public
+    procedure FillFromJson(AJson: string);
+  end;
+
   TFieldsHelper = class helper for TFields
   private
   public
@@ -80,7 +85,7 @@ type
       ANulls: boolean = true): integer;
     function ToJson(ANulls: boolean = true): string;
     function JsonValue: TJsonValue;
-    procedure FormJson(AJson: string);
+    procedure FillFromJson(AJson: string);
   end;
 
   TFieldHelper = class helper for TField
@@ -502,7 +507,7 @@ end;
 
 { TFieldsHelper }
 
-procedure TFieldsHelper.FormJson(AJson: string);
+procedure TFieldsHack.FillFromJson(AJson: string);
 var
   j: TJsonObject;
   V: TJsonValue;
@@ -514,6 +519,7 @@ var
   SS: TStringStream;
 
 begin
+ try
   j := TJsonObject.Parse(AJson);
   try
     for it in self do
@@ -523,7 +529,7 @@ begin
       if assigned(jp) then
         if not(jp.JsonValue is TJSONNull) then
           V := j.Get(key).JsonValue;
-      if not assigned(V) then
+      if (not assigned(jp)) or (not assigned(V)) then
       begin
         it.Clear;
         Continue;
@@ -598,6 +604,10 @@ begin
   finally
     FreeAndNil(j);
   end;
+ except
+   on e:exception do
+      raise Exception.Create(e.message+'('+key+')');
+ end;
 end;
 
 function TFieldsHelper.ToJson(ANulls: boolean = true): string;
@@ -611,6 +621,11 @@ begin
   finally
     AJSONObject.Free;
   end;
+end;
+
+procedure TFieldsHelper.FillFromJson(AJson: string);
+begin
+   TFieldsHack(self).FillFromJson(AJson);
 end;
 
 function TFieldsHelper.JsonObject(var AJSONObject: TJsonObject;
@@ -783,5 +798,8 @@ begin
     EnableControls;
   end;
 end;
+
+{ TFieldsHack }
+
 
 end.

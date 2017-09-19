@@ -142,7 +142,10 @@ begin
         LCriarPathModule := cbCreateDir.Checked;
         if cbCreateDir.Checked then
         begin
-          path := path + setname + '\'; // +GetUnitSubFolder(setname);
+          if Folder <> '' then
+            path := Folder + '\'
+          else
+            path := path + setname + '\'; // +GetUnitSubFolder(setname);
           if not directoryExists(path) then
             ForceDirectories(path);
         end;

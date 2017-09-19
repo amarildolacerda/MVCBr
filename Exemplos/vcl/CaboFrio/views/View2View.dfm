@@ -23,7 +23,7 @@ object View2View: TView2View
   end
   object Button1: TButton
     Left = 384
-    Top = 54
+    Top = 52
     Width = 75
     Height = 25
     Caption = 'Enviar'

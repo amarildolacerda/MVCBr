@@ -1,11 +1,11 @@
 /// <summary>
-///    Factory patterns MVCBr.Patterns.Factory to implements a wrapper generic factory classes
-///    Factory class create instances of object in internal calls, some time
-///       it would be create by caller and manager internal of factory class with
-///       FOwned frag equal true
+/// Factory patterns MVCBr.Patterns.Factory to implements a wrapper generic factory classes
+/// Factory class create instances of object in internal calls, some time
+/// it would be create by caller and manager internal of factory class with
+/// FOwned frag equal true
 /// </summary>
 /// <auth>
-///    amarildo lacerda
+/// amarildo lacerda
 /// </auth>
 unit MVCBr.Patterns.Factory;
 
@@ -19,6 +19,7 @@ type
     ['{31284382-3961-40BB-B03D-C2F3C70D140D}']
     function Default: T;
     procedure Release;
+    property GetInstance: T read Invoke;
   end;
 
   /// <summary> Class to implements factory interface for concrete classes</summary>
@@ -35,12 +36,13 @@ type
     constructor Create;
     destructor Destroy; override;
     /// <summay> Create New instance of factory class </summary>
-    class function New(AOwned: boolean = true): TMVCBrFactoryClass<T>;overload;
-    class function New(AObject:T;AOwned: boolean = true): TMVCBrFactoryClass<T>;overload;
+    class function New(AOwned: boolean = true): TMVCBrFactoryClass<T>; overload;
+    class function New(AObject: T; AOwned: boolean = true)
+      : TMVCBrFactoryClass<T>; overload;
     /// <summary> Default check if instance exists, is not create it..</summary>
     /// <returns>instance of class</returns>
     function Default: T;
-    function GetInstance:T;virtual;
+    function GetInstance: T; virtual;
     /// <summary> Release Disposeof only instance, not factory class </summary>
     procedure Release;
 {$IFDEF DUNIT}
@@ -74,13 +76,16 @@ end;
 destructor TMVCBrFactoryClass<T>.Destroy;
 begin
   if FOwned and assigned(FInstance) then
+  begin
     FInstance.DisposeOf;
+    FInstance := nil;
+  end;
   inherited;
 end;
 
 function TMVCBrFactoryClass<T>.GetInstance: T;
 begin
-   result := invoke;
+  result := Invoke;
 end;
 
 constructor TMVCBrFactoryClass<T>.InternalCreate;
@@ -95,8 +100,8 @@ begin
   result := FInstance;
 end;
 
-class function TMVCBrFactoryClass<T>.New(AObject: T;
-  AOwned: boolean): TMVCBrFactoryClass<T>;
+class function TMVCBrFactoryClass<T>.New(AObject: T; AOwned: boolean)
+  : TMVCBrFactoryClass<T>;
 begin
   result := New(AOwned);
   result.FInstance := AObject;

@@ -2,8 +2,8 @@ object NewMVCAppView: TNewMVCAppView
   Left = 0
   Top = 0
   Caption = 'NewMVCAppView'
-  ClientHeight = 292
-  ClientWidth = 857
+  ClientHeight = 385
+  ClientWidth = 491
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -27,18 +27,18 @@ object NewMVCAppView: TNewMVCAppView
   end
   object Edit1: TEdit
     Left = 8
-    Top = 255
+    Top = 260
     Width = 288
     Height = 21
     TabOrder = 1
-    Text = 'Edit1'
+    TextHint = 'Digite o CPF a validar'
   end
   object Button2: TButton
     Left = 296
-    Top = 254
-    Width = 81
-    Height = 25
-    Caption = 'Enviar'
+    Top = 260
+    Width = 179
+    Height = 21
+    Caption = 'Validar CPF com ACBr'
     TabOrder = 2
     OnClick = Button2Click
   end

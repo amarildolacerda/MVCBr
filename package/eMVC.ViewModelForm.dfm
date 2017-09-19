@@ -15,6 +15,7 @@ object FormNewSet: TFormNewSet
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
@@ -67,37 +68,52 @@ object FormNewSet: TFormNewSet
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 295
+        Top = 151
+        Width = 23
+        Height = 23
+        Caption = '...'
+        OnClick = SpeedButton1Click
+      end
       object edtSetName: TEdit
         Left = 20
-        Top = 68
-        Width = 147
+        Top = 61
+        Width = 190
         Height = 21
         TabOrder = 0
         Text = 'New'
       end
       object cbCreateDir: TCheckBox
-        Left = 19
-        Top = 123
+        Left = 20
+        Top = 95
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'agrupar os artefato na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object chFMX: TCheckBox
-        Left = 19
-        Top = 146
+        Left = 20
+        Top = 118
         Width = 190
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
+      end
+      object edFolder: TEdit
+        Left = 20
+        Top = 152
+        Width = 277
+        Height = 21
+        TabOrder = 3
+        Text = 'folder to save artefacts'
       end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label3: TLabel
         Left = 9
         Top = 15
@@ -3502,7 +3518,6 @@ object FormNewSet: TFormNewSet
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

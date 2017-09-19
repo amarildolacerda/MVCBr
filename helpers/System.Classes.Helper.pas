@@ -128,6 +128,8 @@ Type
       overload; static;
 
     // RTTI
+    procedure CopyFrom(Obj: TObject);
+    procedure CopyTo(Obj:TObject);
     function ContextPropertyCount: Integer;
     function ContextPropertyName(idx: Integer): string;
     property ContextProperties[AName: string]: TValue read GetContextProperties
@@ -164,7 +166,6 @@ Type
       params: array of TValue): Boolean;
     function ContextInvokeMethod(AName: string;
       params: array of TValue): TValue;
-
   end;
 
   TTaskList = class(TThreadList)
@@ -690,6 +691,38 @@ begin
   finally
     LContext.Free;
   end;
+end;
+
+procedure TObjectHelper.CopyFrom(Obj: TObject);
+var
+  aCtx: TRttiContext;
+  aProperty: TRttiProperty;
+  aRtti: TRttiType;
+  aVal : TValue;
+begin
+  aCtx := TRttiContext.Create;
+  try
+    aRtti := aCtx.GetType(self.ClassType);
+    for aProperty in aRtti.GetProperties do
+    begin
+      if aProperty.PropertyType.TypeKind in [tkInteger, tkChar, tkFloat, tkString,
+        tkWChar, tkLString, tkWString, tkVariant, tkInt64, tkUString] then
+      begin
+        aVal := Obj.ContextProperties[aProperty.name];
+        if not aVal.IsEmpty then
+          if aProperty.Visibility in [mvPublished] then  // usar sometne Published para não pegar sugeira.
+            aProperty.SetValue(self, aVal);
+      end;
+    end;
+  finally
+    aCtx.Free;
+  end;
+
+end;
+
+procedure TObjectHelper.CopyTo(Obj: TObject);
+begin
+   obj.CopyFrom(self);
 end;
 
 class procedure TObjectHelper.Queue(Proc: TProc);

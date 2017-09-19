@@ -193,6 +193,8 @@ type
 
   TMVCBrObserverProc = TProc<TJsonValue>;
 
+  TMVCBrObserverItemAbstract = class;
+
   IMVCBrObserverItem = interface
     ['{DE40A5D5-4492-4C3D-8369-378985ED0714}']
     procedure SetIDInstance(const Value: TGuid);
@@ -217,8 +219,8 @@ type
     FContainer: TObject;
   protected
     procedure SetIDInstance(const Value: TGuid); virtual;
-    function GetIDInstance: TGuid; virtual;
   public
+    function GetIDInstance: TGuid; virtual;
     procedure SetContainer(AObject: TObject);
     function GetContainer: TObject;
     procedure SetTopic(const Value: string); virtual; abstract;
@@ -242,14 +244,14 @@ type
   /// </summary>
   IMVCBrObservable = interface
     ['{F9FEB955-A18E-484F-9F67-1AC97DFF7028}']
-    function GetItems(idx: integer): IMVCBrObserverItem;
-    procedure SetItems(idx: integer; const Value: IMVCBrObserverItem);
+    function GetItems(idx: integer): TMVCBrObserverItemAbstract;
+    procedure SetItems(idx: integer; const Value: TMVCBrObserverItemAbstract);
     function This: TObject;
     function Count: integer;
-    property Items[idx: integer]: IMVCBrObserverItem read GetItems
+    property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
       write SetItems;
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
-    procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
+    procedure UnSubscribe(AProc: TMVCBrObserverProc; AName:String=''); overload;
     procedure Send(AJson: TJsonValue); overload;
     procedure Send(const AName: string; AJson: TJsonValue;
       AOwned: boolean = true); overload;

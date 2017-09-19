@@ -2,8 +2,8 @@ object CadastroGrupoView: TCadastroGrupoView
   Left = 0
   Top = 0
   Caption = 'Cadastro Produtos'
-  ClientHeight = 394
-  ClientWidth = 816
+  ClientHeight = 246
+  ClientWidth = 473
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,8 +16,8 @@ object CadastroGrupoView: TCadastroGrupoView
   object DBGrid1: TDBGrid
     Left = 0
     Top = 41
-    Width = 816
-    Height = 353
+    Width = 473
+    Height = 205
     Align = alClient
     BorderStyle = bsNone
     DataSource = DataSource1
@@ -31,12 +31,12 @@ object CadastroGrupoView: TCadastroGrupoView
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 816
+    Width = 473
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 413
+    ExplicitWidth = 816
     object Button1: TButton
       AlignWithMargins = True
       Left = 3
@@ -50,7 +50,7 @@ object CadastroGrupoView: TCadastroGrupoView
     end
     object Button2: TButton
       AlignWithMargins = True
-      Left = 738
+      Left = 395
       Top = 3
       Width = 75
       Height = 35
@@ -58,7 +58,7 @@ object CadastroGrupoView: TCadastroGrupoView
       Caption = 'Enviar'
       TabOrder = 1
       OnClick = Button2Click
-      ExplicitLeft = 335
+      ExplicitLeft = 738
     end
     object Button3: TButton
       AlignWithMargins = True

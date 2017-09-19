@@ -149,7 +149,7 @@ type
   public
     destructor Destroy; override;
     procedure AfterConstruction; override;
-    function NewTab(APageView: TPageView): TObject; virtual;
+    function NewTab(APageView: TPageView;ACaption:String): TObject; virtual;
     function GetPageTabClass: TComponentClass; virtual;
     function GetPageContainerClass: TComponentClass; virtual;
     function Count: integer;
@@ -289,8 +289,15 @@ end;
 
 function TCustomPageViewFactory.AddView(AView: IView; ABeforeShow: TProc<IView>)
   : TPageView;
+var
+  ATitle: String;
 begin
-  result := NewItem(AView.Title);
+  if AView.Title <> '' then
+    ATitle := AView.Title
+  else if AView.This.InheritsFrom(TForm) then
+    ATitle := TForm(AView.This).Caption;
+
+  result := NewItem(ATitle);
   result.Controller := AView.GetController;
   result.FView := AView.This;
   result.Guid := TMVCBr.GetGuid(AView);
@@ -366,6 +373,7 @@ begin
     LPageView := FindView(AController);
     if assigned(LPageView) and assigned(LPageView.Tab) then
       SetActivePage(LPageView.Tab);
+    result := LPageView;
     exit;
   end;
 
@@ -392,6 +400,7 @@ begin
 
   result := AddView(LView, ABeforeShow);
   result.ControllerGuid := AController;
+
 end;
 
 function TCustomPageViewFactory.AddView(AView: IView): TPageView;
@@ -552,13 +561,13 @@ begin
   FList.Add(r);
   r.FOwner := self;
   r.Text := ACaption;
-  r.Tab := NewTab(result);
+  r.Tab := NewTab(result,ACaption);
   if r.Tab <> nil then
     r.FClassType := r.Tab.ClassType;
   result := r;
 end;
 
-function TCustomPageViewFactory.NewTab(APageView: TPageView): TObject;
+function TCustomPageViewFactory.NewTab(APageView: TPageView;ACaption:String): TObject;
 begin
   result := GetPageTabClass.Create(nil);
 end;

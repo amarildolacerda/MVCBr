@@ -47,14 +47,15 @@ type
   private
     [unsafe]
     FObserver: IMVCBrObserver;
-    FSubscribeProc: TMVCBrObserverProc;
     FTopic: string;
     procedure SetTopic(const Value: string); override;
     function GetTopic: string; override;
-    function GetSubscribeProc: TMVCBrObserverProc; override;
     procedure SetSubscribeProc(const Value: TMVCBrObserverProc); override;
     procedure SetObserver(const Value: IMVCBrObserver); override;
     function GetObserver: IMVCBrObserver; override;
+  protected
+    FSubscribeProc: TMVCBrObserverProc;
+    function GetSubscribeProc: TMVCBrObserverProc; override;
   public
     destructor Destroy; override;
     procedure release; override;
@@ -70,25 +71,28 @@ type
   /// </summary>
   TMVCBrObservable = class(TInterfacedObject, IMVCBrObservable)
   private
-    FSubscribers: TThreadList<IMVCBrObserverItem>;
-    function GetItems(idx: integer): IMVCBrObserverItem;
-    procedure SetItems(idx: integer; const Value: IMVCBrObserverItem);
+    FSubscribers: TThreadList<TMVCBrObserverItemAbstract>;
+    function GetItems(idx: integer): TMVCBrObserverItemAbstract;
+    procedure SetItems(idx: integer; const Value: TMVCBrObserverItemAbstract);
     class procedure release;
   public
     Constructor create;
     Destructor Destroy; override;
-    function LockList: TList<IMVCBrObserverItem>; overload;
+    function LockList: TList<TMVCBrObserverItemAbstract>; overload;
     procedure UnlockList;
     class function DefaultContainer: TMVCBrObservable;
     function Count: integer;
-    property Items[idx: integer]: IMVCBrObserverItem read GetItems
+    property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
       write SetItems;
     function This: TObject;
     function ThisAs: TMVCBrObservable;
+    [weak]
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
-    procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
+    procedure UnSubscribe(AProc: TMVCBrObserverProc;
+      AName: String = ''); overload;
     procedure Send(AJson: TJsonValue); overload;
-    procedure Send(const AName: string; AJson: TJsonValue;AOwned:boolean=true); overload;
+    procedure Send(const AName: string; AJson: TJsonValue;
+      AOwned: boolean = true); overload;
     procedure Send(const AName: string; AMensagem: String); overload;
     procedure Send(const AName: string; ASubject: string;
       AMensagem: String); overload;
@@ -98,6 +102,7 @@ type
     [weak]
     function Register(const AName: string; AObserver: IMVCBrObserver)
       : IMVCBrObservable; overload;
+    [weak]
     procedure Register(AObserver: IMVCBrObserver); overload;
     procedure Register(AName: string; AProc: TMVCBrObserverProc); overload;
     procedure Register(AOwner: TObject; AName: string;
@@ -106,23 +111,26 @@ type
     procedure Register(AGuid: TGuid; AName: string;
       AProc: TMVCBrObserverProc); overload;
     procedure Unregister(AGuid: TGuid); overload;
-
+    [weak]
     procedure Unregister(const AName: string;
       AObserver: IMVCBrObserver); overload;
+    [weak]
     procedure Unregister(AObserver: IMVCBrObserver); overload;
     procedure Unregister(const AName: string); overload;
     procedure Unregister(AOwner: TObject); overload;
+    procedure Unregister(AOwner: TObject; AName: string); overload;
     class procedure Notify(AName: string; AValue: TJsonValue);
     class procedure Subscribe(AOwner: TObject; AName: string;
       AProc: TMVCBrObserverProc); overload;
-    class procedure UnSubscribe(AOwnder:TObject);overload;
+    class procedure UnSubscribe(AOwnder: TObject; AName: String = ''); overload;
+    class procedure RequestInfo(AName: string; var AValue: TJsonValue); virtual;
   end;
 
 implementation
 
 { TMVCBrObserver }
 var
-  FSubscribeServer: IMVCBrObservable;
+  FSubscribeServer: TMVCBrObservable;
   LLock: TObject;
 
 function TMVCBrObservable.Count: integer;
@@ -137,7 +145,7 @@ end;
 constructor TMVCBrObservable.create;
 begin
   inherited create;
-  FSubscribers := TThreadList<IMVCBrObserverItem>.create;
+  FSubscribers := TThreadList<TMVCBrObserverItemAbstract>.create;
 end;
 
 class function TMVCBrObservable.DefaultContainer: TMVCBrObservable;
@@ -156,7 +164,7 @@ begin
   inherited;
 end;
 
-function TMVCBrObservable.GetItems(idx: integer): IMVCBrObserverItem;
+function TMVCBrObservable.GetItems(idx: integer): TMVCBrObserverItemAbstract;
 begin
   try
     result := LockList.Items[idx];
@@ -165,7 +173,7 @@ begin
   end;
 end;
 
-function TMVCBrObservable.LockList: TList<IMVCBrObserverItem>;
+function TMVCBrObservable.LockList: TList<TMVCBrObserverItemAbstract>;
 begin
   result := FSubscribers.LockList;
 end;
@@ -232,28 +240,29 @@ begin
     end;
 end;
 
-procedure TMVCBrObservable.Send(const AName: string; AJson: TJsonValue; AOwned:boolean=true);
+procedure TMVCBrObservable.Send(const AName: string; AJson: TJsonValue;
+  AOwned: boolean = true);
 var
   i: integer;
   AHandled: boolean;
 begin
   try
-  TThread.NameThreadForDebugging('observable.send');
-  with LockList do
-    try
-      for i := 0 to Count - 1 do
-      begin
-        AHandled := false;
-        if Items[i].GetTopic.Equals(AName) then
-          Items[i].Send(AJson, AHandled);
-        if AHandled then
-          exit;
+    TThread.NameThreadForDebugging('observable.send');
+    with LockList do
+      try
+        for i := 0 to Count - 1 do
+        begin
+          AHandled := false;
+          if Items[i].GetTopic.Equals(AName) then
+            Items[i].Send(AJson, AHandled);
+          if AHandled then
+            exit;
+        end;
+      finally
+        UnlockList;
       end;
-    finally
-      UnlockList;
-    end;
   finally
-   if AOwned then
+    if AOwned then
       AJson.disposeOf;
   end;
 end;
@@ -268,7 +277,7 @@ begin
     AJson.AddPair('message', AMensagem);
     Send(AName, AJson);
   finally
-   // AJson.DisposeOf;
+    // AJson.DisposeOf;
   end;
 end;
 
@@ -289,7 +298,7 @@ begin
     AJson.AddPair('data', AData);
     Send(AName, AJson);
   finally
-    //AJson.DisposeOf;
+    // AJson.DisposeOf;
   end;
 end;
 
@@ -305,12 +314,12 @@ begin
     AJson.AddPair('data', '');
     Send(AName, AJson);
   finally
-    //AJson.DisposeOf;
+    // AJson.DisposeOf;
   end;
 end;
 
 procedure TMVCBrObservable.SetItems(idx: integer;
-  const Value: IMVCBrObserverItem);
+  const Value: TMVCBrObserverItemAbstract);
 begin
   try
     LockList.Items[idx] := Value;
@@ -347,6 +356,38 @@ end;
 class procedure TMVCBrObservable.release;
 begin
   // FSubscribeServer := nil;
+end;
+
+class procedure TMVCBrObservable.RequestInfo(AName: string;
+  var AValue: TJsonValue);
+var
+  i: integer;
+  AHandled: boolean;
+  it: TMVCBrObserverItem;
+begin
+  try
+    TThread.NameThreadForDebugging('observable.RequestInfo');
+    with TMVCBrObservable.DefaultContainer do
+      with LockList do
+        try
+          for i := 0 to Count - 1 do
+          begin
+            AHandled := false;
+            it := TMVCBrObserverItem(Items[i]);
+            if it.GetTopic.Equals(AName) then
+              if assigned(it.FSubscribeProc) then
+              begin
+                it.FSubscribeProc(AValue);
+                AHandled := true;
+              end;
+            if AHandled then
+              exit;
+          end;
+        finally
+          UnlockList;
+        end;
+  finally
+  end;
 end;
 
 function TMVCBrObservable.This: TObject;
@@ -415,7 +456,8 @@ begin
     end;
 end;
 
-procedure TMVCBrObservable.UnSubscribe(AProc: TMVCBrObserverProc);
+procedure TMVCBrObservable.UnSubscribe(AProc: TMVCBrObserverProc;
+  AName: String = '');
 var
   i: integer;
   p: TMVCBrObserverProc;
@@ -427,7 +469,7 @@ begin
     with LockList do
       try
         for i := 0 to Count - 1 do
-          AList.Add(Items[i].GetSubscribeProc);
+          AList.Add(TMVCBrObserverItem(Items[i]).FSubscribeProc);
         i := AList.IndexOf(AProc);
         if i >= 0 then
           Delete(i);
@@ -519,34 +561,50 @@ begin
 end;
 
 procedure TMVCBrObservable.Unregister(AOwner: TObject);
+begin
+  Unregister(AOwner, '');
+end;
+
+procedure TMVCBrObservable.Unregister(AOwner: TObject; AName: String);
 var
   i: integer;
-  item: IMVCBrObserverItem;
+  SName: string;
+  SObject: TObject;
+  comp:IComparable<TObject>;
 begin
   with LockList do
     try
       for i := Count - 1 downto 0 do
       begin
-        item := Items[i];
         try
-          if assigned(item) then
-            if item.GetContainer.Equals(AOwner) then
+          SName := Items[i].GetTopic;
+          SObject := Items[i].GetContainer;
+          //if assigned(SObject) then
+            if SObject = AOwner then
             begin
+              if (AName <> '') and (SName <> AName) then
+                continue;
+              Items[i].SetContainer(nil);
+              //FreeAndNil(SObject);
               Delete(i);
-              item := nil;
             end;
         except // nao encontrou
+          Delete(i);
         end;
-        item := nil;
       end;
     finally
       UnlockList;
     end;
 end;
 
-class procedure TMVCBrObservable.UnSubscribe(AOwnder: TObject);
+class procedure TMVCBrObservable.UnSubscribe(AOwnder: TObject;
+  AName: String = '');
 begin
-   self.DefaultContainer.Unregister(AOwnder);
+  try
+    if assigned(FSubscribeServer) and assigned(AOwnder) then
+      FSubscribeServer.Unregister(AOwnder, AName);
+  except
+  end;
 end;
 
 initialization
@@ -555,6 +613,8 @@ LLock := TObject.create;
 
 finalization
 
+if assigned(FSubscribeServer) then
+  FSubscribeServer.disposeOf;
 FSubscribeServer := nil;
 LLock.free;
 

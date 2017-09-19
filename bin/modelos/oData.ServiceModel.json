@@ -1,1 +1,0 @@
-{"@odata.context":"http://localhost:8080/OData/OData.svc","__comment":"Services list all resource available to OData.Service","OData.Services":[{"resource":"PRODUTOS","collection":"PRODUTOS","keyID":"","maxpagesize":100,"fields":"CODIGO,DESCRICAO,GRUPO,UNIDADE,PRECO","method":"GET,POST,PATCH,PUT,DELETE"}]}

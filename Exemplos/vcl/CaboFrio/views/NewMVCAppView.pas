@@ -92,7 +92,7 @@ var
   ANf: IWinNotificationModel;
 begin
   ANf := GetModel<IWinNotificationModel>;
-  ANf.Send(ATitle, 'MVCBr Delphi Build 2017', ATexto);
+  ANf.Send(ATitle, 'MVCBr Delphi Notification', ATexto);
 
 end;
 
@@ -102,7 +102,7 @@ var
 begin
   rt := GetModel<IACBrValidadorModel>.ValidarCNPJouCPF(Edit1.text);
   if rt = '' then
-    showMessage('ok')
+    showMessage('ok - CPF Válido')
   else
     showMessage(rt);
 end;
@@ -133,7 +133,7 @@ begin
   TMVCBrObservable.subscribe(self, 'notify',
     procedure(JSON: TJSONValue)
     begin
-      WindowsNotificacao('Delphi Build 2017', JSON.s('message'));
+      WindowsNotificacao('Delphi MVCBr 2017', JSON.s('message'));
       Memo1.lines.add('Mensagem recebida: '+ JSON.ToJson);
     end);
 

@@ -33,7 +33,7 @@ unit MVCBr.FormView;
 
 interface
 
-uses {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
+uses {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Types, FMX.Forms, System.UiTypes, FMX.Controls, {$ELSE} VCL.Forms, VCL.Controls, {$ENDIF}{$ENDIF}
   System.Classes, System.SysUtils, System.RTTI, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf, MVCBr.View;
 
@@ -41,7 +41,11 @@ type
 
 {$IFDEF FMX}
   TFormClass = class of TForm;
+  TBaseControl = TControl;
+{$else}
+  TBaseControl = TWinControl;
 {$ENDIF}
+
   TViewFactoryAdapter = class;
 
   IViewAdpater = interface(IView)
@@ -129,6 +133,7 @@ type
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
+    function FindControl<T: Class>(AControl: TBaseControl; AName: String): T;
     [weak]
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
@@ -721,6 +726,30 @@ end;
 procedure TCustomFormFactory.UnRegisterObserver(const AName: String);
 begin
   TMVCBr.UnRegisterObserver(AName, self);
+end;
+
+function TCustomFormFactory.FindControl<T>(AControl: TBaseControl;
+AName: String): T;
+var
+  i: Integer;
+  X: TObject;
+begin
+  result := nil;
+{$ifdef FMX}
+        {TODO}
+{$else}
+  for i := 0 to AControl.ControlCount - 1 do
+  begin
+    if not AControl.Controls[i].InheritsFrom(TBaseControl) then continue;
+    X := AControl.Controls[i];
+    if X.InheritsFrom(T) then
+      if sameText(TBaseControl(X).Name, AName) then
+      begin
+        result := T(X);
+        exit;
+      end;
+  end;
+{$endif}
 end;
 
 procedure TCustomFormFactory.Update(AJsonValue: TJsonValue;

@@ -54,7 +54,17 @@ type
     procedure Erase(ATexto: string);
   end;
 
-  TThreadSafeStringList = class(TObjectLock)
+  TThreadSafeStringList = class;
+
+  IStringList = interface
+    ['{1A388037-6C6B-4D1E-968F-5D295A879C14}']
+    function This:TThreadSafeStringList;
+    procedure Clear;
+    function Count: integer;
+
+  end;
+
+  TThreadSafeStringList = class(TObjectLock,IStringList)
   private
     FList: TStringList;
     FOnNotify: TNotifyEvent;
@@ -78,6 +88,8 @@ type
   public
     constructor create; override;
     destructor destroy; override;
+    class function New:IStringList;
+    function This:TThreadSafeStringList;
     procedure Clear;
     function Count: integer;
 
@@ -226,6 +238,11 @@ function TThreadSafeStringList.LockList: TStringList;
 begin
   Lock;
   result := FList;
+end;
+
+class function TThreadSafeStringList.New: IStringList;
+begin
+   result :=  TThreadSafeStringList.create;
 end;
 
 function TThreadSafeStringList.Peek: String;
@@ -377,6 +394,11 @@ begin
   finally
     UnlockList;
   end;
+end;
+
+function TThreadSafeStringList.This: TThreadSafeStringList;
+begin
+  result := self;
 end;
 
 function TThreadSafeStringList.GetDelimitedText: string;

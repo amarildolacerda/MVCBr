@@ -66,7 +66,6 @@ begin
   inherited;
   /// Inicializar as Views...
   // %view View(TNewMVCAppView.New(self));
-  add(TWinNotificationModel.New(self));
 end;
 
 /// Finaliza o controller
@@ -132,9 +131,8 @@ Procedure TNewMVCAppController.CreateModules;
 begin
   // adicionar os seus MODELs aqui
   // exemplo: add( MeuModel.new(self) );
-
+  add(TWinNotificationModel.New(self));
   add(TACBrValidadorModel.New(self));
-
 end;
 
 initialization

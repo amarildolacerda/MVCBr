@@ -344,3 +344,4 @@ finalization
 //TMVCBrSingletonFactory<TObject>.Release;
 
 end.
+

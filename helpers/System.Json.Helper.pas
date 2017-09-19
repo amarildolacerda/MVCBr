@@ -70,6 +70,9 @@ type
     function AsArray: TJsonArray;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
+    function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
+    function addPair(AKey: string; AValue: double): TJsonObject; overload;
+    function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
     function AddChild(AKey, AJson: string): TJsonObject;
     function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
     function ToJson: string;
@@ -110,6 +113,9 @@ type
     function isNull: Boolean;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
+    function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
+    function addPair(AKey: string; AValue: double): TJsonObject; overload;
+    function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
     function AddChild(AKey, AJson: string): TJsonObject;
     function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
     function ToJson: string;
@@ -130,19 +136,19 @@ type
     class function GetJsonType(AJsonValue: TJsonValue): TJsonType; static;
     class function Stringify(so: TJsonObject): string;
     class function Parse(const dados: string): TJsonObject; overload;
-    procedure Parse(dados: string; pos: integer;
+    procedure Parse(dados: string; pos: Integer;
       useBool: Boolean = false); overload;
     procedure SaveToFile(AFileName: String);
     procedure LoadFromFile(AFileName: String);
     constructor create(AKey, AValue: String); overload;
     function V(chave: String): variant;
     function S(chave: string): string;
-    function D(chave: string): Double;
-    function I(chave: string): integer;
+    function D(chave: string): double;
+    function I(chave: string): Integer;
     function F(chave: string): Extended;
     function B(chave: string): Boolean;
     function O(chave: string): TJsonObject; overload;
-    function O(index: integer): TJsonObject; overload;
+    function O(index: Integer): TJsonObject; overload;
     function A(chave: string): TJsonArray;
     function AsArray: TJsonArray;
     function Contains(chave: string): Boolean;
@@ -160,8 +166,8 @@ type
 {$IFDEF CompilerVersion<=30}
     function addPair(chave: string; Value: string): TJsonObject; overload;
 {$ENDIF}
-    function addPair(chave: string; Value: integer): TJsonObject; overload;
-    function addPair(chave: string; Value: Double): TJsonObject; overload;
+    function addPair(chave: string; Value: Integer): TJsonObject; overload;
+    function addPair(chave: string; Value: double): TJsonObject; overload;
     function addPair(chave: string; Value: TDatetime): TJsonObject; overload;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
     function Coalesce(chave: string; Value: string): TJsonPair;
@@ -170,7 +176,7 @@ type
 
   TJSONArrayHelper = class helper for TJsonArray
   public
-    function Length: integer;
+    function Length: Integer;
     function Find(AJson: string): TJsonObject;
   end;
 
@@ -198,12 +204,12 @@ type
     function AsPair: TJsonPair;
     function Datatype: TJsonType;
     function asObject: TJsonObject;
-    function AsInteger: integer;
+    function AsInteger: Integer;
     function AsString: string;
-    function AsFloat: Double;
+    function AsFloat: double;
     function S(chave: string): string;
-    function D(chave: string): Double;
-    function I(chave: string): integer;
+    function D(chave: string): double;
+    function I(chave: string): Integer;
     function F(chave: string): Extended;
     function B(chave: string): Boolean;
 
@@ -220,7 +226,7 @@ type
   TJson = TJsonObject;
 
 function ReadJsonString(const dados: string; chave: string): string;
-function ReadJsonInteger(const dados: string; chave: string): integer;
+function ReadJsonInteger(const dados: string; chave: string): Integer;
 function ReadJsonFloat(const dados: string; chave: string): Extended;
 // function ReadJsonObject(const dados: string): IJson;
 function JSONstringify(so: IJson): string;
@@ -246,7 +252,7 @@ var
   ARecord: TRttiRecordType;
   AFldName: String;
   ArrFields: TArray<TRttiField>;
-  I: integer;
+  I: Integer;
 begin
   result := '';
   AContext := TRttiContext.create;
@@ -275,7 +281,7 @@ var
   AFldName: String;
   AValue: TValue;
   ArrFields: TArray<TRttiField>;
-  I: integer;
+  I: Integer;
 begin
   result := TJsonObject.create;
   if assigned(AProcBefore) then
@@ -344,7 +350,7 @@ var
   ARecord: TRttiRecordType;
   AFldName: String;
   ArrFields: TArray<TRttiField>;
-  I: integer;
+  I: Integer;
 begin
   result := TJsonArray.create;
   AContext := TRttiContext.create;
@@ -448,12 +454,12 @@ end;
 
 function TValueHelper.IsDouble: Boolean;
 begin
-  result := TypeInfo = System.TypeInfo(Double);
+  result := TypeInfo = System.TypeInfo(double);
 end;
 
 function TValueHelper.IsInteger: Boolean;
 begin
-  result := TypeInfo = System.TypeInfo(integer);
+  result := TypeInfo = System.TypeInfo(Integer);
 end;
 
 class function TJSONObjectHelper.GetTypeAsString(AType: TJsonType): string;
@@ -574,7 +580,7 @@ end;
   end;}
   end;
 *)
-function ReadJsonInteger(const dados: string; chave: string): integer;
+function ReadJsonInteger(const dados: string; chave: string): Integer;
 var
   j: TJson;
   I: IJson;
@@ -582,7 +588,7 @@ begin
   j := JSONParse(dados);
   // usar variavel local para não gerar conflito com Multi_threaded application
   try
-    j.TryGetValue<integer>(chave, result);
+    j.TryGetValue<Integer>(chave, result);
   finally
     j.free;
   end;
@@ -623,12 +629,12 @@ begin
 end;
 {$ENDIF}
 
-function TJSONObjectHelper.addPair(chave: string; Value: integer): TJsonObject;
+function TJSONObjectHelper.addPair(chave: string; Value: Integer): TJsonObject;
 begin
   result := addPair(chave, TJSONNumber.create(Value));
 end;
 
-function TJSONObjectHelper.addPair(chave: string; Value: Double): TJsonObject;
+function TJSONObjectHelper.addPair(chave: string; Value: double): TJsonObject;
 begin
   result := addPair(chave, TJSONNumber.create(Value));
 end;
@@ -696,11 +702,11 @@ begin
   end;
 end;
 
-function TJSONObjectHelper.D(chave: string): Double;
+function TJSONObjectHelper.D(chave: string): double;
 begin
   result := 0;
   if FindValue(chave) <> nil then
-    TryGetValue<Double>(chave, result);
+    TryGetValue<double>(chave, result);
 end;
 
 function TJSONObjectHelper.F(chave: string): Extended;
@@ -715,11 +721,11 @@ begin
   result := inherited FindValue(chave);
 end;
 
-function TJSONObjectHelper.I(chave: string): integer;
+function TJSONObjectHelper.I(chave: string): Integer;
 begin
   result := 0;
   if FindValue(chave) <> nil then
-    TryGetValue<integer>(chave, result);
+    TryGetValue<Integer>(chave, result);
 end;
 
 procedure TJSONObjectHelper.LoadFromFile(AFileName: String);
@@ -739,14 +745,14 @@ begin
   end;
 end;
 
-function TJSONObjectHelper.O(index: integer): TJsonObject;
+function TJSONObjectHelper.O(index: Integer): TJsonObject;
 var
   pair: TJsonPair;
 begin
   result := TJsonObject(Get(index));
 end;
 
-procedure TJSONObjectHelper.Parse(dados: string; pos: integer;
+procedure TJSONObjectHelper.Parse(dados: string; pos: Integer;
   useBool: Boolean);
 begin
   inherited Parse(TEncoding.UTF8.GetBytes(dados), pos, useBool);
@@ -1082,7 +1088,7 @@ begin
   end;
 end;
 
-function TJSONArrayHelper.Length: integer;
+function TJSONArrayHelper.Length: Integer;
 begin
   result := Count;
 end;
@@ -1107,14 +1113,14 @@ begin
   result := self as TJsonArray;
 end;
 
-function TJSONValueHelper.AsFloat: Double;
+function TJSONValueHelper.AsFloat: double;
 begin
-  TryGetValue<Double>(result);
+  TryGetValue<double>(result);
 end;
 
-function TJSONValueHelper.AsInteger: integer;
+function TJSONValueHelper.AsInteger: Integer;
 begin
-  TryGetValue<integer>(result);
+  TryGetValue<Integer>(result);
 end;
 
 function TJSONValueHelper.asObject: TJsonObject;
@@ -1145,7 +1151,7 @@ begin
   result := (self as TJsonObject).B(chave);
 end;
 
-function TJSONValueHelper.D(chave: string): Double;
+function TJSONValueHelper.D(chave: string): double;
 begin
   result := (self as TJsonObject).D(chave);
 end;
@@ -1204,7 +1210,7 @@ begin
 
 end;
 
-function TJSONValueHelper.I(chave: string): integer;
+function TJSONValueHelper.I(chave: string): Integer;
 begin
   result := (self as TJsonObject).I(chave);
 end;
@@ -1280,7 +1286,7 @@ end;
 
 function TJsonValuesList.GetNames(AName: string): TJsonPair;
 var
-  I: integer;
+  I: Integer;
   fld: string;
 begin
   result := nil;
@@ -1295,7 +1301,7 @@ end;
 
 procedure TJsonValuesList.SetNames(AName: string; const Value: TJsonPair);
 var
-  I: integer;
+  I: Integer;
   fld: string;
 begin
   fld := lowercase(AName);
@@ -1321,6 +1327,21 @@ begin
   (FJson as TJsonObject).addPair(AKey, result);
 end;
 
+function TInterfacedJSON.addPair(AKey: string; AValue: TDatetime): TJsonObject;
+begin
+  result := self.addPair(AKey, ISODateTimeToString(AValue));
+end;
+
+function TInterfacedJSON.addPair(AKey: string; AValue: double): TJsonObject;
+begin
+  result := self.addPair(AKey, TJSONNumber.create(AValue));
+end;
+
+function TInterfacedJSON.addPair(AKey: string; AValue: Integer): TJsonObject;
+begin
+  result := self.addPair(AKey, TJSONNumber.create(AValue));
+end;
+
 function TInterfacedJSON.addPair(AKey, AValue: string): TJsonObject;
 begin
   result := (FJson as TJsonObject).addPair(AKey, AValue);
@@ -1328,7 +1349,7 @@ end;
 
 constructor TInterfacedJSON.create;
 begin
-  inherited create;
+  self.create('{}');
 end;
 
 constructor TInterfacedJSON.create(AJson: string);

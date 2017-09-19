@@ -19,14 +19,15 @@ uses
 type
   [Entity]
   [Table('FORNECEDORES', '')]
+  [PrimaryKey('CODIGO')]
   TFORNECEDORES = class
   private
-    { Private declarations } 
+    { Private declarations }
     FCODIGO: Nullable<Integer>;
     FNOME: Nullable<String>;
-  public 
-    { Public declarations } 
-    [Column('CODIGO', ftInteger)]
+  public
+    { Public declarations }
+    [Column('CODIGO', ftString,30)]
     [Dictionary('CODIGO', 'Mensagem de validação', '', '', '', taCenter)]
     property CODIGO: Nullable<Integer> read FCODIGO write FCODIGO;
 
