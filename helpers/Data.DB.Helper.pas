@@ -56,7 +56,8 @@ type
     procedure AppendFromJson(sJson: string);
     procedure CopyFromJson(sJosn: string);
     procedure JsonToRecord(sJson: string; AAppend: boolean); overload;
-    procedure FromJsonObject(oJson: TJsonObject; AAppend: boolean); overload;
+    procedure FromJsonObject(oJson: TJsonObject; AAppend: boolean;
+      ignoreNulls: boolean = true); overload;
     procedure DoLoopEvent(AEvent: TProc); overload;
     procedure DoLoopEvent(AEvent: TProc<TDataset>); overload;
     procedure ForEach(AEvent: TFunc<TDataset, boolean>);
@@ -385,7 +386,8 @@ begin
   end;
 end;
 
-procedure TDatasetHelper.FromJsonObject(oJson: TJsonObject; AAppend: boolean);
+procedure TDatasetHelper.FromJsonObject(oJson: TJsonObject; AAppend: boolean;
+ignoreNulls: boolean = true);
 var
   inEditing: boolean;
   k: IJson;
@@ -395,17 +397,43 @@ var
   procedure FromJsonX;
   var
     fld: TField;
+    sName: string;
+    sValue: string;
   begin
     for fld in Fields do
     begin
-      if k.Contains(lowercase(fld.FieldName)) then
+      if k.Contains(fld.FieldName.ToLower) then
       begin
+        sName := fld.FieldName.ToLower;
         if not(State in [dsEdit, dsInsert]) then
           if AAppend then
             Append
           else
             Edit;
-        fld.Value := k.V(lowercase(fld.FieldName));
+
+        if ignoreNulls and k.isNull(sName) then
+          continue;
+
+        if k.isNull(sName) then
+          fld.clear
+        else
+          case fld.DataType of
+            ftDate, ftDateTime, ftTime:
+              begin
+                sValue := k.S(sName);
+                if sValue.Contains('T') then
+                  fld.asDateTime := ISO8601ToDate(sValue)
+                else
+                  fld.asDateTime := ISO8601ToDate(sValue);
+              end;
+            ftTimeStamp:
+              fld.Value := strToDateTimeDef(ISODateTimeToString(k.D(sName)), 0);
+            ftFloat:
+              k.D(sName);
+          else
+            fld.Value := k.V(sName);
+          end;
+
         inc(i);
       end;
     end;
@@ -550,8 +578,8 @@ begin
             V := j.Get(key).JsonValue;
         if (not assigned(jp)) or (not assigned(V)) then
         begin
-          it.Clear;
-          Continue;
+          it.clear;
+          continue;
         end;
 
         case it.DataType of
@@ -574,11 +602,11 @@ begin
             end;
           TFieldType.ftDate:
             begin
-              it.AsDateTime := ISOStrToDate((V as TJSONString).Value);
+              it.asDateTime := ISOStrToDate((V as TJSONString).Value);
             end;
           TFieldType.ftDateTime:
             begin
-              it.AsDateTime := ISOStrToDateTime((V as TJSONString).Value);
+              it.asDateTime := ISOStrToDateTime((V as TJSONString).Value);
             end;
           TFieldType.ftTimeStamp:
             begin
@@ -673,17 +701,17 @@ begin
   for it in self do
   begin
     if not FieldValid then
-      Continue;
+      continue;
     key := lowercase(it.FieldName);
     if not ANulls then
-      if it.IsNull or it.AsString.IsEmpty then
+      if it.isNull or it.AsString.IsEmpty then
       begin
-        Continue;
+        continue;
       end;
-    if it.IsNull then
+    if it.isNull then
     begin
       AJSONObject.addPair(key, TJSONNull.Create);
-      Continue;
+      continue;
     end;
 
     case it.DataType of
@@ -691,19 +719,19 @@ begin
         TFieldType.ftShortint:
         begin
           if (not ANulls) and (it.AsInteger = 0) then
-            Continue;
+            continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsInteger));
         end;
       TFieldType.ftLargeint:
         begin
           if (not ANulls) and (it.AsInteger = 0) then
-            Continue;
+            continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsLargeInt));
         end;
       TFieldType.ftSingle, TFieldType.ftFloat:
         begin
           if (not ANulls) and (it.AsFloat = 0) then
-            Continue;
+            continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsFloat));
         end;
       ftWideString, ftMemo, ftWideMemo:
@@ -714,14 +742,14 @@ begin
       TFieldType.ftDate:
         begin
           if (not ANulls) and (Trunc(it.AsFloat) = 0) then
-            Continue;
-          AJSONObject.addPair(key, ISODateToString(it.AsDateTime));
+            continue;
+          AJSONObject.addPair(key, ISODateToString(it.asDateTime));
         end;
       TFieldType.ftDateTime:
         begin
           if (not ANulls) and (Trunc(it.AsFloat) = 0) then
-            Continue;
-          AJSONObject.addPair(key, ISODateTimeToString(it.AsDateTime));
+            continue;
+          AJSONObject.addPair(key, ISODateTimeToString(it.asDateTime));
         end;
       TFieldType.ftTimeStamp:
         begin
@@ -732,13 +760,13 @@ begin
       TFieldType.ftCurrency:
         begin
           if (not ANulls) and (it.AsFloat = 0) then
-            Continue;
+            continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsCurrency));
         end;
       TFieldType.ftBCD, TFieldType.ftFMTBcd:
         begin
           if (not ANulls) and (Trunc(it.AsFloat) = 0) then
-            Continue;
+            continue;
           AJSONObject.addPair(key, TJSONNumber.Create(BcdToDouble(it.AsBcd)));
         end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
@@ -767,10 +795,10 @@ end;
 
 function TFieldsHelper.JsonValue(AFields: string = ''): TJsonValue;
 var
-  s: string;
+  S: string;
 begin
-  s := ToJson(false, AFields);
-  result := TJsonObject.ParseJSONValue(s);
+  S := ToJson(false, AFields);
+  result := TJsonObject.ParseJSONValue(S);
 end;
 
 { TFieldHelper }
@@ -784,7 +812,7 @@ end;
 function RoundFloat(AValor: Double; ACasaDecimal: integer): Double;
 var
   Ls: string;
-  s: string;
+  S: string;
 begin
   try
     AValor := SimpleRoundTo(AValor, -(ACasaDecimal + 2));
@@ -793,8 +821,8 @@ begin
     result := AValor;
     if ACasaDecimal < 0 then
       exit;
-    s := s.PadRight(ACasaDecimal, '0');
-    Ls := '0.' + s;
+    S := S.PadRight(ACasaDecimal, '0');
+    Ls := '0.' + S;
     if ACasaDecimal = 0 then
       Ls := '0';
     Ls := formatFloat(Ls, AValor);

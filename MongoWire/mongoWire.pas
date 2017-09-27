@@ -16,7 +16,7 @@ unit mongoWire;
 
 interface
 
-uses SysUtils, SyncObjs, Classes, simpleSock, jsonDoc, bsonTools;
+uses SysUtils, SyncObjs, Classes, simpleSock, jsonDoc,bsonDoc, bsonTools;
 
 type
   TMongoWire=class(TObject)
@@ -111,9 +111,10 @@ type
       const QryObj:IJSONDocument;
       const ReturnFieldSelector:IJSONDocument=nil;
       Flags:integer=0);
-    function Next(const Doc:IJSONDocument):boolean;
+    function Next(const Doc:IJsonDocument):boolean;
     property NumberToReturn:integer read FNumberToReturn write FNumberToReturn;
     property NumberToSkip:integer read FNumberToSkip write FNumberToSkip;//TODO: set?
+    property NumberReturned:integer read FNumberReturned;
   end;
 
   //TODO: TBSONDocumentsFromVariantArray=class(TBSONDocumentsEnumerator)
@@ -666,7 +667,7 @@ begin
   FCollection:=Collection;
 end;
 
-function TMongoWireQuery.Next(const Doc: IJSONDocument): boolean;
+function TMongoWireQuery.Next(const Doc: IJsonDocument): boolean;
 var
   i:integer;
 begin

@@ -1,3 +1,7 @@
+27/09/2017 - AL
+   + adicionado parametro  no MVCBr.MongoModel
+   + adicionado mapeamente de objetos para carga interna do MVCBr.MongoModel
+   
 26/09/2017 - AL
    + adicionado (inicial) Model para mongo   MVCBr.MongoModel - Nao esta completo.
     

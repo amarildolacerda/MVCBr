@@ -4,12 +4,7 @@ PROGRAM TabControlNav;
 // www.tireideletra.com.br
 // Amarildo Lacerda & Grupo MVCBr-2017
 uses
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
-  System.StartUpCopy,
+  System.StartUpCopy,
   FMX.Forms,
   MVCBr.ApplicationController,
   MVCBr.Controller,

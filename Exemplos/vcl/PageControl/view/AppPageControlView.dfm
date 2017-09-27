@@ -4,16 +4,7 @@ object AppPageControlView: TAppPageControlView
   Caption = 'AppPageControlView'
   ClientHeight = 315
   ClientWidth = 676
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'Tahoma'
-  Font.Style = []
-  OldCreateOrder = False
   OnCloseQuery = FormCloseQuery
-  PixelsPerInch = 96
-  TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 29
@@ -130,7 +121,7 @@ object AppPageControlView: TAppPageControlView
     Left = 136
     Top = 96
     Bitmap = {
-      494C010101000500080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010101000500040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -271,6 +262,10 @@ object AppPageControlView: TAppPageControlView
   end
   object VCLPageViewManager1: TVCLPageViewManager
     PageControl = PageControl1
+    ShowCaptions = False
+    ShowTabColor = False
+    InheritedDraw = False
+    UsePageHistory = True
     Left = 360
     Top = 88
   end

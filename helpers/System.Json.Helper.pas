@@ -151,6 +151,7 @@ type
     function O(chave: string): TJsonObject; overload;
     function O(index: Integer): TJsonObject; overload;
     function A(chave: string): TJsonArray;
+    function isNull(chave: string): Boolean;
     function AsArray: TJsonArray;
     function Contains(chave: string): Boolean;
     function Find(chave: string): TJsonValue; virtual;
@@ -705,7 +706,7 @@ end;
 
 class function TJSONObjectHelper.New(AJson: string): IJsonObject;
 begin
-  result := TInterfacedJSON.new(AJson);
+  result := TInterfacedJSON.New(AJson);
 end;
 
 function TJSONObjectHelper.D(chave: string): double;
@@ -732,6 +733,11 @@ begin
   result := 0;
   if FindValue(chave) <> nil then
     TryGetValue<Integer>(chave, result);
+end;
+
+function TJSONObjectHelper.isNull(chave: string): Boolean;
+begin
+  result := GetValue(chave) is TJSONNull;
 end;
 
 procedure TJSONObjectHelper.LoadFromFile(AFileName: String);

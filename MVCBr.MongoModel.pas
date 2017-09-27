@@ -38,6 +38,8 @@ type
 
   IJSONDocument = JsonDoc.IJSONDocument;
   IJSONDocArray = JsonDoc.IJSONDocArray;
+  IMongoQuery = IMVCBrAdapter<TMongoWireQuery>;
+  IBSONDocument = bsonDoc.IBSONDocument;
 
   TJSONDocument = class(JsonDoc.TJSONDocument)
   public
@@ -71,7 +73,47 @@ type
     function SetConnection(AConn: TMongoWire = nil): IMongoModel;
     /// mongo
     function MongoConnection: TMongoWire;
-    function NewQuery: IMVCBrAdapter<TMongoWireQuery>;
+    function NewQuery: IMongoQuery;
+
+    procedure SetActive(const Value: Boolean);
+    function GetActive: Boolean;
+    property Active: Boolean read GetActive write SetActive;
+
+    function Get(const ACollection: String; const AWhere: IJSONDocument)
+      : IJSONDocument; overload;
+    function Get(const ACollection: String; const AJsonWhere: string)
+      : IJSONDocument; overload;
+    function Query(Const ACollection: String; const AWhere: IJSONDocument)
+      : IJSONDocArray; overload;
+    function Query(Const ACollection: String;
+      const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
+
+    procedure Update(const ACollection: String;
+      const AWhere, ADoc: IJSONDocument; AUpsert: Boolean = false;
+      AMultiUpdate: Boolean = false); overload;
+
+    procedure Insert(const ACollection: WideString;
+      const ADoc: IJSONDocument); overload;
+
+    procedure Insert(const ACollection: WideString;
+      const ADocs: array of IJSONDocument); overload;
+    procedure Insert(const ACollection: WideString;
+      const ADocs: IJSONDocArray); overload;
+    procedure Delete(const ACollection: WideString; const AWhere: IJSONDocument;
+      ASingleRemove: Boolean = true);
+    function Ping: Boolean;
+    procedure EnsureIndex(const ACollection: WideString;
+      const AIndex: IJSONDocument; const AOptions: IJSONDocument = nil);
+
+    function RunCommand(const ACmdObj: IJSONDocument): IJSONDocument;
+
+    function Count(const ACollection: WideString): integer;
+    function Distinct(const ACollection, AKey: WideString;
+      const AQuery: IJSONDocument = nil): Variant;
+
+    function Eval(const ACollection, AJSFn: WideString;
+      const AArgs: array of Variant; ANoLock: Boolean = false): Variant;
+
   end;
 
   TMongoExpression = record
@@ -108,7 +150,7 @@ type
     function SetConnection(AConn: TMongoWire = nil): IMongoModel;
     procedure SetActive(const Value: Boolean);
     function GetActive: Boolean;
-    function GetSequence(FCollection,AMongoCampo: string): Int64;
+    function GetSequence(FCollection, AMongoCampo: string): Int64;
   protected
     function OpenIfNeed: TMongoWire; virtual;
     procedure SetDatabase(const Value: string); virtual;
@@ -132,7 +174,7 @@ type
     function MongoConnection: TMongoWire;
     procedure Open;
     procedure Close;
-    function NewQuery: IMVCBrAdapter<TMongoWireQuery>;
+    function NewQuery: IMongoQuery;
     /// Base
 {$REGION "Base connections"}
     [weak]
@@ -195,10 +237,22 @@ type
 {$ENDREGION}
   end;
 
+function MongoJSON: IJSONDocument; overload;
+function MongoJSON(const x: array of Variant): IJSONDocument; overload;
+
 implementation
 
 uses System.JSON, System.JSON.Helper;
 
+function MongoJSON: IJSONDocument;
+begin
+  result := JsonDoc.JSON;
+end;
+
+function MongoJSON(const x: array of Variant): IJSONDocument; overload;
+begin
+  result := JSON(x);
+end;
 { TMongoModelFactory }
 
 procedure TMongoModelFactory.Close;
@@ -351,11 +405,12 @@ begin
   end;
 end;
 
-function TMongoModelFactory.NewQuery: IMVCBrAdapter<TMongoWireQuery>;
+function TMongoModelFactory.NewQuery: IMongoQuery;
 var
   r: TMVCBrAdapter<TMongoWireQuery>;
 begin
   r := TMVCBrAdapter<TMongoWireQuery>.Create(nil);
+  r.FreeOnExit := true;
   r.DelegateTo(
     function: TMongoWireQuery
     begin
@@ -446,6 +501,7 @@ begin
     exit;
   end;
 
+  FConnection.Adapter.Open(FHost, FPort);
   if not FActive then
   begin
     with FConnection.Adapter do
@@ -457,7 +513,6 @@ begin
       end;
     end;
   end;
-  FConnection.Adapter.Open(FHost, FPort);
   FActive := Value;
 end;
 
@@ -556,7 +611,8 @@ begin
   result := Query(ACollection, TMongoExpression.like(AField, AText));
 end;
 
-function TMongoModelFactory.GetSequence(FCollection,AMongoCampo: string): Int64;
+function TMongoModelFactory.GetSequence(FCollection,
+  AMongoCampo: string): Int64;
 Var
   d, dChave, e: IJSONDocument; // Obj BSON
   j: TJsonObject; // Obj JSON
@@ -593,7 +649,7 @@ begin
     dChave := JSON.Parse(j.ToJSON);
 
     try
-      d :=  Get(sCollectionSeq, dChave);
+      d := Get(sCollectionSeq, dChave);
       iRetorno := StrToInt64(d[sField.ToString]);
     except
       d := JSON.Parse(sComand_Save.ToString);
@@ -603,7 +659,7 @@ begin
       d := JSON.Parse(sComand_Modify.ToString);
       e := RunCommand(d);
 
-      //result := StrToInt(VarToStr(BSON(e['value'])[sField.ToString]));
+      // result := StrToInt(VarToStr(BSON(e['value'])[sField.ToString]));
       result := StrToInt(sField.ToString);
 
     except
