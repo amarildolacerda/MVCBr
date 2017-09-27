@@ -259,6 +259,8 @@ type
     property OnViewInit;
   end;
 
+  TFormFactoryClass = class of TFormFactory;
+
   TFMXFormFactory = class(TCustomFormFactory)
   published
 {$IFDEF LINUX}

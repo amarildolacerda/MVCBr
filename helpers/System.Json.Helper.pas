@@ -141,6 +141,7 @@ type
     procedure SaveToFile(AFileName: String);
     procedure LoadFromFile(AFileName: String);
     constructor create(AKey, AValue: String); overload;
+    class function New(AJson: string): IJsonObject;
     function V(chave: String): variant;
     function S(chave: string): string;
     function D(chave: string): double;
@@ -700,6 +701,11 @@ begin
     end;
     result.addPair(ATo, j.JsonValue);
   end;
+end;
+
+class function TJSONObjectHelper.New(AJson: string): IJsonObject;
+begin
+  result := TInterfacedJSON.new(AJson);
 end;
 
 function TJSONObjectHelper.D(chave: string): double;

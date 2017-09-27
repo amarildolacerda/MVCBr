@@ -106,7 +106,7 @@ begin
     end;
 
 
-  RegisterViewMiddleware(mdd);
+  MVCBrRegisterMiddleware(TMVCBrMiddlewareType.middView, mdd);
   TMVCBrMiddlewareFactory.Add(TMVCBrMiddleware.Create);
 
   TMVCBrMiddlewareFactory.SendAfterEvent(middView,nil);
@@ -127,7 +127,7 @@ begin
     end;
 
 
-  RegisterViewMiddleware(mdd);
+  MVCBrRegisterMiddleware(TMVCBrMiddlewareType.middView, mdd);
   TMVCBrMiddlewareFactory.Add(TMVCBrMiddleware.Create);
 
   TMVCBrMiddlewareFactory.SendBeforeEvent(middView,nil);

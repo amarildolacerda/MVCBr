@@ -34,7 +34,6 @@ object FormNewModuleModel: TFormNewModuleModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 1
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -42,8 +41,6 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -70,31 +67,47 @@ object FormNewModuleModel: TFormNewModuleModel
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 292
+        Top = 147
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 20
         Top = 68
-        Width = 147
+        Width = 274
         Height = 21
         TabOrder = 0
         Text = 'New'
       end
       object cbCreateDir: TCheckBox
         Left = 19
-        Top = 123
+        Top = 102
         Width = 233
         Height = 17
         Caption = 'criar sub-pasta para o artefato'
-        Checked = True
-        State = cbChecked
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object cbFMX: TCheckBox
         Left = 19
-        Top = 146
+        Top = 125
         Width = 148
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
+      end
+      object edFolder: TEdit
+        Left = 17
+        Top = 148
+        Width = 277
+        Height = 21
+        TabOrder = 3
+        Text = 'folder to save artefacts'
+        Visible = False
       end
     end
     object TPage
@@ -201,8 +214,6 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -264,8 +275,6 @@ object FormNewModuleModel: TFormNewModuleModel
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 83
@@ -3553,7 +3562,6 @@ object FormNewModuleModel: TFormNewModuleModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

@@ -66,10 +66,18 @@ object FormNewBuilderModel: TFormNewBuilderModel
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 294
+        Top = 168
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 20
         Top = 68
-        Width = 147
+        Width = 276
         Height = 21
         TabOrder = 0
         Text = 'New'
@@ -79,8 +87,9 @@ object FormNewBuilderModel: TFormNewBuilderModel
         Top = 123
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object chFMX: TCheckBox
         Left = 19
@@ -90,13 +99,20 @@ object FormNewBuilderModel: TFormNewBuilderModel
         Caption = 'Firemonkey Framework'
         TabOrder = 2
       end
+      object edFolder: TEdit
+        Left = 19
+        Top = 169
+        Width = 277
+        Height = 21
+        TabOrder = 3
+        Text = 'folder to save artefacts'
+        Visible = False
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 99
@@ -3383,7 +3399,6 @@ object FormNewBuilderModel: TFormNewBuilderModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

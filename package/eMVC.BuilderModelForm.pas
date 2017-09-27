@@ -24,9 +24,12 @@ type
     Bevel1: TBevel;
     chFMX: TCheckBox;
     Image1: TImage;
+    SpeedButton1: TSpeedButton;
+    edFolder: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
+    procedure cbCreateDirClick(Sender: TObject);
   private
     procedure translate;
     { Private declarations }
@@ -115,6 +118,12 @@ begin
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
+end;
+
+procedure TFormNewBuilderModel.cbCreateDirClick(Sender: TObject);
+begin
+ edFolder.visible := cbCreateDir.Checked;
+ speedButton1.visible := cbCreateDir.Checked;
 end;
 
 procedure TFormNewBuilderModel.btnBackClick(Sender: TObject);

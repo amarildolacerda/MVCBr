@@ -149,7 +149,7 @@ type
   public
     destructor Destroy; override;
     procedure AfterConstruction; override;
-    function NewTab(APageView: TPageView;ACaption:String): TObject; virtual;
+    function NewTab(APageView: TPageView;ACaption:String=''): TObject; virtual;
     function GetPageTabClass: TComponentClass; virtual;
     function GetPageContainerClass: TComponentClass; virtual;
     function Count: integer;
@@ -554,20 +554,17 @@ begin
 end;
 
 function TCustomPageViewFactory.NewItem(const ACaption: string): TPageView;
-var
-  r: TPageView;
 begin
-  r := GetPageViewClass.Create;
-  FList.Add(r);
-  r.FOwner := self;
-  r.Text := ACaption;
-  r.Tab := NewTab(result,ACaption);
-  if r.Tab <> nil then
-    r.FClassType := r.Tab.ClassType;
-  result := r;
+  result := GetPageViewClass.Create;
+  FList.Add(result);
+  result.FOwner := self;
+  result.Text := ACaption;
+  result.Tab := NewTab(result,ACaption);
+  if result.Tab <> nil then
+    result.FClassType := result.Tab.ClassType;
 end;
 
-function TCustomPageViewFactory.NewTab(APageView: TPageView;ACaption:String): TObject;
+function TCustomPageViewFactory.NewTab(APageView: TPageView;ACaption:String=''): TObject;
 begin
   result := GetPageTabClass.Create(nil);
 end;

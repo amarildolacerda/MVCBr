@@ -66,6 +66,14 @@ object FormNewBuilderSubClassModel: TFormNewBuilderSubClassModel
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 294
+        Top = 168
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 20
         Top = 68
@@ -79,8 +87,9 @@ object FormNewBuilderSubClassModel: TFormNewBuilderSubClassModel
         Top = 123
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object chFMX: TCheckBox
         Left = 19
@@ -117,6 +126,15 @@ object FormNewBuilderSubClassModel: TFormNewBuilderSubClassModel
         TabOrder = 3
         TabStop = True
         OnClick = rbLazyClick
+      end
+      object edFolder: TEdit
+        Left = 19
+        Top = 169
+        Width = 277
+        Height = 21
+        TabOrder = 6
+        Text = 'folder to save artefacts'
+        Visible = False
       end
     end
     object TPage
@@ -3409,7 +3427,6 @@ object FormNewBuilderSubClassModel: TFormNewBuilderSubClassModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

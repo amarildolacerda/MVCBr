@@ -105,6 +105,8 @@ type
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
 
     procedure Init; virtual;
+    function AttachView(AFormClass: TComponentClass): TComponent;overload;virtual;
+
     [weak]
     function Start: IController; virtual;
     procedure BeforeInit; virtual;
@@ -118,7 +120,7 @@ type
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
     function AttachModel(const AModel: IModel): integer; override;
-    procedure AttachView(const AView: IView); virtual;
+    procedure AttachView(const AView: IView); overload;virtual;
     function IndexOf(const AModel: IModel): integer; virtual;
     function IndexOfModelType(const AModelType: TModelType): integer; virtual;
     procedure Delete(const Index: integer); virtual;
@@ -357,6 +359,21 @@ begin
       FView.setController(self);
     BeforeInit;
   end;
+end;
+
+function TControllerFactory.AttachView(AFormClass: TComponentClass)
+  : TComponent;
+begin
+  if not assigned(FView) then
+  begin
+    Application.CreateForm(AFormClass, result);
+    supports(result, IView, FView);
+{$IFDEF FMX}
+    if Application.MainForm = nil then
+      Application.RealCreateForms;
+{$ENDIF}
+  end;
+  AfterInit;
 end;
 
 function TControllerFactory.IsController(AGuid: TGuid): Boolean;

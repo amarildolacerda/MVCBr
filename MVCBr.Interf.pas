@@ -143,7 +143,7 @@ type
     class function ResolveInterfaced<TInterface: IMVCBrIOC>(const ANome: string)
       : TInterface; static;
     class procedure AttachInstance(AInstance: IMVCBrIOC); static;
-    class Procedure Revoke( AGuid:TGuid);static;
+    class Procedure Revoke(AGuid: TGuid); static;
     /// <summary>
     /// Observers procedures
     /// </summary>
@@ -179,9 +179,8 @@ type
     function GetGuid(AII: IInterface): TGuid;
   end;
 
-  IMVCBrBase<T:Class> = interface(TFunc<T>)
+  IMVCBrBase<T: Class> = interface(TFunc<T>)
   end;
-
 
   /// <summary>
   /// who want be an observer item
@@ -251,7 +250,8 @@ type
     property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
       write SetItems;
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
-    procedure UnSubscribe(AProc: TMVCBrObserverProc; AName:String=''); overload;
+    procedure UnSubscribe(AProc: TMVCBrObserverProc;
+      AName: String = ''); overload;
     procedure Send(AJson: TJsonValue); overload;
     procedure Send(const AName: string; AJson: TJsonValue;
       AOwned: boolean = true); overload;
@@ -592,8 +592,8 @@ type
     function ShowView: IView; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>;
       Const AProcOnClose: TProc<IView>): IView; overload;
-    function ShowView(const AProcBeforeShow:TProc<IView>;
-             const bShowModal:Boolean):IView;overload;
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const bShowModal: boolean): IView; overload;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
@@ -666,13 +666,12 @@ procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true); overload;
 procedure UnregisterInterfacedClass(const ANome: string);
 
-// var
-// FControllersClass: TObject;
+procedure OutputDebug(const txt: string);
 
 implementation
 
 uses {$IFNDEF BPL}
-  MVCBr.InterfaceHelper,
+  MVCBr.InterfaceHelper, Winapi.Windows,
 {$ENDIF}
   MVCBr.ApplicationController, MVCBr.IoC,
   MVCBr.Observable;
@@ -996,7 +995,7 @@ end;
 
 class procedure TMVCBr.Revoke(AGuid: TGuid);
 begin
-   TMVCBrIoC.DefaultContainer.Revoke(AGuid);
+  TMVCBrIoc.DefaultContainer.Revoke(AGuid);
 end;
 
 class procedure TMVCBr.AttachInstance(AInstance: IMVCBrIOC);
@@ -1396,6 +1395,29 @@ end;
 procedure TMVCBrObserverItemAbstract.SetIDInstance(const Value: TGuid);
 begin
   FIDInstance := Value;
+end;
+
+// uses Winapi.Windows;
+procedure OutputDebug(const txt: string);
+var
+  I: integer;
+  x: integer;
+const
+  n = 1024;
+begin
+{$IFNDEF BPL}
+{$IFDEF MSWINDOWS}
+  try
+    I := 0;
+    x := Length(txt);
+    repeat
+      OutputDebugString({$IFDEF UNICODE}PWideChar{$ELSE}PAnsiChar{$ENDIF}(ExtractFileName(ParamStr(0)) + ':' + copy(txt, I + 1, n)));
+      I := I + n;
+    until I >= x;
+  except
+  end;
+{$ENDIF}
+{$ENDIF}
 end;
 
 initialization

@@ -108,10 +108,11 @@ var
 
 var
   LCriarPathModule: boolean;
+  LPath:string;
   function GetNewPath(ASubPath: string): string;
   begin
     if LCriarPathModule then
-      result := path
+      result := LPath+'\'
     else
     begin
       result := extractFilePath(project);
@@ -134,6 +135,7 @@ begin
   path := extractFilePath(project);
   with TFormNewController.create(nil) do
   begin
+    edFolder.text := path+'Controllers';
     if showModal = mrOK then
     begin
       IsFMX := cbFMX.Checked;
@@ -146,6 +148,7 @@ begin
       else
       begin
         LCriarPathModule := cbCreateDir.Checked;
+        LPath := edFolder.text;
         if cbCreateDir.Checked then
         begin
           path := path + (setname) + '\';

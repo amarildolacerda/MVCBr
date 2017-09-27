@@ -111,6 +111,8 @@ type
     procedure SetShowTabColor(const Value: boolean);
     function IndexOfTabByCaption(ACaption: string): Integer;
     procedure SetUsePageHistory(const Value: boolean);
+    function ContainerName: String;
+    function GetContainer: TComponent;
     // procedure DoTabCanClose(Sender: TObject; var ACanClose: boolean);
   protected
     Procedure DoQueryClose(const APageView: TPageView;
@@ -942,6 +944,16 @@ begin
   FOnQueryClose := Value;
 end;
 
+function TVCLPageViewManager.ContainerName: String;
+begin
+  result := FPageContainer.name;
+end;
+
+function TVCLPageViewManager.GetContainer: TComponent;
+begin
+  result := FPageContainer;
+end;
+
 procedure TVCLPageViewManager.SetPageControlEx(const Value: TPageControl);
 begin
   if assigned(Value) then
@@ -965,20 +977,23 @@ begin
       sPage: string;
       nPage: Integer;
     begin
-      if js.s('pagecontrol') = FPageContainer.name then
-      begin
-        sPage := js.s('caption').trim;
-        InvokePageHistory.Remove('history', sPage);
-        if FUsePageHistory then
+      try
+        if js.s('pagecontrol') = ContainerName then
         begin
-          if InvokePageHistory.ItemsCount('history') > 0 then
+          sPage := js.s('caption').trim;
+          InvokePageHistory.Remove('history', sPage);
+          if FUsePageHistory then
           begin
-            sPage := InvokePageHistory.peek('history');
-            nPage := IndexOfTabByCaption(sPage);
-            if nPage >= 0 then
-              TPageControl(FPageContainer).ActivePageIndex := nPage;
+            if InvokePageHistory.ItemsCount('history') > 0 then
+            begin
+              sPage := InvokePageHistory.peek('history');
+              nPage := IndexOfTabByCaption(sPage);
+              if nPage >= 0 then
+                TPageControl(GetContainer).ActivePageIndex := nPage;
+            end;
           end;
         end;
+      except
       end;
     end);
 

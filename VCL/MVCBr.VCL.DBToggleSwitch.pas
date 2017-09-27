@@ -77,7 +77,7 @@ end;
 destructor TDBToggleSwitch.Destroy;
 begin
   onClick := nil;
-  FDataControl.delegateTo(nil);
+  FDataControl.DelegateTo(nil);
   FDataControl.Datasource := nil;
   FDataControl.free;
   FDataControl := nil;
@@ -96,14 +96,23 @@ begin
   if (not assigned(ds)) or (not ds.CanModify) then
     exit;
 
-//  if not(ds.State in [dsBrowse]) then
+  // if not(ds.State in [dsBrowse]) then
   begin
     if not(ds.State in dsEditModes) then
+    begin
       ds.edit;
-    if State = tssOff then
-      ds.fieldByName(DataField).Value := ValueTrue
+      if State = tssOff then
+        ds.fieldByName(DataField).Value := ValueTrue
+      else
+        ds.fieldByName(DataField).Value := ValueFalse
+    end
     else
-      ds.fieldByName(DataField).Value := ValueFalse
+    begin
+      if State = tssOff then
+        ds.fieldByName(DataField).Value := ValueFalse
+      else
+        ds.fieldByName(DataField).Value := ValueTrue
+    end;
   end;
 end;
 

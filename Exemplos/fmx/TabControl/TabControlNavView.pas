@@ -57,7 +57,7 @@ Implementation
 
 {$R *.fmx}
 
-uses EditorView;
+uses EditorView, Editor.Controller.Interf;
 
 function TTabControlNavView.UpdateView: IView;
 begin
@@ -78,7 +78,7 @@ end;
 
 procedure TTabControlNavView.Button1Click(Sender: TObject);
 begin
-  FMXPageViewManager1.AddForm(TEditorView);
+  FMXPageViewManager1.AddView(IEditorController)
 end;
 
 function TTabControlNavView.Controller(const aController: IController): IView;

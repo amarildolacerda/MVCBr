@@ -81,10 +81,10 @@ type
   TFieldsHelper = class helper for TFields
   private
   public
-    function JsonObject(var AJSONObject: TJsonObject;
-      ANulls: boolean = true): integer;
-    function ToJson(ANulls: boolean = true): string;
-    function JsonValue: TJsonValue;
+    function JsonObject(var AJSONObject: TJsonObject; ANulls: boolean = true;
+      AFields: string = ''): integer;
+    function ToJson(ANulls: boolean = true; AFields: string = ''): string;
+    function JsonValue(AFields: string = ''): TJsonValue;
     procedure FillFromJson(AJson: string);
   end;
 
@@ -387,29 +387,15 @@ end;
 
 procedure TDatasetHelper.FromJsonObject(oJson: TJsonObject; AAppend: boolean);
 var
+  inEditing: boolean;
   k: IJson;
   A: TJSONArray;
   j: integer;
-  fld: TField;
   i: integer;
-begin
-
-  if oJson.Contains('result') = false then
-    raise exception.Create('Não possui tag "result" no json');
-
-  oJson.TryGetValue<TJSONArray>('result', A);
-
-  if not AAppend then
+  procedure FromJsonX;
+  var
+    fld: TField;
   begin
-    if A.Length > 1 then
-      raise exception.Create
-        ('Muitas linhas para substituir do json (permitido 1)');
-  end;
-
-  for j := 0 to A.Length - 1 do
-  begin
-    k := A.Get(j) as TJsonObject;
-    i := 0;
     for fld in Fields do
     begin
       if k.Contains(lowercase(fld.FieldName)) then
@@ -423,7 +409,40 @@ begin
         inc(i);
       end;
     end;
-    if State in [dsEdit, dsInsert] then
+  end;
+
+begin
+  i := 0;
+  A := nil;
+  if oJson.Contains('result') then
+    oJson.TryGetValue<TJSONArray>('result', A);
+
+  if assigned(A) then
+  begin
+    if not AAppend then
+    begin
+      if A.Length > 1 then
+        raise exception.Create
+          ('Muitas linhas para substituir do json (permitido 1)');
+    end;
+  end
+  else
+  begin
+    k := oJson;
+    inEditing := State in [dsInsert, dsEdit];
+    FromJsonX;
+    if (i > 0) and (not inEditing) and (State in [dsEdit, dsInsert]) then
+      Post;
+    exit;
+  end;
+
+  inEditing := State in [dsInsert, dsEdit];
+  for j := 0 to A.Length - 1 do
+  begin
+    k := A.Get(j) as TJsonObject;
+    i := 0;
+    FromJsonX;
+    if (i > 0) and (not inEditing) and (State in [dsEdit, dsInsert]) then
       Post;
   end;
 end;
@@ -519,104 +538,105 @@ var
   SS: TStringStream;
 
 begin
- try
-  j := TJsonObject.Parse(AJson);
   try
-    for it in self do
-    begin
-      key := lowercase(it.FieldName);
-      jp := j.Get(key);
-      if assigned(jp) then
-        if not(jp.JsonValue is TJSONNull) then
-          V := j.Get(key).JsonValue;
-      if (not assigned(jp)) or (not assigned(V)) then
+    j := TJsonObject.Parse(AJson);
+    try
+      for it in self do
       begin
-        it.Clear;
-        Continue;
-      end;
+        key := lowercase(it.FieldName);
+        jp := j.Get(key);
+        if assigned(jp) then
+          if not(jp.JsonValue is TJSONNull) then
+            V := j.Get(key).JsonValue;
+        if (not assigned(jp)) or (not assigned(V)) then
+        begin
+          it.Clear;
+          Continue;
+        end;
 
-      case it.DataType of
-        TFieldType.ftInteger, TFieldType.ftAutoInc, TFieldType.ftSmallint,
-          TFieldType.ftShortint:
-          begin
-            it.AsInteger := (V as TJSONNumber).AsInt;
-          end;
-        TFieldType.ftLargeint:
-          begin
-            it.AsLargeInt := (V as TJSONNumber).AsInt64;
-          end;
-        TFieldType.ftSingle, TFieldType.ftFloat:
-          begin
-            it.AsFloat := (V as TJSONNumber).AsDouble;
-          end;
-        ftString, ftWideString, ftMemo, ftWideMemo:
-          begin
-            it.AsString := (V as TJSONString).Value;
-          end;
-        TFieldType.ftDate:
-          begin
-            it.AsDateTime := ISOStrToDate((V as TJSONString).Value);
-          end;
-        TFieldType.ftDateTime:
-          begin
-            it.AsDateTime := ISOStrToDateTime((V as TJSONString).Value);
-          end;
-        TFieldType.ftTimeStamp:
-          begin
-            it.AsSQLTimeStamp := StrToSQLTimeStamp((V as TJSONString).Value);
-          end;
-        TFieldType.ftCurrency:
-          begin
-            fs.DecimalSeparator := '.';
-{$IF CompilerVersion <= 27}
-            it.AsCurrency := StrToCurr((V as TJSONString).Value, fs);
-{$ELSE} // Delphi XE7 introduces method "ToJSON" to fix some old bugs...
-            it.AsCurrency := StrToCurr((V as TJSONNumber).ToJson, fs);
-{$ENDIF}
-          end;
-        TFieldType.ftFMTBcd:
-          begin
-            it.AsBcd := DoubleToBcd((V as TJSONNumber).AsDouble);
-          end;
-        TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
-          begin
-            MS := TMemoryStream.Create;
-            try
-              SS := TStringStream.Create((V as TJSONString).Value,
-                TEncoding.ASCII);
-              try
-                DecodeStream(SS, MS);
-                MS.Position := 0;
-                TBlobField(it).LoadFromStream(MS);
-              finally
-                SS.Free;
-              end;
-            finally
-              MS.Free;
+        case it.DataType of
+          TFieldType.ftInteger, TFieldType.ftAutoInc, TFieldType.ftSmallint,
+            TFieldType.ftShortint:
+            begin
+              it.AsInteger := (V as TJSONNumber).AsInt;
             end;
-          end;
-        // else
-        // raise EMapperException.Create('Cannot find type for field ' + key);
+          TFieldType.ftLargeint:
+            begin
+              it.AsLargeInt := (V as TJSONNumber).AsInt64;
+            end;
+          TFieldType.ftSingle, TFieldType.ftFloat:
+            begin
+              it.AsFloat := (V as TJSONNumber).AsDouble;
+            end;
+          ftString, ftWideString, ftMemo, ftWideMemo:
+            begin
+              it.AsString := (V as TJSONString).Value;
+            end;
+          TFieldType.ftDate:
+            begin
+              it.AsDateTime := ISOStrToDate((V as TJSONString).Value);
+            end;
+          TFieldType.ftDateTime:
+            begin
+              it.AsDateTime := ISOStrToDateTime((V as TJSONString).Value);
+            end;
+          TFieldType.ftTimeStamp:
+            begin
+              it.AsSQLTimeStamp := StrToSQLTimeStamp((V as TJSONString).Value);
+            end;
+          TFieldType.ftCurrency:
+            begin
+              fs.DecimalSeparator := '.';
+{$IF CompilerVersion <= 27}
+              it.AsCurrency := StrToCurr((V as TJSONString).Value, fs);
+{$ELSE} // Delphi XE7 introduces method "ToJSON" to fix some old bugs...
+              it.AsCurrency := StrToCurr((V as TJSONNumber).ToJson, fs);
+{$ENDIF}
+            end;
+          TFieldType.ftFMTBcd:
+            begin
+              it.AsBcd := DoubleToBcd((V as TJSONNumber).AsDouble);
+            end;
+          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+            begin
+              MS := TMemoryStream.Create;
+              try
+                SS := TStringStream.Create((V as TJSONString).Value,
+                  TEncoding.ASCII);
+                try
+                  DecodeStream(SS, MS);
+                  MS.Position := 0;
+                  TBlobField(it).LoadFromStream(MS);
+                finally
+                  SS.Free;
+                end;
+              finally
+                MS.Free;
+              end;
+            end;
+          // else
+          // raise EMapperException.Create('Cannot find type for field ' + key);
+        end;
+
       end;
 
+    finally
+      FreeAndNil(j);
     end;
-
-  finally
-    FreeAndNil(j);
+  except
+    on e: exception do
+      raise exception.Create(e.message + '(' + key + ')');
   end;
- except
-   on e:exception do
-      raise Exception.Create(e.message+'('+key+')');
- end;
 end;
 
-function TFieldsHelper.ToJson(ANulls: boolean = true): string;
+function TFieldsHelper.ToJson(ANulls: boolean = true;
+AFields: string = ''): string;
 var
   AJSONObject: TJsonObject;
 begin
   AJSONObject := TJsonObject.Create;
   try
-    JsonObject(AJSONObject, ANulls);
+    JsonObject(AJSONObject, ANulls, AFields);
     result := AJSONObject.ToString;
   finally
     AJSONObject.Free;
@@ -625,11 +645,11 @@ end;
 
 procedure TFieldsHelper.FillFromJson(AJson: string);
 begin
-   TFieldsHack(self).FillFromJson(AJson);
+  TFieldsHack(self).FillFromJson(AJson);
 end;
 
 function TFieldsHelper.JsonObject(var AJSONObject: TJsonObject;
-ANulls: boolean = true): integer;
+ANulls: boolean = true; AFields: string = ''): integer;
 var
   i: integer;
   key: string;
@@ -637,18 +657,31 @@ var
   MS: TMemoryStream;
   SS: TStringStream;
   it: TField;
+  function FieldValid: boolean;
+  begin
+    result := (AFields = '') or
+      (pos(',' + lowercase(it.FieldName) + ',', AFields) > 0);
+  end;
+
 begin
+  if AFields <> '' then
+    AFields := ',' + lowercase(AFields.Replace(';', ',')) + ',';
   result := 0;
   if not assigned(AJSONObject) then
     raise exception.Create('Error Message, not init JSONOject ');
 
   for it in self do
   begin
+    if not FieldValid then
+      Continue;
     key := lowercase(it.FieldName);
+    if not ANulls then
+      if it.IsNull or it.AsString.IsEmpty then
+      begin
+        Continue;
+      end;
     if it.IsNull then
     begin
-      if not ANulls then
-        Continue;
       AJSONObject.addPair(key, TJSONNull.Create);
       Continue;
     end;
@@ -656,22 +689,40 @@ begin
     case it.DataType of
       TFieldType.ftInteger, TFieldType.ftAutoInc, TFieldType.ftSmallint,
         TFieldType.ftShortint:
-        AJSONObject.addPair(key, TJSONNumber.Create(it.AsInteger));
+        begin
+          if (not ANulls) and (it.AsInteger = 0) then
+            Continue;
+          AJSONObject.addPair(key, TJSONNumber.Create(it.AsInteger));
+        end;
       TFieldType.ftLargeint:
         begin
+          if (not ANulls) and (it.AsInteger = 0) then
+            Continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsLargeInt));
         end;
       TFieldType.ftSingle, TFieldType.ftFloat:
-        AJSONObject.addPair(key, TJSONNumber.Create(it.AsFloat));
+        begin
+          if (not ANulls) and (it.AsFloat = 0) then
+            Continue;
+          AJSONObject.addPair(key, TJSONNumber.Create(it.AsFloat));
+        end;
       ftWideString, ftMemo, ftWideMemo:
         AJSONObject.addPair(key, it.AsWideString);
       ftString:
         AJSONObject.addPair(key, it.AsString.Replace('\', '\\',
           [rfReplaceAll]));
       TFieldType.ftDate:
-        AJSONObject.addPair(key, ISODateToString(it.AsDateTime));
+        begin
+          if (not ANulls) and (Trunc(it.AsFloat) = 0) then
+            Continue;
+          AJSONObject.addPair(key, ISODateToString(it.AsDateTime));
+        end;
       TFieldType.ftDateTime:
-        AJSONObject.addPair(key, ISODateTimeToString(it.AsDateTime));
+        begin
+          if (not ANulls) and (Trunc(it.AsFloat) = 0) then
+            Continue;
+          AJSONObject.addPair(key, ISODateTimeToString(it.AsDateTime));
+        end;
       TFieldType.ftTimeStamp:
         begin
           ts := it.AsSQLTimeStamp;
@@ -679,9 +730,17 @@ begin
             SQLTimeStampToStr('yyyy-mm-dd hh:nn:ss', ts));
         end;
       TFieldType.ftCurrency:
-        AJSONObject.addPair(key, TJSONNumber.Create(it.AsCurrency));
+        begin
+          if (not ANulls) and (it.AsFloat = 0) then
+            Continue;
+          AJSONObject.addPair(key, TJSONNumber.Create(it.AsCurrency));
+        end;
       TFieldType.ftBCD, TFieldType.ftFMTBcd:
-        AJSONObject.addPair(key, TJSONNumber.Create(BcdToDouble(it.AsBcd)));
+        begin
+          if (not ANulls) and (Trunc(it.AsFloat) = 0) then
+            Continue;
+          AJSONObject.addPair(key, TJSONNumber.Create(BcdToDouble(it.AsBcd)));
+        end;
       TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
         begin
           MS := TMemoryStream.Create;
@@ -706,11 +765,11 @@ begin
   end;
 end;
 
-function TFieldsHelper.JsonValue: TJsonValue;
+function TFieldsHelper.JsonValue(AFields: string = ''): TJsonValue;
 var
   s: string;
 begin
-  s := ToJson;
+  s := ToJson(false, AFields);
   result := TJsonObject.ParseJSONValue(s);
 end;
 
@@ -800,6 +859,5 @@ begin
 end;
 
 { TFieldsHack }
-
 
 end.

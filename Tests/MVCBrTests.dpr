@@ -65,7 +65,9 @@ uses
   TestMVCBr.Patterns.Singleton in 'TestMVCBr.Patterns.Singleton.pas',
   TestsMVCBr.Patterns.Factory in 'TestsMVCBr.Patterns.Factory.pas',
   MVCBr.Patterns.Memento in '..\MVCBr.Patterns.Memento.pas',
-  TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas';
+  TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas',
+  MVCBr.MongoModel in '..\MVCBr.MongoModel.pas',
+  TestMVCBrMongoModel in 'TestMVCBrMongoModel.pas';
 
 {$R *.RES}
 

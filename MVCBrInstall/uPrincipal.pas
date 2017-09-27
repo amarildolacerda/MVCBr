@@ -333,6 +333,8 @@ procedure TfrmPrincipal.CopiarArquivosToLib;
     Mover(ListArquivos);
     ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'DMVC\lib\dmustache', Extensao ,TSearchOption.soAllDirectories ) ;
     Mover(ListArquivos);
+    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) + 'MongoWire', Extensao ,TSearchOption.soAllDirectories ) ;
+    Mover(ListArquivos);
   end;
 
 begin
@@ -419,6 +421,7 @@ begin
      AddToLibrarySearchPath(ADirRoot + 'DMVC\sources', tPlatform);
      AddToLibrarySearchPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
      AddToLibrarySearchPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
+     AddToLibrarySearchPath(ADirRoot + 'MongoWire', tPlatform);
 
 
      AddToLibraryBrowsingPath(ADirRoot , tPlatform);
@@ -429,6 +432,7 @@ begin
      AddToLibraryBrowsingPath(ADirRoot + 'DMVC\sources', tPlatform);
      AddToLibraryBrowsingPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
      AddToLibraryBrowsingPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
+     AddToLibraryBrowsingPath(ADirRoot + 'MongoWire', tPlatform);
     end
     else
     begin
@@ -440,6 +444,7 @@ begin
      RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\sources', tPlatform);
      RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
      RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
+     RemoveFromLibrarySearchPath(ADirRoot + 'MongoWire', tPlatform);
     end;
   end;
 
@@ -489,6 +494,7 @@ procedure TfrmPrincipal.AddLibrarySearchPath;
       AddToLibrarySearchPath(sDirRoot+'DMVC\sources', tPlatform);
       AddToLibrarySearchPath(sDirRoot+'DMVC\LIB\loggerpro', tPlatform);
       AddToLibrarySearchPath(sDirRoot+'DMVC\LIB\dmustache', tPlatform);
+      AddToLibrarySearchPath(sDirRoot+'MongoWire', tPlatform);
     end;
   end;
 begin
@@ -774,6 +780,7 @@ begin
     NomePacote.Add('MVCBrFMX.dpk');
     NomePacote.Add('MVCBrOData.dpk');
     NomePacote.Add('MVCBrFireDAC.dpk');
+    NomePacote.Add('MVCBrVCLWinX.dpk');
 
     // Busca diretório do pacote
     for iDpk := 0 to NomePacote.Count -1 do

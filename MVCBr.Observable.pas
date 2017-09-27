@@ -245,8 +245,18 @@ procedure TMVCBrObservable.Send(const AName: string; AJson: TJsonValue;
 var
   i: integer;
   AHandled: boolean;
+  ADados: string;
+  nDados: integer;
 begin
   try
+    nDados := 0;
+    ADados := '';
+{$IFDEF DEBUG}
+    if assigned(AJson) then
+      ADados := AJson.ToString;
+{$ENDIF}
+    OutputDebug('TMVCBrObservable.Send(' + AName + ')' + ' ' + ADados);
+
     TThread.NameThreadForDebugging('observable.send');
     with LockList do
       try
@@ -254,7 +264,9 @@ begin
         begin
           AHandled := false;
           if Items[i].GetTopic.Equals(AName) then
+          begin
             Items[i].Send(AJson, AHandled);
+          end;
           if AHandled then
             exit;
         end;
@@ -570,7 +582,7 @@ var
   i: integer;
   SName: string;
   SObject: TObject;
-  comp:IComparable<TObject>;
+  comp: IComparable<TObject>;
 begin
   with LockList do
     try
@@ -579,15 +591,15 @@ begin
         try
           SName := Items[i].GetTopic;
           SObject := Items[i].GetContainer;
-          //if assigned(SObject) then
-            if SObject = AOwner then
-            begin
-              if (AName <> '') and (SName <> AName) then
-                continue;
-              Items[i].SetContainer(nil);
-              //FreeAndNil(SObject);
-              Delete(i);
-            end;
+          // if assigned(SObject) then
+          if SObject = AOwner then
+          begin
+            if (AName <> '') and (SName <> AName) then
+              continue;
+            Items[i].SetContainer(nil);
+            // FreeAndNil(SObject);
+            Delete(i);
+          end;
         except // nao encontrou
           Delete(i);
         end;
