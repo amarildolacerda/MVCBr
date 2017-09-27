@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "Schema/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>eMVC.BuilderSubClassCreator.pas</title>
+    <link rel="StyleSheet" href="Styles/BrowseAndDocItScreen.css" media="Screen"/>
+    <link rel="StyleSheet" href="Styles/BrowseAndDocItPrint.css" media="Print"/>
+  </head>
+
+  <body>
+  
+    <div class="Modules">
+      <div class="List">
+        <div class="ModuleTitle">Modules</div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="Summary.html">Summary</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaPasLex.html">CastaliaPasLex.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaPasLexTypes.html">CastaliaPasLexTypes.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaSimplePasPar.html">CastaliaSimplePasPar.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaSimplePasParTypes.html">CastaliaSimplePasParTypes.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BaseCreator.html">eMVC.BaseCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderCreator.html">eMVC.BuilderCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderModelWizard.html">eMVC.BuilderModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderSubClassCreator.html">eMVC.BuilderSubClassCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderSubClassForm.html">eMVC.BuilderSubClassForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderSubClassWizard.html">eMVC.BuilderSubClassWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ClassModelCreator.html">eMVC.ClassModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ClassModelForm.html">eMVC.ClassModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ClassModelWizard.html">eMVC.ClassModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.Config.html">eMVC.Config.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ControllerCreator.html">eMVC.ControllerCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ControllerForm.html">eMVC.ControllerForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ControllerWizard.html">eMVC.ControllerWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.CopyFileForm.html">eMVC.CopyFileForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.DatasetModel.Interf.html">eMVC.DatasetModel.Interf.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.DatasetModel.html">eMVC.DatasetModel.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeModelWizard.html">eMVC.FacadeModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeSubClassCreator.html">eMVC.FacadeSubClassCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeSubClassForm.html">eMVC.FacadeSubClassForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeSubClassWizard.html">eMVC.FacadeSubClassWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FileCreator.html">eMVC.FileCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FrameCreator.html">eMVC.FrameCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.IncludeCreator.html">eMVC.IncludeCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.Logger.html">eMVC.Logger.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModelCreator.html">eMVC.ModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelConst.html">eMVC.ModuleModelConst.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelCreator.html">eMVC.ModuleModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelForm.html">eMVC.ModuleModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelWizard.html">eMVC.ModuleModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.OTAUtilities.html">eMVC.OTAUtilities.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.Patterns.html">eMVC.Patterns.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentModelConst.html">eMVC.PersistentModelConst.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentModelCreator.html">eMVC.PersistentModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentModelForm.html">eMVC.PersistentModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentWizard.html">eMVC.PersistentWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectCreator.html">eMVC.ProjectCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectFileCreator.html">eMVC.ProjectFileCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectGroupCreator.html">eMVC.ProjectGroupCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectWizard.html">eMVC.ProjectWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectWizardForm.html">eMVC.ProjectWizardForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.shadow.html">eMVC.shadow.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.toolBox.html">eMVC.toolBox.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewCreator.html">eMVC.ViewCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewModelCreator.html">eMVC.ViewModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewModelForm.html">eMVC.ViewModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewModelWizard.html">eMVC.ViewModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="MVCBr.html">MVCBr.dpk</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="IntfParser.html">IntfParser.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="TokenClasses.html">TokenClasses.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="TokenInterfaces.html">TokenInterfaces.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="Index.html">Index</a></div>
+      </div>
+
+    </div>
+
+    <div class="Sections">
+      <div class="Section"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="#ModuleOverview">Module Overview</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/NoneImplementedMethodsLabel.gif" alt=""/>&nbsp;<a href="#ImplementedMethods2">Implemented Methods</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/PublicTypesLabel.gif" alt=""/>&nbsp;<a href="#Types2">Types</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/NoneUsesLabel.gif" alt=""/>&nbsp;<a href="#Uses2">Uses</a></div>
+
+    </div>
+
+    <div class="Contents">
+      <!-- Unit eMVC.BuilderSubClassCreator -->
+      <h1><img class="verticallymiddle" src="Images/GlobalModule.gif" alt=""/>&nbsp;<a name="ModuleOverview"></a>Documentation for Unit eMVC.BuilderSubClassCreator</h1>
+      
+      <!-- Implemented Methods -->
+      <h2><img class="verticallymiddle" src="Images/NoneImplementedMethodsLabel.gif" alt=""/>&nbsp;<a name="ImplementedMethods2"></a>Implemented Methods</h2>
+      <div class="Indent">
+          <!-- TBuilderCreator -->
+          <h3><img class="verticallymiddle" src="Images/PublicClass.gif" alt=""/>&nbsp;<a name="TBuilderCreator3"></a>TBuilderCreator</h3>
+          <div class="Indent">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Data / Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublicConstructor.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TBuilderCreator.Create"></a>Create</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Constructor</span><span class="WhiteSpace"> </span><span class="Identifier">Create</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">APath</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="SingleLiteral">''</span><span class="Symbol">;</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">ABaseName</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="SingleLiteral">''</span><span class="Symbol">;</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">AUnNamed</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="Identifier">true</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Constructor Create(
+  const APath : string = '';
+  ABaseName : string = '';
+  AUnNamed : boolean = true
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublicFunction.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TBuilderCreator.GetImplFileName"></a>GetImplFileName</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Function</span><span class="WhiteSpace"> </span><span class="Identifier">GetImplFileName</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span></pre>
+              <!-- Function GetImplFileName : string -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublicFunction.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TBuilderCreator.NewImplSource"></a>NewImplSource</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Function</span><span class="WhiteSpace"> </span><span class="Identifier">NewImplSource</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">ModuleIdent</span><span class="Symbol">,</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">FormIdent</span><span class="Symbol">,</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">AncestorIdent</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="LineEnd">
+</span><span class="Symbol">)</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">IOTAFile</span></pre>
+              <!-- Function NewImplSource(
+  const ModuleIdent,
+  FormIdent,
+  AncestorIdent : string
+) : IOTAFile -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PrivateProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TBuilderCreator.SetisInterf"></a>SetisInterf</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">SetisInterf</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">Value</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Procedure SetisInterf(
+  const Value : boolean
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PrivateProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TBuilderCreator.SetSubClassType"></a>SetSubClassType</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">SetSubClassType</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">Value</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">Integer</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Procedure SetSubClassType(
+  const Value : Integer
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
+          </div>
+      
+      </div>
+      
+      <!-- Types -->
+      <h2><img class="verticallymiddle" src="Images/PublicTypesLabel.gif" alt=""/>&nbsp;<a name="Types2"></a>Types</h2>
+      <div class="Indent">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Data / Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicClass.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator"></a>TBuilderCreator</td>
+              <td>
+                <pre class="code"><span class="Identifier">TBuilderCreator</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="ReservedWord">Class</span><span class="Symbol">(</span><span class="Identifier">TBaseCreator</span><span class="Symbol">)</span></pre>
+          <!-- TBuilderCreator = Class(TBaseCreator) -->
+          <div class="Indent">
+              <!-- Fields -->
+              <h3><img class="verticallymiddle" src="Images/NoneFieldsLabel.gif" alt=""/>&nbsp;<a name="Fields3"></a>Fields</h3>
+              <div class="Indent">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Data / Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PrivateField.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Fields.FisInterf"></a>FisInterf</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">FisInterf</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- FisInterf : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PrivateField.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Fields.FSubClassType"></a>FSubClassType</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">FSubClassType</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">Integer</span></pre>
+                  <!-- FSubClassType : Integer -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PrivateField.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Fields.FUnitIdent"></a>FUnitIdent</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">FUnitIdent</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span></pre>
+                  <!-- FUnitIdent : string -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+      
+              </div>
+      
+              <!-- Methods -->
+              <h3><img class="verticallymiddle" src="Images/NoneMethodsLabel.gif" alt=""/>&nbsp;<a name="Methods3"></a>Methods</h3>
+              <div class="Indent">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Data / Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicConstructor.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Methods.Create"></a>Create</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Constructor</span><span class="WhiteSpace"> </span><span class="Identifier">Create</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">APath</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="SingleLiteral">''</span><span class="Symbol">;</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">ABaseName</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="SingleLiteral">''</span><span class="Symbol">;</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">AUnNamed</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="Identifier">true</span><span class="LineEnd">
+</span><span class="Symbol">)</span><span class="Symbol">;</span><span class="WhiteSpace"> </span><span class="Directive">override</span></pre>
+                  <!-- Constructor Create(
+  const APath : string = '';
+  ABaseName : string = '';
+  AUnNamed : boolean = true
+); override -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicFunction.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Methods.GetImplFileName"></a>GetImplFileName</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Function</span><span class="WhiteSpace"> </span><span class="Identifier">GetImplFileName</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="Symbol">;</span><span class="WhiteSpace"> </span><span class="Directive">override</span></pre>
+                  <!-- Function GetImplFileName : string; override -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicFunction.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Methods.NewImplSource"></a>NewImplSource</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Function</span><span class="WhiteSpace"> </span><span class="Identifier">NewImplSource</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">ModuleIdent</span><span class="Symbol">,</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">FormIdent</span><span class="Symbol">,</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">AncestorIdent</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span><span class="LineEnd">
+</span><span class="Symbol">)</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">IOTAFile</span><span class="Symbol">;</span><span class="WhiteSpace"> </span><span class="Directive">override</span></pre>
+                  <!-- Function NewImplSource(
+  const ModuleIdent,
+  FormIdent,
+  AncestorIdent : string
+) : IOTAFile; override -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PrivateProcedure.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Methods.SetisInterf"></a>SetisInterf</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">SetisInterf</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">Value</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+                  <!-- Procedure SetisInterf(
+  const Value : boolean
+) -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PrivateProcedure.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Methods.SetSubClassType"></a>SetSubClassType</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">SetSubClassType</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="ReservedWord">const</span><span class="WhiteSpace"> </span><span class="Identifier">Value</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">Integer</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+                  <!-- Procedure SetSubClassType(
+  const Value : Integer
+) -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+      
+              </div>
+      
+              <!-- Properties -->
+              <h3><img class="verticallymiddle" src="Images/NonePropertyLabel.gif" alt=""/>&nbsp;<a name="Properties3"></a>Properties</h3>
+              <div class="Indent">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Data / Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicProperty.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Properties.isInterf"></a>isInterf</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Property</span><span class="WhiteSpace"> </span><span class="Identifier">isInterf</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Directive">Read</span><span class="WhiteSpace"> </span><span class="Identifier">FisInterf</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Directive">Write</span><span class="WhiteSpace"> </span><span class="Identifier">SetisInterf</span><span class="LineEnd">
+</span></pre>
+                  <!-- Property isInterf : boolean
+  Read FisInterf
+  Write SetisInterf
+ -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicProperty.gif" alt=""/>&nbsp;<a name="Types.TBuilderCreator.Properties.SubClassType"></a>SubClassType</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Property</span><span class="WhiteSpace"> </span><span class="Identifier">SubClassType</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">Integer</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Directive">Read</span><span class="WhiteSpace"> </span><span class="Identifier">FSubClassType</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Directive">Write</span><span class="WhiteSpace"> </span><span class="Identifier">SetSubClassType</span><span class="LineEnd">
+</span></pre>
+                  <!-- Property SubClassType : Integer
+  Read FSubClassType
+  Write SetSubClassType
+ -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+      
+              </div>
+      
+          </div>
+      
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+      </div>
+      
+      <!-- Uses -->
+      <h2><img class="verticallymiddle" src="Images/NoneUsesLabel.gif" alt=""/>&nbsp;<a name="Uses2"></a>Uses</h2>
+      <div class="Indent">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Data / Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.eMVC.BaseCreator"></a>eMVC.BaseCreator</td>
+              <td>
+                <pre class="code"><span class="Identifier">eMVC</span><span class="Symbol">.</span><span class="Identifier">BaseCreator</span></pre>
+          <!-- eMVC.BaseCreator -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.eMVC.FileCreator"></a>eMVC.FileCreator</td>
+              <td>
+                <pre class="code"><span class="Identifier">eMVC</span><span class="Symbol">.</span><span class="Identifier">FileCreator</span></pre>
+          <!-- eMVC.FileCreator -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.eMVC.OTAUtilities"></a>eMVC.OTAUtilities</td>
+              <td>
+                <pre class="code"><span class="Identifier">eMVC</span><span class="Symbol">.</span><span class="Identifier">OTAUtilities</span></pre>
+          <!-- eMVC.OTAUtilities -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.eMVC.ViewCreator"></a>eMVC.ViewCreator</td>
+              <td>
+                <pre class="code"><span class="Identifier">eMVC</span><span class="Symbol">.</span><span class="Identifier">ViewCreator</span></pre>
+          <!-- eMVC.ViewCreator -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.SysUtils"></a>SysUtils</td>
+              <td>
+                <pre class="code"><span class="Identifier">SysUtils</span></pre>
+          <!-- SysUtils -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.ToolsApi"></a>ToolsApi</td>
+              <td>
+                <pre class="code"><span class="Identifier">ToolsApi</span></pre>
+          <!-- ToolsApi -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Windows"></a>Windows</td>
+              <td>
+                <pre class="code"><span class="Identifier">Windows</span></pre>
+          <!-- Windows -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+      </div>
+      
+
+    </div>
+
+  </body>
+</html>

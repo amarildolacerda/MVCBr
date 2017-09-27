@@ -1,0 +1,754 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "Schema/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>eMVC.FacadeSubClassForm.pas</title>
+    <link rel="StyleSheet" href="Styles/BrowseAndDocItScreen.css" media="Screen"/>
+    <link rel="StyleSheet" href="Styles/BrowseAndDocItPrint.css" media="Print"/>
+  </head>
+
+  <body>
+  
+    <div class="Modules">
+      <div class="List">
+        <div class="ModuleTitle">Modules</div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="Summary.html">Summary</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaPasLex.html">CastaliaPasLex.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaPasLexTypes.html">CastaliaPasLexTypes.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaSimplePasPar.html">CastaliaSimplePasPar.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="CastaliaSimplePasParTypes.html">CastaliaSimplePasParTypes.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BaseCreator.html">eMVC.BaseCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderCreator.html">eMVC.BuilderCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderModelWizard.html">eMVC.BuilderModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderSubClassCreator.html">eMVC.BuilderSubClassCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderSubClassForm.html">eMVC.BuilderSubClassForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.BuilderSubClassWizard.html">eMVC.BuilderSubClassWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ClassModelCreator.html">eMVC.ClassModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ClassModelForm.html">eMVC.ClassModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ClassModelWizard.html">eMVC.ClassModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.Config.html">eMVC.Config.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ControllerCreator.html">eMVC.ControllerCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ControllerForm.html">eMVC.ControllerForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ControllerWizard.html">eMVC.ControllerWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.CopyFileForm.html">eMVC.CopyFileForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.DatasetModel.Interf.html">eMVC.DatasetModel.Interf.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.DatasetModel.html">eMVC.DatasetModel.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeModelWizard.html">eMVC.FacadeModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeSubClassCreator.html">eMVC.FacadeSubClassCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeSubClassForm.html">eMVC.FacadeSubClassForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FacadeSubClassWizard.html">eMVC.FacadeSubClassWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FileCreator.html">eMVC.FileCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.FrameCreator.html">eMVC.FrameCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.IncludeCreator.html">eMVC.IncludeCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.Logger.html">eMVC.Logger.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModelCreator.html">eMVC.ModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelConst.html">eMVC.ModuleModelConst.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelCreator.html">eMVC.ModuleModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelForm.html">eMVC.ModuleModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ModuleModelWizard.html">eMVC.ModuleModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.OTAUtilities.html">eMVC.OTAUtilities.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.Patterns.html">eMVC.Patterns.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentModelConst.html">eMVC.PersistentModelConst.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentModelCreator.html">eMVC.PersistentModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentModelForm.html">eMVC.PersistentModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.PersistentWizard.html">eMVC.PersistentWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectCreator.html">eMVC.ProjectCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectFileCreator.html">eMVC.ProjectFileCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectGroupCreator.html">eMVC.ProjectGroupCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectWizard.html">eMVC.ProjectWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ProjectWizardForm.html">eMVC.ProjectWizardForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.shadow.html">eMVC.shadow.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.toolBox.html">eMVC.toolBox.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewCreator.html">eMVC.ViewCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewModelCreator.html">eMVC.ViewModelCreator.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewModelForm.html">eMVC.ViewModelForm.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="eMVC.ViewModelWizard.html">eMVC.ViewModelWizard.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="MVCBr.html">MVCBr.dpk</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="IntfParser.html">IntfParser.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="TokenClasses.html">TokenClasses.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="TokenInterfaces.html">TokenInterfaces.pas</a></div>
+        <div class="Module"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="Index.html">Index</a></div>
+      </div>
+
+    </div>
+
+    <div class="Sections">
+      <div class="Section"><img class="verticallymiddle" src="Images/NoneModule.gif" alt=""/>&nbsp;<a href="#ModuleOverview">Module Overview</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/NoneImplementedMethodsLabel.gif" alt=""/>&nbsp;<a href="#ImplementedMethods2">Implemented Methods</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/PublicTypesLabel.gif" alt=""/>&nbsp;<a href="#Types2">Types</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/NoneUsesLabel.gif" alt=""/>&nbsp;<a href="#Uses2">Uses</a></div>
+      <div class="Section"><img class="verticallymiddle" src="Images/PublicVariablesLabel.gif" alt=""/>&nbsp;<a href="#Variables2">Variables</a></div>
+
+    </div>
+
+    <div class="Contents">
+      <!-- Unit eMVC.FacadeSubClassForm -->
+      <h1><img class="verticallymiddle" src="Images/GlobalModule.gif" alt=""/>&nbsp;<a name="ModuleOverview"></a>Documentation for Unit eMVC.FacadeSubClassForm</h1>
+      
+      <!-- Implemented Methods -->
+      <h2><img class="verticallymiddle" src="Images/NoneImplementedMethodsLabel.gif" alt=""/>&nbsp;<a name="ImplementedMethods2"></a>Implemented Methods</h2>
+      <div class="Indent">
+          <!-- TFormNewFacadeSubClass -->
+          <h3><img class="verticallymiddle" src="Images/PublicClass.gif" alt=""/>&nbsp;<a name="TFormNewFacadeSubClass3"></a>TFormNewFacadeSubClass</h3>
+          <div class="Indent">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Data / Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TFormNewFacadeSubClass.btnBackClick"></a>btnBackClick</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">btnBackClick</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Procedure btnBackClick(
+  Sender : TObject
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TFormNewFacadeSubClass.btnOKNextClick"></a>btnOKNextClick</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">btnOKNextClick</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Procedure btnOKNextClick(
+  Sender : TObject
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TFormNewFacadeSubClass.cbCreateDirClick"></a>cbCreateDirClick</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">cbCreateDirClick</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Procedure cbCreateDirClick(
+  Sender : TObject
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TFormNewFacadeSubClass.FormCreate"></a>FormCreate</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">FormCreate</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+              <!-- Procedure FormCreate(
+  Sender : TObject
+) -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+                <tr>
+                  <td><img class="verticallymiddle" src="Images/PrivateProcedure.gif" alt=""/>&nbsp;<a name="ImplementedMethods.TFormNewFacadeSubClass.translate"></a>translate</td>
+                  <td>
+                    <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">translate</span></pre>
+              <!-- Procedure translate -->
+              <div class="Indent">
+              </div>
+      
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
+          </div>
+      
+      </div>
+      
+      <!-- Types -->
+      <h2><img class="verticallymiddle" src="Images/PublicTypesLabel.gif" alt=""/>&nbsp;<a name="Types2"></a>Types</h2>
+      <div class="Indent">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Data / Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicClass.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass"></a>TFormNewFacadeSubClass</td>
+              <td>
+                <pre class="code"><span class="Identifier">TFormNewFacadeSubClass</span><span class="WhiteSpace"> </span><span class="Symbol">=</span><span class="WhiteSpace"> </span><span class="ReservedWord">Class</span><span class="Symbol">(</span><span class="Identifier">TForm</span><span class="Symbol">)</span></pre>
+          <!-- TFormNewFacadeSubClass = Class(TForm) -->
+          <div class="Indent">
+              <!-- Fields -->
+              <h3><img class="verticallymiddle" src="Images/NoneFieldsLabel.gif" alt=""/>&nbsp;<a name="Fields3"></a>Fields</h3>
+              <div class="Indent">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Data / Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Bevel1"></a>Bevel1</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Bevel1</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TBevel</span></pre>
+                  <!-- Bevel1 : TBevel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.btnBack"></a>btnBack</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">btnBack</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TBitBtn</span></pre>
+                  <!-- btnBack : TBitBtn -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.btnCancel"></a>btnCancel</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">btnCancel</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TBitBtn</span></pre>
+                  <!-- btnCancel : TBitBtn -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.btnOKNext"></a>btnOKNext</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">btnOKNext</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TBitBtn</span></pre>
+                  <!-- btnOKNext : TBitBtn -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.cbCreateDir"></a>cbCreateDir</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">cbCreateDir</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TCheckBox</span></pre>
+                  <!-- cbCreateDir : TCheckBox -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.chFMX"></a>chFMX</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">chFMX</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TCheckBox</span></pre>
+                  <!-- chFMX : TCheckBox -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.CreateModule"></a>CreateModule</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">CreateModule</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- CreateModule : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.CreateSubDir"></a>CreateSubDir</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">CreateSubDir</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- CreateSubDir : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.CreateView"></a>CreateView</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">CreateView</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- CreateView : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.CreateViewModule"></a>CreateViewModule</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">CreateViewModule</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- CreateViewModule : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.edFacadeCommand"></a>edFacadeCommand</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">edFacadeCommand</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TEdit</span></pre>
+                  <!-- edFacadeCommand : TEdit -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.edFacadeModel"></a>edFacadeModel</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">edFacadeModel</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TEdit</span></pre>
+                  <!-- edFacadeModel : TEdit -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.edFolder"></a>edFolder</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">edFolder</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TEdit</span></pre>
+                  <!-- edFolder : TEdit -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.edtSetName"></a>edtSetName</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">edtSetName</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TEdit</span></pre>
+                  <!-- edtSetName : TEdit -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Image1"></a>Image1</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Image1</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TImage</span></pre>
+                  <!-- Image1 : TImage -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Label1"></a>Label1</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Label1</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TLabel</span></pre>
+                  <!-- Label1 : TLabel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Label2"></a>Label2</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Label2</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TLabel</span></pre>
+                  <!-- Label2 : TLabel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Label3"></a>Label3</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Label3</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TLabel</span></pre>
+                  <!-- Label3 : TLabel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Label4"></a>Label4</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Label4</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TLabel</span></pre>
+                  <!-- Label4 : TLabel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Label7"></a>Label7</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Label7</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TLabel</span></pre>
+                  <!-- Label7 : TLabel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Label9"></a>Label9</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Label9</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TLabel</span></pre>
+                  <!-- Label9 : TLabel -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.ModelAlone"></a>ModelAlone</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">ModelAlone</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- ModelAlone : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.nb"></a>nb</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">nb</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TNotebook</span></pre>
+                  <!-- nb : TNotebook -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.ScrollBox1"></a>ScrollBox1</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">ScrollBox1</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TScrollBox</span></pre>
+                  <!-- ScrollBox1 : TScrollBox -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.Setname"></a>Setname</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">Setname</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span></pre>
+                  <!-- Setname : string -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.SpeedButton1"></a>SpeedButton1</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">SpeedButton1</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TSpeedButton</span></pre>
+                  <!-- SpeedButton1 : TSpeedButton -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.viewAlone"></a>viewAlone</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">viewAlone</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">boolean</span></pre>
+                  <!-- viewAlone : boolean -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublicField.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Fields.ViewParentClass"></a>ViewParentClass</td>
+                      <td>
+                        <pre class="code"><span class="Identifier">ViewParentClass</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="ReservedWord">string</span></pre>
+                  <!-- ViewParentClass : string -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+      
+              </div>
+      
+              <!-- Methods -->
+              <h3><img class="verticallymiddle" src="Images/NoneMethodsLabel.gif" alt=""/>&nbsp;<a name="Methods3"></a>Methods</h3>
+              <div class="Indent">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Data / Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Methods.btnBackClick"></a>btnBackClick</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">btnBackClick</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+                  <!-- Procedure btnBackClick(
+  Sender : TObject
+) -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Methods.btnOKNextClick"></a>btnOKNextClick</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">btnOKNextClick</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+                  <!-- Procedure btnOKNextClick(
+  Sender : TObject
+) -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Methods.cbCreateDirClick"></a>cbCreateDirClick</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">cbCreateDirClick</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+                  <!-- Procedure cbCreateDirClick(
+  Sender : TObject
+) -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PublishedProcedure.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Methods.FormCreate"></a>FormCreate</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">FormCreate</span><span class="Symbol">(</span><span class="LineEnd">
+</span><span class="WhiteSpace">  </span><span class="Identifier">Sender</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TObject</span><span class="LineEnd">
+</span><span class="Symbol">)</span></pre>
+                  <!-- Procedure FormCreate(
+  Sender : TObject
+) -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><img class="verticallymiddle" src="Images/PrivateProcedure.gif" alt=""/>&nbsp;<a name="Types.TFormNewFacadeSubClass.Methods.translate"></a>translate</td>
+                      <td>
+                        <pre class="code"><span class="ReservedWord">Procedure</span><span class="WhiteSpace"> </span><span class="Identifier">translate</span></pre>
+                  <!-- Procedure translate -->
+                  <div class="Indent">
+                  </div>
+      
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+      
+              </div>
+      
+          </div>
+      
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+      </div>
+      
+      <!-- Uses -->
+      <h2><img class="verticallymiddle" src="Images/NoneUsesLabel.gif" alt=""/>&nbsp;<a name="Uses2"></a>Uses</h2>
+      <div class="Indent">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Data / Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Buttons"></a>Buttons</td>
+              <td>
+                <pre class="code"><span class="Identifier">Buttons</span></pre>
+          <!-- Buttons -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Classes"></a>Classes</td>
+              <td>
+                <pre class="code"><span class="Identifier">Classes</span></pre>
+          <!-- Classes -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Controls"></a>Controls</td>
+              <td>
+                <pre class="code"><span class="Identifier">Controls</span></pre>
+          <!-- Controls -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Dialogs"></a>Dialogs</td>
+              <td>
+                <pre class="code"><span class="Identifier">Dialogs</span></pre>
+          <!-- Dialogs -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PrivateUsesItem.gif" alt=""/>&nbsp;<a name="Uses.eMVC.OTAUtilities"></a>eMVC.OTAUtilities</td>
+              <td>
+                <pre class="code"><span class="Identifier">eMVC</span><span class="Symbol">.</span><span class="Identifier">OTAUtilities</span></pre>
+          <!-- eMVC.OTAUtilities -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.eMVC.toolBox"></a>eMVC.toolBox</td>
+              <td>
+                <pre class="code"><span class="Identifier">eMVC</span><span class="Symbol">.</span><span class="Identifier">toolBox</span></pre>
+          <!-- eMVC.toolBox -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.ExtCtrls"></a>ExtCtrls</td>
+              <td>
+                <pre class="code"><span class="Identifier">ExtCtrls</span></pre>
+          <!-- ExtCtrls -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Forms"></a>Forms</td>
+              <td>
+                <pre class="code"><span class="Identifier">Forms</span></pre>
+          <!-- Forms -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Graphics"></a>Graphics</td>
+              <td>
+                <pre class="code"><span class="Identifier">Graphics</span></pre>
+          <!-- Graphics -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Messages"></a>Messages</td>
+              <td>
+                <pre class="code"><span class="Identifier">Messages</span></pre>
+          <!-- Messages -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.StdCtrls"></a>StdCtrls</td>
+              <td>
+                <pre class="code"><span class="Identifier">StdCtrls</span></pre>
+          <!-- StdCtrls -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.SysUtils"></a>SysUtils</td>
+              <td>
+                <pre class="code"><span class="Identifier">SysUtils</span></pre>
+          <!-- SysUtils -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicUsesItem.gif" alt=""/>&nbsp;<a name="Uses.Windows"></a>Windows</td>
+              <td>
+                <pre class="code"><span class="Identifier">Windows</span></pre>
+          <!-- Windows -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+      </div>
+      
+      <!-- Variables -->
+      <h2><img class="verticallymiddle" src="Images/PublicVariablesLabel.gif" alt=""/>&nbsp;<a name="Variables2"></a>Variables</h2>
+      <div class="Indent">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Data / Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img class="verticallymiddle" src="Images/PublicVariable.gif" alt=""/>&nbsp;<a name="Variables.FormNewFacadeSubClass"></a>FormNewFacadeSubClass</td>
+              <td>
+                <pre class="code"><span class="Identifier">FormNewFacadeSubClass</span><span class="WhiteSpace"> </span><span class="Symbol">:</span><span class="WhiteSpace"> </span><span class="Identifier">TFormNewFacadeSubClass</span></pre>
+          <!-- FormNewFacadeSubClass : TFormNewFacadeSubClass -->
+          <div class="Indent">
+          </div>
+      
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      
+      </div>
+      
+
+    </div>
+
+  </body>
+</html>
