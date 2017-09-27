@@ -64,7 +64,7 @@ type
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
-    function NewTab(APageView: TPageView): TObject; override;
+    function NewTab(APageView: TPageView;ACaption:String=''): TObject; override;
     function AddView(AView: IView): TPageView; override;
     function AddView(Const AController: TGuid): TPageView; overload; override;
     property ActiveTab: TLayoutTabItem read GetActiveTab;
@@ -253,7 +253,7 @@ begin
   result.Controller(AController);
 end;
 
-function TFMXLayoutViewManager.NewTab(APageView: TPageView): TObject;
+function TFMXLayoutViewManager.NewTab(APageView: TPageView;ACaption:String=''): TObject;
 var
   Tab: TLayoutTabItem;
 begin
@@ -262,6 +262,7 @@ begin
   Tab.LayoutContainer := GetLayoutContainer;
   Tab.Parent := GetLayoutContainer;
   Tab.PageView := APageView;
+  Tab.Text := ACaption;
   ActivePageIndex := FList.Count - 1;
   result := Tab;
   if assigned(FAfterTabCreate) then
