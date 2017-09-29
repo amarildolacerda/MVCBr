@@ -42,13 +42,13 @@ requires
   MVCBrCore;
 
 contains
-  IntfParser in 'parser\IntfParser.pas',
-  TokenClasses in 'parser\TokenClasses.pas',
-  TokenInterfaces in 'parser\TokenInterfaces.pas',
-  CastaliaPasLex in 'castalia\CastaliaPasLex.pas',
-  CastaliaPasLexTypes in 'castalia\CastaliaPasLexTypes.pas',
-  CastaliaSimplePasPar in 'castalia\CastaliaSimplePasPar.pas',
-  CastaliaSimplePasParTypes in 'castalia\CastaliaSimplePasParTypes.pas',
+  eMVC.IntfParser in 'parser\eMVC.IntfParser.pas',
+  eMVC.TokenClasses in 'parser\eMVC.TokenClasses.pas',
+  eMVC.TokenInterfaces in 'parser\eMVC.TokenInterfaces.pas',
+  eMVC.CastaliaPasLex in 'castalia\eMVC.CastaliaPasLex.pas',
+  eMVC.CastaliaPasLexTypes in 'castalia\eMVC.CastaliaPasLexTypes.pas',
+  eMVC.CastaliaSimplePasPar in 'castalia\eMVC.CastaliaSimplePasPar.pas',
+  eMVC.CastaliaSimplePasParTypes in 'castalia\eMVC.CastaliaSimplePasParTypes.pas',
   eMVC.FacadeSubClassCreator in 'eMVC.FacadeSubClassCreator.pas',
   eMVC.FacadeSubClassWizard in 'eMVC.FacadeSubClassWizard.pas',
   eMVC.FacadeSubClassForm in 'eMVC.FacadeSubClassForm.pas' {FormNewFacadeSubClass},

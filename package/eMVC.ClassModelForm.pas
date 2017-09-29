@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
-  Graphics, Controls, Forms, intfParser, TokenInterfaces,
+  Graphics, Controls, Forms, eMVC.intfParser, eMVC.TokenInterfaces,
   Dialogs, ComCtrls, {$IFDEF VER130}FileCtrl, {$ENDIF}ExtCtrls, StdCtrls,
   Buttons, eMVC.toolbox, Vcl.CheckLst;
 
@@ -116,7 +116,7 @@ implementation
 
 {$R *.dfm}
 
-uses CastaliaPasLexTypes;
+uses eMVC.CastaliaPasLexTypes;
 
 procedure TFormClassModel.BitBtn4Click(Sender: TObject);
 var

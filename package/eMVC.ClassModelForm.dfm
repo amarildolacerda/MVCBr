@@ -29,8 +29,8 @@ object FormClassModel: TFormClassModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 299
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
