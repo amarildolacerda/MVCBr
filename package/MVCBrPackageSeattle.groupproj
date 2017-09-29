@@ -21,6 +21,9 @@
         <Projects Include="MVCBrFireDAC.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="MVCBrVCLWinX.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -83,14 +86,23 @@
     <Target Name="MVCBrFireDAC:Make">
         <MSBuild Projects="MVCBrFireDAC.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MVCBrVCLWinX">
+        <MSBuild Projects="MVCBrVCLWinX.dproj"/>
+    </Target>
+    <Target Name="MVCBrVCLWinX:Clean">
+        <MSBuild Projects="MVCBrVCLWinX.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrVCLWinX:Make">
+        <MSBuild Projects="MVCBrVCLWinX.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MVCBrCore;MVCBr;MVCBrVCL;MVCBrFMX;MVCBrOData;MVCBrFireDAC"/>
+        <CallTarget Targets="MVCBrCore;MVCBr;MVCBrVCL;MVCBrFMX;MVCBrOData;MVCBrFireDAC;MVCBrVCLWinX"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MVCBrCore:Clean;MVCBr:Clean;MVCBrVCL:Clean;MVCBrFMX:Clean;MVCBrOData:Clean;MVCBrFireDAC:Clean"/>
+        <CallTarget Targets="MVCBrCore:Clean;MVCBr:Clean;MVCBrVCL:Clean;MVCBrFMX:Clean;MVCBrOData:Clean;MVCBrFireDAC:Clean;MVCBrVCLWinX:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MVCBrCore:Make;MVCBr:Make;MVCBrVCL:Make;MVCBrFMX:Make;MVCBrOData:Make;MVCBrFireDAC:Make"/>
+        <CallTarget Targets="MVCBrCore:Make;MVCBr:Make;MVCBrVCL:Make;MVCBrFMX:Make;MVCBrOData:Make;MVCBrFireDAC:Make;MVCBrVCLWinX:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
