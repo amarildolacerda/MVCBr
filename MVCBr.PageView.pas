@@ -200,6 +200,7 @@ begin
     OnCloseDelegate(self);
   /// controle da instancia é feito no controller
   FView := nil;
+  FController := nil;
   inherited;
 end;
 
@@ -433,7 +434,8 @@ end;
 
 destructor TCustomPageViewFactory.Destroy;
 begin
-  FList := nil; // .DisposeOf;
+  FPageContainer := nil;
+  FList.DisposeOf;
   inherited;
 end;
 

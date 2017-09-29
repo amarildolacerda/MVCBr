@@ -39,6 +39,8 @@ type
 
   TDatasetHelper = class helper for TDataset
   private
+    function GetValues(fldName: string): Variant;
+    procedure SetValues(fldName: string; const Value: Variant);
   public
     Function OpenAnonimous(proc: TProc): TDataset;
     procedure Run(AProc: TProc<TDataset>);
@@ -72,6 +74,7 @@ type
     function FieldTitle(AFld: string; ATitle: string): TDataset;
     function FieldChanged(fld: string): boolean;
     function Editing: boolean;
+    property Values[fldName: string]: Variant read GetValues write SetValues;
   end;
 
   TFieldsHack = class(TFields)
@@ -374,6 +377,11 @@ begin
     end).Start;
 end;
 
+procedure TDatasetHelper.SetValues(fldName: string; const Value: Variant);
+begin
+  FieldByName(fldName).Value := Value;
+end;
+
 procedure TDatasetHelper.JsonToRecord(sJson: string; AAppend: boolean);
 var
   o: TJsonObject;
@@ -473,6 +481,11 @@ begin
     if (i > 0) and (not inEditing) and (State in [dsEdit, dsInsert]) then
       Post;
   end;
+end;
+
+function TDatasetHelper.GetValues(fldName: string): Variant;
+begin
+  result := FieldByName(fldName).Value;
 end;
 
 procedure TDatasetHelper.Post(AEvent: TProc);

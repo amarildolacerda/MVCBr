@@ -86,6 +86,7 @@ type
     TPageHistory = class(TMVCBrMementoFactory<string>)
     end;
   private
+    FOnDestroing: boolean;
     FPageHistory: TPageHistory;
     FOldPageChange: TNotifyEvent;
     FOnQueryClose: TVCLpageViewOnQueryClose;
@@ -612,6 +613,8 @@ end;
 
 destructor TVCLPageViewManager.Destroy;
 begin
+  TMVCBrObservable.UnSubscribe(self);
+  FOnDestroing := true;
   if assigned(FPageHistory) then
   begin
     FPageHistory.disposeOf;
@@ -831,6 +834,9 @@ end;
 
 function TVCLPageViewManager.InvokePageHistory: TPageHistory;
 begin
+  result := nil;
+  if FOnDestroing then
+    exit;
   if not assigned(FPageHistory) then
   begin
     FPageHistory := TPageHistory.Create;
@@ -980,19 +986,23 @@ begin
       try
         if js.s('pagecontrol') = ContainerName then
         begin
-          sPage := js.s('caption').trim;
-          InvokePageHistory.Remove('history', sPage);
-          if FUsePageHistory then
+          if assigned(FPageHistory) then
           begin
-            if InvokePageHistory.ItemsCount('history') > 0 then
+            sPage := js.s('caption').trim;
+            InvokePageHistory.Remove('history', sPage);
+            if FUsePageHistory then
             begin
-              sPage := InvokePageHistory.peek('history');
-              nPage := IndexOfTabByCaption(sPage);
-              if nPage >= 0 then
-                TPageControl(GetContainer).ActivePageIndex := nPage;
+              if InvokePageHistory.ItemsCount('history') > 0 then
+              begin
+                sPage := InvokePageHistory.peek('history');
+                nPage := IndexOfTabByCaption(sPage);
+                if nPage >= 0 then
+                  TPageControl(GetContainer).ActivePageIndex := nPage;
+              end;
             end;
           end;
         end;
+
       except
       end;
     end);
@@ -1669,7 +1679,8 @@ TStyleManager.Engine.RegisterStyleHook(TCustomTabControl,
 TStyleManager.Engine.RegisterStyleHook(TTabControl,
   TTabControlStyleHookBtnClose);
 
-LPageControlExtender := TDictionary<TPageControl, TPageControlExtender>.Create;
+LPageControlExtender :=
+  TDictionary<TPageControl, TPageControlExtender>.Create();
 
 finalization
 

@@ -124,7 +124,9 @@ begin
   project := GetCurrentProject.FileName;
   if project <> '' then
   begin
-    edFolder.text := extractFilePath(project) + 'Views';
+    edFolder.text := extractFilePath(project) ;//+ 'Views';
+    if pos('\Views',edFolder.text)=0 then
+      edFolder.text := edFolder.text + 'Views';
   end;
   cbCreateDirClick(Sender);
 end;

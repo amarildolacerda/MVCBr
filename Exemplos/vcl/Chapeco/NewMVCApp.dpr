@@ -8,7 +8,6 @@ uses
   MVCBr.ApplicationController,
   MVCBr.Controller,
   NewMVCApp.Controller in 'Controllers\NewMVCApp.Controller.pas',
-  NewMVCApp.Controller.Interf in 'Controllers\NewMVCApp.Controller.Interf.pas',
   NewMVCAppView in 'Views\NewMVCAppView.pas' {NewMVCAppView},
   View2.Controller.Interf in 'Controllers\View2.Controller.Interf.pas',
   View2.Controller in 'Controllers\View2.Controller.pas',
@@ -16,7 +15,8 @@ uses
   ACBrValidador.Model in '..\..\..\AdIN\ACBr\ACBrValidador.Model.pas',
   ACBrValidador.Model.Interf in '..\..\..\AdIN\ACBr\ACBrValidador.Model.Interf.pas',
   WinNotification.Model in '..\..\..\AdIN\Windows\WinNotification.Model.pas',
-  WinNotification.Model.Interf in '..\..\..\AdIN\Windows\WinNotification.Model.Interf.pas';
+  WinNotification.Model.Interf in '..\..\..\AdIN\Windows\WinNotification.Model.Interf.pas',
+  NewMVCApp.Controller.Interf in 'Controllers\NewMVCApp.Controller.Interf.pas';
 
 {$R *.res}
 function CheckApplicationAuth: boolean;

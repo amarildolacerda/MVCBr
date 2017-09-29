@@ -228,6 +228,7 @@ type
     procedure SetSubscribeProc(const Value: TMVCBrObserverProc);
       virtual; abstract;
     procedure SetObserver(const Value: IMVCBrObserver); virtual; abstract;
+    [weak]
     function GetObserver: IMVCBrObserver; virtual; abstract;
     procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
       virtual; abstract;

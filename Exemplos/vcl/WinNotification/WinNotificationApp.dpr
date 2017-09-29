@@ -9,9 +9,6 @@ program WinNotificationApp;
 
 uses
 
-  FastMM4, madExcept, madLinkDisAsm, madListHardware, madListProcesses,
-  madListModules,
-
   Forms,
   MVCBr.ApplicationController,
   MVCBr.Controller,
