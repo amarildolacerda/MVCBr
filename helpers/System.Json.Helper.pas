@@ -78,6 +78,8 @@ type
     function ToJson: string;
     function Contains(AKey: string): Boolean;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
+    procedure SaveToFile(AFileName: String);
+    procedure LoadFromFile(AFileName: String);
   end;
 
   IJsonValue = interface(TFunc<TJsonValue>)
@@ -121,6 +123,8 @@ type
     function ToJson: string;
     function Contains(AKey: string): Boolean;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
+    procedure SaveToFile(AFileName: String);
+    procedure LoadFromFile(AFileName: String);
   end;
 
   TJSONObjectHelper = class helper for TJsonObject
@@ -1436,6 +1440,11 @@ begin
   result := FJson;
 end;
 
+procedure TInterfacedJSON.LoadFromFile(AFileName: String);
+begin
+   JSONObject.LoadFromFile(AFileName);
+end;
+
 class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonPair): TJsonType;
 var
   j: TJsonValue;
@@ -1477,6 +1486,11 @@ begin
   end;
   O := FJson As TJsonObject;
   O.ParseJSONValue(AJson);
+end;
+
+procedure TInterfacedJSON.SaveToFile(AFileName: String);
+begin
+  JSONObject.SaveToFile(AFileName);
 end;
 
 procedure TInterfacedJSON.SetValueBase(chave: string; const Value: string);

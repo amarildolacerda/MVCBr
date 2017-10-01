@@ -149,6 +149,7 @@
         <DCCReference Include="..\oData\MVC.oData.Base.pas"/>
         <DCCReference Include="MVCAsyncMiddleware.pas"/>
         <DCCReference Include="..\oData\oData.Dialect.Oracle.pas"/>
+        <DCCReference Include="ws.OData.Procedures.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -213,6 +214,12 @@
                 </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\osx32\libcgsqlite3.dylib" Class="DependencyModule">
                     <Platform Name="OSX32">
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\bin\MVCBrServer.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>MVCBrServer.exe</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>

@@ -437,7 +437,7 @@ var
             ftTimeStamp:
               fld.Value := strToDateTimeDef(ISODateTimeToString(k.D(sName)), 0);
             ftFloat:
-              k.D(sName);
+              fld.Value := k.D(sName);
           else
             fld.Value := k.V(sName);
           end;
