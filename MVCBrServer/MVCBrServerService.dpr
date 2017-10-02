@@ -26,6 +26,7 @@ uses
   WS.Controller in 'WS\WS.Controller.pas',
   WS.QueryController in 'WS\WS.QueryController.pas',
   WS.Common in 'WS\WS.Common.pas',
+  WS.OData.Procedures in 'ws.OData.Procedures.pas',
   oData.Dialect.Firebird in '..\oData\oData.Dialect.Firebird.pas';
 
 {$R *.RES}

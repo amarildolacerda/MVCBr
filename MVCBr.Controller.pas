@@ -105,8 +105,9 @@ type
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
 
     procedure Init; virtual;
+    {$IFNDEF LINUX}
     function AttachView(AFormClass: TComponentClass): TComponent;overload;virtual;
-
+    {$ENDIF}
     [weak]
     function Start: IController; virtual;
     procedure BeforeInit; virtual;
@@ -361,6 +362,7 @@ begin
   end;
 end;
 
+{$IFNDEF LINUX}
 function TControllerFactory.AttachView(AFormClass: TComponentClass)
   : TComponent;
 begin
@@ -375,6 +377,7 @@ begin
   end;
   AfterInit;
 end;
+{$ENDIF}
 
 function TControllerFactory.IsController(AGuid: TGuid): Boolean;
 begin

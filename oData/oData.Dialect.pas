@@ -22,6 +22,7 @@ Type
 
   TODataDialect = class(TInterfacedObject, IODataDialect)
   private
+    function GetWhereFromKeys(AKeys: string; const AJson: TJsonValue): String;
   protected
     FSkip: integer;
     FTop: integer;
@@ -31,11 +32,11 @@ Type
     FResourceName: string;
     FOData: IODataDecode;
     function GetResource: IInterface; overload;
-    function createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;
+    function createDELETEQuery(oData: IODataDecode; AJson: TJsonValue;
       AKeys: string): string; virtual;
     function createGETQuery(oData: IODataDecode; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
-    function CreatePostQuery(oData: IODataDecode; AJson: TJsonValue)
+    function CreatePOSTQuery(oData: IODataDecode; AJson: TJsonValue)
       : String; virtual;
     function createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;
       AKeys: string): String; virtual;
@@ -191,6 +192,45 @@ begin
   Result := 'Set ' + cols;
 end;
 
+function TODataDialect.GetWhereFromKeys(AKeys: string;
+  const AJson: TJsonValue): String;
+var
+  str: TStringList;
+  sKeys: string;
+  jv:TJsonValue;
+begin
+  result := '';
+  str := TStringList.Create;
+  try
+    str.Delimiter := ',';
+    str.DelimitedText := AKeys;
+    for sKeys in str do
+    begin
+      if assigned(AJson) then
+      begin
+        jv := (AJson as TJsonObject).GetValue(sKeys);
+        if assigned(jv) then
+        begin
+          if result <> '' then
+            result := result + ' and ';
+          case TInterfacedJson.GetJsonType(jv) of
+            jtNumber:
+              result := result + sKeys + '=' + jv.Value;
+            jtNull:
+              begin // nothing
+              end;
+          else
+            result := result + sKeys + '=' + QuotedStr(jv.Value);
+          end;
+        end;
+      end;
+    end;
+  finally
+    str.Free;
+  end;
+
+end;
+
 function TODataDialect.GetWhereFromJson(const AJson: TJsonValue): String;
 var
   js: IJsonObject;
@@ -215,6 +255,10 @@ begin
     case TInterfacedJson.GetJsonType(p) of
       jtNumber:
         Result := Result + p.JsonString.Value + '=' + p.JsonValue.Value;
+      jtNull:
+        begin
+          /// nothing
+        end;
     else
       Result := Result + p.JsonString.Value + '=' +
         QuotedStr(p.JsonValue.Value);
@@ -376,32 +420,7 @@ begin
   FKeys := AKeys;
   if (FWhere = '') and (FKeys <> '') then
   begin
-    str := TStringList.Create;
-    try
-      str.Delimiter := ',';
-      str.DelimitedText := FKeys;
-      for sKeys in str do
-      begin
-        js := TInterfacedJson.New(AJson, true);
-        if assigned(AJson) then
-        begin
-          jv := js.JSONObject.GetValue(sKeys);
-          if assigned(jv) then
-          begin
-            if FWhere2 <> '' then
-              FWhere2 := FWhere2 + ' and ';
-            case TInterfacedJson.GetJsonType(jv) of
-              jtNumber:
-                FWhere2 := FWhere2 + sKeys + '=' + jv.Value;
-            else
-              FWhere2 := FWhere2 + sKeys + '=' + QuotedStr(jv.Value);
-            end;
-          end;
-        end;
-      end;
-    finally
-      str.Free;
-    end;
+    FWhere2 := GetWhereFromKeys(FKeys, AJson);
   end;
 
   if (FWhere2 <> '') then
@@ -493,9 +512,11 @@ end;
 function TODataDialect.createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;
   AKeys: string): string;
 var
+  i: integer;
   AResource: IJsonODataServiceResource;
   child: IODataDecode;
   FWhere, FWhere2, FKeys: string;
+  FKeysStrings: TStringList;
 begin
   AResource := GetResource(oData.resource) as IJsonODataServiceResource;
 
@@ -506,16 +527,31 @@ begin
   Result := 'delete from ' + AResource.Collection;
   FWhere := oData.Filter;
 
-  if assigned(AJson) then
+  FKeys := AKeys;
+  FWhere2 := '';
+  if (FWhere = '') and (FKeys <> '') then
   begin
-    FWhere2 := GetWhereFromJson(AJson);
-    if FWhere2 <> '' then
-    begin
-      if FWhere <> '' then
-        FWhere := FWhere + ' and ';
-      FWhere := FWhere + FWhere2;
-    end;
+    FWhere2 := GetWhereFromKeys(FKeys, AJson);
   end;
+  if FWhere2<>'' then
+   begin
+     if FWhere<>'' then FWhere := '('+FWhere+') ';
+     FWhere := FWhere+FWhere2;
+     FWhere2 := '';
+   end;
+
+
+  if FWhere = '' then
+    if assigned(AJson) then
+    begin
+      FWhere2 := GetWhereFromJson(AJson);
+      if FWhere2 <> '' then
+      begin
+        if FWhere <> '' then
+          FWhere := FWhere + ' and ';
+        FWhere := FWhere + FWhere2;
+      end;
+    end;
 
   // relations
   child := oData;

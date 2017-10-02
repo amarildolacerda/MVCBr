@@ -25,6 +25,7 @@ uses
   MVCSupportZLib in 'MVCSupportZLib.pas',
   WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
   WS.HelloController in 'WS.HelloController.pas',
+  WS.OData.Procedures in 'ws.OData.Procedures.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas';
 
 {$R *.res}

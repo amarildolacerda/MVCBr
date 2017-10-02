@@ -33,7 +33,9 @@ unit MVCBr.FormView;
 
 interface
 
-uses {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Types, FMX.Forms, System.UiTypes, FMX.Controls, {$ELSE} VCL.Forms, VCL.Controls, {$ENDIF}{$ENDIF}
+uses {$IFDEF LINUX} {$ELSE}
+{$IFDEF FMX} FMX.Types, FMX.Forms, System.UiTypes, FMX.Controls,
+{$ELSE} VCL.Forms, VCL.Controls, {$ENDIF}{$ENDIF}
   System.Classes, System.SysUtils, System.RTTI, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf, MVCBr.View;
 
@@ -42,10 +44,13 @@ type
 {$IFDEF FMX}
   TFormClass = class of TForm;
   TBaseControl = TControl;
-{$else}
+{$ELSE}
+{$IFDEF LINUX}
+  TBaseControl = TComponent;
+{$ELSE}
   TBaseControl = TWinControl;
 {$ENDIF}
-
+{$ENDIF}
   TViewFactoryAdapter = class;
 
   IViewAdpater = interface(IView)
@@ -737,12 +742,27 @@ var
   X: TObject;
 begin
   result := nil;
-{$ifdef FMX}
-        {TODO}
-{$else}
+{$IFDEF FMX}
+  { TODO }
+{$ELSE}
+{$IFDEF LINUX}
+  for i := 0 to AControl.ComponentCount  - 1 do
+  begin
+    if not AControl.Components[i].InheritsFrom(TBaseControl) then
+      continue;
+    X := AControl.Components[i];
+    if X.InheritsFrom(T) then
+      if sameText(TBaseControl(X).Name, AName) then
+      begin
+        result := T(X);
+        exit;
+      end;
+  end;
+{$ELSE}
   for i := 0 to AControl.ControlCount - 1 do
   begin
-    if not AControl.Controls[i].InheritsFrom(TBaseControl) then continue;
+    if not AControl.Controls[i].InheritsFrom(TBaseControl) then
+      continue;
     X := AControl.Controls[i];
     if X.InheritsFrom(T) then
       if sameText(TBaseControl(X).Name, AName) then
@@ -751,7 +771,8 @@ begin
         exit;
       end;
   end;
-{$endif}
+{$ENDIF}
+{$ENDIF}
 end;
 
 procedure TCustomFormFactory.Update(AJsonValue: TJsonValue;

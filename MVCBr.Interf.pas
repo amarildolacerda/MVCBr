@@ -672,7 +672,7 @@ procedure OutputDebug(const txt: string);
 implementation
 
 uses {$IFNDEF BPL}
-  MVCBr.InterfaceHelper, Winapi.Windows,
+  MVCBr.InterfaceHelper, {$IFDEF MSWINDOWS} Winapi.Windows,{$ENDIF}
 {$ENDIF}
   MVCBr.ApplicationController, MVCBr.IoC,
   MVCBr.Observable;
