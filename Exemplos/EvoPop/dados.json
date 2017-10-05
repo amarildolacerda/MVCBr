@@ -1,0 +1,163 @@
+{
+	"result": [{
+			"ano": 1750,
+			"mundo": 791000.0,
+			"africa": 106000.0,
+			"asia": 502000.0,
+			"europa": 163000.0,
+			"amlatina": 16000.0,
+			"amlatina": 2000.0,
+			"oceania": 2000.0
+		},
+		{
+			"ano": 1800,
+			"mundo": 978000,
+			"africa": 107000,
+			"asia": 635000,
+			"europa": 203000,
+			"amlatina": 24000,
+			"amlatina": 7000,
+			"oceania": 2000
+		},
+		{
+			"ano": 1850,
+			"mundo": 1262000,
+			"africa": 111000,
+			"asia": 809000,
+			"europa": 276000,
+			"amlatina": 38000,
+			"amlatina": 26000,
+			"oceania": 2000
+		},
+		{
+			"ano": 1900,
+			"mundo": 1650000,
+			"africa": 133000,
+			"asia": 947000,
+			"europa": 408000,
+			"amlatina": 74000,
+			"amlatina": 82000,
+			"oceania": 6000
+		},
+		{
+			"ano": 1950,
+			"mundo": 2518629,
+			"africa": 221214,
+			"asia": 1398488,
+			"europa": 547403,
+			"amlatina": 167097,
+			"amlatina": 171616,
+			"oceania": 12812
+		},
+		{
+			"ano": 1955,
+			"mundo": 2755823,
+			"africa": 246746,
+			"asia": 1541947,
+			"europa": 575184,
+			"amlatina": 190797,
+			"amlatina": 186884,
+			"oceania": 14265
+		},
+		{
+			"ano": 1960,
+			"mundo": 3021475,
+			"africa": 277398,
+			"asia": 1701336,
+			"europa": 604401,
+			"amlatina": 218300,
+			"amlatina": 204152,
+			"oceania": 15888
+		},
+		{
+			"ano": 1965,
+			"mundo": 3334874,
+			"africa": 313744,
+			"asia": 1899424,
+			"europa": 634026,
+			"amlatina": 250452,
+			"amlatina": 219570,
+			"oceania": 17657
+		},
+		{
+			"ano": 1970,
+			"mundo": 3692492,
+			"africa": 357283,
+			"asia": 2143118,
+			"europa": 655855,
+			"amlatina": 284856,
+			"amlatina": 231937,
+			"oceania": 19443
+		},
+		{
+			"ano": 1980,
+			"mundo": 4434682,
+			"africa": 469618,
+			"asia": 2632335,
+			"europa": 692431,
+			"amlatina": 361401,
+			"amlatina": 256068,
+			"oceania": 22828
+		},
+		{
+			"ano": 1985,
+			"mundo": 4830979,
+			"africa": 541814,
+			"asia": 2887552,
+			"europa": 706009,
+			"amlatina": 401469,
+			"amlatina": 269456,
+			"oceania": 24678
+		},
+		{
+			"ano": 1990,
+			"mundo": 5263593,
+			"africa": 622443,
+			"asia": 3167807,
+			"europa": 721582,
+			"amlatina": 441525,
+			"amlatina": 283549,
+			"oceania": 26687
+		},
+		{
+			"ano": 1995,
+			"mundo": 5674380,
+			"africa": 707462,
+			"asia": 3430052,
+			"europa": 727405,
+			"amlatina": 481099,
+			"amlatina": 299438,
+			"oceania": 28924
+		},
+		{
+			"ano": 2000,
+			"mundo": 6070581,
+			"africa": 795671,
+			"asia": 3679737,
+			"europa": 727986,
+			"amlatina": 520229,
+			"amlatina": 315915,
+			"oceania": 31043
+		},
+		{
+			"ano": 2005,
+			"mundo": 6453628,
+			"africa": 887964,
+			"asia": 3917508,
+			"europa": 724722,
+			"amlatina": 558281,
+			"amlatina": 332156,
+			"oceania": 32998
+		},
+		{
+			"ano": 2050,
+			"mundo": 10000000,
+			"africa": 887964,
+			"asia": 3917508,
+			"europa": 724722,
+			"amlatina": 558281,
+			"amlatina": 332156,
+			"oceania": 32998
+		}
+	]
+}

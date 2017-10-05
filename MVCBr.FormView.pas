@@ -33,7 +33,9 @@ unit MVCBr.FormView;
 
 interface
 
-uses {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, System.UiTypes, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
+uses {$IFDEF LINUX} {$ELSE}
+{$IFDEF FMX} FMX.Types, FMX.Forms, System.UiTypes, FMX.Controls,
+{$ELSE} VCL.Forms, VCL.Controls, {$ENDIF}{$ENDIF}
   System.Classes, System.SysUtils, System.RTTI, System.JSON,
   MVCBr.ApplicationController, MVCBr.Interf, MVCBr.View;
 
@@ -41,6 +43,13 @@ type
 
 {$IFDEF FMX}
   TFormClass = class of TForm;
+  TBaseControl = TControl;
+{$ELSE}
+{$IFDEF LINUX}
+  TBaseControl = TComponent;
+{$ELSE}
+  TBaseControl = TWinControl;
+{$ENDIF}
 {$ENDIF}
   TViewFactoryAdapter = class;
 
@@ -88,6 +97,7 @@ type
   TCustomFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
     IMVCBrBase, IView, IMVCBrObserver)
   private
+    FTimeInit: TDateTime;
     FEventRef: Integer;
     FID: string;
     FOnViewEvent: TViewEventJsonNotify;
@@ -117,6 +127,7 @@ type
 {$ELSE}
     procedure DoCloseView(Sender: TObject; var ACloseAction: TCloseAction);
 {$ENDIF}
+    function RefCount: Integer;
     procedure SetController(const AController: IController);
     function Controller(const AController: IController): IView; virtual;
     procedure SetShowModal(const AShowModal: boolean);
@@ -127,6 +138,7 @@ type
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
+    function FindControl<T: Class>(AControl: TBaseControl; AName: String): T;
     [weak]
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
@@ -157,8 +169,8 @@ type
     [weak]
     function GetController: IController; virtual;
     [weak]
-    function AttachController(AInterface: TGuid; AOwnedFree: boolean = true)
-      : IController; overload; virtual;
+    function AttachController(AGuidController: TGuid;
+      AOwnedFree: boolean = true): IController; overload; virtual;
     [weak]
     function AttachController<TIController: IInterface>: TIController; overload;
     [weak]
@@ -252,13 +264,30 @@ type
     property OnViewInit;
   end;
 
+  TFormFactoryClass = class of TFormFactory;
+
+  TFMXFormFactory = class(TCustomFormFactory)
+  published
+{$IFDEF LINUX}
+{$ELSE}
+    property OnClose;
+{$ENDIF}
+    property OnViewEvent;
+    property OnViewCommand;
+    property OnViewUpdate;
+    property OnViewInit;
+  end;
+
 implementation
+
+uses MVCBr.MiddlewareFactory;
 
 { TViewFormFacotry }
 procedure TCustomFormFactory.AfterConstruction;
 begin
   inherited;
   FShowModal := true;
+  TMVCBrMiddlewareFactory.SendBeforeEvent(middView, self);
 end;
 
 /// Set Controller to VIEW
@@ -282,11 +311,15 @@ end;
 
 destructor TCustomFormFactory.Destroy;
 begin
+  TThread.NameThreadForDebugging('ViewDestroying');
+  TMVCBrMiddlewareFactory.SendAfterEvent(middView, self);
   if assigned(FController) then
   begin
+    FController.SetView(nil);
     FController.This.RevokeInstance(FController);
     // clear controller
     FController.Release;
+    // Release;
     FController := nil;
   end;
   inherited;
@@ -314,7 +347,8 @@ end;
 
 function TCustomFormFactory.GetModel<TIModel>: TIModel;
 begin
-  result := FController.This.GetModel<TIModel>;
+  if assigned(FController) then
+    result := FController.This.GetModel<TIModel>;
 end;
 
 function TCustomFormFactory.GetView<TIView>: TIView;
@@ -360,6 +394,7 @@ end;
 
 procedure TCustomFormFactory.Init;
 begin
+  FTimeInit := now;
   if assigned(FOnViewInit) then
     FOnViewInit(self);
 end;
@@ -370,20 +405,22 @@ begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
 end;
 
-function TCustomFormFactory.AttachController(AInterface: TGuid;
+function TCustomFormFactory.AttachController(AGuidController: TGuid;
   AOwnedFree: boolean = true): IController;
 begin
   result := FController;
   if not assigned(FController) then
   begin
-    FController := ApplicationController.AttachController(AInterface)
+    FController := ApplicationController.AttachController(AGuidController)
       as IController;
     result := FController;
     if assigned(FController) then
     begin
-      FController._AddRef;   // workaround to keep an instance  when attached by view
+      FController._AddRef;
+      // workaround to keep an instance  when attached by view
       FController.This.ViewOwnedFree := AOwnedFree;
       result.View(self);
+      Init;
     end;
   end;
 end;
@@ -408,6 +445,12 @@ begin
   GetController.AttachModel(result);
 end;
 
+function TCustomFormFactory.RefCount: Integer;
+begin
+  result := _AddRef;
+  _Release;
+end;
+
 procedure TCustomFormFactory.RegisterObserver(const AName: String);
 begin
   TMVCBr.RegisterObserver(AName, self);
@@ -416,8 +459,11 @@ end;
 procedure TCustomFormFactory.Release;
 begin
   if assigned(FController) then
+  begin
+    FController.SetView(nil);
     FController.Release;
-  FController := nil;
+    FController := nil;
+  end;
 end;
 
 function TCustomFormFactory.ResolveController(const IID: TGuid): IController;
@@ -483,6 +529,7 @@ begin
     FOnCloseProc(self);
   if assigned(FOnClose) then
     FOnClose(Sender, ACloseAction);
+  TMVCBrMiddlewareFactory.SendAfterEvent(middView, self);
 end;
 {$ENDIF}
 
@@ -653,7 +700,9 @@ begin
   result := 0;
 {$ELSE}
   if FShowModal then
-    result := ord(ShowModal);
+    result := ord(ShowModal)
+  else
+    Show;
 {$ENDIF}
 {$ELSE}
   Show;
@@ -684,6 +733,46 @@ end;
 procedure TCustomFormFactory.UnRegisterObserver(const AName: String);
 begin
   TMVCBr.UnRegisterObserver(AName, self);
+end;
+
+function TCustomFormFactory.FindControl<T>(AControl: TBaseControl;
+AName: String): T;
+var
+  i: Integer;
+  X: TObject;
+begin
+  result := nil;
+{$IFDEF FMX}
+  { TODO }
+{$ELSE}
+{$IFDEF LINUX}
+  for i := 0 to AControl.ComponentCount  - 1 do
+  begin
+    if not AControl.Components[i].InheritsFrom(TBaseControl) then
+      continue;
+    X := AControl.Components[i];
+    if X.InheritsFrom(T) then
+      if sameText(TBaseControl(X).Name, AName) then
+      begin
+        result := T(X);
+        exit;
+      end;
+  end;
+{$ELSE}
+  for i := 0 to AControl.ControlCount - 1 do
+  begin
+    if not AControl.Controls[i].InheritsFrom(TBaseControl) then
+      continue;
+    X := AControl.Controls[i];
+    if X.InheritsFrom(T) then
+      if sameText(TBaseControl(X).Name, AName) then
+      begin
+        result := T(X);
+        exit;
+      end;
+  end;
+{$ENDIF}
+{$ENDIF}
 end;
 
 procedure TCustomFormFactory.Update(AJsonValue: TJsonValue;

@@ -78,7 +78,7 @@ uses System.Classes, System.SysUtils,
   System.JSON,
 {$IFDEF LINUX}  {$ELSE}{$IFDEF FMX} FMX.layouts, FMX.Forms,
 {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
-  MVCBr.Patterns.Factory,
+  MVCBr.Factory,
   MVCBr.Patterns.Adapter,
   System.TypInfo,
   System.RTTI;
@@ -92,6 +92,7 @@ type
   IMVCBrIOC = interface
     ['{96C9AF3D-BF98-4024-BA4E-80B141EB90B2}']
     procedure release;
+    // function RefCount:integer;
   end;
 
   ///
@@ -100,7 +101,8 @@ type
   ///
   TMVCBr = record
     class procedure release; static;
-    class function GetQualifiedName(AII: TGuid): string; static;
+    class function GetQualifiedName(AII: TGuid): string; overload; static;
+    class function GetQualifiedName(AII: IInterface): string; overload; static;
     /// compare two GUIDs
     class function IsSame(I1, I2: TGuid): boolean; static;
     /// compare two interfaces
@@ -141,7 +143,7 @@ type
     class function ResolveInterfaced<TInterface: IMVCBrIOC>(const ANome: string)
       : TInterface; static;
     class procedure AttachInstance(AInstance: IMVCBrIOC); static;
-
+    class Procedure Revoke(AGuid: TGuid); static;
     /// <summary>
     /// Observers procedures
     /// </summary>
@@ -177,6 +179,9 @@ type
     function GetGuid(AII: IInterface): TGuid;
   end;
 
+  IMVCBrBase<T: Class> = interface(TFunc<T>)
+  end;
+
   /// <summary>
   /// who want be an observer item
   /// </summary>
@@ -186,6 +191,8 @@ type
   end;
 
   TMVCBrObserverProc = TProc<TJsonValue>;
+
+  TMVCBrObserverItemAbstract = class;
 
   IMVCBrObserverItem = interface
     ['{DE40A5D5-4492-4C3D-8369-378985ED0714}']
@@ -198,6 +205,8 @@ type
     procedure SetObserver(const Value: IMVCBrObserver);
     function GetObserver: IMVCBrObserver;
     procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
+    procedure SetContainer(AObject: TObject);
+    function GetContainer: TObject;
   end;
 
   /// <summary>
@@ -206,16 +215,20 @@ type
   TMVCBrObserverItemAbstract = class(TMVCBrFactory, IMVCBrObserverItem)
   private
     FIDInstance: TGuid;
+    FContainer: TObject;
   protected
     procedure SetIDInstance(const Value: TGuid); virtual;
-    function GetIDInstance: TGuid; virtual;
   public
+    function GetIDInstance: TGuid; virtual;
+    procedure SetContainer(AObject: TObject);
+    function GetContainer: TObject;
     procedure SetTopic(const Value: string); virtual; abstract;
     function GetTopic: string; virtual; abstract;
     function GetSubscribeProc: TMVCBrObserverProc; virtual; abstract;
     procedure SetSubscribeProc(const Value: TMVCBrObserverProc);
       virtual; abstract;
     procedure SetObserver(const Value: IMVCBrObserver); virtual; abstract;
+    [weak]
     function GetObserver: IMVCBrObserver; virtual; abstract;
     procedure Send(AJsonValue: TJsonValue; var AHandled: boolean);
       virtual; abstract;
@@ -231,16 +244,18 @@ type
   /// </summary>
   IMVCBrObservable = interface
     ['{F9FEB955-A18E-484F-9F67-1AC97DFF7028}']
-    function GetItems(idx: integer): IMVCBrObserverItem;
-    procedure SetItems(idx: integer; const Value: IMVCBrObserverItem);
+    function GetItems(idx: integer): TMVCBrObserverItemAbstract;
+    procedure SetItems(idx: integer; const Value: TMVCBrObserverItemAbstract);
     function This: TObject;
     function Count: integer;
-    property Items[idx: integer]: IMVCBrObserverItem read GetItems
+    property Items[idx: integer]: TMVCBrObserverItemAbstract read GetItems
       write SetItems;
     function Subscribe(AProc: TMVCBrObserverProc): IMVCBrObserverItem; overload;
-    procedure UnSubscribe(AProc: TMVCBrObserverProc); overload;
+    procedure UnSubscribe(AProc: TMVCBrObserverProc;
+      AName: String = ''); overload;
     procedure Send(AJson: TJsonValue); overload;
-    procedure Send(const AName: string; AJson: TJsonValue); overload;
+    procedure Send(const AName: string; AJson: TJsonValue;
+      AOwned: boolean = true); overload;
     function Register(const AName: string; AObserver: IMVCBrObserver)
       : IMVCBrObservable;
   end;
@@ -364,9 +379,11 @@ type
   end;
 
 {$IFNDEF BPL}
+
   // IModel representa a interface onde implementa as regras de negócio
   TModelTypes = set of TModelType;
 {$ENDIF}
+
   IModel = interface(IModelBase)
     ['{FC5669F0-546C-4F0D-B33F-5FB2BA125DBC}']
     procedure release;
@@ -576,7 +593,8 @@ type
     function ShowView: IView; overload;
     function ShowView(const AProcBeforeShow: TProc<IView>;
       Const AProcOnClose: TProc<IView>): IView; overload;
-
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const bShowModal: boolean): IView; overload;
     function View(const AView: IView): IController; overload;
     function UpdateByView(AView: IView): IController;
     procedure ForEach(AProc: TProc<IModel>);
@@ -649,13 +667,12 @@ procedure RegisterInterfacedClass(const ANome: string; IID: TGuid;
   AClass: TInterfacedClass; bSingleton: boolean = true); overload;
 procedure UnregisterInterfacedClass(const ANome: string);
 
-// var
-// FControllersClass: TObject;
+procedure OutputDebug(const txt: string);
 
 implementation
 
 uses {$IFNDEF BPL}
-  MVCBr.InterfaceHelper,
+  MVCBr.InterfaceHelper, {$IFDEF MSWINDOWS} Winapi.Windows,{$ENDIF}
 {$ENDIF}
   MVCBr.ApplicationController, MVCBr.IoC,
   MVCBr.Observable;
@@ -977,6 +994,11 @@ begin
   result := TMVCBrIoc.DefaultContainer.Resolve<TInterface>(ANome);
 end;
 
+class procedure TMVCBr.Revoke(AGuid: TGuid);
+begin
+  TMVCBrIoc.DefaultContainer.Revoke(AGuid);
+end;
+
 class procedure TMVCBr.AttachInstance(AInstance: IMVCBrIOC);
 begin
   TMVCBrIoc.DefaultContainer.AttachInstance(AInstance);
@@ -1034,6 +1056,11 @@ begin
   finally
     ctx.free();
   end;
+end;
+
+class function TMVCBr.GetQualifiedName(AII: IInterface): string;
+begin
+  result := GetQualifiedName(GetGuid(AII));
 end;
 
 class function TMVCBr.GetQualifiedName(AII: TGuid): string;
@@ -1351,14 +1378,47 @@ end;
 
 { TMVCBrObserverItemAbstract }
 
+function TMVCBrObserverItemAbstract.GetContainer: TObject;
+begin
+  result := FContainer;
+end;
+
 function TMVCBrObserverItemAbstract.GetIDInstance: TGuid;
 begin
   result := FIDInstance;
 end;
 
+procedure TMVCBrObserverItemAbstract.SetContainer(AObject: TObject);
+begin
+  FContainer := AObject;
+end;
+
 procedure TMVCBrObserverItemAbstract.SetIDInstance(const Value: TGuid);
 begin
   FIDInstance := Value;
+end;
+
+// uses Winapi.Windows;
+procedure OutputDebug(const txt: string);
+var
+  I: integer;
+  x: integer;
+const
+  n = 1024;
+begin
+{$IFNDEF BPL}
+{$IFDEF MSWINDOWS}
+  try
+    I := 0;
+    x := Length(txt);
+    repeat
+      OutputDebugString({$IFDEF UNICODE}PWideChar{$ELSE}PAnsiChar{$ENDIF}(ExtractFileName(ParamStr(0)) + ':' + copy(txt, I + 1, n)));
+      I := I + n;
+    until I >= x;
+  except
+  end;
+{$ENDIF}
+{$ENDIF}
 end;
 
 initialization

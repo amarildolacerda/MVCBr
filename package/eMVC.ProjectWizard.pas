@@ -287,7 +287,7 @@ begin
         }
           // Now create a Form for the Project since the code added to the Project expects it.
           LViewCreate := TViewCreator.Create(GetNewPath('Views'),
-            LIdentProject, false);
+            LIdentProject, true);
           LViewCreate.BaseProjectType := TBaseProjectType(LItemIndex);
           LViewCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
           LViewCreate.Templates.add('%UnitBase=' + LAppName);
@@ -295,7 +295,7 @@ begin
         end;
     end;
     debug('Path: ' + LPath);
-    SetCurrentDir(LPathBase);
+    SetCurrentDir(LPath);
 
   except
     on e: Exception do

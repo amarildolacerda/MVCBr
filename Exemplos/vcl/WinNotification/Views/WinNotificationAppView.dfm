@@ -30,4 +30,13 @@ object WinNotificationAppView: TWinNotificationAppView
     TabOrder = 1
     OnClick = Button1Click
   end
+  object Button2: TButton
+    Left = 408
+    Top = 95
+    Width = 75
+    Height = 25
+    Caption = 'class notify'
+    TabOrder = 2
+    OnClick = Button2Click
+  end
 end

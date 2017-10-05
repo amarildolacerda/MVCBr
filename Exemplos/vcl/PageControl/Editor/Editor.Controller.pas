@@ -156,7 +156,7 @@ initialization
 
 // permitir criar varias instancias do editor;
 RegisterInterfacedClass(TEditorController.ClassName, IEditorController,
-  TEditorController,false  { permite multiplas instancias} );
+  TEditorController, false  { permite multiplas instancias} );
 
 
 

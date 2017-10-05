@@ -41,6 +41,13 @@ type
     constructor create(AOwner: TComponent); override;
   end;
 
+  TFDStoredProcAuto = class(TFDStoredProc)
+   public
+    constructor create(AOwner: TComponent); override;
+
+  end;
+
+
 var
   WSDatamodule: TWSDatamodule;
 
@@ -142,6 +149,25 @@ constructor TFDQueryAuto.create(AOwner: TComponent);
 var
   old: char;
   LConn: String;
+begin
+  inherited;
+  ConnectionName := 'MVCBr_DB';
+  TInterlocked.Add(LQueryCount, 0);
+
+  name := '__query__' + LQueryCount.ToString;
+  Connection := FDManager.AcquireConnection(ConnectionName, name);
+  if Connection.Params.count = 0 then
+  begin
+    assert(WSConnectionString <> '',
+      'Falta configurar a conexão de banco de dados');
+    SetConnectionProp(Connection);
+  end;
+
+end;
+
+{ TFDStoredProcAuto }
+
+constructor TFDStoredProcAuto.create(AOwner: TComponent);
 begin
   inherited;
   ConnectionName := 'MVCBr_DB';

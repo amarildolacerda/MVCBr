@@ -53,9 +53,12 @@ type
     edFacadeModel: TEdit;
     Label3: TLabel;
     edFacadeCommand: TEdit;
+    edFolder: TEdit;
+    SpeedButton1: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
+    procedure cbCreateDirClick(Sender: TObject);
   private
     procedure translate;
     { Private declarations }
@@ -143,6 +146,12 @@ begin
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
+end;
+
+procedure TFormNewFacadeSubClass.cbCreateDirClick(Sender: TObject);
+begin
+ edFolder.visible := cbCreateDir.checked;
+ SpeedButton1.visible := cbCreateDir.checked;
 end;
 
 procedure TFormNewFacadeSubClass.btnBackClick(Sender: TObject);

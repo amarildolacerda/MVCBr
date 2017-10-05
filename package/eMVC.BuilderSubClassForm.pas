@@ -53,11 +53,14 @@ type
     rbBuilder: TRadioButton;
     rbLazy: TRadioButton;
     chMakeInterface: TCheckBox;
+    SpeedButton1: TSpeedButton;
+    edFolder: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure rbBuilderClick(Sender: TObject);
     procedure rbLazyClick(Sender: TObject);
+    procedure cbCreateDirClick(Sender: TObject);
   private
     procedure translate;
     { Private declarations }
@@ -158,6 +161,13 @@ begin
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
+end;
+
+procedure TFormNewBuilderSubClassModel.cbCreateDirClick(Sender: TObject);
+begin
+ edFolder.visible := cbCreateDir.checked;
+ SpeedButton1.visible := cbCreateDir.checked;
+
 end;
 
 procedure TFormNewBuilderSubClassModel.btnBackClick(Sender: TObject);

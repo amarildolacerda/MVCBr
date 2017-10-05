@@ -34,7 +34,9 @@ type
     IViewAs<IWinNotificationAppView>)
     Edit1: TEdit;
     Button1: TButton;
+    Button2: TButton;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     FInited: boolean;
   protected
@@ -53,7 +55,7 @@ Implementation
 
 {$R *.DFM}
 
-uses WinNotification.Model.Interf;
+uses WinNotification.Model, WinNotification.Model.Interf;
 
 function TWinNotificationAppView.ViewAs: IWinNotificationAppView;
 begin
@@ -74,6 +76,11 @@ end;
 procedure TWinNotificationAppView.Button1Click(Sender: TObject);
 begin
   getModel<IWinNotificationModel>.Send('MVCBr', 'teste', Edit1.text);
+end;
+
+procedure TWinNotificationAppView.Button2Click(Sender: TObject);
+begin
+   TWinNotificationModel.notify('MVCBr','class notify',Edit1.text );
 end;
 
 function TWinNotificationAppView.Controller(const aController

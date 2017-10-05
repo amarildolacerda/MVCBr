@@ -29,8 +29,8 @@ object FormClassModel: TFormClassModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 299
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3262,8 +3262,6 @@ object FormClassModel: TFormClassModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitLeft = 3
-      ExplicitTop = 56
     end
   end
   object Notebook1: TNotebook
@@ -3276,15 +3274,12 @@ object FormClassModel: TFormClassModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 3
     ParentFont = False
     TabOrder = 1
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 24
         Top = 136
@@ -3318,6 +3313,14 @@ object FormClassModel: TFormClassModel
         Width = 152
         Height = 13
         Caption = 'Unit base para extrair as classes'
+      end
+      object SpeedButton1: TSpeedButton
+        Left = 299
+        Top = 217
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
       end
       object edModelName: TEdit
         Left = 24
@@ -3358,8 +3361,9 @@ object FormClassModel: TFormClassModel
         Top = 187
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 4
+        OnClick = cbCreateDirClick
       end
       object RadioGroup1: TRadioGroup
         Left = 252
@@ -3374,13 +3378,20 @@ object FormClassModel: TFormClassModel
           'Controller')
         TabOrder = 5
       end
+      object edFolder: TEdit
+        Left = 24
+        Top = 218
+        Width = 277
+        Height = 21
+        TabOrder = 6
+        Text = 'folder to save artefacts'
+        Visible = False
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label4: TLabel
         Left = 16
         Top = 11
@@ -3412,8 +3423,6 @@ object FormClassModel: TFormClassModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label5: TLabel
         Left = 24
         Top = 19

@@ -61,11 +61,14 @@ type
     ComboBox1: TComboBox;
     cbFMX: TCheckBox;
     Image1: TImage;
+    edFolder: TEdit;
+    SpeedButton1: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btnOKNextClick(Sender: TObject);
     procedure btnBackClick(Sender: TObject);
     procedure listClassNameClick(Sender: TObject);
     procedure nbPageChanged(Sender: TObject);
+    procedure cbCreateDirClick(Sender: TObject);
   private
     procedure translate;
     { Private declarations }
@@ -196,6 +199,13 @@ begin
     end;
   end;
   btnBack.visible := (nb.PageIndex > 0);
+end;
+
+procedure TFormNewController.cbCreateDirClick(Sender: TObject);
+begin
+ edFolder.visible := cbCreateDir.checked;
+ SpeedButton1.visible := cbCreateDir.checked;
+
 end;
 
 procedure TFormNewController.btnBackClick(Sender: TObject);

@@ -1,3 +1,29 @@
+27/09/2017 - AL
+   + adicionado parametro  no MVCBr.MongoModel
+   + adicionado mapeamente de objetos para carga interna do MVCBr.MongoModel
+   
+26/09/2017 - AL
+   + adicionado (inicial) Model para mongo   MVCBr.MongoModel - Nao esta completo.
+    
+24/09/2017 - AL
+   * correção FMX PageView - estava com access vilation ao sair.
+   + adicionado opção de escolher a pasta de destino com os assistentes.
+   
+27/08/2017 - AL
+   + criado a pasta Templates e adicionado templates para ela;
+   + MVCBr.Patterns.Memento.pas
+
+22/08/2017 - AL
+   = renomeado MVCBr.Patterns.Factory para MVCBr.Factory (para se utilizando somente interno no MVCBr)
+   + MVCBr.Patterns.Factory - para uso geral
+   
+21/08/2017 - AL
+   + MVCBr.Patterns.Singleton
+   
+01/08/2017 - AL
+   + MVCBr.FrameView - Herda TFrame para implementar IView
+   + MVCBr.MiddlewareFactory - usado para interceptar a entrada e saida da VIEW
+                               
 19/07/2017 - AL
    * correação BUG AttachContoller no MVCBr.FormView   (_addref)
 

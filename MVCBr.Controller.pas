@@ -62,6 +62,8 @@ type
 
     constructor Create; override;
     destructor Destroy; override;
+    [weak]
+    class function NewController(AController: TGuid): IController;
     procedure CreateModule(AClass: TComponentClass; var AModule);
     procedure Release; override;
     [weak]
@@ -74,43 +76,64 @@ type
     function IsModel(AIModel: TGuid): Boolean;
     function ApplicationController: TApplicationController;
     function GetGuid<TInterface: IInterface>: TGuid;
+    [weak]
     function ShowView: IView; overload; virtual;
+    [weak]
     function ShowView(const AProcBeforeShow: TProc<IView>;
       const AProcOnClose: TProc<IView>): IView; overload; virtual;
+    [weak]
+    function ShowView(const AProcBeforeShow: TProc<IView>;
+      const bShowModal: Boolean): IView; overload; virtual;
 
+    [weak]
     function ViewEvent(AMessage: String; var AHandled: Boolean): IView;
       overload; virtual;
+    [weak]
     function ViewEvent<TViewInterface>(AMessage: string; var AHandled: Boolean)
       : IView; overload;
+    [weak]
     function ID(const AID: string): IController; virtual;
     function GetID: String; override;
+    [weak]
     function GetModelByID(const AID: String): IModel; virtual;
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); virtual;
+    [weak]
     function GetModel(const idx: integer): IModel; overload; virtual;
 
+    [weak]
     function GetModelByType(const AModelType: TModelType): IModel; virtual;
+
     procedure Init; virtual;
+    {$IFNDEF LINUX}
+    function AttachView(AFormClass: TComponentClass): TComponent;overload;virtual;
+    {$ENDIF}
+    [weak]
     function Start: IController; virtual;
     procedure BeforeInit; virtual;
     procedure AfterInit; virtual;
+    [weak]
     function GetView: IView; virtual;
     procedure SetView(AView: IView); virtual;
+    [weak]
     function View(const AView: IView): IController; virtual;
     function This: TControllerAbstract; virtual;
     Function ControllerAs: TControllerFactory; virtual;
     function Add(const AModel: IModel): integer; virtual;
     function AttachModel(const AModel: IModel): integer; override;
-    procedure AttachView(const AView: IView); virtual;
+    procedure AttachView(const AView: IView); overload;virtual;
     function IndexOf(const AModel: IModel): integer; virtual;
     function IndexOfModelType(const AModelType: TModelType): integer; virtual;
     procedure Delete(const Index: integer); virtual;
     function Count: integer; virtual;
     procedure ForEach(AProc: TProc<IModel>); virtual;
+    [weak]
     function UpdateAll: IController; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: Boolean);
       overload; override;
+    [weak]
     function UpdateByModel(AModel: IModel): IController; virtual;
+    [weak]
     function UpdateByView(AView: IView): IController; virtual;
   end;
 
@@ -315,14 +338,14 @@ begin
       try
         for i := 0 to Count - 1 do
         begin
-         {$IFNDEF BPL}
+{$IFNDEF BPL}
           FModel := items[i] as IModel;
           if AModelType in FModel.ModelTypes then
           begin
             result := i;
             exit;
           end;
-          {$ENDIF}
+{$ENDIF}
         end;
       finally
         FModels.UnlockList;
@@ -338,6 +361,23 @@ begin
     BeforeInit;
   end;
 end;
+
+{$IFNDEF LINUX}
+function TControllerFactory.AttachView(AFormClass: TComponentClass)
+  : TComponent;
+begin
+  if not assigned(FView) then
+  begin
+    Application.CreateForm(AFormClass, result);
+    supports(result, IView, FView);
+{$IFDEF FMX}
+    if Application.MainForm = nil then
+      Application.RealCreateForms;
+{$ENDIF}
+  end;
+  AfterInit;
+end;
+{$ENDIF}
 
 function TControllerFactory.IsController(AGuid: TGuid): Boolean;
 begin
@@ -417,7 +457,6 @@ begin
     FReleased := true;
     if assigned(FView) then
     begin
-      FView.SetController(nil);
       FView.Release;
       try
         if not FViewOwnedFree then
@@ -427,7 +466,7 @@ begin
             begin
               obj := FView.This;
               FView := nil; // tenta encerrar o formulario
-              obj.DisposeOf;
+              // obj.DisposeOf;
             end;
           end;
       except
@@ -440,6 +479,13 @@ begin
   begin
     // FView := nil;
   end;
+end;
+
+class function TControllerFactory.NewController(AController: TGuid)
+  : IController;
+begin
+  result := MVCBr.ApplicationController.ApplicationController.ResolveController
+    (AController);
 end;
 
 function TControllerFactory.ViewEvent(AMessage: String;
@@ -484,6 +530,15 @@ end;
 procedure TControllerFactory.SetView(AView: IView);
 begin
   View(AView);
+end;
+
+function TControllerFactory.ShowView(const AProcBeforeShow: TProc<IView>;
+  const bShowModal: Boolean): IView;
+begin
+  result := FView;
+  if assigned(result) then
+    result.ShowView(AProcBeforeShow, bShowModal);
+
 end;
 
 function TControllerFactory.ShowView(const AProcBeforeShow,
@@ -573,7 +628,6 @@ begin
     end;
   end;
 {$ENDIF}
-
 end;
 
 procedure TControllerFactory.AttachView(const AView: IView);

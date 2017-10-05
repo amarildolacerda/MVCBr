@@ -1,6 +1,6 @@
 [GeneralSettings]
 MesVersion=4
-HandleExceptions=0
+HandleExceptions=1
 LinkInCode=1
 AppendMapFileToBinary=1
 NoOwnMadExceptSettings=0

@@ -25,7 +25,6 @@ unit eMVC.FacadeSubClassWizard;
 { }
 { *************************************************************************** }
 
-
 interface
 
 {$I .\inc\Compilers.inc} // Compiler Defines
@@ -100,10 +99,11 @@ var
 
 var
   LCriarPathModule: boolean;
+  LPath: string;
   function GetNewPath(ASubPath: string): string;
   begin
     if LCriarPathModule then
-      result := path
+      result := LPath +'\'
     else
     begin
       result := extractFilePath(project);
@@ -125,6 +125,7 @@ begin
   path := extractFilePath(project);
   with TFormNewFacadeSubClass.create(nil) do
   begin
+    edFolder.text := extractFilePath(project) + 'Facades';
     if showModal = mrOK then
     begin
       IsFMX := chFMX.Checked;
@@ -139,6 +140,7 @@ begin
       else
       begin
         LCriarPathModule := cbCreateDir.Checked;
+        LPath := edFolder.text;
         if cbCreateDir.Checked then
         begin
           path := path + (setname) + '\';
@@ -153,12 +155,12 @@ begin
         if chFMX.Checked then
           Model.baseProjectType := bptFMX;
 
-         Model.Templates.add('%command='+LFacadeCommand);
-         Model.templates.add('%facadeClass='+LFacadeModelName);
-         Model.templates.add('%UnitIdent='+setname);
+        Model.Templates.add('%command=' + LFacadeCommand);
+        Model.Templates.add('%facadeClass=' + LFacadeModelName);
+        Model.Templates.add('%UnitIdent=' + setname);
 
         if IsFMX then
-          Model.Templates.Add('*.dfm=' + '*.fmx');
+          Model.Templates.add('*.dfm=' + '*.fmx');
 
         (BorlandIDEServices as IOTAModuleServices).CreateModule(Model);
 

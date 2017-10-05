@@ -44,24 +44,48 @@ type
     procedure Release; virtual;
   end;
 
-  TMVCBrAdapter<T: Class> = class(TMVCBrAdapter)
+  IMVCBrAdapter<T: Class> = interface(TFunc<T>)
+    property Adapter: T read Invoke;
+    function GetInstance: T;
+    procedure SetInstance(AInst: T; AFreeOnExit: boolean = false);
+    procedure SetFreeOnExit(const Value: boolean);
+    function GetFreeOnExit: boolean;
+    property FreeOnExit: boolean read GetFreeOnExit write SetFreeOnExit;
+    function AsInterface: IMVCBrAdapter<T>;
+  end;
+
+  TMVCBrAdapter<T: Class> = class(TMVCBrAdapter, IMVCBrAdapter<T>)
   private
+    FDelegateTo: TFunc<T>;
+    FFreeOnExit: boolean;
     FAdapter: T;
+    function Invoke: T; virtual;
+    procedure SetFreeOnExit(const Value: boolean);
+    function GetFreeOnExit: boolean;
   public
-    constructor Create(AObject: T);
+    class function New(AObject: T): IMVCBrAdapter<T>; overload;
+    //class function New(): IMVCBrAdapter<T>; //overload;
+    constructor Create(AObject: T); overload;
+    //constructor Create(); overload;
     destructor Destroy; override;
-    property Adapter: T read FAdapter;
+    procedure SetInstance(AInst: T; AFreeOnExit: boolean = false);
+    function GetInstance: T;
+    property Adapter: T read Invoke;
     procedure Release; override;
     function This: TObject; override;
+    property FreeOnExit: boolean read GetFreeOnExit write SetFreeOnExit;
+    function DelegateTo(AProc: TFunc<T>): TMVCBrAdapter<T>;
+    function AsInterface: IMVCBrAdapter<T>;
   end;
 
   TMVCBrInterfacedAdapter<T: IInterface> = class(TMVCBrAdapter)
   private
     FAdapter: T;
   public
+    function GetInstance: T; virtual;
     constructor Create(AInterface: T);
     destructor Destroy; override;
-    property Default: T read FAdapter;
+    property Default: T read GetInstance;
   end;
 
 implementation
@@ -78,23 +102,100 @@ end;
 
 { TMVCBrAdapter<T> }
 
+function TMVCBrAdapter<T>.AsInterface: IMVCBrAdapter<T>;
+begin
+  result := self;
+end;
+
 constructor TMVCBrAdapter<T>.Create(AObject: T);
 begin
   inherited Create;
+  if AObject = nil then
+    self.DelegateTo(
+      function: T
+      begin
+        result := T(TClass(T).Create);
+      end);
+  FFreeOnExit := assigned(AObject);
   FAdapter := AObject;
+end;
+
+{
+constructor TMVCBrAdapter<T>.Create;
+begin
+  self.Create(nil);
+end;
+}
+
+function TMVCBrAdapter<T>.DelegateTo(AProc: TFunc<T>): TMVCBrAdapter<T>;
+begin
+  result := self;
+  FDelegateTo := AProc;
 end;
 
 destructor TMVCBrAdapter<T>.Destroy;
 begin
-  /// need free on calls class (FAdapter)
+  Release;
   inherited;
+end;
+
+function TMVCBrAdapter<T>.GetFreeOnExit: boolean;
+begin
+  result := FFreeOnExit;
+end;
+
+function TMVCBrAdapter<T>.GetInstance: T;
+begin
+  result := Invoke;
+end;
+
+function TMVCBrAdapter<T>.Invoke: T;
+begin
+  if not assigned(FAdapter) then
+  begin
+    if assigned(FDelegateTo) then
+    begin
+      FAdapter := FDelegateTo;
+      FFreeOnExit := true;
+    end;
+  end;
+  result := FAdapter;
+end;
+
+{
+class function TMVCBrAdapter<T>.New: IMVCBrAdapter<T>;
+begin
+  result := TMVCBrAdapter<T>.New(nil);
+end;
+}
+
+class function TMVCBrAdapter<T>.New(AObject: T): IMVCBrAdapter<T>;
+begin
+  result := TMVCBrAdapter<T>.Create(AObject);
 end;
 
 procedure TMVCBrAdapter<T>.Release;
 begin
-  if assigned(FAdapter) then
-    FAdapter.free;
+  if assigned(FAdapter) and FFreeOnExit then
+    FAdapter.DisposeOf;
   FAdapter := nil;
+end;
+
+procedure TMVCBrAdapter<T>.SetFreeOnExit(const Value: boolean);
+begin
+  FFreeOnExit := Value;
+end;
+
+procedure TMVCBrAdapter<T>.SetInstance(AInst: T; AFreeOnExit: boolean);
+begin
+  if assigned(FAdapter) then
+  begin
+    if FAdapter.Equals(AInst) then
+      exit;
+    Release;
+  end;
+  FAdapter := AInst;
+  FFreeOnExit := AFreeOnExit;
 end;
 
 function TMVCBrAdapter<T>.This: TObject;
@@ -114,6 +215,11 @@ destructor TMVCBrInterfacedAdapter<T>.Destroy;
 begin
   /// need freed interface on owner caller
   inherited;
+end;
+
+function TMVCBrInterfacedAdapter<T>.GetInstance: T;
+begin
+  result := FAdapter;
 end;
 
 end.

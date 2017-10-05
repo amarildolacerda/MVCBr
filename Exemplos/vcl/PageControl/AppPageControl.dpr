@@ -8,11 +8,6 @@ PROGRAM AppPageControl;
 // Amarildo Lacerda & Grupo MVCBr-2017
 
 uses
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   Forms,
   MVCBr.ApplicationController,
   MVCBr.Controller,

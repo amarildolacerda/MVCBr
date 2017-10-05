@@ -1,4 +1,4 @@
-object FormNewFacadeModel: TFormNewFacadeModel
+object FormNewBuilderModel: TFormNewBuilderModel
   Left = 280
   Top = 165
   ActiveControl = btnOKNext
@@ -66,10 +66,18 @@ object FormNewFacadeModel: TFormNewFacadeModel
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 294
+        Top = 168
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 20
         Top = 68
-        Width = 147
+        Width = 276
         Height = 21
         TabOrder = 0
         Text = 'New'
@@ -79,8 +87,9 @@ object FormNewFacadeModel: TFormNewFacadeModel
         Top = 123
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object chFMX: TCheckBox
         Left = 19
@@ -89,6 +98,15 @@ object FormNewFacadeModel: TFormNewFacadeModel
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
+      end
+      object edFolder: TEdit
+        Left = 19
+        Top = 169
+        Width = 277
+        Height = 21
+        TabOrder = 3
+        Text = 'folder to save artefacts'
+        Visible = False
       end
     end
     object TPage
@@ -148,8 +166,8 @@ object FormNewFacadeModel: TFormNewFacadeModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 114
-      Height = 300
+      Width = 117
+      Height = 297
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3381,8 +3399,6 @@ object FormNewFacadeModel: TFormNewFacadeModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitWidth = 117
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

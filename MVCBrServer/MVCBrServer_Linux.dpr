@@ -42,6 +42,7 @@ uses
   config.Model.Interf in 'Models\config.Model.Interf.pas',
   oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas',
   WSConfig.Controller.Interf in 'WSConfig\WSConfig.Controller.Interf.pas',
+  WS.OData.Procedures in 'ws.OData.Procedures.pas',
   WSConfig.Controller in 'WSConfig\WSConfig.Controller.pas';
 
 {$R *.res}

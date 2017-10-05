@@ -1,7 +1,7 @@
 object FormChildSampleView: TFormChildSampleView
   Left = 0
   Top = 0
-  Caption = 'FormChildSampleView'
+  Caption = 'Main'
   ClientHeight = 463
   ClientWidth = 475
   Color = clBtnFace
@@ -48,10 +48,6 @@ object FormChildSampleView: TFormChildSampleView
     TabOrder = 3
     object TabSheet1: TTabSheet
       Caption = 'TabSheet1'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
     end
   end
   object Button3: TButton

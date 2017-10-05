@@ -1,6 +1,0 @@
-MVCBrInstall
------------
-
-Instalador do projeto MVCBr.
-
-Para compilar e necessário ter a JCL e JVCL instaladas.

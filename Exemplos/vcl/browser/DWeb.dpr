@@ -4,7 +4,12 @@ PROGRAM DWeb;
 // www.tireideletra.com.br
 // Amarildo Lacerda & Grupo MVCBr-2017
 uses
-  Forms,
+  madExcept,
+  madLinkDisAsm,
+  madListHardware,
+  madListProcesses,
+  madListModules,
+  Forms,
   MVCBr.ApplicationController,
   MVCBr.Controller,
   DWeb.Controller in 'DWeb.Controller.pas',

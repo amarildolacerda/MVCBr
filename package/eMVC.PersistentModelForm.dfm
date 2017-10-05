@@ -25,8 +25,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
     Shape = bsBottomLine
   end
   object nb: TNotebook
-    Left = 139
-    Top = 9
+    Left = 135
+    Top = 8
     Width = 351
     Height = 248
     Font.Charset = DEFAULT_CHARSET
@@ -34,7 +34,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 3
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -42,8 +41,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -70,37 +67,53 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 295
+        Top = 144
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 20
         Top = 68
-        Width = 147
+        Width = 277
         Height = 21
         TabOrder = 0
         Text = 'New'
       end
       object cbCreateDir: TCheckBox
         Left = 19
-        Top = 123
+        Top = 99
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object cbFMX: TCheckBox
         Left = 19
-        Top = 146
+        Top = 122
         Width = 148
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
+      end
+      object edFolder: TEdit
+        Left = 20
+        Top = 145
+        Width = 277
+        Height = 21
+        TabOrder = 3
+        Text = 'folder to save artefacts'
+        Visible = False
       end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Step 2'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object cbCreateModel: TCheckBox
         Left = 24
         Top = 56
@@ -124,8 +137,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -241,8 +252,8 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
     object Image1: TImage
       Left = 0
       Top = 0
-      Width = 117
-      Height = 292
+      Width = 114
+      Height = 300
       Align = alClient
       AutoSize = True
       Picture.Data = {
@@ -3474,7 +3485,6 @@ object FormNewSetPersistentModel: TFormNewSetPersistentModel
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

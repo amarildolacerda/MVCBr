@@ -7,20 +7,20 @@ uses
   LoggerPro.FileAppender,
   MVCFramework.Logger,
   MVCFramework.Commons,
-{$IFDEF LINUX}
+  {$IFDEF LINUX}
   MVCFramework.REPLCommandsHandlerU,
-{$ELSE}
+  {$ELSE}
   Winapi.Windows,
-{$ENDIF }
+  {$ENDIF }
   Web.WebReq,
   Web.WebBroker,
   System.JsonFiles,
   IdHTTPWebBrokerBridge,
   MVCBr.ApplicationController,
-  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule} ,
+  WS.WebModule in 'WS.WebModule.pas' {WSWebModule: TWebModule},
   WS.Controller.Interf in 'WS\WS.Controller.Interf.pas',
   WS.Controller in 'WS\WS.Controller.pas',
-  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule} ,
+  WS.Datamodule in 'WS.Datamodule.pas' {WSDatamodule: TDataModule},
   WS.Common in 'WS\WS.Common.pas',
   WSConfigView in 'WSConfig\WSConfigView.pas',
   config.Model in 'Models\config.Model.pas',
@@ -41,7 +41,8 @@ uses
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
   MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
-  oData.Dialect.Oracle in '..\oData\oData.Dialect.Oracle.pas';
+  oData.Dialect.Oracle in '..\oData\oData.Dialect.Oracle.pas',
+  ws.OData.Procedures in 'ws.OData.Procedures.pas';
 
 {$R *.res}
 

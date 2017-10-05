@@ -172,7 +172,7 @@ initialization
 // TAppPageControlController.New(TAppPageControlView.New,TAppPageControlViewModel.New)).init();
 /// Registrar Interface e ClassFactory para o MVCBr
 RegisterInterfacedClass(TAppPageControlController.ClassName,
-  IAppPageControlController, TAppPageControlController);
+  IAppPageControlController, TAppPageControlController,false);
 
 finalization
 

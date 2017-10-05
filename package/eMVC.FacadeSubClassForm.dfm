@@ -80,6 +80,14 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
         Height = 13
         Caption = 'Sub-Class Command'
       end
+      object SpeedButton1: TSpeedButton
+        Left = 294
+        Top = 217
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 19
         Top = 58
@@ -93,8 +101,9 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
         Top = 175
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object chFMX: TCheckBox
         Left = 19
@@ -118,13 +127,20 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
         Height = 21
         TabOrder = 4
       end
+      object edFolder: TEdit
+        Left = 19
+        Top = 218
+        Width = 277
+        Height = 21
+        TabOrder = 5
+        Text = 'folder to save artefacts'
+        Visible = False
+      end
     end
     object TPage
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 32
         Top = 99
@@ -3411,7 +3427,6 @@ object FormNewFacadeSubClass: TFormNewFacadeSubClass
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

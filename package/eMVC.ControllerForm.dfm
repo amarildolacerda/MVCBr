@@ -34,7 +34,6 @@ object FormNewController: TFormNewController
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
-    PageIndex = 1
     ParentFont = False
     TabOrder = 3
     OnPageChanged = nbPageChanged
@@ -42,8 +41,6 @@ object FormNewController: TFormNewController
       Left = 0
       Top = 0
       Caption = 'Step 1'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 9
         Top = 15
@@ -70,10 +67,18 @@ object FormNewController: TFormNewController
         Font.Style = []
         ParentFont = False
       end
+      object SpeedButton1: TSpeedButton
+        Left = 295
+        Top = 168
+        Width = 23
+        Height = 23
+        Caption = '...'
+        Visible = False
+      end
       object edtSetName: TEdit
         Left = 20
         Top = 68
-        Width = 147
+        Width = 277
         Height = 21
         TabOrder = 0
         Text = 'New'
@@ -83,8 +88,9 @@ object FormNewController: TFormNewController
         Top = 123
         Width = 233
         Height = 17
-        Caption = 'manter os artefatos na raiz'
+        Caption = 'manter os artefatos na mesma pasta'
         TabOrder = 1
+        OnClick = cbCreateDirClick
       end
       object cbFMX: TCheckBox
         Left = 19
@@ -93,6 +99,15 @@ object FormNewController: TFormNewController
         Height = 17
         Caption = 'Firemonkey Framework'
         TabOrder = 2
+      end
+      object edFolder: TEdit
+        Left = 20
+        Top = 169
+        Width = 277
+        Height = 21
+        TabOrder = 3
+        Text = 'folder to save artefacts'
+        Visible = False
       end
     end
     object TPage
@@ -140,8 +155,6 @@ object FormNewController: TFormNewController
       Left = 0
       Top = 0
       Caption = 'Step 3'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label6: TLabel
         Left = 16
         Top = 16
@@ -203,8 +216,6 @@ object FormNewController: TFormNewController
       Left = 0
       Top = 0
       Caption = 'Finish'
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label7: TLabel
         Left = 4
         Top = 83
@@ -3491,7 +3502,6 @@ object FormNewController: TFormNewController
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
         0000}
-      ExplicitHeight = 305
     end
   end
   object btnOKNext: TBitBtn

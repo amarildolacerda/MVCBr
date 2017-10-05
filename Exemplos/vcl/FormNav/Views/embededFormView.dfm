@@ -11,6 +11,7 @@ object embededFormView: TembededFormView
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnViewEvent = FormFactoryViewEvent
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
@@ -21,9 +22,6 @@ object embededFormView: TembededFormView
     Align = alTop
     Caption = 'tab  VIEW'
     TabOrder = 0
-    ExplicitLeft = 8
-    ExplicitTop = 16
-    ExplicitWidth = 489
   end
   object Memo1: TMemo
     Left = 0
@@ -34,9 +32,5 @@ object embededFormView: TembededFormView
     Lines.Strings = (
       'Memo1')
     TabOrder = 1
-    ExplicitLeft = 8
-    ExplicitTop = 63
-    ExplicitWidth = 489
-    ExplicitHeight = 160
   end
 end

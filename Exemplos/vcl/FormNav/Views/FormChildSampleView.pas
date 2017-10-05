@@ -103,7 +103,7 @@ end;
 procedure TFormChildSampleView.Button3Click(Sender: TObject);
 var h:boolean;
 begin
-   applicationController.ViewEvent( 'generic message to all VIEW', h );
+   ApplicationController.ViewEvent( 'generic message to all VIEW', h );
 end;
 
 procedure TFormChildSampleView.Button4Click(Sender: TObject);
@@ -142,7 +142,7 @@ begin
    AForm.BorderStyle := bsNone;
    AForm.Align := alClient;
    AForm.Show;
-
+   ACtrl._AddRef;
 end;
 
 

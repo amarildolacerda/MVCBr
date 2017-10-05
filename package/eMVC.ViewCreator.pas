@@ -60,7 +60,6 @@ begin
   fc.BaseProjectType :=  self.baseProjectType;
   fc.Templates.Assign(self.Templates);
   fc.Templates.Values['%MdlInterf'] := GetBaseName + '.ViewModel.Interf';
-
   result := fc;
 end;
 

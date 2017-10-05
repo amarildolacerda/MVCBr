@@ -135,6 +135,7 @@
         <DCCReference Include="WS\WS.Controller.pas"/>
         <DCCReference Include="WS\WS.QueryController.pas"/>
         <DCCReference Include="WS\WS.Common.pas"/>
+        <DCCReference Include="ws.OData.Procedures.pas"/>
         <DCCReference Include="..\oData\oData.Dialect.Firebird.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>

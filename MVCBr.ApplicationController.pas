@@ -6,7 +6,6 @@
   + Incluido   class var FApplicationController
 }
 
-
 unit MVCBr.ApplicationController;
 { *************************************************************************** }
 { }
@@ -56,7 +55,7 @@ type
     IApplicationController)
   private
     /// Lista de controllers instanciados
-    [weak]
+    // [weak]
     FControllers: TThreadSafeObjectList<TAggregatedObject>;
   protected
     /// MainView para o Application
@@ -74,6 +73,10 @@ type
     /// Loop que chama AProc para cada um dos controllers da lista
     function MainView: TObject; virtual;
     procedure SetMainView(AView: IView);
+    [weak]
+    function ControllerAsGuid: TGuid; virtual;
+    [weak]
+    function MainController: IController; virtual;
 
     /// Controllers methods
     [weak]
@@ -225,6 +228,7 @@ end;
 destructor TApplicationController.Destroy;
 var
   i: integer;
+  AController: IInterface;
 begin
 
   LReleased := true;
@@ -236,9 +240,12 @@ begin
   begin
     with FControllers.LockList do
       try
-        for i := Count - 1 downto 0 do
+        while Count > 0 do
         begin
-          (items[i].Controller as IController).Release;
+          AController := items[0].Controller;
+          if assigned(AController) then
+            (AController as IController).Release;
+          Delete(0);
         end;
         clear;
       finally
@@ -392,6 +399,18 @@ begin
     begin
       AController.Init;
     end);
+end;
+
+function TApplicationController.ControllerAsGuid: TGuid;
+begin
+  if assigned(FMainView) then
+    result := TMVCBr.GetGuid(FMainView.GetController);
+end;
+
+function TApplicationController.MainController: IController;
+begin
+  if assigned(FMainView) then
+    result := FMainView.GetController;
 end;
 
 function TApplicationController.MainView: TObject;
@@ -666,6 +685,13 @@ initialization
 
 finalization
 
-TApplicationController.Release;
+TThread.Queue(nil,
+  procedure
+  begin
+    try
+      TApplicationController.Release;
+    except
+    end;
+  end);
 
 end.

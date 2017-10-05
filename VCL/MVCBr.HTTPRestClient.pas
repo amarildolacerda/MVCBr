@@ -16,7 +16,9 @@ type
     FHTTP: TNetHTTPClient;
     function GetHTTP: TNetHTTPClient;
   protected
+    FResponse: IHTTPResponse;
   public
+    property Response:IHTTPResponse read FResponse;
     constructor Create(AOwner: TComponent); override;
     destructor destroy; override;
     Property HttpClient: TNetHTTPClient read GetHTTP;
@@ -69,7 +71,6 @@ function THTTPRestClient.Execute(AProc: TProc): boolean;
 var
   streamSource: TStringStream;
   i: integer;
-  Response: IHTTPResponse;
 begin
   result := false;
   streamSource := TStringStream.Create;
@@ -77,7 +78,6 @@ begin
     if AcceptCharset = '' then
       AcceptCharset := 'UTF-8';
 
-    FHTTP.AcceptCharset := AcceptCharset;
     FHTTP.AcceptCharset := AcceptCharset;
     FHTTP.AcceptEncoding := AcceptEncoding;
     FHTTP.Accept := Accept;
@@ -96,21 +96,21 @@ begin
 
     case Method of
       rmGET:
-        Response := FHTTP.Get(CreateURI);
+        FResponse := FHTTP.Get(CreateURI);
       rmPUT:
-        Response := FHTTP.Put(CreateURI, streamSource);
+        FResponse := FHTTP.Put(CreateURI, streamSource);
       rmPOST:
-        Response := FHTTP.Post(CreateURI, Body);
+        FResponse := FHTTP.Post(CreateURI, Body);
       rmPATCH:
-        Response := FHTTP.Patch(CreateURI, streamSource);
+        FResponse := FHTTP.Patch(CreateURI, streamSource);
       rmOPTIONS:
-        Response := FHTTP.Options(CreateURI);
+        FResponse := FHTTP.Options(CreateURI);
       rmDELETE:
-        Response := FHTTP.Delete(CreateURI);
+        FResponse := FHTTP.Delete(CreateURI);
     end;
-    ResponseCode := Response.StatusCode;
-    result := (Response.StatusCode >= 200) and (Response.StatusCode <= 299);
-    SetContent ( Response.ContentAsString(TEncoding.UTF8) );
+    ResponseCode := FResponse.StatusCode;
+    result := (FResponse.StatusCode >= 200) and (FResponse.StatusCode <= 299);
+    SetContent ( FResponse.ContentAsString(TEncoding.UTF8) );
     if assigned(AProc) then
       AProc();
   finally

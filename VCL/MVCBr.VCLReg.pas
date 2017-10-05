@@ -13,6 +13,7 @@ implementation
 uses
   MVCBr.Common,
   MVCBr.FormView,
+  MVCBr.FrameView,
   MVCBr.VCL.PageView,
   MVCBr.ModuleModel,
   MVCBr.HTTPRestClient,
@@ -25,7 +26,9 @@ uses
 procedure Register;
 begin
   RegisterCustomModule(TFormFactory, TCustomModule);
+  //RegisterCustomModule(TFMXFormFactory, TCustomModule);
   RegisterCustomModule(TModuleFactory, TCustomModule);
+  RegisterCustomModule(TFrameFactory, TCustomModule);
 
   RegisterComponents(CMVCBrComponentPalletName, [TVCLPageViewManager]);
 
@@ -37,7 +40,9 @@ begin
 
 
   RegisterClass(TFormFactory);
+  //RegisterClass(TFMXFormFactory);
   RegisterClass(TModuleFactory);
+  RegisterClass(TFrameFactory);
 
 end;
 

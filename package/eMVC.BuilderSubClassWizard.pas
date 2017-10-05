@@ -144,10 +144,11 @@ var
 }
 var
   LCriarPathModule: boolean;
+  LPath:String;
   function GetNewPath(ASubPath: string): string;
   begin
     if LCriarPathModule then
-      result := path
+      result := LPath+'\'
     else
     begin
       result := extractFilePath(project);
@@ -155,6 +156,7 @@ var
         result := result + '\';
       result := result + ASubPath + '\';
     end;
+
     if not directoryExists(result) then
       ForceDirectories(result);
   end;
@@ -172,6 +174,7 @@ begin
   path := extractFilePath(project);
   with TFormNewBuilderSubClassModel.create(nil) do
   begin
+    edFolder.text := path+'Builders';
     if showModal = mrOK then
     begin
       LMakeInterface := chMakeInterface.checked;
@@ -186,6 +189,7 @@ begin
       else
       begin
         LCriarPathModule := cbCreateDir.checked;
+        LPath := edFolder.text;
         if cbCreateDir.checked then
         begin
           path := path + (setname) + '\';

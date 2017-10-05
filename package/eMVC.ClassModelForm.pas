@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, {$IFDEF DELPHI_6_UP}Variants, {$ENDIF}Classes,
-  Graphics, Controls, Forms, intfParser, TokenInterfaces,
+  Graphics, Controls, Forms, eMVC.intfParser, eMVC.TokenInterfaces,
   Dialogs, ComCtrls, {$IFDEF VER130}FileCtrl, {$ENDIF}ExtCtrls, StdCtrls,
   Buttons, eMVC.toolbox, Vcl.CheckLst;
 
@@ -62,6 +62,8 @@ type
     CheckBox1: TCheckBox;
     cbTodosProcs: TCheckBox;
     RadioGroup1: TRadioGroup;
+    edFolder: TEdit;
+    SpeedButton1: TSpeedButton;
     procedure BitBtn4Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -76,6 +78,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure cbTodosProcsClick(Sender: TObject);
+    procedure cbCreateDirClick(Sender: TObject);
   private
     { Private declarations }
     FUnit: TIntfParser;
@@ -113,7 +116,7 @@ implementation
 
 {$R *.dfm}
 
-uses CastaliaPasLexTypes;
+uses eMVC.CastaliaPasLexTypes;
 
 procedure TFormClassModel.BitBtn4Click(Sender: TObject);
 var
@@ -556,6 +559,13 @@ procedure TFormClassModel.cbClassNameChange(Sender: TObject);
 begin
   edModelName.text := ExtractClassBase();
   proximaPagina(0);
+end;
+
+procedure TFormClassModel.cbCreateDirClick(Sender: TObject);
+begin
+ edFolder.visible := cbCreateDir.checked;
+ SpeedButton1.visible := cbCreateDir.checked;
+
 end;
 
 procedure TFormClassModel.MarkCheckList(AList: TCheckListBox;

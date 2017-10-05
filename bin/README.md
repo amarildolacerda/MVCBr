@@ -33,3 +33,12 @@
 |  Bin para Windows Services - servidor OData
 |
 -------------------------------------------------------
+
+
+
+[Gerando um DOCKER]
+o arquivo DockerFile contem os comando necessários para gerar uma maquina com DockerFile
+para instalar:
+
+      docker build -f ./DockerFile
+

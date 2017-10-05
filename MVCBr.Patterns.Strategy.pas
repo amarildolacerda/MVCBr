@@ -6,14 +6,15 @@ uses System.Classes, System.SysUtils;
 
 type
 
-  IMVCBrStrategy = interface
+  IMVCBrStrategy<T:Class> = interface(TFunc<T>)
     ['{3FA5AD7A-D4C4-41F0-B283-7BE29E1A89E7}']
     function This: TObject;
-    function Implements(AImplements: TGuid): IMVCBrStrategy;
+    function Implements(AImplements: TGuid): IMVCBrStrategy<T>;
     function AsInterface: IInterface;
+    property Strategy:T read Invoke;
   end;
 
-  TMVCBrStrategy<T: Class> = class(TInterfacedObject, IMVCBrStrategy)
+  TMVCBrStrategy<T: Class> = class(TInterfacedObject, IMVCBrStrategy<T>)
   private
     FDelegate: TFunc<T>;
     FStrategy: T;
@@ -22,12 +23,12 @@ type
     procedure SetInvoke(const Value: T);
   public
     constructor Create; virtual;
-    class function New: IMVCBrStrategy; overload;static;
-    class function New(AInstance: T): IMVCBrStrategy; overload; static;
+    class function New: IMVCBrStrategy<T>; overload;static;
+    class function New(AInstance: T): IMVCBrStrategy<T>; overload; static;
     destructor Destroy; override;
     function This: TObject;
-    function DelegateTo(ADelegate: TFunc<T>): IMVCBrStrategy;
-    function Implements(AImplements: TGuid): IMVCBrStrategy;
+    function DelegateTo(ADelegate: TFunc<T>): IMVCBrStrategy<T>;
+    function Implements(AImplements: TGuid): IMVCBrStrategy<T>;
     function AsInterface: IInterface;
     property Strategy: T read Invoke Write SetInvoke;
   end;
@@ -46,7 +47,7 @@ begin
   inherited Create;
 end;
 
-function TMVCBrStrategy<T>.DelegateTo(ADelegate: TFunc<T>): IMVCBrStrategy;
+function TMVCBrStrategy<T>.DelegateTo(ADelegate: TFunc<T>): IMVCBrStrategy<T>;
 begin
   result := self;
   FDelegate := ADelegate;
@@ -65,13 +66,13 @@ begin
   result := FStrategy;
 end;
 
-function TMVCBrStrategy<T>.Implements(AImplements: TGuid): IMVCBrStrategy;
+function TMVCBrStrategy<T>.Implements(AImplements: TGuid): IMVCBrStrategy<T>;
 begin
   result := self;
   FImplements := AImplements;
 end;
 
-class function TMVCBrStrategy<T>.New(AInstance: T): IMVCBrStrategy;
+class function TMVCBrStrategy<T>.New(AInstance: T): IMVCBrStrategy<T>;
 var
   obj: TMVCBrStrategy<T>;
 begin
@@ -80,7 +81,7 @@ begin
   result := obj;
 end;
 
-class function TMVCBrStrategy<T>.New: IMVCBrStrategy;
+class function TMVCBrStrategy<T>.New: IMVCBrStrategy<T>;
 var
   AInstance: TMVCBrStrategy<T>;
 begin

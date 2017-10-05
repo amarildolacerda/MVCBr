@@ -228,6 +228,7 @@
         <DCCReference Include="Models\config.Model.Interf.pas"/>
         <DCCReference Include="..\oData\oData.Dialect.MSSQL.pas"/>
         <DCCReference Include="WSConfig\WSConfig.Controller.Interf.pas"/>
+        <DCCReference Include="ws.OData.Procedures.pas"/>
         <DCCReference Include="WSConfig\WSConfig.Controller.pas"/>
         <BuildConfiguration Include="Debug">
             <Key>Cfg_2</Key>

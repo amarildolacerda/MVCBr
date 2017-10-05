@@ -71,7 +71,10 @@ type
     function Update: IModel; overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; override;
-
+    procedure ViewEvent(AMessage: string; var AHandled: boolean);
+      overload; virtual;
+    procedure ViewEvent(AMessage: String); overload; virtual;
+    procedure ViewEvent(AMessage: String; ASubject: string); overload; virtual;
   end;
 
   /// <summary>
@@ -123,6 +126,7 @@ begin
 end;
 
 {$IFNDEF BPL}
+
 function TModelFactory.GetModelTypes: TModelTypes;
 begin
   result := FModelTypes;
@@ -152,6 +156,7 @@ begin
 end;
 
 {$IFNDEF BPL}
+
 procedure TModelFactory.SetModelTypes(const AModelTypes: TModelTypes);
 begin
   FModelTypes := AModelTypes;
@@ -186,6 +191,54 @@ end;
 procedure TModelFactory.Update(AJsonValue: TJsonValue; var AHandled: boolean);
 begin
   Update;
+end;
+
+procedure TModelFactory.ViewEvent(AMessage, ASubject: string);
+var
+  AController: IController;
+  AView: IView;
+  js: TJsonObject;
+  AHandled:boolean;
+begin
+  AController := GetController;
+  if assigned(AController) then
+  begin
+    AView := AController.GetView;
+    if assigned(AView) then
+    begin
+      js := TJsonObject.Create;
+      try
+        js.addPair('message',AMessage);
+        js.addPair('subject',ASubject);
+        AView.ViewEvent(js, AHandled);
+      finally
+        js.free;
+      end;
+    end;
+  end;
+end;
+
+procedure TModelFactory.ViewEvent(AMessage: String);
+var
+  AHandled: boolean;
+begin
+  ViewEvent(AMessage, AHandled);
+end;
+
+procedure TModelFactory.ViewEvent(AMessage: string; var AHandled: boolean);
+var
+  AController: IController;
+  AView: IView;
+begin
+  AController := GetController;
+  if assigned(AController) then
+  begin
+    AView := AController.GetView;
+    if assigned(AView) then
+    begin
+      AView.ViewEvent(AMessage, AHandled);
+    end;
+  end;
 end;
 
 function TModelFactory.Update: IModel;
