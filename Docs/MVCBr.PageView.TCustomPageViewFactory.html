@@ -51,7 +51,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a></b>: Integer;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a></b>: integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -63,26 +63,34 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>: IInterfaceList;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FList">FList</a></b>: TThreadSafeObjectList&lt;<a  href="MVCBr.PageView.TPageView.html">TPageView</a>&gt;;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a></b>(idx: Integer): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a></b>(idx: integer): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a></b>(idx: Integer; const Value: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a></b>(idx: integer; const Value: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>);</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a></b>(const Value: Integer);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a></b>(const Value: integer);</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetAfterViewCreate">SetAfterViewCreate</a></b>(const Value: TNotifyEvent);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#IndexOfController">IndexOfController</a></b>(AGuid: TGuid): integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageViewClass">GetPageViewClass</a></b>: <a  href="MVCBr.PageView.html#TPageViewClass">TPageViewClass</a>; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -94,95 +102,103 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Remove">Remove</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: Boolean); virtual;</code></td>
 </tr>
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: Boolean); virtual;</code></td>
-</tr>
-<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>Procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#DoViewCreate">DoViewCreate</a></b>(Sender: TObject); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Notification">Notification</a></b>(AComponent: TComponent; AOperation: TOperation); override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>destructor <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
 </tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; virtual;</code></td>
-</tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;ACaption:String=''): TObject; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageTabClass">GetPageTabClass</a></b>: TComponentClass; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetPageContainerClass">GetPageContainerClass</a></b>: TComponentClass; virtual;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Count">Count</a></b>: integer;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Count">Count</a></b>: Integer;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Remove">Remove</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); overload; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePage">ActivePage</a></b>: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Remove">Remove</a></b>(AGuid: TGuid); overload; virtual;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePage">ActivePage</a></b>: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePage">SetActivePage</a></b>(Const Tab: TObject); virtual;</code></td>
 </tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#PageViewIndexOf">PageViewIndexOf</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): Integer;</code></td>
-</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewItem">NewItem</a></b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#PageViewIndexOf">PageViewIndexOf</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>): integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#NewItem">NewItem</a></b>(Const ACaption: string): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView; ABeforeShow: TProc&lt;IView&gt;): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddForm">AddForm</a></b>(AClass: TFormClass): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByID">FindViewByID</a></b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddView">AddView</a></b>(Const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByClassName">FindViewByClassName</a></b>(const AClassName: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#AddForm">AddForm</a></b>(AClass: TFormClass; ABoforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByID">FindViewByID</a></b>(Const AID: String): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindViewByClassName">FindViewByClassName</a></b>(const AClassName: String): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AGuidController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#FindView">FindView</a></b>(Const AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -194,7 +210,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#IndexOf">IndexOf</a></b>(Const AGuid: TGuid): Integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#IndexOf">IndexOf</a></b>(Const AGuidController: TGuid): integer;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -206,12 +222,12 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePageIndex">ActivePageIndex</a></b>: Integer read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#ActivePageIndex">ActivePageIndex</a></b>: integer read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a>
       write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Items">Items</a></b>[idx:Integer]: <a  href="MVCBr.PageView.IPageView.html">IPageView</a> read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.TCustomPageViewFactory.html#Items">Items</a></b>[idx:integer]: <a  href="MVCBr.PageView.TPageView.html">TPageView</a> read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -224,7 +240,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FActivePageIndex"></a><code><b>FActivePageIndex</b>: Integer;</code></td>
+<td class="itemcode"><a name="FActivePageIndex"></a><code><b>FActivePageIndex</b>: integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -248,7 +264,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="FList"></a><code><b>FList</b>: IInterfaceList;</code></td>
+<td class="itemcode"><a name="FList"></a><code><b>FList</b>: TThreadSafeObjectList&lt;<a  href="MVCBr.PageView.TPageView.html">TPageView</a>&gt;;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -257,7 +273,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: Integer): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: integer): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -265,7 +281,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: Integer; const Value: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>);</code></td>
+<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: integer; const Value: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -273,7 +289,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetActivePageIndex"></a><code>procedure <b>SetActivePageIndex</b>(const Value: Integer);</code></td>
+<td class="itemcode"><a name="SetActivePageIndex"></a><code>procedure <b>SetActivePageIndex</b>(const Value: integer);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -288,13 +304,27 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="IndexOfController"></a><code>function <b>IndexOfController</b>(AGuid: TGuid): integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="GetPageViewClass"></a><code>function <b>GetPageViewClass</b>: <a  href="MVCBr.PageView.html#TPageViewClass">TPageViewClass</a>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="SetPageContainer"></a><code>procedure <b>SetPageContainer</b>(const Value: TComponent); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
-<p>
-TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPageView</a>&gt;;</p>
-</td></tr>
+&nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -307,7 +337,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
+<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -315,15 +345,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); virtual;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: Boolean); virtual;</code></td>
+<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: Boolean); virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -363,7 +385,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; virtual;</code></td>
+<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;ACaption:String=''): TObject; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -387,7 +409,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Count"></a><code>function <b>Count</b>: Integer;</code></td>
+<td class="itemcode"><a name="Count"></a><code>function <b>Count</b>: integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -395,7 +417,23 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ActivePage"></a><code>function <b>ActivePage</b>: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Remove"></a><code>procedure <b>Remove</b>(AGuid: TGuid); overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="ActivePage"></a><code>function <b>ActivePage</b>: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -411,7 +449,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="PageViewIndexOf"></a><code>function <b>PageViewIndexOf</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): Integer;</code></td>
+<td class="itemcode"><a name="PageViewIndexOf"></a><code>function <b>PageViewIndexOf</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>): integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -419,7 +457,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="NewItem"></a><code>function <b>NewItem</b>(Const ACaption: string): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><a name="NewItem"></a><code>function <b>NewItem</b>(Const ACaption: string): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -427,7 +465,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView; ABeforeShow: TProc&lt;IView&gt;): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -435,7 +473,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -443,7 +481,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -451,7 +489,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddForm"></a><code>function <b>AddForm</b>(AClass: TFormClass): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -459,7 +497,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindViewByID"></a><code>function <b>FindViewByID</b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><a name="AddForm"></a><code>function <b>AddForm</b>(AClass: TFormClass; ABoforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -467,7 +505,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindViewByClassName"></a><code>function <b>FindViewByClassName</b>(const AClassName: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; virtual;</code></td>
+<td class="itemcode"><a name="FindViewByID"></a><code>function <b>FindViewByID</b>(Const AID: String): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -475,7 +513,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><a name="FindViewByClassName"></a><code>function <b>FindViewByClassName</b>(const AClassName: String): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -483,7 +521,15 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; virtual;</code></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AGuidController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -507,7 +553,7 @@ TMVCInterfacedList&lt;<a class="normal" href="MVCBr.PageView.IPageView.html">IPa
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="IndexOf"></a><code>function <b>IndexOf</b>(Const AGuid: TGuid): Integer;</code></td>
+<td class="itemcode"><a name="IndexOf"></a><code>function <b>IndexOf</b>(Const AGuidController: TGuid): integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -527,7 +573,7 @@ ligação para o PageControl component</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ActivePageIndex"></a><code>property <b>ActivePageIndex</b>: Integer read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a>
+<td class="itemcode"><a name="ActivePageIndex"></a><code>property <b>ActivePageIndex</b>: integer read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#FActivePageIndex">FActivePageIndex</a>
       write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetActivePageIndex">SetActivePageIndex</a>;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -536,7 +582,7 @@ ligação para o PageControl component</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:Integer]: <a  href="MVCBr.PageView.IPageView.html">IPageView</a> read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a>;</code></td>
+<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:integer]: <a  href="MVCBr.PageView.TPageView.html">TPageView</a> read <a  href="MVCBr.PageView.TCustomPageViewFactory.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.TCustomPageViewFactory.html#SetItems">SetItems</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

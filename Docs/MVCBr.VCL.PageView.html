@@ -33,10 +33,10 @@ MVCBr
 <h1 class="unit">Unit MVCBr.VCL.PageView</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Funções e Procedimentos</a></td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td><a class="section" href="#PasDoc-FuncsProcs">Funções e Procedimentos</a></td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td><a class="section" href="#PasDoc-Constants">Constantes</a></td><td>Variáveis</td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
 &nbsp;<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
-<ul class="useslist"><li>VCL.Forms</li><li>VCL.Controls</li><li>System.Classes</li><li>System.SysUtils</li><li>MVCBr.Interf</li><li><a  href="MVCBr.PageView.html">MVCBr.PageView</a></li><li><a  href="MVCBr.FormView.html">MVCBr.FormView</a></li><li>VCL.ComCtrls</li></ul><h2 class="overview">Visão Geral</h2>
+<ul class="useslist"><li>VCL.Forms</li><li>VCL.Controls</li><li>System.Classes</li><li>System.SysUtils</li><li>MVCBr.Interf</li><li>MVCBr.patterns.Memento</li><li>System.Generics.Collections</li><li>WinApi.Windows</li><li>System.Types</li><li>WinApi.Messages</li><li><a  href="MVCBr.PageView.html">MVCBr.PageView</a></li><li><a  href="MVCBr.FormView.html">MVCBr.FormView</a></li><li>VCL.ComCtrls</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
 <table class="classestable wide_list">
 <tr class="listheader">
@@ -44,7 +44,15 @@ MVCBr
 <th class="itemdesc">Descrição</th>
 </tr>
 <tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.VCL.PageView.TMVCBrPageControl.html"><code>TMVCBrPageControl</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.VCL.PageView.TVCLPageViewManager.html"><code>TVCLPageViewManager</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.VCL.PageView.TMVCBrTabSheetView.html"><code>TMVCBrTabSheetView</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
 </table>
@@ -57,7 +65,16 @@ MVCBr
 <a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.html#TVCLpageViewOnQueryClose">TVCLpageViewOnQueryClose</a></b> = procedure(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean) of object;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.html#TCloseTabQueryEvent">TCloseTabQueryEvent</a></b> = procedure(ASender: TObject; AIndex: Integer; var ACanClose: boolean) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.html#TVCLpageViewOnQueryClose">TVCLpageViewOnQueryClose</a></b> = procedure(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: boolean) of object;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Constants"></a><h3 class="summary">Constantes</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.html#WM_TABSHEET_CLOSE">WM_TABSHEET_CLOSE</a></b> = WM_USER + 1;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -72,7 +89,22 @@ MVCBr
 <h3 class="detail">Tipos</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TVCLpageViewOnQueryClose"></a><code><b>TVCLpageViewOnQueryClose</b> = procedure(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean) of object;</code></td>
+<td class="itemcode"><a name="TCloseTabQueryEvent"></a><code><b>TCloseTabQueryEvent</b> = procedure(ASender: TObject; AIndex: Integer; var ACanClose: boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TVCLpageViewOnQueryClose"></a><code><b>TVCLpageViewOnQueryClose</b> = procedure(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: boolean) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Constantes</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="WM_TABSHEET_CLOSE"></a><code><b>WM_TABSHEET_CLOSE</b> = WM_USER + 1;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

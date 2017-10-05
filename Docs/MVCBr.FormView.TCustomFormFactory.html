@@ -50,41 +50,45 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FEventRef">FEventRef</a></b>: Integer;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FTimeInit">FTimeInit</a></b>: TDateTime;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FEventRef">FEventRef</a></b>: Integer;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FID">FID</a></b>: string;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewEvent">FOnViewEvent</a></b>: <a  href="MVCBr.FormView.html#TViewEventJsonNotify">TViewEventJsonNotify</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnCommandEvent">FOnCommandEvent</a></b>: <a  href="MVCBr.FormView.html#TViewCommandNotify">TViewCommandNotify</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewUpdate">FOnViewUpdate</a></b>: TNotifyEvent;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnViewInit">FOnViewInit</a></b>: TNotifyEvent;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnClose">FOnClose</a></b>: TCloseEvent;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FOnCloseProc">FOnCloseProc</a></b>: TProc&lt;IView&gt;;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FController">FController</a></b>: IController;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.FormView.TCustomFormFactory.html#FShowModal">FShowModal</a></b>: boolean;</code></td>
 </tr>
@@ -125,35 +129,43 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetController">SetController</a></b>(const AController: IController);</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#RefCount">RefCount</a></b>: Integer;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetController">SetController</a></b>(const AController: IController);</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Controller">Controller</a></b>(const AController: IController): IView; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetShowModal">SetShowModal</a></b>(const AShowModal: boolean);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetShowModal">GetShowModal</a></b>: boolean;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#GetTitle">GetTitle</a></b>: string; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#SetTitle">SetTitle</a></b>(const Value: string); virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#AfterConstruction">AfterConstruction</a></b>; override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.FormView.TCustomFormFactory.html#Init">Init</a></b>; virtual;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#FindControl">FindControl</a></b>&lt;T: Class&gt;(AControl: <a  href="MVCBr.FormView.html#TBaseControl">TBaseControl</a>; AName: String): T;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -217,7 +229,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#AttachController">AttachController</a></b>(AInterface: TGuid; AOwnedFree: boolean = true) : IController; overload; virtual;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FormView.TCustomFormFactory.html#AttachController">AttachController</a></b>(AGuidController: TGuid; AOwnedFree: boolean = true): IController; overload; virtual;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -376,6 +388,14 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FTimeInit"></a><code><b>FTimeInit</b>: TDateTime;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="FEventRef"></a><code><b>FEventRef</b>: Integer;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -528,6 +548,14 @@ FViewModel:IViewModel;</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="RefCount"></a><code>function <b>RefCount</b>: Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><a name="SetController"></a><code>procedure <b>SetController</b>(const AController: IController);</code></td>
 </tr>
 <tr><td colspan="2">
@@ -587,6 +615,14 @@ Retorna se a apresentação do formulário é ShowModal</p>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FindControl"></a><code>function <b>FindControl</b>&lt;T: Class&gt;(AControl: <a  href="MVCBr.FormView.html#TBaseControl">TBaseControl</a>; AName: String): T;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -751,7 +787,7 @@ Retorna o <a class="normal" href="MVCBr.FormView.TCustomFormFactory.html#Control
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AttachController"></a><code>function <b>AttachController</b>(AInterface: TGuid; AOwnedFree: boolean = true) : IController; overload; virtual;</code></td>
+<td class="itemcode"><a name="AttachController"></a><code>function <b>AttachController</b>(AGuidController: TGuid; AOwnedFree: boolean = true): IController; overload; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;<h6 class="description_section">Attributes</h6>

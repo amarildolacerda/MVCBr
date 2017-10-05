@@ -71,7 +71,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); override;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -99,7 +99,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>Procedure <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean); override;</code></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: boolean); override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
@@ -123,15 +123,15 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; ACaption: String = '') : TObject; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.FMX.PageView.TFMXPageViewManager.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; override;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -198,7 +198,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); override;</code></td>
+<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -254,7 +254,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean); override;</code></td>
+<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: boolean); override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -302,7 +302,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; override;</code></td>
+<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; ACaption: String = '') : TObject; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -310,7 +310,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; override;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -318,7 +318,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; override;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

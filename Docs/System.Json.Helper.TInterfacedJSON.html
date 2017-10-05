@@ -39,7 +39,7 @@ MVCBr
 <a  href="System.Json.Helper.html">System.Json.Helper</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TInterfacedJSON = class(TInterfacedObject, <a class="normal" href="System.Json.Helper.IJsonObject.html">IJsonObject</a>)</code></p>
+<code>type TInterfacedJSON = class(TInterfacedObject, <a class="normal" href="System.Json.Helper.IJsonObject.html">IJsonObject</a>, <a class="normal" href="System.Json.Helper.IJsonValue.html">IJsonValue</a>)</code></p>
 <h2 class="description">Descrição</h2>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
 <ul class="hierarchy"><li class="ancestor">TInterfacedObject</li>
@@ -66,76 +66,92 @@ MVCBr
 <td class="itemcode"><code>procedure <b><a  href="System.Json.Helper.TInterfacedJSON.html#SetValueBase">SetValueBase</a></b>(chave: string; const Value: string);</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#Invoke">Invoke</a></b>: TJsonValue;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>constructor <b><a  href="System.Json.Helper.TInterfacedJSON.html#create">create</a></b>(AJson: string); overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>constructor <b><a  href="System.Json.Helper.TInterfacedJSON.html#create">create</a></b>; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>destructor <b><a  href="System.Json.Helper.TInterfacedJSON.html#destroy">destroy</a></b>; override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#This">This</a></b>: <a  href="System.Json.Helper.TInterfacedJSON.html">TInterfacedJSON</a>; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TInterfacedJSON.html#New">New</a></b>(AOwned: Boolean): <a  href="System.Json.Helper.IJsonObject.html">IJsonObject</a>; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TInterfacedJSON.html#New">New</a></b>(AJson: string): <a  href="System.Json.Helper.IJsonObject.html">IJsonObject</a>; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TInterfacedJSON.html#New">New</a></b>: <a  href="System.Json.Helper.IJsonObject.html">IJsonObject</a>; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TInterfacedJSON.html#New">New</a></b>(AJson: TJsonValue; AOwned: Boolean): <a  href="System.Json.Helper.IJsonObject.html">IJsonObject</a>; overload; static;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TInterfacedJSON.html#GetJsonType">GetJsonType</a></b>(AJsonValue: TJsonPair): <a  href="System.Json.Helper.html#TJsonType">TJsonType</a>; overload; static;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="System.Json.Helper.TInterfacedJSON.html#GetJsonType">GetJsonType</a></b>(AJsonValue: TJsonValue): <a  href="System.Json.Helper.html#TJsonType">TJsonType</a>; overload; static;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#Parse">Parse</a></b>(AJson: string): <a  href="System.Json.Helper.IJsonObject.html">IJsonObject</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#Json">Json</a></b>: TJsonValue;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#JSONObject">JSONObject</a></b>: TJsonObject;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#JsonValue">JsonValue</a></b>: TJsonValue;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#AsArray">AsArray</a></b>: TJsonArray;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#isNull">isNull</a></b>: Boolean;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#addPair">addPair</a></b>(AKey, AValue: string): TJsonObject; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#addPair">addPair</a></b>(AKey: string; AValue: TJsonValue): TJsonObject; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#addPair">addPair</a></b>(AKey: string; AValue: Integer): TJsonObject; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#addPair">addPair</a></b>(AKey: string; AValue: double): TJsonObject; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#addPair">addPair</a></b>(AKey: string; AValue: TDatetime): TJsonObject; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -152,6 +168,14 @@ MVCBr
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.TInterfacedJSON.html#Contains">Contains</a></b>(AKey: string): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="System.Json.Helper.TInterfacedJSON.html#SaveToFile">SaveToFile</a></b>(AFileName: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="System.Json.Helper.TInterfacedJSON.html#LoadFromFile">LoadFromFile</a></b>(AFileName: String);</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -192,6 +216,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="SetValueBase"></a><code>procedure <b>SetValueBase</b>(chave: string; const Value: string);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="Invoke"></a><code>function <b>Invoke</b>: TJsonValue;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -343,6 +375,30 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="addPair"></a><code>function <b>addPair</b>(AKey: string; AValue: Integer): TJsonObject; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="addPair"></a><code>function <b>addPair</b>(AKey: string; AValue: double): TJsonObject; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="addPair"></a><code>function <b>addPair</b>(AKey: string; AValue: TDatetime): TJsonObject; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="AddChild"></a><code>function <b>AddChild</b>(AKey, AJson: string): TJsonObject;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -368,6 +424,22 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Contains"></a><code>function <b>Contains</b>(AKey: string): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SaveToFile"></a><code>procedure <b>SaveToFile</b>(AFileName: String);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LoadFromFile"></a><code>procedure <b>LoadFromFile</b>(AFileName: String);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

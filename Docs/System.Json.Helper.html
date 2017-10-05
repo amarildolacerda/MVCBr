@@ -54,26 +54,30 @@ Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com X
 <td class="itemdesc">&nbsp;</td>
 </tr>
 <tr class="list">
+<td class="itemname">Interface&nbsp;<a class="bold" href="System.Json.Helper.IJsonValue.html"><code>IJsonValue</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TInterfacedJSON.html"><code>TInterfacedJSON</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONObjectHelper.html"><code>TJSONObjectHelper</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONArrayHelper.html"><code>TJSONArrayHelper</code></a></td>
 <td class="itemdesc">procedure FromRecord&lt;T :record&gt;(rec:T);</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJsonValuesList.html"><code>TJsonValuesList</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONValueHelper.html"><code>TJSONValueHelper</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname">Classe&nbsp;<a class="bold" href="System.Json.Helper.TJSONPairHelper.html"><code>TJSONPairHelper</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
@@ -84,7 +88,7 @@ Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com X
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.html#ReadJsonString">ReadJsonString</a></b>(const dados: string; chave: string): string;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.html#ReadJsonInteger">ReadJsonInteger</a></b>(const dados: string; chave: string): integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.html#ReadJsonInteger">ReadJsonInteger</a></b>(const dados: string; chave: string): Integer;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.html#ReadJsonFloat">ReadJsonFloat</a></b>(const dados: string; chave: string): Extended;</code></td>
@@ -120,18 +124,21 @@ Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com X
 <a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
 <table class="summary wide_list">
 <tr class="list">
+<td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJsonStringResult">TJsonStringResult</a></b> = string;</code></td>
+</tr>
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJsonType">TJsonType</a></b> = (...);</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#TMemberVisibilitySet">TMemberVisibilitySet</a></b> = set of TMemberVisibility;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJson">IJson</a></b> = TJsonObject;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#IJSONArray">IJSONArray</a></b> = TJsonArray;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><b><a  href="System.Json.Helper.html#TJson">TJson</a></b> = TJsonObject;</code></td>
 </tr>
 </table>
@@ -146,7 +153,7 @@ Alterações: 05/05/2017 - trocado o objeto TJsonBoolean para compatiblidade com X
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="ReadJsonInteger"></a><code>function <b>ReadJsonInteger</b>(const dados: string; chave: string): integer;</code></td>
+<td class="itemcode"><a name="ReadJsonInteger"></a><code>function <b>ReadJsonInteger</b>(const dados: string; chave: string): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>
@@ -224,6 +231,13 @@ function ReadJsonObject(const dados: string): <a class="normal" href="System.Jso
 &nbsp;</td></tr>
 </table>
 <h3 class="detail">Tipos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TJsonStringResult"></a><code><b>TJsonStringResult</b> = string;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><a name="TJsonType"></a><code><b>TJsonType</b> = (...);</code></td>

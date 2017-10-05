@@ -97,19 +97,39 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#AddChild">AddChild</a></b>(AKey, AJson: string): TJsonObject;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#addPair">addPair</a></b>(AKey: string; AValue: Integer): TJsonObject; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#addArray">addArray</a></b>(AKey: string; AValue: TJsonArray): TJsonArray; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#addPair">addPair</a></b>(AKey: string; AValue: double): TJsonObject; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#ToJson">ToJson</a></b>: string;</code></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#addPair">addPair</a></b>(AKey: string; AValue: TDatetime): TJsonObject; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#AddChild">AddChild</a></b>(AKey, AJson: string): TJsonObject;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#addArray">addArray</a></b>(AKey: string; AValue: TJsonArray): TJsonArray; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#ToJson">ToJson</a></b>: string;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="System.Json.Helper.IJsonObject.html#Contains">Contains</a></b>(AKey: string): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="System.Json.Helper.IJsonObject.html#SaveToFile">SaveToFile</a></b>(AFileName: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="System.Json.Helper.IJsonObject.html#LoadFromFile">LoadFromFile</a></b>(AFileName: String);</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -212,6 +232,30 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="addPair"></a><code>function <b>addPair</b>(AKey: string; AValue: Integer): TJsonObject; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="addPair"></a><code>function <b>addPair</b>(AKey: string; AValue: double): TJsonObject; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="addPair"></a><code>function <b>addPair</b>(AKey: string; AValue: TDatetime): TJsonObject; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="AddChild"></a><code>function <b>AddChild</b>(AKey, AJson: string): TJsonObject;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -237,6 +281,22 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Contains"></a><code>function <b>Contains</b>(AKey: string): Boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="SaveToFile"></a><code>procedure <b>SaveToFile</b>(AFileName: String);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LoadFromFile"></a><code>procedure <b>LoadFromFile</b>(AFileName: String);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
