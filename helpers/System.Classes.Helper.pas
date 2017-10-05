@@ -710,7 +710,7 @@ begin
       begin
         aVal := Obj.ContextProperties[aProperty.name];
         if not aVal.IsEmpty then
-          if aProperty.Visibility in [mvPublished] then  // usar sometne Published para não pegar sugeira.
+          if aProperty.Visibility in [mvPublished] then  // usar somente Published para não pegar sujeira.
             aProperty.SetValue(self, aVal);
       end;
     end;

@@ -12,16 +12,15 @@
 }
 
 {
-   Exemplo de Uso:
-   procedure TFrmTestConnectionMain.GerarMensagem(ATexto: String);
-            var AModel:IWinNotificationModel;
-   begin
-     // uses WinNotification.Model.Interf
-     AModel := GetModel<IWinNotificationModel>;
-     AModel.Send('TestConnection','Falha de comunicação com o banco de dados',ATexto);
-   end;
+  Exemplo de Uso:
+  procedure TFrmTestConnectionMain.GerarMensagem(ATexto: String);
+  var AModel:IWinNotificationModel;
+  begin
+  // uses WinNotification.Model.Interf
+  AModel := GetModel<IWinNotificationModel>;
+  AModel.Send('TestConnection','Falha de comunicação com o banco de dados',ATexto);
+  end;
 }
-
 
 Unit WinNotification.Model;
 
@@ -51,6 +50,8 @@ Type
     function ThisAs: TWinNotificationModel;
     // implementaçoes
     function Send(const AName: String; const ASubject: String;
+      const AMessage: String): boolean;
+    class function Notify(const AName: String; const ASubject: String;
       const AMessage: String): boolean;
   end;
 
@@ -108,6 +109,16 @@ class function TWinNotificationModel.new(const AController: IController)
 begin
   result := TWinNotificationModel.Create;
   result.Controller(AController);
+end;
+
+class function TWinNotificationModel.Notify(const AName, ASubject,
+  AMessage: String): boolean;
+var
+  intf: IWinNotificationModel;
+begin
+  intf := TWinNotificationModel.new();
+  result := intf.Send(AName, ASubject, AMessage);
+  intf := nil;
 end;
 
 function TWinNotificationModel.Send(const AName: String; const ASubject: String;

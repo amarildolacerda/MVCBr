@@ -63,8 +63,10 @@ type
     procedure SetFreeOnExit(const Value: boolean);
     function GetFreeOnExit: boolean;
   public
-    class function New(AObject: T): IMVCBrAdapter<T>;
-    constructor Create(AObject: T);
+    class function New(AObject: T): IMVCBrAdapter<T>; overload;
+    //class function New(): IMVCBrAdapter<T>; //overload;
+    constructor Create(AObject: T); overload;
+    //constructor Create(); overload;
     destructor Destroy; override;
     procedure SetInstance(AInst: T; AFreeOnExit: boolean = false);
     function GetInstance: T;
@@ -108,9 +110,22 @@ end;
 constructor TMVCBrAdapter<T>.Create(AObject: T);
 begin
   inherited Create;
+  if AObject = nil then
+    self.DelegateTo(
+      function: T
+      begin
+        result := T(TClass(T).Create);
+      end);
   FFreeOnExit := assigned(AObject);
   FAdapter := AObject;
 end;
+
+{
+constructor TMVCBrAdapter<T>.Create;
+begin
+  self.Create(nil);
+end;
+}
 
 function TMVCBrAdapter<T>.DelegateTo(AProc: TFunc<T>): TMVCBrAdapter<T>;
 begin
@@ -146,6 +161,13 @@ begin
   end;
   result := FAdapter;
 end;
+
+{
+class function TMVCBrAdapter<T>.New: IMVCBrAdapter<T>;
+begin
+  result := TMVCBrAdapter<T>.New(nil);
+end;
+}
 
 class function TMVCBrAdapter<T>.New(AObject: T): IMVCBrAdapter<T>;
 begin
