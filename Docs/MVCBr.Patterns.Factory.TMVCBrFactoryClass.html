@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<title>MVCBr: MVCBr.Patterns.Factory: Classe TMVCBrFactoryClass</title>
+<meta name="generator" content="PasDoc 0.14.0">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<script type="text/javascript" src="tipuesearch/jquery.min.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch_data.js"></script>
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+<script type="text/javascript" src="tipuesearch/tipuesearch_set.js"></script>
+<script type="text/javascript" src="tipuesearch/tipuesearch.js"></script>
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>MVCBr</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Hierarquia de Classes</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objetos e Registros</a></p><p><a href="AllTypes.html" class="navigation">Tipos</a></p><p><a href="AllVariables.html" class="navigation">Variáveis</a></p><p><a href="AllConstants.html" class="navigation">Constantes</a></p><p><a href="AllFunctions.html" class="navigation">Funções e Procedimentos</a></p><p><a href="AllIdentifiers.html" class="navigation">Identificadores</a></p><p><form class="search-form" action="_tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input"></div><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></form>
+<div style="clear: both"></div>
+
+<script>
+$(document).ready(function() {
+    $('#tipue_search_input').tipuesearch({
+        /* 10 items to display seems standard */
+        'show': 10,
+        /* For PasDoc docs, showing urls is not very useful,
+           since the page title already shows the unit and identifier. */
+        'showURL': false
+    });
+});
+</script>
+</p></td><td class="content">
+MVCBr
+<a name="TMVCBrFactoryClass"></a><h1 class="cio">Classe TMVCBrFactoryClass</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td>Properties</td></tr></table>
+<a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a  href="MVCBr.Patterns.Factory.html">MVCBr.Patterns.Factory</a></p>
+<h2 class="declaration">Declaração</h2>
+<p class="declaration">
+<code>type TMVCBrFactoryClass&lt;T:Class&gt; = class(TInterfacedObject, <a class="normal" href="MVCBr.Patterns.Factory.IMVCBrFactoryClass.html">IMVCBrFactoryClass&lt;T&gt;</a>)</code></p>
+<h2 class="description">Descrição</h2>
+<p>
+ Class to implements factory interface for concrete classes</p>
+<a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
+<ul class="hierarchy"><li class="ancestor">TInterfacedObject</li>
+<li class="thisitem">TMVCBrFactoryClass</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#FInstance">FInstance</a></b>: T;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#FOwned">FOwned</a></b>: boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#FClass">FClass</a></b>: TClass;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#InternalCreate">InternalCreate</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Invoke">Invoke</a></b>: T;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Create">Create</a></b>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#New">New</a></b>(AOwned: boolean = true): <a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html">TMVCBrFactoryClass</a>&lt;T&gt;; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class function <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#New">New</a></b>(AObject: T; AOwned: boolean = true) : <a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html">TMVCBrFactoryClass</a>&lt;T&gt;; overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Default">Default</a></b>: T;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#GetInstance">GetInstance</a></b>: T; virtual;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Release">Release</a></b>;</code></td>
+</tr>
+</table>
+<h2 class="description">Descrição</h2>
+<h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FInstance"></a><code><b>FInstance</b>: T;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOwned"></a><code><b>FOwned</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FClass"></a><code><b>FClass</b>: TClass;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="InternalCreate"></a><code>constructor <b>InternalCreate</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="Invoke"></a><code>function <b>Invoke</b>: T;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+ DONT USE <code>CREATE</code> to get instance of factory class, insteadof use <a class="normal" href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#New">NEW</a> </p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="New"></a><code>class function <b>New</b>(AOwned: boolean = true): <a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html">TMVCBrFactoryClass</a>&lt;T&gt;; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+&lt;summay&gt; <a class="normal" href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Create">Create</a> <a class="normal" href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#New">New</a> instance of factory class )</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="New"></a><code>class function <b>New</b>(AObject: T; AOwned: boolean = true) : <a  href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html">TMVCBrFactoryClass</a>&lt;T&gt;; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Default"></a><code>function <b>Default</b>: T;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+ <code>Default</code> check if instance exists, is not <a class="normal" href="MVCBr.Patterns.Factory.TMVCBrFactoryClass.html#Create">create</a> it..</p>
+<p>
+ </p>
+<h6 class="description_section">Retornos</h6>
+<p class="return">instance of class</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="GetInstance"></a><code>function <b>GetInstance</b>: T; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Release"></a><code>procedure <b>Release</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+ <code>Release</code> Disposeof only instance, not factory class </p>
+</td></tr>
+</table>
+tireideletra.com.br
+<hr noshade size="1"><span class="appinfo"><em>Gerado por <a  href="http://pasdoc.sourceforge.net/">PasDoc 0.14.0</a>. </em>
+</span>
+</td></tr></table></body></html>

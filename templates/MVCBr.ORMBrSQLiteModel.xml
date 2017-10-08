@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mm.orm.sqlite" invoke="auto">
+		<description>
+              Create ORMBr sqlite Model for MVCBr
+		</description>
+		<author>
+              amarildo lacerda
+		</author>
+        <point name="model">
+            <text>
+               Identifing model name
+            </text>
+        </point>
+        <point name="tableName" default="true">
+            <text>
+               ORMBr table name (modelo)
+            </text>
+        </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+/// <summary>
+///   ORMBr|model|Model;
+///   Create by Template MVCBrORMBrsqliteModel
+///   Dependencies:  FireDAC, MVCBr and ORMBr
+/// </summary>
+/// <auth> amarildo lacerda, MVCBr </auth>
+
+interface
+
+uses System.Classes, System.SysUtils,
+     System.Json, System.RTTI,
+/// MVCBr
+     MVCBr.Interf, MVCBr.Model,MVCBr.Controller, MVCBr.Patterns.Lazy,
+/// Firedac
+     FireDAC.Stan.Intf,
+     FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+     FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
+     FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait, Data.DB,
+     FireDAC.Comp.Client,
+/// ORMBr
+     OrmBr.Factory.sqlite3,
+     OrmBr.types.database,
+     OrmBr.Container.fdmemtable,
+     OrmBr.Container.dataset.interfaces,
+     OrmBr.Factory.interfaces,
+     OrmBr.DML.generator.sqlite,
+     OrmBr.Container.objectset.interfaces,
+     OrmBr.Container.objectset,
+/// Local ORMBr Model
+     OrmBr.Model.|tableName|     ;
+
+type
+
+     T|model|Model = class;
+
+/// <summary> Interface Model for FB Model
+///
+/// </summary>
+     I|model|Model = interface(IModel)
+         |guid|
+          function This:T|model|Model;
+     end;
+
+/// <summary>
+///   Implements Interface Model for FB
+///  </summary>
+     T|model|Model = class(TModelFactory,I|model|Model)
+       private
+          FConnection : IDBConnection;
+       protected
+          F|tableName|: IContainerObjectSet<T|tableName|>;
+          //F|tableName|: IContainerDataset<T|tableName|>;
+       public
+          procedure CreateDependencies;virtual;
+          constructor Create(AController:IController;AConnection:TFDConnection);
+          class function New(AController:IController;AConnection:TFDConnection):I|model|Model;
+          destructor Destroy;override;
+          function This:T|model|Model;
+          procedure Release;override;
+          function GetMemDataset<T:Class,Constructor>( AMemDataset:TFdMemTable):IContainerDataSet<T>;
+          function GetObjectSet<T:Class, Constructor>:IContainerObjectSet<T>;
+     end;
+
+
+Implementation
+
+     procedure T|model|Model.CreateDependencies;
+     begin
+
+          /// sample Lazy Table model;
+          F|tableName|:= TContainerObjectSet<T|tableName|>.Create(FConnection);
+          //F|tableName|:= TContainerFDMemTable<T|tableName|>.Create(FConnection, memTable);
+
+          /// put here yours dependencies and init vars
+     end;
+
+     constructor T|model|Model.Create(AController:IController;AConnection:TFDConnection);
+     begin
+         inherited Create;
+         SetController(AController);
+         if assigned(AConnection) then
+            FConnection := TFactorySQLite.Create(AConnection, dnFirebird);
+         CreateDependencies;
+     end;
+
+/// <summary>
+///   Class Function NEW to create new instance for interfaced object
+///  </summary>
+/// <param name="AController">
+///      An Instance for IController
+/// </param>
+/// <param name="AConnection">
+///      FireDAC Connections Object
+/// </param>
+     class function T|model|Model.New(AController:IController;AConnection:TFDConnection):I|model|Model;
+     begin
+         result :=  T|model|Model.Create(AController,AConnection);
+     end;
+
+/// <summary>
+///   Release to free internal vars
+///  </summary>
+     procedure T|model|Model.Release;
+     begin
+         FConnection := nil;
+         inherited;
+     end;
+
+     destructor T|model|Model.Destroy;
+     begin
+        release;
+        inherited;
+     end;
+
+     function T|model|Model.This:T|model|Model;
+     begin
+        result := self;
+     end;
+
+     function T|model|Model.GetMemDataset<T>( AMemDataset:TFdMemTable):IContainerDataSet<T>;
+     begin
+        result := TContainerFDMemTable<T>.Create( FConnection,AMemDataset );
+     end;
+
+     function T|model|Model.GetObjectSet<T>:IContainerObjectSet<T>;
+     begin
+        result := TContainerObjectSet<T>.Create(FConnection);
+     end;
+
+     end.
+
+        ]]>
+		</code>
+	</template>
+</codetemplate>

@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mm.ormfb.table" invoke="auto">
+		<description>
+              Create ORMBr Firebird Model for MVCBr
+		</description>
+		<author>
+              amarildo lacerda
+		</author>
+        <point name="model" default="true">
+            <text>
+               Identifing model name
+            </text>
+        </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+/// <summary>
+///   Create by Template MVCBrORMBrFBModel
+///   Dependencies:  FireDAC, MVCBr and ORMBr
+/// </summary>
+/// <auth> amarildo lacerda </auth>
+
+interface
+
+uses System.Classes, System.SysUtils,
+     System.Json, System.RTTI,
+/// MVCBr
+     MVCBr.Interf, MVCBr.Model,MVCBr.Controller,
+/// Firedac
+     FireDAC.Stan.Intf,
+     FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+     FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
+     FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait, Data.DB,
+     FireDAC.Comp.Client,
+/// ORMBr
+     OrmBr.Factory.FireDAC,
+     OrmBr.types.database,
+     OrmBr.Container.fdmemtable,
+     OrmBr.Container.dataset.interfaces,
+     OrmBr.Factory.interfaces,
+     OrmBr.DML.generator.Firebird,
+     OrmBr.Container.objectset.interfaces,
+     OrmBr.Container.objectset;
+
+type
+
+     T|model|Model<T:Class,constructor> = class;
+
+/// <summary> Interface Model for FB Model
+///
+/// </summary>
+     I|model|Model<T:Class, constructor> = interface(IModel)
+         |guid|
+          function GetMemDataset( AMemDataset:TFdMemTable):IContainerDataSet<T>;
+          function GetObjectSet:IContainerObjectSet<T>;
+          function this:T|model|Model<T>;
+     end;
+
+/// <summary>
+///   Implements Interface Model for FB
+///  </summary>
+     T|model|Model<T:Class,constructor> = class(TModelFactory,I|model|Model<T>)
+       private
+          FConnection : IDBConnection;
+       public
+          procedure CreateDependencies;virtual;
+          constructor Create(AController:IController;AConnection:TFDConnection);
+          class function New(AController:IController;AConnection:TFDConnection):I|model|Model<T>;
+          destructor Destroy;override;
+          function this:T|model|Model<T>;
+          procedure Release;override;
+          function GetMemDataset( AMemDataset:TFdMemTable):IContainerDataSet<T>;
+          function GetObjectSet:IContainerObjectSet<T>;
+     end;
+
+
+Implementation
+
+     procedure T|model|Model<T>.CreateDependencies;
+     begin
+          /// put here yours dependencies and init vars
+     end;
+
+     constructor T|model|Model<T>.Create(AController:IController;AConnection:TFDConnection);
+     begin
+         inherited Create;
+         SetController(AController);
+         if assigned(AConnection) then
+            FConnection := TFactoryFiredac.Create(AConnection, dnFirebird);
+         CreateDependencies;
+     end;
+
+/// <summary>
+///   Class Function NEW to create new instance for interfaced object
+///  </summary>
+/// <param name="AController">
+///      An Instance for IController
+/// </param>
+/// <param name="AConnection">
+///      FireDAC Connections Object
+/// </param>
+     class function T|model|Model<T>.New(AController:IController;AConnection:TFDConnection):I|model|Model<T>;
+     begin
+         result :=  T|model|Model<T>.Create(AController,AConnection);
+     end;
+
+/// <summary>
+///   Release to free internal vars
+///  </summary>
+     procedure T|model|Model<T>.Release;
+     begin
+         FConnection := nil;
+         inherited;
+     end;
+
+     destructor T|model|Model<T>.Destroy;
+     begin
+        release;
+        inherited;
+     end;
+
+     function T|model|Model<T>.this:T|model|Model<T>;
+     begin
+        result := self;
+     end;
+
+/// <summary>
+///    GetMemDataset fill FireDAC TFdMemTable
+/// </summary>
+/// <returns>
+///    Use Result to open dataset and fill FireDAC TFdMemTable
+///  </returns>
+     function T|model|Model<T>.GetMemDataset( AMemDataset:TFdMemTable):IContainerDataSet<T>;
+     begin
+        result := TContainerFDMemTable<T>.Create( FConnection,AMemDataset );
+     end;
+
+/// <summary>
+///   Get an object list do manager rows fields in object
+///  </summary>
+     function T|model|Model<T>.GetObjectSet:IContainerObjectSet<T>;
+     begin
+        result := TContainerObjectSet<T>.Create(FConnection);
+
+     end;
+
+     end.
+
+        ]]>
+		</code>
+	</template>
+</codetemplate>

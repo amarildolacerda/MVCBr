@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mc.fdconnection" invoke="manual">
+		<description>
+             create procedure for FDConnection
+		</description>
+		<author>
+             amarildo lacerda
+		</author>
+        <point name="class">
+          <text>class</text>
+        </point>
+        <point name="driver">
+         <text>driverID</text>
+        </point>
+        <point name="db">
+         <text>database</text>
+        </point>
+        <point name="user">
+          <text>user</text>
+        </point>
+        <point name="password">
+          <text>password</text>
+        </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+/// <summary> New Connection </summary>
+var FConnection :TFDConnection; {move to right place}
+function |class|.Connection: TFDConnection;
+begin
+  if not assigned(FConnection) then
+  begin
+    FConnection := TFDConnection.Create(nil);
+    FConnection.DriverName := '|driver|';
+    FConnection.params.Database := '|db|';
+    FConnection.params.UserName := '|user|';
+    FConnection.params.Password := '|password|';
+    FConnection.LoginPrompt := false;
+  end;
+  result := FConnection;
+
+  // FConnection.free;  {move to right place}
+
+end;
+]]>
+		</code>
+	</template>
+</codetemplate>

@@ -42,7 +42,6 @@ requires
   DbxCommonDriver,
   RESTComponents,
   DataSnapFireDAC,
-  MVCBrCore,
-  MVCBrVCL;
+  MVCBrCore;
 
 end.

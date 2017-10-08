@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mo.subscribe" invoke="auto">
+		<description>
+			 Create Observable subscribe call
+		</description>
+		<author>
+			 amarildo lacerda
+		</author>
+
+        <point name="owner" default="true">
+           <text>
+              Object owner
+           </text>
+           <hint>
+           </hint>
+        </point>
+        <point name="serviceName">
+           <text>
+              Name of service to identify in observer
+           </text>
+           <hint>
+           </hint>
+        </point>
+
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+  TMVCBrObservable.Subscribe(|owner|, '|serviceName|',
+    procedure(js: TJsonValue)
+    begin
+       //if  then
+       //   exec;
+    end);
+
+
+        ]]>
+		</code>
+	</template>
+</codetemplate>

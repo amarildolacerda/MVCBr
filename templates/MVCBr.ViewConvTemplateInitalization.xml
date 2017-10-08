@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mc.initialization" invoke="auto">
+		<description>
+            create auto initialization for controller
+		</description>
+		<author>
+            amarildo lacerda
+		</author>
+
+        <point name="BaseName" default="true">
+           <text>
+              Name
+           </text>
+           <hint>
+              type base name
+           </hint>
+        </point>
+
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+           /// move to
+           initialization
+             RegisterInterfacedClass(T|BaseName|Controler.ClassName,
+                   I|BaseName|Controler, T|BaseName|Controler);
+
+        ]]>
+		</code>
+	</template>
+</codetemplate>

@@ -37,7 +37,8 @@ requires
   fmx,
   dbrtl,
   DesignIDE,
-  RESTComponents;
+  RESTComponents,
+  soaprtl;
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',
@@ -52,7 +53,6 @@ contains
   MVCBr.PageView in '..\MVCBr.PageView.pas',
   MVCBr.View in '..\MVCBr.View.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
-  System.JsonFiles in '..\helpers\System.JsonFiles.pas',
   MVCBr.Common in '..\VCL\MVCBr.Common.pas',
   MVCBr.Component in '..\MVCBr.Component.pas',
   MVCBr.ModuleModel in '..\MVCBr.ModuleModel.pas',
@@ -67,7 +67,13 @@ contains
   MVCBr.Patterns.Decorator in '..\MVCBr.Patterns.Decorator.pas',
   MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
   MVCBr.Patterns.States in '..\MVCBr.Patterns.States.pas',
-  MVCBr.FrameView in '..\MVCBr.FrameView.pas';
+  MVCBr.FrameView in '..\MVCBr.FrameView.pas',
+  Data.DB.Helper in '..\helpers\Data.DB.Helper.pas',
+  System.Classes.Helper in '..\helpers\System.Classes.Helper.pas',
+  System.Json.Helper in '..\helpers\System.Json.Helper.pas',
+  System.JsonFiles in '..\helpers\System.JsonFiles.pas',
+  System.Rtti.Helper in '..\helpers\System.Rtti.Helper.pas',
+  System.ThreadSafe in '..\helpers\System.ThreadSafe.pas';
 
 end.
 

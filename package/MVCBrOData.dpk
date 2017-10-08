@@ -43,8 +43,8 @@ requires
   FireDACCommonDriver,
   FireDACCommon,
   MVCBrCore,
-  MVCBrVCL,
-  RESTComponents;
+  RESTComponents,
+  DataSnapFireDAC;
 
 contains
   oData.Comp.Client in '..\oData\oData.Comp.Client.pas',
@@ -52,6 +52,11 @@ contains
   MVCBr.ODataDatasetAdapter in '..\VCL\MVCBr.ODataDatasetAdapter.pas',
   MVCBr.ODataReg in '..\VCL\MVCBr.ODataReg.pas',
   MVCBr.ODataDatasetBuilder in '..\VCL\MVCBr.ODataDatasetBuilder.pas',
-  MVCBr.ODataFDMemTable in '..\VCL\MVCBr.ODataFDMemTable.pas';
+  MVCBr.ODataFDMemTable in '..\VCL\MVCBr.ODataFDMemTable.pas',
+  MVCBr.HTTPFiredacAdapter in '..\VCL\MVCBr.HTTPFiredacAdapter.pas',
+  MVCBr.HTTPRestClient.Common in '..\VCL\MVCBr.HTTPRestClient.Common.pas',
+  MVCBr.HTTPRestClient in '..\VCL\MVCBr.HTTPRestClient.pas',
+  MVCBr.HTTPRestClientEditor in '..\VCL\MVCBr.HTTPRestClientEditor.pas',
+  MVCBr.IdHTTPRestClient in '..\VCL\MVCBr.IdHTTPRestClient.pas';
 
 end.

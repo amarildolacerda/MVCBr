@@ -30,6 +30,8 @@ Uses System.Classes,
   System.SysUtils, DB,
   MVCBr.ODataDatasetAdapter,
   oData.Comp.Client,
+  MVCBr.IdHttpRestClient,
+  MVCBr.HttpRestClientEditor,
   MVCBr.HttpRestClient,
   MVCBr.HttpRestClient.Common,
   //MVCBr.IdHttpRestClient,
@@ -61,6 +63,10 @@ begin
   RegisterComponents(CMVCBrComponentPalletName,
     [TODataDatasetAdapter, TODataDatasetBuilder, TODataFDMemTable]);
   RegisterComponentEditor(TODataDatasetAdapter, TODataDatasetAdapterCompEditor);
+
+  RegisterComponents(CMVCBrComponentPalletName, [THTTPRestClient,TIdHTTPRestClient]);
+  RegisterComponentEditor(THTTPRestClient, THTTPRestClientCompEditor);
+
 
 end;
 

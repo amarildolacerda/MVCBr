@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="mc.init" invoke="auto">
+		<description>
+              create controller init for start form view
+		</description>
+		<author>
+              amarildo lacerda
+		</author>
+        <point name="BaseName" default="true">
+           <text>
+              Name
+           </text>
+           <hint>
+              type base name
+           </hint>
+        </point>
+
+		<code language="Delphi" delimiter="|"><![CDATA[
+var
+  ref: T|BaseName|View;
+begin
+  inherited;
+  if not assigned(FView) then
+  begin
+    Application.CreateForm(T|BaseName|View, ref);
+    supports(ref, IView, FView);
+{$IFDEF FMX}
+    if Application.MainForm = nil then
+      Application.RealCreateForms;
+{$ENDIF}
+  end;
+  // CreateModules; // < criar os modulos persolnizados
+
+  AfterInit;
+end;
+        ]]>
+		</code>
+	</template>
+</codetemplate>

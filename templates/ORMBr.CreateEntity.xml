@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<codetemplate	xmlns="http://schemas.borland.com/Delphi/2005/codetemplates"
+				version="1.0.0">
+	<template name="ormbr.createEntity" invoke="manual">
+		<description>
+			 Cria modelo para uma tabela
+		</description>
+		<author>
+			 amarildo lacerda
+		</author>
+        <point name="table">
+          <text>table</text>
+          </point>
+        <point name="description">
+          <text>description</text>
+          </point>
+		<code language="Delphi" delimiter="|"><![CDATA[
+
+
+interface
+
+uses
+  DB,
+  Classes,
+  SysUtils,
+  Generics.Collections,
+  /// orm
+  ORMBr.types.blob,
+  ORMBr.types.lazy,
+  ORMBr.types.mapping,
+  ORMBr.types.nullable,
+  ORMBr.mapping.Classes,
+  ORMBr.mapping.register,
+  ORMBr.mapping.attributes;
+
+type
+
+  [Entity]
+  [Table('|table|', '|description|')]
+  T|table| = class
+  private
+
+  public
+
+  end;
+
+
+implementation
+
+initialization
+
+TRegisterClass.RegisterEntity(T|table|);
+
+end.
+
+           ]]>
+		</code>
+	</template>
+</codetemplate>
