@@ -36,7 +36,7 @@ MVCBr
 <td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Uses">Uses</a></td><td><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objetos e Registros</a></td><td>Funções e Procedimentos</td><td><a class="section" href="#PasDoc-Types">Tipos</a></td><td>Constantes</td><td>Variáveis</td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="description">Descrição</h2>
 &nbsp;<a name="PasDoc-Uses"></a><h2 class="uses">Uses</h2>
-<ul class="useslist"><li>System.Classes</li><li>System.SysUtils</li><li>MVCBr.Interf</li><li><a  href="MVCBr.Model.html">MVCBr.Model</a></li><li><a  href="MVCBr.Patterns.Builder.html">MVCBr.Patterns.Builder</a></li><li>System.RTTI</li></ul><h2 class="overview">Visão Geral</h2>
+<ul class="useslist"><li>System.Classes</li><li>System.SysUtils</li><li>MVCBr.Interf</li><li><a  href="MVCBr.Model.html">MVCBr.Model</a></li><li><a  href="MVCBr.Patterns.Builder.html">MVCBr.Patterns.Builder</a></li><li><a  href="MVCBr.Patterns.Lazy.html">MVCBr.Patterns.Lazy</a></li><li>System.RTTI</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Classes"></a><h3 class="cio">Classes, Interfaces, Objetos e Registros</h3>
 <table class="classestable wide_list">
 <tr class="listheader">
@@ -45,32 +45,38 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.BuilderModel.IBuilderModel.html"><code>IBuilderModel</code></a></td>
-<td class="itemdesc">&nbsp;</td>
+<td class="itemdesc"> Interface to BuilderModel object </td>
 </tr>
 <tr class="list2">
 <td class="itemname">Interface&nbsp;<a class="bold" href="MVCBr.BuilderModel.IBuilderModel.html"><code>IBuilderModel</code></a></td>
 <td class="itemdesc">&nbsp;</td>
 </tr>
 <tr class="list">
-<td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.BuilderModel.TBuiltObjectFactory.html"><code>TBuiltObjectFactory</code></a></td>
-<td class="itemdesc">&nbsp;</td>
-</tr>
-<tr class="list2">
 <td class="itemname">Classe&nbsp;<a class="bold" href="MVCBr.BuilderModel.TBuilderModelFactory.html"><code>TBuilderModelFactory</code></a></td>
-<td class="itemdesc">&nbsp;</td>
+<td class="itemdesc">TBuiltResult = TValue; &lt;summary&gt; <a class="normal" href="MVCBr.BuilderModel.TBuilderModelFactory.html#Builder">Builder</a> Model Factory to support command into Models &lt;/summary&gt;</td>
 </tr>
 </table>
 <a name="PasDoc-Types"></a><h3 class="summary">Tipos</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><b><a  href="MVCBr.BuilderModel.html#TBuiltResult">TBuiltResult</a></b> = TValue;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.BuilderModel.html#TBuiltObjectFactory">TBuiltObjectFactory</a></b> = <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="MVCBr.BuilderModel.html#IBuiltObject">IBuiltObject</a></b> = <a  href="MVCBr.Patterns.Builder.IMVCBrBuilderObject.html">IMVCBrBuilderObject</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
 <h3 class="detail">Tipos</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><a name="TBuiltResult"></a><code><b>TBuiltResult</b> = TValue;</code></td>
+<td class="itemcode"><a name="TBuiltObjectFactory"></a><code><b>TBuiltObjectFactory</b> = <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="IBuiltObject"></a><code><b>IBuiltObject</b> = <a  href="MVCBr.Patterns.Builder.IMVCBrBuilderObject.html">IMVCBrBuilderObject</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

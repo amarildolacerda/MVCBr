@@ -113,7 +113,8 @@ type
     DefaultContentType = 'default_content_type';
     DefaultContentCharset = 'default_content_charset';
     DefaultViewFileExtension = 'default_view_file_extension';
-    ISAPIPath = 'isapi_path';
+    //ISAPIPath = 'isapi_path';
+    PathPrefix = 'pathprefix';
     StompServer = 'stompserver';
     StompServerPort = 'stompserverport';
     StompUsername = 'stompusername';
@@ -332,14 +333,28 @@ type
 
   TMVCStringDictionary = class
   strict protected
-    FDict: TDictionary<String, String>;
+    FDict: TDictionary<string, string>;
   public
     constructor Create; virtual;
     destructor Destroy; override;
     procedure Clear;
-    function AddProperty(const Name, Value: String): TMVCStringDictionary;
+    function AddProperty(const Name, Value: string): TMVCStringDictionary;
+    function TryGetValue(const Name: string; out Value: string): Boolean;
     function Count: Integer;
-    function GetEnumerator: TDictionary<String, String>.TPairEnumerator;
+    function GetEnumerator: TDictionary<string, string>.TPairEnumerator;
+  end;
+
+  { This type is thread safe }
+  TMVCStringObjectDictionary<T: class> = class
+  private
+    FMREWS: TMultiReadExclusiveWriteSynchronizer;
+  protected
+    FDict: TObjectDictionary<string, T>;
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    function TryGetValue(const Name: string; out Value: T): Boolean;
+    procedure Add(const Name: string; Value: T);
   end;
 
   TMVCViewDataObject = class(TObjectDictionary<string, TObject>)
@@ -351,10 +366,11 @@ type
     constructor Create;
   end;
 
-  TMVCCriticalSectionHelper = class helper for TCriticalSection
+  TMVCCriticalSectionHelper = class helper
+    for TCriticalSection
   public
-    procedure WithLock(const AAction: TProc);
-    function WithLockTimeout(const AAction: TProc; const ATimeOut: UInt32): TWaitResult;
+    procedure DoWithLock(const AAction: TProc);
+    function DoWithLockTimeout(const AAction: TProc; const ATimeOut: UInt32): TWaitResult;
   end;
 
   TMVCConfig = class sealed
@@ -395,6 +411,10 @@ function B64Encode(const AValue: string): string; overload;
 function B64Encode(const AValue: TBytes): string; overload;
 function B64Decode(const AValue: string): string;
 
+function URLSafeB64encode(const Value: string; IncludePadding: Boolean): String;  overload;
+function URLSafeB64encode(const Value: TBytes; IncludePadding: Boolean): String;  overload;
+function URLSafeB64Decode(const Value: string): String;
+
 function ByteToHex(AInByte: Byte): string;
 function BytesToHex(ABytes: TBytes): string;
 
@@ -402,6 +422,9 @@ var
   Lock: TObject;
 
 implementation
+
+uses
+  IdCoder3to4;
 
 const
   RESERVED_IPS: array [1 .. 11] of array [1 .. 2] of string =
@@ -439,16 +462,19 @@ end;
 
 function B64Encode(const AValue: string): string; overload;
 begin
+  //Do not use TNetEncoding
   Result := TIdEncoderMIME.EncodeString(AValue);
 end;
 
 function B64Encode(const AValue: TBytes): string; overload;
 begin
+  //Do not use TNetEncoding
   Result := TIdEncoderMIME.EncodeBytes(TIdBytes(AValue));
 end;
 
 function B64Decode(const AValue: string): string;
 begin
+  //Do not use TNetEncoding
   Result := TIdDecoderMIME.DecodeString(AValue);
 end;
 
@@ -509,7 +535,7 @@ end;
 
 { TMVCCriticalSectionHelper }
 
-procedure TMVCCriticalSectionHelper.WithLock(const AAction: TProc);
+procedure TMVCCriticalSectionHelper.DoWithLock(const AAction: TProc);
 begin
   Self.Enter;
   try
@@ -519,7 +545,7 @@ begin
   end;
 end;
 
-function TMVCCriticalSectionHelper.WithLockTimeout(const AAction: TProc; const ATimeOut: UInt32): TWaitResult;
+function TMVCCriticalSectionHelper.DoWithLockTimeout(const AAction: TProc; const ATimeOut: UInt32): TWaitResult;
 begin
   Result := Self.WaitFor(ATimeOut);
   if (Result = TWaitResult.wrSignaled) then
@@ -620,9 +646,9 @@ end;
 { TMVCStringDictionary }
 
 function TMVCStringDictionary.AddProperty(const Name,
-  Value: String): TMVCStringDictionary;
+  Value: string): TMVCStringDictionary;
 begin
-  FDict.AddOrSetValue(Name, Value);
+  FDict.AddOrSetValue(name, Value);
   Result := Self;
 end;
 
@@ -639,7 +665,7 @@ end;
 constructor TMVCStringDictionary.Create;
 begin
   inherited;
-  FDict := TDictionary<String, String>.Create;
+  FDict := TDictionary<string, string>.Create;
 end;
 
 destructor TMVCStringDictionary.Destroy;
@@ -648,14 +674,145 @@ begin
   inherited;
 end;
 
-function TMVCStringDictionary.GetEnumerator: TDictionary<String, String>.TPairEnumerator;
+function TMVCStringDictionary.GetEnumerator: TDictionary<string, string>.TPairEnumerator;
 begin
   Result := FDict.GetEnumerator;
+end;
+
+function TMVCStringDictionary.TryGetValue(const Name: string;
+  out Value: string): Boolean;
+begin
+  Result := FDict.TryGetValue(name, Value);
+end;
+
+{ TMVCStringObjectDictionary }
+
+procedure TMVCStringObjectDictionary<T>.Add(const Name: string; Value: T);
+begin
+  FMREWS.BeginWrite;
+  try
+    if not FDict.ContainsKey(name) then
+      FDict.Add(name, Value);
+  finally
+    FMREWS.EndWrite;
+  end;
+end;
+
+constructor TMVCStringObjectDictionary<T>.Create;
+begin
+  inherited;
+  FDict := TObjectDictionary<string, T>.Create([doOwnsValues]);
+  FMREWS := TMultiReadExclusiveWriteSynchronizer.Create;
+end;
+
+destructor TMVCStringObjectDictionary<T>.Destroy;
+begin
+  FDict.Free;
+  FMREWS.Free;
+  inherited;
+end;
+
+function TMVCStringObjectDictionary<T>.TryGetValue(const Name: string; out Value: T): Boolean;
+begin
+  FMREWS.BeginRead;
+  try
+    Result := FDict.TryGetValue(name, Value);
+  finally
+    FMREWS.EndRead;
+  end;
+end;
+
+type
+  TURLSafeEncode = class(TIdEncoder3to4)
+  protected
+    procedure InitComponent; override;
+  public
+
+  end;
+  TURLSafeDecode = class(TIdDecoder4to3)
+  protected
+    class var GSafeBaseBase64DecodeTable: TIdDecodeTable;
+    procedure InitComponent; override;
+  public
+
+  end;
+
+const
+  GURLSafeBase64CodeTable: string =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';    {Do not Localize}
+
+
+procedure TURLSafeEncode.InitComponent;
+begin
+  inherited;
+  FCodingTable := ToBytes(GURLSafeBase64CodeTable);
+  FFillChar := '=';  {Do not Localize}
+end;
+
+procedure TURLSafeDecode.InitComponent;
+begin
+  inherited;
+  FDecodeTable := GSafeBaseBase64DecodeTable;
+  FCodingTable := ToBytes(GURLSafeBase64CodeTable);
+  FFillChar := '=';  {Do not Localize}
+end;
+
+function URLSafeB64encode(const Value: string; IncludePadding: Boolean): String; overload;
+begin
+  if IncludePadding then
+    Result := TURLSafeEncode.EncodeString(Value)
+  else
+    Result := TURLSafeEncode.EncodeString(Value).Replace('=', '', [rfReplaceAll]);
+end;
+
+/// <summary>
+///   Remove "trimmed" character from the end of the string passed as parameter
+/// </summary>
+/// <param name="Value">Original string</param>
+/// <param name="TrimmedChar">Character to remove</param>
+/// <returns>Resulting string</returns>
+function RTrim(const Value: string; TrimmedChar: char): string;
+var
+  Strlen: Integer;
+begin
+  Strlen := Length(Value);
+  while (Strlen>0) and (Value[Strlen]=TrimmedChar) do
+    dec(StrLen);
+  result := copy(value, 1, StrLen)
+end;
+
+function URLSafeB64encode(const Value: TBytes; IncludePadding: Boolean): String;  overload;
+begin
+
+  if IncludePadding then
+    Result := TURLSafeEncode.EncodeBytes(TIdBytes(Value))
+  else
+    Result := RTrim(TURLSafeEncode.EncodeBytes(TIdBytes(Value)), '=');
+end;
+
+function URLSafeB64Decode(const Value: string): String;
+begin
+  // SGR 2017-07-03 : b64url might not include padding. Need to add it before decoding
+  case Length(value) mod 4 of
+    0:
+    begin
+      Result := TURLSafeDecode.DecodeString(Value);
+    end;
+    2:
+      Result := TURLSafeDecode.DecodeString(Value + '==');
+    3:
+      Result := TURLSafeDecode.DecodeString(Value + '=');
+  else
+    raise EExternalException.Create('Illegal base64url length');
+  end;
 end;
 
 initialization
 
 Lock := TObject.Create;
+
+// SGR 2017-07-03 : Initialize decoding table for URLSafe Gb64 encoding
+TURLSafeDecode.ConstructDecodeTable(GURLSafeBase64CodeTable, TURLSafeDecode.GSafeBaseBase64DecodeTable);
 
 GlobalAppExe := ExtractFileName(GetModuleName(HInstance));
 GlobalAppName := ChangeFileExt(GlobalAppExe, EmptyStr);

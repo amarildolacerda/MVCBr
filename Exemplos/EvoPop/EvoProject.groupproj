@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{1AF1FB39-A54B-453B-9D26-4B07CE9E2BB0}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="EvolucaoPopulacional.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\JsonViewer\apps\JsonViewer.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="EvolucaoPopulacional">
+        <MSBuild Projects="EvolucaoPopulacional.dproj"/>
+    </Target>
+    <Target Name="EvolucaoPopulacional:Clean">
+        <MSBuild Projects="EvolucaoPopulacional.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EvolucaoPopulacional:Make">
+        <MSBuild Projects="EvolucaoPopulacional.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="JsonViewer">
+        <MSBuild Projects="..\..\JsonViewer\apps\JsonViewer.dproj"/>
+    </Target>
+    <Target Name="JsonViewer:Clean">
+        <MSBuild Projects="..\..\JsonViewer\apps\JsonViewer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="JsonViewer:Make">
+        <MSBuild Projects="..\..\JsonViewer\apps\JsonViewer.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="EvolucaoPopulacional;JsonViewer"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="EvolucaoPopulacional:Clean;JsonViewer:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="EvolucaoPopulacional:Make;JsonViewer:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

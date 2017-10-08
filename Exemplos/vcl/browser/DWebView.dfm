@@ -43,9 +43,6 @@ object DWebView: TDWebView
       Align = alRight
       Caption = '?'
       OnClick = SpeedButton2Click
-      ExplicitLeft = 456
-      ExplicitTop = 8
-      ExplicitHeight = 22
     end
     object Edit1: TEdit
       Left = 24
@@ -66,6 +63,10 @@ object DWebView: TDWebView
   end
   object VCLPageViewManager1: TVCLPageViewManager
     PageControl = PageControl1
+    ShowCaptions = False
+    ShowTabColor = False
+    InheritedDraw = False
+    UsePageHistory = True
     Left = 48
     Top = 96
   end

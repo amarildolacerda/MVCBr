@@ -33,7 +33,7 @@ MVCBr
 <a name="TDatasetHelper"></a><h1 class="cio">Classe TDatasetHelper</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td>Properties</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="Data.DB.Helper.html">Data.DB.Helper</a></p>
@@ -46,6 +46,14 @@ MVCBr
 <li class="thisitem">TDatasetHelper</li></ul><h2 class="overview">Visão Geral</h2>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TDatasetHelper.html#GetValues">GetValues</a></b>(fldName: string): Variant;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Data.DB.Helper.TDatasetHelper.html#SetValues">SetValues</a></b>(fldName: string; const Value: Variant);</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>Function <b><a  href="Data.DB.Helper.TDatasetHelper.html#OpenAnonimous">OpenAnonimous</a></b>(proc: TProc): TDataset;</code></td>
@@ -104,7 +112,7 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="Data.DB.Helper.TDatasetHelper.html#FromJsonObject">FromJsonObject</a></b>(oJson: TJsonObject; AAppend: boolean); overload;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="Data.DB.Helper.TDatasetHelper.html#FromJsonObject">FromJsonObject</a></b>(oJson: TJsonObject; AAppend: boolean; ignoreNulls: boolean = true); overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -155,8 +163,31 @@ MVCBr
 <td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TDatasetHelper.html#Editing">Editing</a></b>: boolean;</code></td>
 </tr>
 </table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="Data.DB.Helper.TDatasetHelper.html#Values">Values</a></b>[fldName:string]: Variant read <a  href="Data.DB.Helper.TDatasetHelper.html#GetValues">GetValues</a> write <a  href="Data.DB.Helper.TDatasetHelper.html#SetValues">SetValues</a>;</code></td>
+</tr>
+</table>
 <h2 class="description">Descrição</h2>
 <h3 class="detail">Métodos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetValues"></a><code>function <b>GetValues</b>(fldName: string): Variant;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetValues"></a><code>procedure <b>SetValues</b>(fldName: string; const Value: Variant);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -272,7 +303,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FromJsonObject"></a><code>procedure <b>FromJsonObject</b>(oJson: TJsonObject; AAppend: boolean); overload;</code></td>
+<td class="itemcode"><a name="FromJsonObject"></a><code>procedure <b>FromJsonObject</b>(oJson: TJsonObject; AAppend: boolean; ignoreNulls: boolean = true); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -369,6 +400,15 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Editing"></a><code>function <b>Editing</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Values"></a><code>property <b>Values</b>[fldName:string]: Variant read <a  href="Data.DB.Helper.TDatasetHelper.html#GetValues">GetValues</a> write <a  href="Data.DB.Helper.TDatasetHelper.html#SetValues">SetValues</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

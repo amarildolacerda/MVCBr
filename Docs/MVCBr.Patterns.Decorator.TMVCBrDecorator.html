@@ -33,13 +33,13 @@ MVCBr
 <a name="TMVCBrDecorator"></a><h1 class="cio">Classe TMVCBrDecorator</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td>Properties</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="MVCBr.Patterns.Decorator.html">MVCBr.Patterns.Decorator</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TMVCBrDecorator&lt;T&gt; = class(TInterfacedObject, <a class="normal" href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html">IMVCBrDecorator</a>)</code></p>
+<code>type TMVCBrDecorator&lt;T&gt; = class(TInterfacedObject, <a class="normal" href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html">IMVCBrDecorator</a>, <a class="normal" href="MVCBr.Patterns.Decorator.IMVCBrDecorate.html">IMVCBrDecorate&lt;T&gt;</a>, <a class="normal" href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html">IMVCBrDecorator&lt;T&gt;</a>)</code></p>
 <h2 class="description">Descrição</h2>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
 <ul class="hierarchy"><li class="ancestor">TInterfacedObject</li>
@@ -48,46 +48,49 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#FDecorator">FDecorator</a></b>: T;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#FLock">FLock</a></b>: TObject;</code></td>
 </tr>
 <tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#FLock">FLock</a></b>: TObject;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#FDecorate">FDecorate</a></b>: T;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>constructor <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#create">create</a></b>(ADecorator: T);</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#Invoke">Invoke</a></b>: T; virtual;</code></td>
 </tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#create">create</a></b>(ADecorate: T);</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>destructor <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#destroy">destroy</a></b>; override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#This">This</a></b>: TObject; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#Lock">Lock</a></b>: T; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#UnLock">UnLock</a></b>; virtual;</code></td>
 </tr>
 </table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#Decorate">Decorate</a></b>: T read <a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#Invoke">Invoke</a>;</code></td>
+</tr>
+</table>
 <h2 class="description">Descrição</h2>
 <h3 class="detail">Campos</h3>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FDecorator"></a><code><b>FDecorator</b>: T;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -96,11 +99,27 @@ MVCBr
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="FDecorate"></a><code><b>FDecorate</b>: T;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <h3 class="detail">Métodos</h3>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="Invoke"></a><code>function <b>Invoke</b>: T; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="create"></a><code>constructor <b>create</b>(ADecorator: T);</code></td>
+<td class="itemcode"><a name="create"></a><code>constructor <b>create</b>(ADecorate: T);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -133,6 +152,15 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="UnLock"></a><code>procedure <b>UnLock</b>; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Decorate"></a><code>property <b>Decorate</b>: T read <a  href="MVCBr.Patterns.Decorator.TMVCBrDecorator.html#Invoke">Invoke</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

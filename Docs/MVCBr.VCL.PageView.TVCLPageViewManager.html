@@ -33,7 +33,7 @@ MVCBr
 <a name="TVCLPageViewManager"></a><h1 class="cio">Classe TVCLPageViewManager</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-InternalCRs">Internal Classes and Records</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="MVCBr.VCL.PageView.html">MVCBr.VCL.PageView</a></p>
@@ -48,8 +48,23 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <li class="ancestor"><a class="normal" href="MVCBr.Component.TComponentFactory.html">TComponentFactory</a></li>
 <li class="ancestor"><a class="normal" href="MVCBr.PageView.TCustomPageViewFactory.html">TCustomPageViewFactory</a></li>
 <li class="thisitem">TVCLPageViewManager</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-InternalCRs"></a><h3 class="summary">Internal Classes and Records</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.TPageHistory.html">TPageHistory</a></b> = class(TMVCBrMementoFactory&lt;string&gt;)</code></td>
+</tr>
+</table>
 <a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
 <table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FOnDestroing">FOnDestroing</a></b>: boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FPageHistory">FPageHistory</a></b>: <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.TPageHistory.html">TPageHistory</a>;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FOldPageChange">FOldPageChange</a></b>: TNotifyEvent;</code></td>
@@ -66,12 +81,20 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FAfterCreateComplete">FAfterCreateComplete</a></b>: TNotifyEvent;</code></td>
 </tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FInheritedDraw">FInheritedDraw</a></b>: boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FUsePageHistory">FUsePageHistory</a></b>: boolean;</code></td>
+</tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); override;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#Init">Init</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -99,51 +122,119 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoFormCloseQuery">DoFormCloseQuery</a></b>(Sender: TObject; var canClose: boolean);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoFormCloseQuery">DoFormCloseQuery</a></b>(Sender: TObject; var CanClose: boolean);</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#TabsheetIndexOf">TabsheetIndexOf</a></b>(tab: TObject): integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#TabsheetIndexOf">TabsheetIndexOf</a></b>(tab: TObject): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>Procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean); override;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoTabClose">DoTabClose</a></b>(Sender: TObject);</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#IndexOfTab">IndexOfTab</a></b>(Sender: TObject): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetShowCaptions">GetShowCaptions</a></b>: boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetShowCaptions">SetShowCaptions</a></b>(const Value: boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetInheritedDraw">SetInheritedDraw</a></b>(const Value: boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetShowTabColor">GetShowTabColor</a></b>: boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetShowTabColor">SetShowTabColor</a></b>(const Value: boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#IndexOfTabByCaption">IndexOfTabByCaption</a></b>(ACaption: string): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetUsePageHistory">SetUsePageHistory</a></b>(const Value: boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#ContainerName">ContainerName</a></b>: String;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetContainer">GetContainer</a></b>: TComponent;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>Procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#DoQueryClose">DoQueryClose</a></b>(const APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: boolean); override;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetActivePage">SetActivePage</a></b>(Const tab: TObject); override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#Notification">Notification</a></b>(AComponent: TComponent; AOperation: TOperation); override;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetPageViewClass">GetPageViewClass</a></b>: <a  href="MVCBr.PageView.html#TPageViewClass">TPageViewClass</a>; override;</code></td>
+</tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#InvokePageHistory">InvokePageHistory</a></b>: <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.TPageHistory.html">TPageHistory</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#Create">Create</a></b>(AOwner: TComponent); override;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>destructor <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#Destroy">Destroy</a></b>; override;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#New">New</a></b>(AController: IController): <a  href="MVCBr.PageView.IPageViews.html">IPageViews</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#Update">Update</a></b>: IModel; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetPageTabClass">GetPageTabClass</a></b>: TComponentClass; override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetPageContainerClass">GetPageContainerClass</a></b>: TComponentClass; override;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; ACaption: String): TObject; override;</code></td>
+</tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#NewTab">NewTab</a></b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AddView">AddView</a></b>(AView: IView; ABoforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; override;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#AddView">AddView</a></b>(const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; override;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -152,6 +243,14 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
 <td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#PageControl">PageControl</a></b>: TPageControl read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetPageControlEx">GetPageControlEx</a>
       write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetPageControlEx">SetPageControlEx</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#ShowCaptions">ShowCaptions</a></b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetShowCaptions">GetShowCaptions</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetShowCaptions">SetShowCaptions</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#ShowTabColor">ShowTabColor</a></b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetShowTabColor">GetShowTabColor</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetShowTabColor">SetShowTabColor</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
@@ -172,9 +271,34 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#OnQueryClose">OnQueryClose</a></b>: <a  href="MVCBr.VCL.PageView.html#TVCLpageViewOnQueryClose">TVCLpageViewOnQueryClose</a> read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FOnQueryClose">FOnQueryClose</a>
       write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetOnQueryClose">SetOnQueryClose</a>;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#InheritedDraw">InheritedDraw</a></b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FInheritedDraw">FInheritedDraw</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetInheritedDraw">SetInheritedDraw</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#UsePageHistory">UsePageHistory</a></b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FUsePageHistory">FUsePageHistory</a>
+      write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetUsePageHistory">SetUsePageHistory</a>;</code></td>
+</tr>
 </table>
 <h2 class="description">Descrição</h2>
 <h3 class="detail">Campos</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FOnDestroing"></a><code><b>FOnDestroing</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FPageHistory"></a><code><b>FPageHistory</b>: <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.TPageHistory.html">TPageHistory</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -207,11 +331,27 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FInheritedDraw"></a><code><b>FInheritedDraw</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FUsePageHistory"></a><code><b>FUsePageHistory</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <h3 class="detail">Métodos</h3>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>); override;</code></td>
+<td class="itemcode"><a name="Init"></a><code>procedure <b>Init</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>); override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -267,7 +407,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="DoFormCloseQuery"></a><code>procedure <b>DoFormCloseQuery</b>(Sender: TObject; var canClose: boolean);</code></td>
+<td class="itemcode"><a name="DoFormCloseQuery"></a><code>procedure <b>DoFormCloseQuery</b>(Sender: TObject; var CanClose: boolean);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -275,7 +415,95 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="TabsheetIndexOf"></a><code>function <b>TabsheetIndexOf</b>(tab: TObject): integer;</code></td>
+<td class="itemcode"><a name="TabsheetIndexOf"></a><code>function <b>TabsheetIndexOf</b>(tab: TObject): Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="DoTabClose"></a><code>procedure <b>DoTabClose</b>(Sender: TObject);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="IndexOfTab"></a><code>function <b>IndexOfTab</b>(Sender: TObject): Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetShowCaptions"></a><code>function <b>GetShowCaptions</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetShowCaptions"></a><code>procedure <b>SetShowCaptions</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetInheritedDraw"></a><code>procedure <b>SetInheritedDraw</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetShowTabColor"></a><code>function <b>GetShowTabColor</b>: boolean;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetShowTabColor"></a><code>procedure <b>SetShowTabColor</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="IndexOfTabByCaption"></a><code>function <b>IndexOfTabByCaption</b>(ACaption: string): Integer;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="SetUsePageHistory"></a><code>procedure <b>SetUsePageHistory</b>(const Value: boolean);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="ContainerName"></a><code>function <b>ContainerName</b>: String;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="GetContainer"></a><code>function <b>GetContainer</b>: TComponent;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -283,10 +511,12 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; var ACanClose: boolean); override;</code></td>
+<td class="itemcode"><a name="DoQueryClose"></a><code>Procedure <b>DoQueryClose</b>(const APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; var ACanClose: boolean); override;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+<p>
+procedure DoTabCanClose(Sender: TObject; var ACanClose: boolean);</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -306,6 +536,38 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="GetPageViewClass"></a><code>function <b>GetPageViewClass</b>: <a  href="MVCBr.PageView.html#TPageViewClass">TPageViewClass</a>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="InvokePageHistory"></a><code>function <b>InvokePageHistory</b>: <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.TPageHistory.html">TPageHistory</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(AOwner: TComponent); override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Destroy"></a><code>destructor <b>Destroy</b>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="New"></a><code>class function <b>New</b>(AController: IController): <a  href="MVCBr.PageView.IPageViews.html">IPageViews</a>;</code></td>
 </tr>
@@ -318,7 +580,12 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="itemcode"><a name="Update"></a><code>function <b>Update</b>: IModel; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -339,7 +606,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>): TObject; override;</code></td>
+<td class="itemcode"><a name="NewTab"></a><code>function <b>NewTab</b>(APageView: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; ACaption: String): TObject; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -347,7 +614,7 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; override;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView; ABoforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -355,7 +622,23 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload; override;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(const AController: TGuid; ABeforeShow: TProc&lt;IView&gt;) : <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -366,6 +649,22 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
 <td class="itemcode"><a name="PageControl"></a><code>property <b>PageControl</b>: TPageControl read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetPageControlEx">GetPageControlEx</a>
       write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetPageControlEx">SetPageControlEx</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ShowCaptions"></a><code>property <b>ShowCaptions</b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetShowCaptions">GetShowCaptions</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetShowCaptions">SetShowCaptions</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="ShowTabColor"></a><code>property <b>ShowTabColor</b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#GetShowTabColor">GetShowTabColor</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetShowTabColor">SetShowTabColor</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -401,6 +700,23 @@ Adaptador para associar a lista de View com o TPageControl ativo Cada View é mos
 <td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
 <td class="itemcode"><a name="OnQueryClose"></a><code>property <b>OnQueryClose</b>: <a  href="MVCBr.VCL.PageView.html#TVCLpageViewOnQueryClose">TVCLpageViewOnQueryClose</a> read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FOnQueryClose">FOnQueryClose</a>
       write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetOnQueryClose">SetOnQueryClose</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="InheritedDraw"></a><code>property <b>InheritedDraw</b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FInheritedDraw">FInheritedDraw</a> write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetInheritedDraw">SetInheritedDraw</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="UsePageHistory"></a><code>property <b>UsePageHistory</b>: boolean read <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#FUsePageHistory">FUsePageHistory</a>
+      write <a  href="MVCBr.VCL.PageView.TVCLPageViewManager.html#SetUsePageHistory">SetUsePageHistory</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

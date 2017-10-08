@@ -48,15 +48,19 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TFieldsHelper.html#JsonObject">JsonObject</a></b>(var AJSONObject: TJsonObject; ANulls: boolean = true): integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TFieldsHelper.html#JsonObject">JsonObject</a></b>(var AJSONObject: TJsonObject; ANulls: boolean = true; AFields: string = ''): integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TFieldsHelper.html#ToJson">ToJson</a></b>(ANulls: boolean = true): string;</code></td>
+<td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TFieldsHelper.html#ToJson">ToJson</a></b>(ANulls: boolean = true; AFields: string = ''): string;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="Data.DB.Helper.TFieldsHelper.html#FormJson">FormJson</a></b>(AJson: string);</code></td>
+<td class="itemcode"><code>function <b><a  href="Data.DB.Helper.TFieldsHelper.html#JsonValue">JsonValue</a></b>(AFields: string = ''): TJsonValue;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="Data.DB.Helper.TFieldsHelper.html#FillFromJson">FillFromJson</a></b>(AJson: string);</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -64,7 +68,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="JsonObject"></a><code>function <b>JsonObject</b>(var AJSONObject: TJsonObject; ANulls: boolean = true): integer;</code></td>
+<td class="itemcode"><a name="JsonObject"></a><code>function <b>JsonObject</b>(var AJSONObject: TJsonObject; ANulls: boolean = true; AFields: string = ''): integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -72,7 +76,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>(ANulls: boolean = true): string;</code></td>
+<td class="itemcode"><a name="ToJson"></a><code>function <b>ToJson</b>(ANulls: boolean = true; AFields: string = ''): string;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -80,7 +84,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FormJson"></a><code>procedure <b>FormJson</b>(AJson: string);</code></td>
+<td class="itemcode"><a name="JsonValue"></a><code>function <b>JsonValue</b>(AFields: string = ''): TJsonValue;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="FillFromJson"></a><code>procedure <b>FillFromJson</b>(AJson: string);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

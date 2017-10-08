@@ -84,7 +84,7 @@ procedure TDWebView.Button1Click(Sender: TObject);
 var cnt:IPageView;
 begin
    cnt := VCLPageViewManager1.AddView(IdBowserController);  // adiciona um novo formulario ao pagecontrol
-   (cnt.This.View.GetController as IdBowserController).AddPage(edit1.text);  // carrega o endereço da pagina digitado.
+   (cnt.This.Controller as IdBowserController).AddPage(edit1.text);  // carrega o endereço da pagina digitado.
 end;
 
 function TDWebView.Controller(const aController: IController): IView;
@@ -114,7 +114,7 @@ end;
 
 procedure TDWebView.SpeedButton2Click(Sender: TObject);
 begin
-   VCLPageViewManager1.AddForm(TConfig);
+   VCLPageViewManager1.AddForm(TConfig,nil);
 end;
 
 end.

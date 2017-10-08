@@ -39,7 +39,7 @@ MVCBr
 <a  href="MVCBr.Patterns.Builder.html">MVCBr.Patterns.Builder</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type TMVCBrBuilderLazyItem = class(<a class="normal" href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html">TMVCBrBuilderItem&lt;TValue,TValue&gt;</a>, <a class="normal" href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem&lt;TMVCBrBuilderObject&gt;</a>)</code></p>
+<code>type TMVCBrBuilderLazyItem = class(<a class="normal" href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html">TMVCBrBuilderItem&lt;TValue,TValue&gt;</a>, <a class="normal" href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem&lt;TObject&gt;</a>)</code></p>
 <h2 class="description">Descrição</h2>
 <p>
 Lazy Builder Item</p>
@@ -51,13 +51,17 @@ Lazy Builder Item</p>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#FClass">FClass</a></b>: <a  href="MVCBr.Patterns.Builder.html#TMVCBrBuilderObjectClass">TMVCBrBuilderObjectClass</a>;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#FDelegateTo">FDelegateTo</a></b>: TFunc&lt;TObject&gt;;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#FInstance">FInstance</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a>;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#FClass">FClass</a></b>: TClass;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#FInstance">FInstance</a></b>: TObject;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code><b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#FCreated">FCreated</a></b>: Boolean;</code></td>
 </tr>
@@ -66,7 +70,7 @@ Lazy Builder Item</p>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Invoke">Invoke</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Invoke">Invoke</a></b>: TObject;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -86,7 +90,7 @@ Lazy Builder Item</p>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Execute">Execute</a></b>(AParam: TValue) : <a  href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem</a>&lt;TValue, TValue&gt;; override;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Execute">Execute</a></b>(AParam: TValue): TValue; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -96,12 +100,16 @@ Lazy Builder Item</p>
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#IsCreated">IsCreated</a></b>: Boolean; virtual;</code></td>
 </tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#DelegateTo">DelegateTo</a></b>(AFunc: TFunc&lt;TObject&gt;): <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html">TMVCBrBuilderLazyItem</a>;</code></td>
+</tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Instance">Instance</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a> read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Invoke">Invoke</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Instance">Instance</a></b>: TObject read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Invoke">Invoke</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -109,7 +117,7 @@ Lazy Builder Item</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FClass"></a><code><b>FClass</b>: <a  href="MVCBr.Patterns.Builder.html#TMVCBrBuilderObjectClass">TMVCBrBuilderObjectClass</a>;</code></td>
+<td class="itemcode"><a name="FDelegateTo"></a><code><b>FDelegateTo</b>: TFunc&lt;TObject&gt;;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -117,7 +125,15 @@ Lazy Builder Item</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FInstance"></a><code><b>FInstance</b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a>;</code></td>
+<td class="itemcode"><a name="FClass"></a><code><b>FClass</b>: TClass;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FInstance"></a><code><b>FInstance</b>: TObject;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;<h6 class="description_section">Attributes</h6>
@@ -139,7 +155,7 @@ Lazy Builder Item</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
-<td class="itemcode"><a name="Invoke"></a><code>function <b>Invoke</b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a>;</code></td>
+<td class="itemcode"><a name="Invoke"></a><code>function <b>Invoke</b>: TObject;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -179,7 +195,7 @@ Lazy Builder Item</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(AParam: TValue) : <a  href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem</a>&lt;TValue, TValue&gt;; override;</code></td>
+<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(AParam: TValue): TValue; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;<h6 class="description_section">Attributes</h6>
@@ -205,11 +221,19 @@ Lazy Builder Item</p>
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="DelegateTo"></a><code>function <b>DelegateTo</b>(AFunc: TFunc&lt;TObject&gt;): <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html">TMVCBrBuilderLazyItem</a>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <h3 class="detail">Properties</h3>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Instance"></a><code>property <b>Instance</b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderObject.html">TMVCBrBuilderObject</a> read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Invoke">Invoke</a>;</code></td>
+<td class="itemcode"><a name="Instance"></a><code>property <b>Instance</b>: TObject read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderLazyItem.html#Invoke">Invoke</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

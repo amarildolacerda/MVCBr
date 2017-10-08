@@ -42,7 +42,8 @@ type
 implementation
 
 uses
-  ObjectsMappers, OData.Engine, System.DateUtils, ws.Common, ws.Datamodule,
+  MVCFramework.DataSet.Utils, OData.Engine, System.DateUtils, ws.Common,
+  ws.Datamodule,
   MVCFramework.Logger;
 
 procedure TODataProcedures.Index;
@@ -64,7 +65,7 @@ begin
     try
       JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
       try
-        CTX.Request.SegmentParam('proc', prm);
+        prm := CTX.Request.params['proc']; // SegmentParam('proc', prm);
         FProc.StoredProcName := prm;
         FProc.prepare;
         for i := 0 to FProc.paramCount - 1 do
@@ -75,8 +76,9 @@ begin
         end;
         FProc.Open;
 
-        arr := TjsonArray.create;
-        Mapper.DataSetToJSONArray(FProc, arr, False);
+        // arr := TjsonArray.create;
+        arr := TJsonObject.ParseJSONValue(FProc.AsJSONArray) As TjsonArray;
+        // Mapper.DataSetToJSONArray(FProc, arr, False);
         if assigned(arr) then
         begin
           JSONResponse.addPair('value', arr);
@@ -113,10 +115,10 @@ begin
     try
       JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
       try
-        CTX.Request.SegmentParam('proc', prm);
+        prm := CTX.Request.params['proc']; // SegmentParam('proc', prm);
         FProc.StoredProcName := prm;
         FProc.prepare;
-        CTX.Request.SegmentParam('p1', p1);
+        p1 := CTX.Request.params['p1']; // SegmentParam('p1', p1);
         FProc.params[0].value := p1;
         for i := 0 to FProc.paramCount - 1 do
         begin
@@ -126,8 +128,9 @@ begin
         end;
         FProc.Open;
 
-        arr := TjsonArray.create;
-        Mapper.DataSetToJSONArray(FProc, arr, False);
+        // arr := TjsonArray.create;
+        // Mapper.DataSetToJSONArray(FProc, arr, False);
+        arr := TJsonObject.ParseJSONValue(FProc.AsJSONArray) as TjsonArray;
         if assigned(arr) then
         begin
           JSONResponse.addPair('value', arr);

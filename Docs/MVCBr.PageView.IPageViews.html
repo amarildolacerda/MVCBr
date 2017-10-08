@@ -61,39 +61,43 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#GetItems">GetItems</a></b>(idx: Integer): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#GetItems">GetItems</a></b>(idx: integer): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.IPageViews.html#SetItems">SetItems</a></b>(idx: Integer; const Value: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.PageView.IPageViews.html#SetItems">SetItems</a></b>(idx: integer; const Value: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>);</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#Count">Count</a></b>: Integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#Count">Count</a></b>: integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#FindViewByID">FindViewByID</a></b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#FindViewByID">FindViewByID</a></b>(Const AID: String): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#AddView">AddView</a></b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#AddView">AddView</a></b>(AView: IView; AProc: TProc&lt;IView&gt;): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#FindView">FindView</a></b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#AddView">AddView</a></b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#FindView">FindView</a></b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#FindView">FindView</a></b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#IndexOf">IndexOf</a></b>(Const AGuid: TGuid): Integer;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#FindView">FindView</a></b>(Const AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.PageView.IPageViews.html#IndexOf">IndexOf</a></b>(Const AGuid: TGuid): integer;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
@@ -105,7 +109,7 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.IPageViews.html#Items">Items</a></b>[idx:Integer]: <a  href="MVCBr.PageView.IPageView.html">IPageView</a> read <a  href="MVCBr.PageView.IPageViews.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.IPageViews.html#SetItems">SetItems</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.PageView.IPageViews.html#Items">Items</a></b>[idx:integer]: <a  href="MVCBr.PageView.TPageView.html">TPageView</a> read <a  href="MVCBr.PageView.IPageViews.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.IPageViews.html#SetItems">SetItems</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -129,7 +133,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: Integer): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: integer): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -137,7 +141,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: Integer; const Value: <a  href="MVCBr.PageView.IPageView.html">IPageView</a>);</code></td>
+<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: integer; const Value: <a  href="MVCBr.PageView.TPageView.html">TPageView</a>);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -145,7 +149,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Count"></a><code>function <b>Count</b>: Integer;</code></td>
+<td class="itemcode"><a name="Count"></a><code>function <b>Count</b>: integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -153,7 +157,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindViewByID"></a><code>function <b>FindViewByID</b>(Const AID: String): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>;</code></td>
+<td class="itemcode"><a name="FindViewByID"></a><code>function <b>FindViewByID</b>(Const AID: String): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -161,7 +165,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -169,7 +173,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(AView: IView; AProc: TProc&lt;IView&gt;): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -177,7 +181,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><a name="AddView"></a><code>function <b>AddView</b>(Const AController: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -185,7 +189,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AView: IView): <a  href="MVCBr.PageView.IPageView.html">IPageView</a>; overload;</code></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AGuid: TGuid): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -193,7 +197,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="IndexOf"></a><code>function <b>IndexOf</b>(Const AGuid: TGuid): Integer;</code></td>
+<td class="itemcode"><a name="FindView"></a><code>function <b>FindView</b>(Const AView: IView): <a  href="MVCBr.PageView.TPageView.html">TPageView</a>; overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="IndexOf"></a><code>function <b>IndexOf</b>(Const AGuid: TGuid): integer;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -211,7 +223,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:Integer]: <a  href="MVCBr.PageView.IPageView.html">IPageView</a> read <a  href="MVCBr.PageView.IPageViews.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.IPageViews.html#SetItems">SetItems</a>;</code></td>
+<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:integer]: <a  href="MVCBr.PageView.TPageView.html">TPageView</a> read <a  href="MVCBr.PageView.IPageViews.html#GetItems">GetItems</a> write <a  href="MVCBr.PageView.IPageViews.html#SetItems">SetItems</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

@@ -16,9 +16,6 @@ uses
   MVCBr.FrameView,
   MVCBr.VCL.PageView,
   MVCBr.ModuleModel,
-  MVCBr.HTTPRestClient,
-  MVCBr.IdHTTPRestClient,
-  MVCBr.HTTPRestClientEditor,
   MVCBr.ObjectConfigList;
 
 
@@ -31,9 +28,6 @@ begin
   RegisterCustomModule(TFrameFactory, TCustomModule);
 
   RegisterComponents(CMVCBrComponentPalletName, [TVCLPageViewManager]);
-
-  RegisterComponents(CMVCBrComponentPalletName, [THTTPRestClient,TIdHTTPRestClient]);
-  RegisterComponentEditor(THTTPRestClient, THTTPRestClientCompEditor);
 
   RegisterComponents(CMVCBrComponentPalletName,
     [TObjectConfigModel, TDBObjectConfigModel]);

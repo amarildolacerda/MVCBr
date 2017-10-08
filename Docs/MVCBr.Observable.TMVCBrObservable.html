@@ -33,7 +33,7 @@ MVCBr
 <a name="TMVCBrObservable"></a><h1 class="cio">Classe TMVCBrObservable</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td><a class="section" href="#PasDoc-InternalCRs">Internal Classes and Records</a></td><td><a class="section" href="#PasDoc-Fields">Campos</a></td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="MVCBr.Observable.html">MVCBr.Observable</a></p>
@@ -46,22 +46,33 @@ MVCBr
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
 <ul class="hierarchy"><li class="ancestor">TInterfacedObject</li>
 <li class="thisitem">TMVCBrObservable</li></ul><h2 class="overview">Visão Geral</h2>
+<a name="PasDoc-InternalCRs"></a><h3 class="summary">Internal Classes and Records</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObservable.TObservableList.html">TObservableList</a></b> = class(TObjectList&lt;TMVCBrObserverItemAbstract&gt;)</code></td>
+</tr>
+</table>
 <a name="PasDoc-Fields"></a><h3 class="summary">Campos</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObservable.html#FSubscribers">FSubscribers</a></b>: TThreadList&lt;<a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>&gt;;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObservable.html#FLock">FLock</a></b>: TObject;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObservable.html#FSubscribers">FSubscribers</a></b>: <a  href="MVCBr.Observable.TMVCBrObservable.TObservableList.html">TObservableList</a>;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#GetItems">GetItems</a></b>(idx: integer): <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#GetItems">GetItems</a></b>(idx: integer): TMVCBrObserverItemAbstract;</code></td>
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#SetItems">SetItems</a></b>(idx: integer; const Value: <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>);</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#SetItems">SetItems</a></b>(idx: integer; const Value: TMVCBrObserverItemAbstract);</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
@@ -77,71 +88,79 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#LockList">LockList</a></b>: TList&lt;<a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>&gt;; overload;</code></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Clear">Clear</a></b>;</code></td>
 </tr>
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#LockList">LockList</a></b>: <a  href="MVCBr.Observable.TMVCBrObservable.TObservableList.html">TObservableList</a>; overload;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#UnlockList">UnlockList</a></b>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#DefaultContainer">DefaultContainer</a></b>: <a  href="MVCBr.Observable.TMVCBrObservable.html">TMVCBrObservable</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Count">Count</a></b>: integer;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#This">This</a></b>: TObject;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#ThisAs">ThisAs</a></b>: <a  href="MVCBr.Observable.TMVCBrObservable.html">TMVCBrObservable</a>;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Subscribe">Subscribe</a></b>(AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>): <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>; overload;</code></td>
 </tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#UnSubscribe">UnSubscribe</a></b>(AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
-</tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#UnSubscribe">UnSubscribe</a></b>(AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>; AName: String = ''); overload;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(AJson: TJsonValue); overload;</code></td>
 </tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(const AName: string; AJson: TJsonValue); overload;</code></td>
-</tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(const AName: string; AJson: TJsonValue; AOwned: boolean = true); overload;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(const AName: string; AMensagem: String); overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(const AName: string; ASubject: string; AMensagem: String); overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(const AName: string; ASubject: string; AMensagem: String; AData: string); overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Send">Send</a></b>(const AName: string); overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Register">Register</a></b>(const AName: string; AObserver: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>) : <a  href="MVCBr.Observable.html#IMVCBrObservable">IMVCBrObservable</a>; overload;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Register">Register</a></b>(AObserver: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>); overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Register">Register</a></b>(AName: string; AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Register">Register</a></b>(AOwner: TObject; AName: string; AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -163,12 +182,36 @@ MVCBr
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Unregister">Unregister</a></b>(const AName: string); overload;</code></td>
 </tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Unregister">Unregister</a></b>(AOwner: TObject); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Unregister">Unregister</a></b>(AOwner: TObject; AName: string); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Notify">Notify</a></b>(AName: string; AValue: TJsonValue);</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Subscribe">Subscribe</a></b>(AOwner: TObject; AName: string; AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#UnSubscribe">UnSubscribe</a></b>(AOwnder: TObject; AName: String = ''); overload;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>class procedure <b><a  href="MVCBr.Observable.TMVCBrObservable.html#RequestInfo">RequestInfo</a></b>(AName: string; var AValue: TJsonValue); virtual;</code></td>
+</tr>
 </table>
 <a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Items">Items</a></b>[idx:integer]: <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a> read <a  href="MVCBr.Observable.TMVCBrObservable.html#GetItems">GetItems</a>
+<td class="itemcode"><code>property <b><a  href="MVCBr.Observable.TMVCBrObservable.html#Items">Items</a></b>[idx:integer]: TMVCBrObserverItemAbstract read <a  href="MVCBr.Observable.TMVCBrObservable.html#GetItems">GetItems</a>
       write <a  href="MVCBr.Observable.TMVCBrObservable.html#SetItems">SetItems</a>;</code></td>
 </tr>
 </table>
@@ -177,7 +220,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FSubscribers"></a><code><b>FSubscribers</b>: TThreadList&lt;<a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>&gt;;</code></td>
+<td class="itemcode"><a name="FLock"></a><code><b>FLock</b>: TObject;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
+<td class="itemcode"><a name="FSubscribers"></a><code><b>FSubscribers</b>: <a  href="MVCBr.Observable.TMVCBrObservable.TObservableList.html">TObservableList</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -186,7 +237,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: integer): <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>;</code></td>
+<td class="itemcode"><a name="GetItems"></a><code>function <b>GetItems</b>(idx: integer): TMVCBrObserverItemAbstract;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -194,7 +245,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: integer; const Value: <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>);</code></td>
+<td class="itemcode"><a name="SetItems"></a><code>procedure <b>SetItems</b>(idx: integer; const Value: TMVCBrObserverItemAbstract);</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -226,7 +277,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="LockList"></a><code>function <b>LockList</b>: TList&lt;<a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>&gt;; overload;</code></td>
+<td class="itemcode"><a name="Clear"></a><code>procedure <b>Clear</b>;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="LockList"></a><code>function <b>LockList</b>: <a  href="MVCBr.Observable.TMVCBrObservable.TObservableList.html">TObservableList</a>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -277,12 +336,17 @@ MVCBr
 <td class="itemcode"><a name="Subscribe"></a><code>function <b>Subscribe</b>(AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>): <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a>; overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="UnSubscribe"></a><code>procedure <b>UnSubscribe</b>(AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
+<td class="itemcode"><a name="UnSubscribe"></a><code>procedure <b>UnSubscribe</b>(AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>; AName: String = ''); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -298,7 +362,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Send"></a><code>procedure <b>Send</b>(const AName: string; AJson: TJsonValue); overload;</code></td>
+<td class="itemcode"><a name="Send"></a><code>procedure <b>Send</b>(const AName: string; AJson: TJsonValue; AOwned: boolean = true); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -354,12 +418,25 @@ MVCBr
 <td class="itemcode"><a name="Register"></a><code>procedure <b>Register</b>(AObserver: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>); overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Register"></a><code>procedure <b>Register</b>(AName: string; AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Register"></a><code>procedure <b>Register</b>(AOwner: TObject; AName: string; AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -386,7 +463,12 @@ MVCBr
 <td class="itemcode"><a name="Unregister"></a><code>procedure <b>Unregister</b>(const AName: string; AObserver: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>); overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -394,7 +476,12 @@ MVCBr
 <td class="itemcode"><a name="Unregister"></a><code>procedure <b>Unregister</b>(AObserver: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>); overload;</code></td>
 </tr>
 <tr><td colspan="2">
-&nbsp;</td></tr>
+&nbsp;<h6 class="description_section">Attributes</h6>
+<dl class="attributes">
+  <dt><code>weak</code></dt>
+  <dd></dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -404,11 +491,59 @@ MVCBr
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Unregister"></a><code>procedure <b>Unregister</b>(AOwner: TObject); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Unregister"></a><code>procedure <b>Unregister</b>(AOwner: TObject; AName: string); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Notify"></a><code>class procedure <b>Notify</b>(AName: string; AValue: TJsonValue);</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Subscribe"></a><code>class procedure <b>Subscribe</b>(AOwner: TObject; AName: string; AProc: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="UnSubscribe"></a><code>class procedure <b>UnSubscribe</b>(AOwnder: TObject; AName: String = ''); overload;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="RequestInfo"></a><code>class procedure <b>RequestInfo</b>(AName: string; var AValue: TJsonValue); virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
 <h3 class="detail">Properties</h3>
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:integer]: <a  href="MVCBr.Observable.html#IMVCBrObserverItem">IMVCBrObserverItem</a> read <a  href="MVCBr.Observable.TMVCBrObservable.html#GetItems">GetItems</a>
+<td class="itemcode"><a name="Items"></a><code>property <b>Items</b>[idx:integer]: TMVCBrObserverItemAbstract read <a  href="MVCBr.Observable.TMVCBrObservable.html#GetItems">GetItems</a>
       write <a  href="MVCBr.Observable.TMVCBrObservable.html#SetItems">SetItems</a>;</code></td>
 </tr>
 <tr><td colspan="2">

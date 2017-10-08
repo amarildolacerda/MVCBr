@@ -63,7 +63,7 @@ type
 {$IFDEF DMVC2}
 {$ELSE}
 
-  TMVCControllerClass = TMVCControllerClazz; { class of TMVCController }
+  //TMVCControllerClass = TMVCControllerClazz; { class of TMVCController }
 {$ENDIF}
 function CreateMVCEngine(ASender: TWebModule): TMVCEngine;
 

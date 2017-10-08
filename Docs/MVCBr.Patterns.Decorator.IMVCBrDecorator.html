@@ -33,17 +33,17 @@ MVCBr
 <a name="IMVCBrDecorator"></a><h1 class="cio">Interface IMVCBrDecorator</h1>
 <table class="sections wide_list">
 <tr>
-<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td>Properties</td></tr></table>
+<td><a class="section" href="#PasDoc-Description">Descrição</a></td><td><a class="section" href="#PasDoc-Hierarchy">Hierarquia</a></td><td>Campos</td><td><a class="section" href="#PasDoc-Methods">Métodos</a></td><td><a class="section" href="#PasDoc-Properties">Properties</a></td></tr></table>
 <a name="PasDoc-Description"></a><h2 class="unit">Unit</h2>
 <p class="unitlink">
 <a  href="MVCBr.Patterns.Decorator.html">MVCBr.Patterns.Decorator</a></p>
 <h2 class="declaration">Declaração</h2>
 <p class="declaration">
-<code>type IMVCBrDecorator = interface(IInterface)</code></p>
+<code>type IMVCBrDecorator&lt;T&gt; = interface(IInterface)</code></p>
 <h2 class="description">Descrição</h2>
 <h6 class="description_section">Attributes</h6>
 <dl class="attributes">
-  <dt>GUID['{09068FF3-F838-4A09-BFDE-6E71174AF130}']</dt>
+  <dt>GUID['{C7232C1A-A389-45B8-B760-0916E5B645A2}']</dt>
   <dd></dd>
 </dl>
 <a name="PasDoc-Hierarchy"></a><h2 class="hierarchy">Hierarquia</h2>
@@ -53,7 +53,18 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html#This">This</a></b>:TObject;</code></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html#Invoke">Invoke</a></b>: T;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html#This">This</a></b>: TObject;</code></td>
+</tr>
+</table>
+<a name="PasDoc-Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html#Decorate">Decorate</a></b>: T read <a  href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html#Invoke">Invoke</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -61,7 +72,24 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="This"></a><code>function <b>This</b>:TObject;</code></td>
+<td class="itemcode"><a name="Invoke"></a><code>function <b>Invoke</b>: T;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="This"></a><code>function <b>This</b>: TObject;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Decorate"></a><code>property <b>Decorate</b>: T read <a  href="MVCBr.Patterns.Decorator.IMVCBrDecorator.html#Invoke">Invoke</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

@@ -54,11 +54,11 @@ MVCBr
 </tr>
 <tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#FSubscribeProc">FSubscribeProc</a></b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>;</code></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#FTopic">FTopic</a></b>: string;</code></td>
 </tr>
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#FTopic">FTopic</a></b>: string;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code><b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#FSubscribeProc">FSubscribeProc</a></b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>;</code></td>
 </tr>
 </table>
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
@@ -73,19 +73,19 @@ MVCBr
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#GetSubscribeProc">GetSubscribeProc</a></b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>; override;</code></td>
-</tr>
-<tr class="list2">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#SetSubscribeProc">SetSubscribeProc</a></b>(const Value: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#SetObserver">SetObserver</a></b>(const Value: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>); override;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#GetObserver">GetObserver</a></b>: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>; override;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Observable.TMVCBrObserverItem.html#GetSubscribeProc">GetSubscribeProc</a></b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>; override;</code></td>
 </tr>
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
@@ -134,15 +134,15 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FSubscribeProc"></a><code><b>FSubscribeProc</b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>;</code></td>
+<td class="itemcode"><a name="FTopic"></a><code><b>FTopic</b>: string;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="FTopic"></a><code><b>FTopic</b>: string;</code></td>
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="FSubscribeProc"></a><code><b>FSubscribeProc</b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>
@@ -167,14 +167,6 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
-<td class="itemcode"><a name="GetSubscribeProc"></a><code>function <b>GetSubscribeProc</b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>; override;</code></td>
-</tr>
-<tr><td colspan="2">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="SetSubscribeProc"></a><code>procedure <b>SetSubscribeProc</b>(const Value: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>); override;</code></td>
 </tr>
 <tr><td colspan="2">
@@ -192,6 +184,14 @@ MVCBr
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="private.gif" alt="Private" title="Private"></a></td>
 <td class="itemcode"><a name="GetObserver"></a><code>function <b>GetObserver</b>: <a  href="MVCBr.Observable.html#IMVCBrObserver">IMVCBrObserver</a>; override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="GetSubscribeProc"></a><code>function <b>GetSubscribeProc</b>: <a  href="MVCBr.Observable.html#TMVCBrObserverProc">TMVCBrObserverProc</a>; override;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

@@ -58,6 +58,7 @@
         <DCC_F>false</DCC_F>
         <DCC_K>false</DCC_K>
         <DCC_UnitSearchPath>.\WSConfig;..\oData;..\helpers;..\dmvc\sources;..\DMVC\lib\delphistompclient;..\DMVC\lib\loggerpro;..\DMVC\lib\dmustache;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_Define>ODATA;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>

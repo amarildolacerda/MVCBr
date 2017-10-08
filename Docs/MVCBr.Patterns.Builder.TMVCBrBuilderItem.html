@@ -66,58 +66,62 @@ MVCBr
 <a name="PasDoc-Methods"></a><h3 class="summary">Métodos</h3>
 <table class="summary wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#GetInstance">GetInstance</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt;; virtual;</code></td>
+</tr>
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>constructor <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Create">Create</a></b>(ABuilder: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt;; ACommand: TValue; ADelegate: TFunc&lt;T, TResult&gt;); overload; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>destructor <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Destroy">Destroy</a></b>; override;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#New">New</a></b>(ABuilder: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt;; ACommand: TValue; ADelegate: TFunc&lt;T, TResult&gt;): <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html">TMVCBrBuilderItem</a>&lt;T, TResult&gt;; overload;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>class function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#New">New</a></b>(ABuilder: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt;; ACommand: TValue) : <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html">TMVCBrBuilderItem</a>&lt;T, TResult&gt;; overload;</code></td>
 </tr>
-<tr class="list">
-<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Execute">Execute</a></b>(AParam: T): <a  href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem</a>&lt;T, TResult&gt;; virtual;</code></td>
-</tr>
 <tr class="list2">
+<td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Execute">Execute</a></b>(AParam: T): TResult; virtual;</code></td>
+</tr>
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Response">Response</a></b>: TResult; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Delegate">Delegate</a></b>: TFunc&lt;T, TResult&gt;; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Command">Command</a></b>: TValue; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#SetDelegate">SetDelegate</a></b>(AValue: TFunc&lt;T, TResult&gt;); virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#Release">Release</a></b>; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#This">This</a></b>: TObject; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#ThisAs">ThisAs</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html">TMVCBrBuilderItem</a>&lt;T, TResult&gt;; virtual;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>function <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#LockList">LockList</a></b>: TList&lt;<a  href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem</a>&lt;T, TResult&gt;&gt;; virtual;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><code>procedure <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#UnlockList">UnlockList</a></b>;</code></td>
 </tr>
@@ -126,7 +130,7 @@ MVCBr
 <table class="summary wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><code>property <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#DefaultBuilder">DefaultBuilder</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt; read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#FBuilder">FBuilder</a>;</code></td>
+<td class="itemcode"><code>property <b><a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#DefaultBuilder">DefaultBuilder</a></b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt; read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#GetInstance">GetInstance</a>;</code></td>
 </tr>
 </table>
 <h2 class="description">Descrição</h2>
@@ -171,6 +175,14 @@ MVCBr
 <h3 class="detail">Métodos</h3>
 <table class="detail wide_list">
 <tr class="list">
+<td class="visibility"><a  href="legend.html"><img  src="protected.gif" alt="Protected" title="Protected"></a></td>
+<td class="itemcode"><a name="GetInstance"></a><code>function <b>GetInstance</b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt;; virtual;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
 <td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(ABuilder: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt;; ACommand: TValue; ADelegate: TFunc&lt;T, TResult&gt;); overload; virtual;</code></td>
 </tr>
@@ -204,7 +216,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(AParam: T): <a  href="MVCBr.Patterns.Builder.IMVCBrBuilderItem.html">IMVCBrBuilderItem</a>&lt;T, TResult&gt;; virtual;</code></td>
+<td class="itemcode"><a name="Execute"></a><code>function <b>Execute</b>(AParam: T): TResult; virtual;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;<h6 class="description_section">Attributes</h6>
@@ -290,7 +302,7 @@ MVCBr
 <table class="detail wide_list">
 <tr class="list">
 <td class="visibility"><a  href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
-<td class="itemcode"><a name="DefaultBuilder"></a><code>property <b>DefaultBuilder</b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt; read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#FBuilder">FBuilder</a>;</code></td>
+<td class="itemcode"><a name="DefaultBuilder"></a><code>property <b>DefaultBuilder</b>: <a  href="MVCBr.Patterns.Builder.TMVCBrBuilder.html">TMVCBrBuilder</a>&lt;T, TResult&gt; read <a  href="MVCBr.Patterns.Builder.TMVCBrBuilderItem.html#GetInstance">GetInstance</a>;</code></td>
 </tr>
 <tr><td colspan="2">
 &nbsp;</td></tr>

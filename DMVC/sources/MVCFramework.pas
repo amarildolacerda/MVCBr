@@ -90,6 +90,7 @@ uses
 type
 
   TSessionData = TDictionary<string, string>;
+  TMVCCustomData = TSessionData;
   TMVCBaseViewEngine = class;
   TMVCViewEngineClass = class of TMVCBaseViewEngine;
 
@@ -700,7 +701,7 @@ type
       const AContentType: string); virtual;
     destructor Destroy; override;
 
-    procedure Execute(const ViewName: String); virtual; abstract;
+    procedure Execute(const ViewName: string); virtual; abstract;
 
     property ViewName: string read FViewName;
     property WebContext: TWebContext read FWebContext;
@@ -722,6 +723,7 @@ uses
 
 var
   _IsShuttingDown: Int64 = 0;
+  _MVCGlobalActionParamsCache: TMVCStringObjectDictionary<TMVCActionParamCacheItem> = nil;
 
 function IsShuttingDown: Boolean;
 begin
@@ -797,15 +799,9 @@ end;
 function TMVCWebRequest.Body: string;
 var
   Encoding: TEncoding;
-  Buffer: TArray<Byte>;
-  I: Integer;
-
   {$IFNDEF BERLINORBETTER}
-
   BufferOut: TArray<Byte>;
-
   {$ENDIF}
-
 begin
   { TODO -oEzequiel -cRefactoring : Refactoring the method TMVCWebRequest.Body }
   if (FBody = EmptyStr) then
@@ -814,17 +810,21 @@ begin
     try
 
       {$IFDEF BERLINORBETTER}
-
+      FWebRequest.ReadTotalContent; //Otherwise ISAPI Raises "Empty JSON BODY"
       if (FCharset = EmptyStr) then
       begin
-        SetLength(Buffer, 10);
-        for I := 0 to 9 do
-          Buffer[I] := FWebRequest.RawContent[I];
-        TEncoding.GetBufferEncoding(Buffer, Encoding, TEncoding.Default);
-        SetLength(Buffer, 0);
+        TEncoding.GetBufferEncoding(FWebRequest.RawContent, Encoding, TEncoding.Default);
+//        SetLength(Buffer, 10);
+//        for I := 0 to 9 do
+//          Buffer[I] := FWebRequest.RawContent[I];
+//        TEncoding.GetBufferEncoding(Buffer, Encoding, TEncoding.Default);
+//        SetLength(Buffer, 0);
       end
       else
+      begin
         Encoding := TEncoding.GetEncoding(FCharset);
+      end;
+
       FBody := Encoding.GetString(FWebRequest.RawContent);
 
       {$ELSE}
@@ -833,23 +833,25 @@ begin
       FWebRequest.ReadClient(Buffer[0], FWebRequest.ContentLength);
       if (FCharset = EmptyStr) then
       begin
-        SetLength(BufferOut, 10);
-        for I := 0 to 9 do
-        begin
-          BufferOut[I] := Buffer[I];
-        end;
-        TEncoding.GetBufferEncoding(BufferOut, Encoding, TEncoding.Default);
-        SetLength(BufferOut, 0);
+        TEncoding.GetBufferEncoding(Buffer, Encoding, TEncoding.Default);
+//        SetLength(BufferOut, 10);
+//        for I := 0 to 9 do
+//        begin
+//          BufferOut[I] := Buffer[I];
+//        end;
+//        TEncoding.GetBufferEncoding(BufferOut, Encoding, TEncoding.Default);
+//        SetLength(BufferOut, 0);
       end
       else
+      begin
         Encoding := TEncoding.GetEncoding(FCharset);
+      end;
       FBody := Encoding.GetString(Buffer);
 
       {$ENDIF}
 
     finally
-      if Assigned(Encoding) then
-        Encoding.Free;
+      Encoding.Free;
     end;
   end;
   Result := FBody;
@@ -1168,11 +1170,7 @@ end;
 
 procedure TMVCWebResponse.Flush;
 begin
-  try
-    FWebResponse.SendResponse;
-  except
-    { TODO -oEzequiel -cException : Check why this exception is being eaten }
-  end;
+  FWebResponse.SendResponse;
 end;
 
 function TMVCWebResponse.GetContent: string;
@@ -1578,7 +1576,7 @@ begin
   Config[TMVCConfigKey.DefaultContentCharset] := TMVCConstants.DEFAULT_CONTENT_CHARSET;
   Config[TMVCConfigKey.DefaultViewFileExtension] := 'html';
   Config[TMVCConfigKey.ViewPath] := 'templates';
-  Config[TMVCConfigKey.ISAPIPath] := '';
+  Config[TMVCConfigKey.PathPrefix] := '';
   Config[TMVCConfigKey.StompServer] := 'localhost';
   Config[TMVCConfigKey.StompServerPort] := '61613';
   Config[TMVCConfigKey.StompUsername] := 'guest';
@@ -1677,7 +1675,7 @@ begin
       else
       begin
         LHandled := False;
-        LRouter := TMVCRouter.Create(FConfig);
+        LRouter := TMVCRouter.Create(FConfig, _MVCGlobalActionParamsCache);
         try
           ExecuteBeforeRoutingMiddleware(LContext, LHandled);
           if not LHandled then
@@ -2093,11 +2091,14 @@ begin
   Cookie := AContext.Response.Cookies.Add;
   Cookie.Name := TMVCConstants.SESSION_TOKEN_NAME;
   Cookie.Value := ASessionId;
-  SessionTimeout := StrToIntDef(AContext.Config[TMVCConfigKey.SessionTimeout], 0);
+  if not TryStrToInt(AContext.Config[TMVCConfigKey.SessionTimeout], SessionTimeout) then
+    raise EMVCException.Create('[Config::Session Timeout] is not a valid integer');
+
   if SessionTimeout = 0 then
-    Cookie.Expires := 0
+    Cookie.Expires := 0 // session cookie
   else
     Cookie.Expires := Now + OneMinute * SessionTimeout;
+
   Cookie.Path := '/';
   Result := ASessionId;
 end;
@@ -2838,5 +2839,11 @@ end;
 initialization
 
 _IsShuttingDown := 0;
+
+_MVCGlobalActionParamsCache := TMVCStringObjectDictionary<TMVCActionParamCacheItem>.Create;
+
+finalization
+
+FreeAndNil(_MVCGlobalActionParamsCache);
 
 end.

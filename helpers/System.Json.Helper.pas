@@ -68,6 +68,7 @@ type
     function JsonValue: TJsonValue;
     function isNull: Boolean;
     function AsArray: TJsonArray;
+    function addPair(AKey:String; AValue: TGuid): TJsonObject; overload;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
@@ -113,6 +114,7 @@ type
     function JsonValue: TJsonValue;
     function AsArray: TJsonArray;
     function isNull: Boolean;
+    function addPair(AKey:String; AValue: TGuid): TJsonObject; overload;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
@@ -1348,6 +1350,13 @@ begin
   result := self.addPair(AKey, ISODateTimeToString(AValue));
 end;
 
+function TInterfacedJSON.addPair(AKey:String; AValue: TGuid): TJsonObject;
+var sGuid:String;
+begin
+  sGuid := GuidToString(AValue);
+  result := self.addPair(AKey, sGuid );
+end;
+
 function TInterfacedJSON.addPair(AKey: string; AValue: double): TJsonObject;
 begin
   result := self.addPair(AKey, TJSONNumber.create(AValue));
@@ -1442,7 +1451,7 @@ end;
 
 procedure TInterfacedJSON.LoadFromFile(AFileName: String);
 begin
-   JSONObject.LoadFromFile(AFileName);
+  JSONObject.LoadFromFile(AFileName);
 end;
 
 class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonPair): TJsonType;

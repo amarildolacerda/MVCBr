@@ -1,3 +1,7 @@
+08/10/2017 - AL
+   = Suporte ao DMVC RC8
+   +- alteração BPL para retirar dependencias
+   
 27/09/2017 - AL
    + adicionado parametro  no MVCBr.MongoModel
    + adicionado mapeamente de objetos para carga interna do MVCBr.MongoModel
