@@ -20,15 +20,37 @@ type
     function GetDataField: String;
     function GetDatasource: TDatasource;
   public
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Dataset:TDataset;
+    function Dataset: TDataset;
     property DataField: String read GetDataField write SetDataField;
     property Datasource: TDatasource read GetDatasource write SetDatasource;
     function DelegateTo(ADelegate: TMVCBrDataControlProc): TMVCBrDataControl;
   end;
 
+  TDatasetNotify = procedure(ADataset: TDataset) of object;
+
+  TMVCBrFieldDataSource = class(TMVCBrDataControl)
+  private
+    FFieldChange: TDatasetNotify;
+    procedure SetFieldChange(const Value: TDatasetNotify);
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property DataField;
+    property Datasource;
+    property OnFieldChange: TDatasetNotify read FFieldChange
+      write SetFieldChange;
+  end;
+
+procedure register;
+
 implementation
+
+procedure register;
+begin
+  RegisterComponents('MVCBr', [TMVCBrFieldDataSource]);
+end;
 
 { TMVCBrDataControl<T> }
 
@@ -39,7 +61,7 @@ end;
 
 constructor TMVCBrDataControl.Create(AOwner: TComponent);
 begin
-  inherited create(AOwner);
+  inherited Create(AOwner);
   FDataLink := TFieldDataLink.Create;
   FDataLink.OnDataChange := DataChange;
 end;
@@ -48,13 +70,13 @@ procedure TMVCBrDataControl.DataChange(Sender: TObject);
 begin
   if assigned(FDataLink.Field) and assigned(FDelegateTo) then
   begin
-    FDelegateTo(FDataLink.DataSet);
+    FDelegateTo(FDataLink.Dataset);
   end;
 end;
 
 function TMVCBrDataControl.Dataset: TDataset;
 begin
-   result := FDataLink.DataSet;
+  result := FDataLink.Dataset;
 end;
 
 function TMVCBrDataControl.DelegateTo(ADelegate: TMVCBrDataControlProc)
@@ -68,7 +90,7 @@ destructor TMVCBrDataControl.Destroy;
 begin
   FDataLink.OnDataChange := nil;
   FDataLink.FieldName := '';
-  FDataLink.DataSource := nil;
+  FDataLink.Datasource := nil;
   FDataLink.Free;
   inherited;
 end;
@@ -86,6 +108,24 @@ end;
 procedure TMVCBrDataControl.SetDataField(const Value: String);
 begin
   FDataLink.FieldName := Value;
+end;
+
+{ TMVCBrFieldDataSource }
+
+constructor TMVCBrFieldDataSource.Create(AOwner: TComponent);
+begin
+  inherited;
+  DelegateTo(
+    procedure(ds: TDataset)
+    begin
+      if assigned(FFieldChange) then
+        FFieldChange(ds);
+    end);
+end;
+
+procedure TMVCBrFieldDataSource.SetFieldChange(const Value: TDatasetNotify);
+begin
+  FFieldChange := Value;
 end;
 
 end.

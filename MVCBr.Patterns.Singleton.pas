@@ -1,6 +1,7 @@
 /// <summary>
 /// MVCBr.Patterns.Singleton is an implement to wrapper singleton for generic classes
 /// </summary>
+/// <auth>amarildo lacerda</auth>
 unit MVCBr.Patterns.Singleton;
 
 interface
@@ -22,6 +23,7 @@ type
   private
     FOwned: boolean;
     FClass: TClass;
+  protected
     constructor InternalCreate;
     function Invoke: T;
   public
@@ -29,9 +31,9 @@ type
     constructor Create;
     destructor Destroy; override;
     /// <summay> Create New instance of singleted class </summary>
-    class function New(): TMVCBrSingleton<T>; overload;
+    class function New(): IMVCBrSingleton<T>;overload;
     class function New(AObject: T; AOwned: boolean = true)
-      : TMVCBrSingleton<T>; overload;
+      : IMVCBrSingleton<T>;overload;
     /// <summary> Default check if instance exists, is not create it..</summary>
     /// <returns>instance of class</returns>
     function Default: T;
@@ -84,18 +86,20 @@ begin
   result := FInstance;
 end;
 
-class function TMVCBrSingleton<T>.New: TMVCBrSingleton<T>;
+class function TMVCBrSingleton<T>.New: IMVCBrSingleton<T>;
 begin
   result := New(nil, true);
 end;
 
 class function TMVCBrSingleton<T>.New(AObject: T; AOwned: boolean)
-  : TMVCBrSingleton<T>;
+  : IMVCBrSingleton<T>;
+var obj:TMVCBrSingleton<T>;
 begin
-  result := self.InternalCreate;
-  result.FOwned := AOwned;
-  result.FClass := TClass(T);
-  result.FInstance := AObject;
+  obj := self.InternalCreate;
+  obj.FOwned := AOwned;
+  obj.FClass := TClass(T);
+  obj.FInstance := AObject;
+  result := obj;
 end;
 
 procedure TMVCBrSingleton<T>.Release;
