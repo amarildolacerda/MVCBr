@@ -29,6 +29,7 @@ interface
 
 uses
   System.classes, System.SysUtils,
+  Data.DB,
   MVCBr.Interf, MVCBr.Model,
   MongoWire, MongoAuth3, JsonDoc,
   bsonDoc, bsonUtils, MVCBr.Patterns.Adapter;
@@ -37,14 +38,23 @@ type
   TMongoModelFactory = class;
 
   IJSONDocument = JsonDoc.IJSONDocument;
+
+  IJSONDoc = interface(IJSONDocument)
+    ['{4AC5C079-4EAC-4F28-BCA3-83794D899F36}']
+    function ToJson: String;
+  End;
+
   IJSONDocArray = JsonDoc.IJSONDocArray;
   IMongoQuery = IMVCBrAdapter<TMongoWireQuery>;
   IBSONDocument = bsonDoc.IBSONDocument;
 
-  TJSONDocument = class(JsonDoc.TJSONDocument)
+  TJSONDocument = class(JsonDoc.TJSONDocument, IJSONDoc)
   public
     class Function New: IJSONDocument; overload;
     class function New(const x: array of Variant): IJSONDocument; overload;
+    class function BsonToJson(Doc: IBSONDocument): WideString;
+    class function JSON(const x: Variant): IJSONDocument;
+    function ToJson: String;
   end;
 
   TJSONDocArray = Class(JsonDoc.TJSONDocArray)
@@ -87,6 +97,9 @@ type
       : IJSONDocArray; overload;
     function Query(Const ACollection: String;
       const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
+    function GetDataset(ACollection: string;
+      const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
+      AEvent: TProc = nil): integer;
 
     procedure Update(const ACollection: String;
       const AWhere, ADoc: IJSONDocument; AUpsert: Boolean = false;
@@ -153,6 +166,7 @@ type
     function GetSequence(FCollection, AMongoCampo: string): Int64;
   protected
     function OpenIfNeed: TMongoWire; virtual;
+  public
     procedure SetDatabase(const Value: string); virtual;
     procedure SetHost(const Value: string); virtual;
     procedure SetPassword(const Value: string); virtual;
@@ -163,6 +177,7 @@ type
     function GetPassword: string; virtual;
     function GetPort: integer; virtual;
     function GetUserName: string; virtual;
+    function Default: TMVCBrAdapter<TMongoWire>;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -170,6 +185,7 @@ type
       : IMongoModel; overload; virtual;
     class function New(AController: IController; AConnection: TMongoWire)
       : IMongoModel; overload; virtual;
+    [weak]
     function This: TMongoModelFactory; virtual;
     function MongoConnection: TMongoWire;
     procedure Open;
@@ -205,6 +221,11 @@ type
     function Query(Const ACollection: String;
       const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
 
+    function GetDataset(ACollection: string;
+      const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
+      AEventBoforePost: TProc = nil): integer;
+    // function
+
     procedure Update(const ACollection: String;
       const AWhere, ADoc: IJSONDocument; AUpsert: Boolean = false;
       AMultiUpdate: Boolean = false);
@@ -239,20 +260,27 @@ type
 
 function MongoJSON: IJSONDocument; overload;
 function MongoJSON(const x: array of Variant): IJSONDocument; overload;
+function MongoJSON(const x: Variant): IJSONDocument; overload;
 
 implementation
 
-uses System.JSON, System.JSON.Helper;
+uses Data.DB.Helper, System.JSON, System.JSON.Helper;
 
 function MongoJSON: IJSONDocument;
 begin
-  result := JsonDoc.JSON;
+  result := JsonDoc.JSON as IJSONDocument;
 end;
 
 function MongoJSON(const x: array of Variant): IJSONDocument; overload;
 begin
-  result := JSON(x);
+  result := JSON(x) as IJSONDocument;
 end;
+
+function MongoJSON(const x: Variant): IJSONDocument; overload;
+begin
+  result := JSON(x) as IJSONDocument;
+end;
+
 { TMongoModelFactory }
 
 procedure TMongoModelFactory.Close;
@@ -278,18 +306,33 @@ begin
   FDatabase := 'mvcbrDB';
   FHost := 'localhost';
   FPort := 27017;
-  FConnection := TMVCBrAdapter<TMongoWire>.Create(nil);
-  FConnection.DelegateTo(
-    function: TMongoWire
-    begin
-      result := TMongoWire.Create(FDatabase);
-    end)
 end;
 
 function TMongoModelFactory.Database(ADatabase: string): IMongoModel;
 begin
   result := self;
   SetDatabase(ADatabase);
+end;
+
+function TMongoModelFactory.Default: TMVCBrAdapter<TMongoWire>;
+begin
+  if not assigned(FConnection) then
+  begin
+    FConnection := TMVCBrAdapter<TMongoWire>.Create(nil);
+    FConnection.DelegateTo(
+      function: TMongoWire
+      begin
+        result := TMongoWire.Create(FDatabase);
+      end);
+
+    SetDatabase(FDatabase);
+    SetPort(FPort);
+    SetPassword(FPassword);
+    SetHost(FHost);
+    SetUserName(FUserName);
+
+  end;
+  result := FConnection;
 end;
 
 procedure TMongoModelFactory.Delete(const ACollection: WideString;
@@ -301,8 +344,10 @@ end;
 destructor TMongoModelFactory.Destroy;
 begin
   if assigned(FConnection) then
+  begin
     FConnection.DisposeOf;
-  FConnection := nil;
+    FConnection := nil;
+  end;
   inherited;
 end;
 
@@ -327,13 +372,13 @@ end;
 function TMongoModelFactory.Get(const ACollection: String;
 const AWhere: IJSONDocument): IJSONDocument;
 begin
-  result := OpenIfNeed.Get(ACollection, AWhere);
+  result := OpenIfNeed.Get(ACollection, AWhere) as IJSONDocument;
 end;
 
 function TMongoModelFactory.Get(const ACollection, AJsonWhere: string)
   : IJSONDocument;
 begin
-  result := Get(ACollection, JSON.Parse(AJsonWhere));
+  result := Get(ACollection, JSON.Parse(AJsonWhere) as IJSONDocument);
 end;
 
 function TMongoModelFactory.GetActive: Boolean;
@@ -344,6 +389,45 @@ end;
 function TMongoModelFactory.GetDatabase: string;
 begin
   result := FDatabase;
+end;
+
+function TMongoModelFactory.GetDataset(ACollection: string;
+const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
+AEventBoforePost: TProc = nil): integer;
+var
+  Doc: IJSONDocArray;
+  i: integer;
+  item: IJSONDocument;
+begin
+
+  result := 0;
+  OpenIfNeed;
+  Doc := Query(ACollection, AArrayWhere);
+
+  if ADataset.FieldCount = 0 then
+  begin
+    { TODO: dinamics create fields }
+  end;
+
+  if not ADataset.Active then
+    ADataset.Active := true;
+
+  ADataset.DisableControls;
+  try
+    for i := 0 to Doc.Count - 1 do
+    begin
+      item := TJSONDocument.JSON(Doc.item[i]);
+      ADataset.append;
+      ADataset.Fields.FillFromJson(item.ToString);
+      if assigned(AEventBoforePost) then
+        AEventBoforePost;
+      ADataset.post;
+    end;
+    result := ADataset.RecordCount;
+  finally
+    ADataset.EnableControls;
+  end;
+
 end;
 
 function TMongoModelFactory.GetHost: string;
@@ -427,6 +511,7 @@ end;
 
 function TMongoModelFactory.OpenIfNeed: TMongoWire;
 begin
+  self.Default;
   result := MongoConnection;
   if not Active then
     Open;
@@ -565,9 +650,24 @@ begin
   result := TJSONDocument.Create;
 end;
 
+class function TJSONDocument.BsonToJson(Doc: IBSONDocument): WideString;
+begin
+  result := bsonUtils.BsonToJson(Doc);
+end;
+
+class function TJSONDocument.JSON(const x: Variant): IJSONDocument;
+begin
+  result := MongoJSON(x);
+end;
+
 class function TJSONDocument.New(const x: array of Variant): IJSONDocument;
 begin
   result := JsonDoc.JSON(x);
+end;
+
+function TJSONDocument.ToJson: String;
+begin
+  result := ToString;
 end;
 
 { TJSONDocArray }
@@ -599,7 +699,7 @@ begin
       finally
       end;
     end;
-    result := Query(ACollection, JSON.Parse(j.ToJSON));
+    result := Query(ACollection, JSON.Parse(j.ToJson));
   finally
     j.free;
   end;
@@ -629,24 +729,24 @@ begin
     sComand_Save.clear;
     sComand_Modify.clear;
     sField.clear;
-    sField.Append('_id_').Append(AnsiLowerCase(AMongoCampo));
+    sField.append('_id_').append(AnsiLowerCase(AMongoCampo));
 
     sCollectionSeq := '_sequence';
     sCollectionField := '_id';
 
-    sComand_Save.Append('{ findAndModify: "').Append(sCollectionSeq)
-      .Append('", query: { ').Append(sCollectionField).Append(': "')
-      .Append(FCollection).Append('" }, update: {').Append(sCollectionField)
-      .Append(': "').Append(FCollection).Append('", ').Append(sField.ToString)
-      .Append(': 0 }, upsert:true }');
+    sComand_Save.append('{ findAndModify: "').append(sCollectionSeq)
+      .append('", query: { ').append(sCollectionField).append(': "')
+      .append(FCollection).append('" }, update: {').append(sCollectionField)
+      .append(': "').append(FCollection).append('", ').append(sField.ToString)
+      .append(': 0 }, upsert:true }');
 
-    sComand_Modify.Append('{ findAndModify: "').Append(sCollectionSeq)
-      .Append('", query: { ').Append(sCollectionField).Append(': "')
-      .Append(FCollection).Append('" }, update: { $inc: { ')
-      .Append(sField.ToString).Append(': 1 } }, new:true }');
+    sComand_Modify.append('{ findAndModify: "').append(sCollectionSeq)
+      .append('", query: { ').append(sCollectionField).append(': "')
+      .append(FCollection).append('" }, update: { $inc: { ')
+      .append(sField.ToString).append(': 1 } }, new:true }');
 
     j.AddPair(sCollectionField, TJSONString.Create(FCollection));
-    dChave := JSON.Parse(j.ToJSON);
+    dChave := JSON.Parse(j.ToJson);
 
     try
       d := Get(sCollectionSeq, dChave);

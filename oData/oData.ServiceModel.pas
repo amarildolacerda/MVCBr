@@ -166,10 +166,15 @@ begin
 end;
 
 function TODataServices.GetRoot: TJsonArray;
+var
+  j: TJsonValue;
 begin
+  result := nil;
   with LockJson do
     try
-      result := GetValue(root) as TJsonArray;
+      j := GetValue(root);
+      if assigned(j) then
+        result := j as TJsonArray;
     finally
       UnlockJson;
     end;
@@ -222,7 +227,7 @@ begin
       else
       begin
         FJson := TJsonObject.create;
-        FJson.addPair('erro', 'Cand find oData Service <' + AJson + '>');
+        // FJson.addPair('erro', 'Cand find oData Service <' + AJson + '>');
       end;
 
       with FJson do
@@ -622,8 +627,7 @@ initialization
 ODataServices := TODataServices.create;
 try
   ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
-  if fileExists(ODataConfig) then
-    ODataServices.LoadFromJsonFile(ODataConfig);
+  ODataServices.LoadFromJsonFile(ODataConfig);
 except
 end;
 

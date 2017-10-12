@@ -232,6 +232,7 @@ begin
   FInterfaceTypes.Clear;
   Cached := False;
   Caching := True;
+  {$ifndef SERVICE}
   TThread.CreateAnonymousThread(
     procedure
     var
@@ -261,6 +262,7 @@ begin
       Caching := False;
       Cached := True;
     end).Start;
+  {$endif}
 end;
 
 class procedure TInterfaceHelper.WaitIfCaching;
