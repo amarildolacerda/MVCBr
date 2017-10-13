@@ -20,7 +20,7 @@ interface
 uses
 {$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf, System.JSON,
-  MVCBr.MongoModel,
+  MVCBr.MongoModel, BSONUtils,
   MVCBr.FDMongoDB,
   MVCBr.View, MVCBr.FormView, MVCBr.Controller, Data.DB, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
@@ -51,16 +51,23 @@ type
     MVCBrMongoDataset1codigo: TStringField;
     MVCBrMongoDataset1nome: TStringField;
     Button3: TButton;
+    Button4: TButton;
+    Memo1: TMemo;
+    Button5: TButton;
     procedure Button1Click(Sender: TObject);
     procedure FDMemTable1BeforePost(DataSet: TDataSet);
     procedure FDMemTable1BeforeDelete(DataSet: TDataSet);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure FormFactoryCreate(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     FInited: boolean;
     FLoading: boolean;
   protected
     function Controller(const aController: IController): IView; override;
+    procedure msg(ATexto: string);
   public
     { Public declarations }
     mongo: IMongoModel;
@@ -117,7 +124,27 @@ end;
 
 procedure TMongoDBModelView.Button3Click(Sender: TObject);
 begin
-     MVCBrMongoDataset1.ApplyUpdates();
+  MVCBrMongoDataset1.ApplyUpdates();
+end;
+
+procedure TMongoDBModelView.Button4Click(Sender: TObject);
+var
+  doc: IJSONDocument;
+begin
+  doc := MVCBrMongoConnection1.RunCommand( mongoJSON( '{"count":"produtos"}' )  );
+  msg(doc.ToString);
+end;
+
+procedure TMongoDBModelView.Button5Click(Sender: TObject);
+var
+  doc: IJSONDocument;
+begin
+  doc := MVCBrMongoConnection1.RunCommand( mongoJSON( '{"find":"produtos","limit":2}' )  );
+  msg(doc.ToString);
+
+  MVCBrMongoDataset1.OpenWithCommand(MongoJSON(['limit',2]));
+
+
 end;
 
 function TMongoDBModelView.Controller(const aController: IController): IView;
@@ -155,6 +182,16 @@ begin
   end;
 end;
 
+procedure TMongoDBModelView.FormFactoryCreate(Sender: TObject);
+begin
+  MVCBrMongoConnection1.Active := true;
+end;
+
+procedure TMongoDBModelView.msg(ATexto: string);
+begin
+  Memo1.lines.Insert(0, ATexto);
+end;
+
 function TMongoDBModelView.ThisAs: TMongoDBModelView;
 begin
   result := self;
@@ -164,7 +201,7 @@ function TMongoDBModelView.ShowView(const AProc: TProc<IView>): integer;
 begin
   inherited;
   mongo := GetModel<IMongoModel>;
-  MVCBrMongoConnection1.params := mongo.this;
+  MVCBrMongoConnection1.Params := mongo.this;
 
   { Criando no código
     FDMongoConnection := TMVCBrMongoConnection.create(self);

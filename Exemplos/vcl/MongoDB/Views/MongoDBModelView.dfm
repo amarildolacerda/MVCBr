@@ -2,7 +2,7 @@ object MongoDBModelView: TMongoDBModelView
   Left = 0
   Top = 0
   Caption = 'MongoDBModelView'
-  ClientHeight = 380
+  ClientHeight = 489
   ClientWidth = 548
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,7 @@ object MongoDBModelView: TMongoDBModelView
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormFactoryCreate
   PixelsPerInch = 96
   TextHeight = 13
   object DBGrid1: TDBGrid
@@ -66,6 +67,33 @@ object MongoDBModelView: TMongoDBModelView
     TabOrder = 4
     OnClick = Button3Click
   end
+  object Button4: TButton
+    Left = 32
+    Top = 360
+    Width = 75
+    Height = 25
+    Caption = 'Count'
+    TabOrder = 5
+    OnClick = Button4Click
+  end
+  object Memo1: TMemo
+    Left = 16
+    Top = 392
+    Width = 513
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 6
+  end
+  object Button5: TButton
+    Left = 113
+    Top = 361
+    Width = 75
+    Height = 25
+    Caption = 'Limit 2'
+    TabOrder = 7
+    OnClick = Button5Click
+  end
   object FDMemTable1: TFDMemTable
     BeforePost = FDMemTable1BeforePost
     BeforeDelete = FDMemTable1BeforeDelete
@@ -97,8 +125,8 @@ object MongoDBModelView: TMongoDBModelView
   end
   object DataSource2: TDataSource
     DataSet = MVCBrMongoDataset1
-    Left = 400
-    Top = 248
+    Left = 416
+    Top = 256
   end
   object MVCBrMongoConnection1: TMVCBrMongoConnection
     Host = 'localhost'
@@ -110,12 +138,23 @@ object MongoDBModelView: TMongoDBModelView
     CollectionName = 'produtos'
     KeyFields = 'codigo'
     Connection = MVCBrMongoConnection1
-    FieldDefs = <>
+    FieldDefs = <
+      item
+        Name = 'codigo'
+        DataType = ftString
+        Size = 18
+      end
+      item
+        Name = 'nome'
+        DataType = ftString
+        Size = 50
+      end>
+    Active = True
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     Left = 296
-    Top = 264
+    Top = 256
     object MVCBrMongoDataset1codigo: TStringField
       FieldName = 'codigo'
       Size = 18
