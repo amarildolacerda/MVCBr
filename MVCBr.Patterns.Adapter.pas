@@ -65,7 +65,7 @@ type
   public
     class function New(AObject: T): IMVCBrAdapter<T>; overload;
     //class function New(): IMVCBrAdapter<T>; //overload;
-    constructor Create(AObject: T); overload;
+    constructor Create(AObject: T; AFreeOnExit:boolean=true); overload;
     //constructor Create(); overload;
     destructor Destroy; override;
     procedure SetInstance(AInst: T; AFreeOnExit: boolean = false);
@@ -107,7 +107,7 @@ begin
   result := self;
 end;
 
-constructor TMVCBrAdapter<T>.Create(AObject: T);
+constructor TMVCBrAdapter<T>.Create(AObject: T; AFreeOnExit:boolean=true);
 begin
   inherited Create;
   if AObject = nil then

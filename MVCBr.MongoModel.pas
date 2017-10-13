@@ -44,6 +44,7 @@ type
     function ToJson: String;
   End;
 
+  IJSONArray = JsonDoc.IJSONArray;
   IJSONDocArray = JsonDoc.IJSONDocArray;
   IMongoQuery = IMVCBrAdapter<TMongoWireQuery>;
   IBSONDocument = bsonDoc.IBSONDocument;
@@ -55,6 +56,9 @@ type
     class function BsonToJson(Doc: IBSONDocument): WideString;
     class function JSON(const x: Variant): IJSONDocument;
     function ToJson: String;
+    class function AsArray(item: Variant): IJSONArray;
+    class function NewDocArray: IJSONDocArray;
+    class function ToDocArray(Doc: IJSONDocument): IJSONDocArray;
   end;
 
   TJSONDocArray = Class(JsonDoc.TJSONDocArray)
@@ -97,9 +101,13 @@ type
       : IJSONDocArray; overload;
     function Query(Const ACollection: String;
       const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
+    function FillDastaset(Doc: IJSONDocArray; ADataset: TDataset;
+      AEventBoforePost: TProc = nil): integer;
     function GetDataset(ACollection: string;
       const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
-      AEvent: TProc = nil): integer;
+      AEvent: TProc = nil): integer; overload;
+    function GetDataset(ACommand: IJSONDocument; ADataset: TDataset;
+      AEvent: TProc = nil): integer; overload;
 
     procedure Update(const ACollection: String;
       const AWhere, ADoc: IJSONDocument; AUpsert: Boolean = false;
@@ -126,7 +134,7 @@ type
 
     function Eval(const ACollection, AJSFn: WideString;
       const AArgs: array of Variant; ANoLock: Boolean = false): Variant;
-
+    function AsArray(Doc: Variant): IJSONArray;
   end;
 
   TMongoExpression = record
@@ -221,10 +229,13 @@ type
     function Query(Const ACollection: String;
       const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
 
+    function FillDastaset(Doc: IJSONDocArray; ADataset: TDataset;
+      AEventBoforePost: TProc = nil): integer;
     function GetDataset(ACollection: string;
       const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
-      AEventBoforePost: TProc = nil): integer;
-    // function
+      AEventBoforePost: TProc = nil): integer; overload;
+    function GetDataset(ACommand: IJSONDocument; ADataset: TDataset;
+      AEvent: TProc = nil): integer; overload;
 
     procedure Update(const ACollection: String;
       const AWhere, ADoc: IJSONDocument; AUpsert: Boolean = false;
@@ -251,6 +262,8 @@ type
 
     function Eval(const ACollection, AJSFn: WideString;
       const AArgs: array of Variant; ANoLock: Boolean = false): Variant;
+
+    function AsArray(Doc: Variant): IJSONArray;
 
 {$ENDREGION}
 {$REGION "Samples Extends commands"}
@@ -282,6 +295,11 @@ begin
 end;
 
 { TMongoModelFactory }
+
+function TMongoModelFactory.AsArray(Doc: Variant): IJSONArray;
+begin
+  result := ja(Doc);
+end;
 
 procedure TMongoModelFactory.Close;
 begin
@@ -316,6 +334,7 @@ end;
 
 function TMongoModelFactory.Default: TMVCBrAdapter<TMongoWire>;
 begin
+
   if not assigned(FConnection) then
   begin
     FConnection := TMVCBrAdapter<TMongoWire>.Create(nil);
@@ -325,13 +344,17 @@ begin
         result := TMongoWire.Create(FDatabase);
       end);
 
+  end;
+
+  if not FActive then
+  begin
     SetDatabase(FDatabase);
     SetPort(FPort);
     SetPassword(FPassword);
     SetHost(FHost);
     SetUserName(FUserName);
-
   end;
+
   result := FConnection;
 end;
 
@@ -369,6 +392,33 @@ begin
   result := OpenIfNeed.Eval(ACollection, AJSFn, AArgs, ANoLock);
 end;
 
+function TMongoModelFactory.FillDastaset(Doc: IJSONDocArray; ADataset: TDataset;
+AEventBoforePost: TProc): integer;
+var
+  i: integer;
+  item: IJSONDocument;
+begin
+  if not ADataset.Active then
+    ADataset.Active := true;
+
+  ADataset.DisableControls;
+  try
+    for i := 0 to Doc.Count - 1 do
+    begin
+      item := TJSONDocument.JSON(Doc.item[i]);
+      ADataset.append;
+      ADataset.Fields.FillFromJson(item.ToString);
+      if assigned(AEventBoforePost) then
+        AEventBoforePost;
+      ADataset.post;
+    end;
+    result := ADataset.RecordCount;
+  finally
+    ADataset.EnableControls;
+  end;
+
+end;
+
 function TMongoModelFactory.Get(const ACollection: String;
 const AWhere: IJSONDocument): IJSONDocument;
 begin
@@ -391,6 +441,45 @@ begin
   result := FDatabase;
 end;
 
+function TMongoModelFactory.GetDataset(ACommand: IJSONDocument;
+ADataset: TDataset; AEvent: TProc): integer;
+var
+  Doc: IJSONDocument;
+  i: integer;
+  item: IJSONDocument;
+begin
+
+  result := 0;
+  OpenIfNeed;
+  Doc := RunCommand(ACommand);
+
+  if ADataset.FieldCount = 0 then
+  begin
+    { TODO: dinamics create fields }
+  end;
+
+  if not ADataset.Active then
+    ADataset.Active := true;
+
+  ADataset.DisableControls;
+  try
+    { for i := 0 to Doc.Count - 1 do
+      begin
+      item := TJSONDocument.JSON(Doc.item[i]);
+      ADataset.append;
+      ADataset.Fields.FillFromJson(item.ToString);
+      if assigned(AEventBoforePost) then
+      AEventBoforePost;
+      ADataset.post;
+      end;
+    }
+    result := ADataset.RecordCount;
+  finally
+    ADataset.EnableControls;
+  end;
+
+end;
+
 function TMongoModelFactory.GetDataset(ACollection: string;
 const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
 AEventBoforePost: TProc = nil): integer;
@@ -409,24 +498,7 @@ begin
     { TODO: dinamics create fields }
   end;
 
-  if not ADataset.Active then
-    ADataset.Active := true;
-
-  ADataset.DisableControls;
-  try
-    for i := 0 to Doc.Count - 1 do
-    begin
-      item := TJSONDocument.JSON(Doc.item[i]);
-      ADataset.append;
-      ADataset.Fields.FillFromJson(item.ToString);
-      if assigned(AEventBoforePost) then
-        AEventBoforePost;
-      ADataset.post;
-    end;
-    result := ADataset.RecordCount;
-  finally
-    ADataset.EnableControls;
-  end;
+  result := FillDastaset(Doc, ADataset, AEventBoforePost);
 
 end;
 
@@ -476,7 +548,7 @@ end;
 
 function TMongoModelFactory.MongoConnection: TMongoWire;
 begin
-  result := FConnection.Adapter;
+  result := Default.Adapter;
 end;
 
 class function TMongoModelFactory.New(AController: IController;
@@ -581,24 +653,31 @@ begin
   if not Value then
   begin
     if FActive then
-      FConnection.Adapter.Close;
+      Default.Adapter.Close;
     FActive := false;
     exit;
   end;
 
-  FConnection.Adapter.Open(FHost, FPort);
-  if not FActive then
-  begin
-    with FConnection.Adapter do
+  if (not FActive) and Value then
+    with Default do
     begin
-      NameSpace := FDatabase;
-      if (FUserName <> '') and (FPassword <> '') then
+      Default.Adapter.Close;
+      Adapter.Open(FHost, FPort);
+      if not FActive then
       begin
-        MongoWireAuthenticate(FConnection.Adapter, FUserName, FPassword);
+        with Adapter do
+        begin
+          NameSpace := FDatabase;
+          if (FUserName <> '') and (FPassword <> '') then
+          begin
+            MongoWireAuthenticate(Adapter, FUserName, FPassword);
+          end;
+        end;
       end;
+      FActive := Value;
+      exit;
     end;
-  end;
-  FActive := Value;
+
 end;
 
 procedure TMongoModelFactory.SetDatabase(const Value: string);
@@ -650,6 +729,11 @@ begin
   result := TJSONDocument.Create;
 end;
 
+class function TJSONDocument.AsArray(item: Variant): IJSONArray;
+begin
+  result := ja(item);
+end;
+
 class function TJSONDocument.BsonToJson(Doc: IBSONDocument): WideString;
 begin
   result := bsonUtils.BsonToJson(Doc);
@@ -663,6 +747,17 @@ end;
 class function TJSONDocument.New(const x: array of Variant): IJSONDocument;
 begin
   result := JsonDoc.JSON(x);
+end;
+
+class function TJSONDocument.NewDocArray: IJSONDocArray;
+begin
+  result := JSONDocArray;
+end;
+
+class function TJSONDocument.ToDocArray(Doc: IJSONDocument): IJSONDocArray;
+begin
+  result := JSONDocArray;
+  result.Add(Doc);
 end;
 
 function TJSONDocument.ToJson: String;

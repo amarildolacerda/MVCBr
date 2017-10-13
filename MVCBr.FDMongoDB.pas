@@ -31,6 +31,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     Property Params: IMongoModel read FParams write SetParams;
+    function RunCommand(ACommand: IJSONDocument): IJSONDocument;
   published
     property Active: boolean read GetActive write SetActive default false;
     property Host: string read FHost write SetHost;
@@ -60,10 +61,13 @@ type
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    procedure SetActive(Value: boolean); override;
 
   public
     function Open(AWhereArray: array of Variant; AProcBeforePost: TProc = nil)
       : integer; overload;
+    function OpenWithCommand(ACommand: IJSONDocument;
+      AProcBeforePost: TProc = nil): integer; overload;
     procedure Open; reintroduce; overload;
     function Insert: boolean;
     function Update(const AWhereJson: array of Variant;
@@ -72,14 +76,13 @@ type
     function Delete(const AWhereJson: Array of Variant): boolean;
     property Loading: boolean read FLoading write SetLoading;
 
-
-{  TODO:
-    function UpdatesPending: boolean;
-    procedure ClearChanges;
-    procedure CancelUpdates; reintroduce;
-    procedure MergeChangeLog; reintroduce;
-    property Changes: TJSONArray read GetChanges;
-}
+    { TODO:
+      function UpdatesPending: boolean;
+      procedure ClearChanges;
+      procedure CancelUpdates; reintroduce;
+      procedure MergeChangeLog; reintroduce;
+      property Changes: TJSONArray read GetChanges;
+    }
 
   published
     property CollectionName: string read FCollectionName
@@ -103,15 +106,13 @@ type
     property UpdateOptions;
     property LocalSQL;
 
-
-
   end;
 
 Procedure Register;
 
 implementation
 
-uses Data.DB.Helper;
+uses System.JSON, Data.DB.Helper, Variants;
 
 Procedure Register;
 begin
@@ -202,6 +203,60 @@ begin
   self.Open([]);
 end;
 
+function TMVCBrMongoDataset.OpenWithCommand(ACommand: IJSONDocument;
+  AProcBeforePost: TProc = nil): integer;
+var
+  j, jp: TJsonObject;
+  p: TJsonPair;
+  v: TJSonValue;
+  rst: TJsonObject;
+  arr: TJSonValue;
+  s: string;
+  doc: IJSONDocArray;
+begin
+  checkNil;
+  FLoading := true;
+  try
+    if not Active then
+      Active := true;
+    EmptyDataSet;
+    j := TJsonObject.Create as TJsonObject;
+    try
+      if VarIsNull(ACommand.Item['find']) then
+        j.addPair('find', FCollectionName);
+      jp := TJsonObject.ParseJSONValue(ACommand.ToString) as TJsonObject;
+      try
+        for p in jp do
+        begin
+          j.addPair(TJsonPair.Create(p.JsonString, p.JsonValue));
+        end;
+        s := j.ToJson;
+        rst := TJsonObject.ParseJSONValue
+          (Connection.Params.RunCommand(mongoJSON(s)).ToString) as TJsonObject;
+        try
+          arr := rst.GetValue('cursor');
+          begin
+            doc := TJSONDocument.NewDocArray;
+            for v in arr.GetValue<TJsonArray>('firstBatch') do
+            begin
+              doc.AddJson(v.ToString);
+            end;
+            result := Connection.Params.This.FillDastaset(doc, self, nil);
+          end;
+        finally
+          rst.free;
+        end;
+      finally
+    //     jp.free;
+      end;
+    finally
+      j.free;
+    end;
+  finally
+    FLoading := false;
+  end;
+end;
+
 function TMVCBrMongoDataset.Open(AWhereArray: array of Variant;
   AProcBeforePost: TProc = nil): integer;
 begin
@@ -222,6 +277,18 @@ function TMVCBrMongoDataset.Post(const AWhereJson: array of Variant): boolean;
 begin
   checkNil;
   result := self.Update(AWhereJson, true, false);
+end;
+
+procedure TMVCBrMongoDataset.SetActive(Value: boolean);
+begin
+  inherited;
+  if Value and (not FLoading) and (csDesigning in ComponentState) then
+  begin
+    try
+     OpenWithCommand( MongoJSON(['limit',10])  );
+    except
+    end;
+  end;
 end;
 
 procedure TMVCBrMongoDataset.SetCollectionName(const Value: string);
@@ -289,9 +356,16 @@ begin
   result := Default.Params.Active;
 end;
 
+function TMVCBrMongoConnection.RunCommand(ACommand: IJSONDocument)
+  : IJSONDocument;
+begin
+  result := Default.Params.RunCommand(ACommand);
+end;
+
 procedure TMVCBrMongoConnection.SetActive(const Value: boolean);
 begin
-  Default.Params.Active := Value;
+  Default;
+  FParams.Active := Value;
 end;
 
 procedure TMVCBrMongoConnection.SetDatabase(const Value: string);
