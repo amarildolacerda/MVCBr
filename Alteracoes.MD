@@ -1,3 +1,6 @@
+14/10/2017 - AL
+   * alteração na  MVCBr.BPL para forçar a gravação do pas quando criar, antes dependida do usuário mandar salvar e deixava gravar na pasta errada.
+   
 08/10/2017 - AL
    = Suporte ao DMVC RC8
    +- alteração BPL para retirar dependencias
