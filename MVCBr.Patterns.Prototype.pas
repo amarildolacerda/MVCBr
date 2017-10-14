@@ -16,7 +16,8 @@ Type
 
   TMVCBrPrototype = Class(TInterfacedObject, IMVCBrPrototype)
   public
-    class procedure Copy<T: Class>(ASource: T; ATarget: T); static;
+    class procedure Copy<T: Class>(ASource: T; ATarget: T;
+      AIgnore: string = ''); static;
     class function Clone<T: Class>(ASource: T): T; static;
     class function New<T: Class>: T; static;
   end;
@@ -26,7 +27,8 @@ implementation
 uses System.TypInfo, System.SysUtils, System.RTTI {, System.RTTI.Helper,
     System.Classes.Helper};
 
-class procedure TMVCBrPrototype.Copy<T>(ASource, ATarget: T);
+class procedure TMVCBrPrototype.Copy<T>(ASource, ATarget: T;
+  AIgnore: string = '');
 var
   Context: TRttiContext;
   IsComponent, LookOutForNameProp: Boolean;
@@ -38,6 +40,7 @@ var
   Fld: TRttiField;
   SourceAsPointer, ResultAsPointer: Pointer;
 begin
+  AIgnore := ',' + AIgnore.ToLower + ',';
   RttiType := Context.GetType(ASource.ClassType);
   // find a suitable constructor, though treat components specially
   IsComponent := (ASource is TComponent);
@@ -73,11 +76,17 @@ begin
     for Prop in RttiType.GetProperties do
       if (Prop.Visibility >= MinVisibility) and Prop.IsReadable and Prop.IsWritable
       then
-        if LookOutForNameProp and (Prop.Name = 'Name') and
-          (Prop.PropertyType is TRttiStringType) then
-          LookOutForNameProp := false
-        else
-          Prop.SetValue(ResultAsPointer, Prop.GetValue(SourceAsPointer));
+       try
+        if pos(',' + Prop.Name.ToLower + ',', AIgnore) = 0 then
+        begin
+          if LookOutForNameProp and (Prop.Name = 'Name') and
+            (Prop.PropertyType is TRttiStringType) then
+            LookOutForNameProp := false
+          else
+            Prop.SetValue(ResultAsPointer, Prop.GetValue(SourceAsPointer));
+        end;
+       except
+       end;
   except
     raise;
   end;

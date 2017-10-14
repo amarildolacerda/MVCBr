@@ -44,4 +44,7 @@ requires
   DataSnapFireDAC,
   MVCBrCore;
 
+contains
+  MVCBr.FDMongoDB in '..\MVCBr.FDMongoDB.pas';
+
 end.

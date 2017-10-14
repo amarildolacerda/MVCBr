@@ -47,6 +47,8 @@ type
     FClaimsToChecks: TJWTCheckableClaims;
     FSetupJWTClaims: TJWTClaimsSetup;
     FSecret: string;
+    FLeewaySeconds: Cardinal;
+    FLoginURLSegment: String;
   protected
     procedure InternalRender(
       AJSONValue: TJSONValue;
@@ -84,27 +86,39 @@ type
     constructor Create(AAuthenticationHandler: IMVCAuthenticationHandler;
       AConfigClaims: TJWTClaimsSetup;
       ASecret: string = 'D3lph1MVCFram3w0rk';
+      ALoginURLSegment: string = '/login';
       AClaimsToCheck: TJWTCheckableClaims = [
       TJWTCheckableClaim.ExpirationTime,
       TJWTCheckableClaim.NotBefore,
       TJWTCheckableClaim.IssuedAt
-      ]); virtual;
+      ];
+      ALeewaySeconds: Cardinal = 300); virtual;
   end;
 
 implementation
 
+uses System.NetEncoding, System.DateUtils;
+
 { TMVCJWTAuthenticationMiddleware }
 
-constructor TMVCJWTAuthenticationMiddleware.Create(
-  AAuthenticationHandler: IMVCAuthenticationHandler;
-  AConfigClaims: TJWTClaimsSetup; ASecret: string;
-  AClaimsToCheck: TJWTCheckableClaims);
+constructor TMVCJWTAuthenticationMiddleware.Create(AAuthenticationHandler: IMVCAuthenticationHandler;
+      AConfigClaims: TJWTClaimsSetup;
+      ASecret: string = 'D3lph1MVCFram3w0rk';
+      ALoginURLSegment: string = '/login';
+      AClaimsToCheck: TJWTCheckableClaims = [
+      TJWTCheckableClaim.ExpirationTime,
+      TJWTCheckableClaim.NotBefore,
+      TJWTCheckableClaim.IssuedAt
+      ];
+      ALeewaySeconds: Cardinal = 300);
 begin
   inherited Create;
   FAuthenticationHandler := AAuthenticationHandler;
   FSetupJWTClaims := AConfigClaims;
   FClaimsToChecks := AClaimsToCheck;
   FSecret := ASecret;
+  FLoginURLSegment := ALoginURLSegment;
+  FLeewaySeconds := ALeewaySeconds;
 end;
 
 procedure TMVCJWTAuthenticationMiddleware.InternalRender(
@@ -148,7 +162,7 @@ var
   JWTValue: TJWT;
   AuthHeader: string;
   AuthToken: string;
-  ErrorMsg: String;
+  ErrorMsg: string;
 begin
   // check if the resource is protected
   FAuthenticationHandler.OnRequest(AControllerQualifiedClassName, AActionName, AuthRequired);
@@ -161,7 +175,7 @@ begin
 
   // Checking token in subsequent requests
   // ***************************************************
-  JWTValue := TJWT.Create(FSecret);
+  JWTValue := TJWT.Create(FSecret, FLeewaySeconds);
   try
     JWTValue.RegClaimsToChecks := Self.FClaimsToChecks;
     AuthHeader := AContext.Request.Headers['Authentication'];
@@ -177,6 +191,7 @@ begin
     if AuthHeader.StartsWith('bearer', True) then
     begin
       AuthToken := AuthHeader.Remove(0, 'bearer'.Length).Trim;
+      AuthToken := Trim(TNetEncoding.URL.URLDecode(AuthToken));
     end;
 
     // check the jwt
@@ -204,7 +219,14 @@ begin
         FAuthenticationHandler.OnAuthorization(AContext.LoggedUser.Roles, AControllerQualifiedClassName, AActionName, IsAuthorized);
 
         if IsAuthorized then
+        begin
+          if JWTValue.LiveValidityWindowInSeconds > 0 then
+          begin
+            JWTValue.Claims.ExpirationTime := Now + JWTValue.LiveValidityWindowInSeconds * OneSecond;
+            AContext.Response.SetCustomHeader('Authentication', 'bearer ' + JWTValue.GetToken);
+          end;
           AHandled := False
+        end
         else
         begin
           RenderError(HTTP_STATUS.Forbidden, 'Authorization Forbidden', AContext);
@@ -222,12 +244,12 @@ procedure TMVCJWTAuthenticationMiddleware.OnBeforeRouting(
 var
   UserName: string;
   Password: string;
-  RolesList: TList<String>;
+  RolesList: TList<string>;
   SessionData: TSessionData;
   IsValid: Boolean;
   JWTValue: TJWT;
 begin
-  if SameText(AContext.Request.PathInfo, '/login') and (AContext.Request.HTTPMethod = httpPOST) then
+  if SameText(AContext.Request.PathInfo, FLoginURLSegment) and (AContext.Request.HTTPMethod = httpPOST) then
   begin
     UserName := AContext.Request.Headers['jwtusername'];
     Password := AContext.Request.Headers['jwtpassword'];
@@ -246,9 +268,11 @@ begin
         FAuthenticationHandler.OnAuthentication(UserName, Password, RolesList, IsValid, SessionData);
         if IsValid then
         begin
-          JWTValue := TJWT.Create(FSecret);
+          JWTValue := TJWT.Create(FSecret, FLeewaySeconds);
           try
             // let's user config claims and custom claims
+            if not Assigned(FSetupJWTClaims) then
+              raise EMVCJWTException.Create('SetupJWTClaims not set');
             FSetupJWTClaims(JWTValue);
 
             // these claims are mandatory and managed by the middleware
@@ -259,7 +283,12 @@ begin
               raise EMVCJWTException.Create('Custom claim "roles" is reserved and cannot be modified in the JWT setup');
 
             JWTValue.CustomClaims['username'] := UserName;
-            JWTValue.CustomClaims['roles'] := String.Join(',', RolesList.ToArray);
+            JWTValue.CustomClaims['roles'] := string.Join(',', RolesList.ToArray);
+
+            if JWTValue.LiveValidityWindowInSeconds > 0 then
+            begin
+              JWTValue.Claims.ExpirationTime := Now + (JWTValue.LeewaySeconds + JWTValue.LiveValidityWindowInSeconds) * OneSecond;
+            end;
 
             // setup the current logged user from the JWT
             AContext.LoggedUser.Roles.AddRange(RolesList);

@@ -1,4 +1,5 @@
 del *.dcu /s /q
+del *.map /s /q
 del __history\*.* /s /q
 rmdir __history /s /q
 del __recovery\*.* /s /q
@@ -18,8 +19,12 @@ del *.log
 del log*.txt
 
 
+del .\bin\logs\*.* /s /q
+rmdir .\bin\logs /s /q
+
 del .\vcl\__history\*.* /s /q
 rmdir .\vcl\__history /s /q
+
 del .\vcl\__recovery\*.* /s /q
 rmdir .\vcl\__recovery /s /q
 

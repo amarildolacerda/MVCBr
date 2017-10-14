@@ -154,8 +154,7 @@ type
       overload; virtual;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
       overload; virtual;
-    [weak]
-    function Update: IView; overload; virtual;
+    procedure Update; overload; virtual;
     [weak]
     function MainViewEvent(AMessage: string; var AHandled: boolean)
       : IView; virtual;
@@ -781,9 +780,8 @@ begin
   ViewEvent(AJsonValue, AHandled);
 end;
 
-function TCustomFormFactory.Update: IView;
+procedure TCustomFormFactory.Update;
 begin
-  result := self;
 end;
 
 procedure TCustomFormFactory.UpdateObserver(AName, AMensagem: String);

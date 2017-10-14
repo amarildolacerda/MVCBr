@@ -102,9 +102,7 @@ type
     procedure SetAfterCreateComplete(const Value: TNotifyEvent);
     procedure DoPageChange(Sender: TObject);
     procedure DoFormCloseQuery(Sender: TObject; var CanClose: boolean);
-    function TabsheetIndexOf(tab: TObject): Integer;
     procedure DoTabClose(Sender: TObject);
-    function IndexOfTab(Sender: TObject): Integer;
     function GetShowCaptions: boolean;
     procedure SetShowCaptions(const Value: boolean);
     procedure SetInheritedDraw(const Value: boolean);
@@ -129,6 +127,9 @@ type
     class function New(AController: IController): IPageViews;
     [weak]
     function Update: IModel; virtual;
+    function FindByTabIndex(AIndex: Integer): TPageView;
+    function IndexOfTab(Sender: TObject): Integer;
+    function TabsheetIndexOf(tab: TObject): Integer;
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
@@ -742,6 +743,18 @@ begin
     if assigned(LOnClose) then
       LOnClose(frm);
   end;
+end;
+
+function TVCLPageViewManager.FindByTabIndex(AIndex: Integer): TPageView;
+var
+  ts: TTabSheet;
+  I: Integer;
+begin
+  result := nil;
+  ts := PageControl.Pages[AIndex];
+  I := IndexOfTab(ts);
+  if i>=0 then
+    result := TPageView(Items[I]);
 end;
 
 function TVCLPageViewManager.IndexOfTab(Sender: TObject): Integer;

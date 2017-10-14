@@ -100,7 +100,7 @@ type
 
 implementation
 
-uses ObjectsMappers, WS.Common, {WS.Controller,} oData.ProxyBase, oData.SQL,
+uses MVCFramework.DataSet.Utils, WS.Common, oData.ProxyBase, oData.SQL,
   oData.ServiceModel, oData.Engine,
 {$IFDEF LOGEVENTS}
   System.LogEvents.progress, System.LogEvents,
@@ -113,7 +113,7 @@ function TODataController.CreateJson(CTX: TWebContext; const AValue: string)
   : TJsonObject;
 begin
   CTX.Response.SetCustomHeader('OData-Version', '4.0');
-//  CTX.Response.ContentType := 'application/json;odata.metadata=minimal';  // AL - DMVC3, nao consegue buscar conector se houver mais 1 item na lista
+  // CTX.Response.ContentType := 'application/json;odata.metadata=minimal';  // AL - DMVC3, nao consegue buscar conector se houver mais 1 item na lista
   CTX.Response.ContentType := 'application/json';
   result := TJsonObject.create as TJsonObject;
   result.addPair('@odata.context', AValue);
@@ -366,8 +366,9 @@ begin
 
       FDataset := TDataset(FOData.ExecuteGET(nil, JSONResponse));
       FDataset.first;
-      arr := TJsonArray.create;
-      Mapper.DataSetToJSONArray(FDataset, arr, False);
+      // arr := TJsonArray.create;
+      // Mapper.DataSetToJSONArray(FDataset, arr, False);
+      arr := TJsonObject.ParseJSONValue(FDataset.AsJSONArray) as TJsonArray;
       if assigned(arr) then
       begin
         JSONResponse.addPair('value', arr);

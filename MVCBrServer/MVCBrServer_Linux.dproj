@@ -95,6 +95,7 @@
         <DCC_UnitSearchPath>.\WSConfig;..\oData;..\helpers;..\dmvc\sources;..\DMVC\lib\delphistompclient;..\DMVC\lib\loggerpro;..\DMVC\lib\dmustache;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_ExeOutput>..\bin</DCC_ExeOutput>
         <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_Define>ODATA;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <VerInfo_Keys>package=com.embarcadero.$(MSBuildProjectName);label=$(MSBuildProjectName);versionCode=1;versionName=1.0.0;persistent=False;restoreAnyVersion=False;installLocation=auto;largeHeap=False;theme=TitleBar;hardwareAccelerated=true;apiKey=</VerInfo_Keys>

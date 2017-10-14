@@ -149,7 +149,8 @@ type
   public
     destructor Destroy; override;
     procedure AfterConstruction; override;
-    function NewTab(APageView: TPageView;ACaption:String=''): TObject; virtual;
+    function NewTab(APageView: TPageView; ACaption: String = '')
+      : TObject; virtual;
     function GetPageTabClass: TComponentClass; virtual;
     function GetPageContainerClass: TComponentClass; virtual;
     function Count: integer;
@@ -170,8 +171,8 @@ type
     function AddView(Const AController: TGuid): TPageView; overload; virtual;
     function AddView(Const AController: TGuid; ABeforeShow: TProc<IView>)
       : TPageView; overload; virtual;
-    function AddForm(AClass: TFormClass; ABoforeShow: TProc<IView>)
-      : TPageView; virtual;
+    function AddForm(AClass: TFormClass; ABoforeShow: TProc<IView>;
+      ACheckIfExists: Boolean = true): TPageView; virtual;
 
     function FindViewByID(Const AID: String): TPageView; virtual;
     function FindViewByClassName(const AClassName: String): TPageView; virtual;
@@ -316,17 +317,20 @@ begin
 end;
 
 function TCustomPageViewFactory.AddForm(AClass: TFormClass;
-  ABoforeShow: TProc<IView>): TPageView;
+  ABoforeShow: TProc<IView>; ACheckIfExists: Boolean = true): TPageView;
 var
   ref: TForm;
   vw: IView;
 begin
   // checa se o formulario ja esta carregao e reutiliza
-  result := FindViewByClassName(AClass.ClassName);
-  if assigned(result) then
+  if ACheckIfExists then
   begin
-    SetActivePage(result.This.FTab);
-    exit;
+    result := FindViewByClassName(AClass.ClassName);
+    if assigned(result) then
+    begin
+      SetActivePage(result.This.FTab);
+      exit;
+    end;
   end;
   // instancia novo formulario
   ref := AClass.Create(self);
@@ -561,12 +565,13 @@ begin
   FList.Add(result);
   result.FOwner := self;
   result.Text := ACaption;
-  result.Tab := NewTab(result,ACaption);
+  result.Tab := NewTab(result, ACaption);
   if result.Tab <> nil then
     result.FClassType := result.Tab.ClassType;
 end;
 
-function TCustomPageViewFactory.NewTab(APageView: TPageView;ACaption:String=''): TObject;
+function TCustomPageViewFactory.NewTab(APageView: TPageView;
+  ACaption: String = ''): TObject;
 begin
   result := GetPageTabClass.Create(nil);
 end;

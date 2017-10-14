@@ -126,7 +126,7 @@ end;
 
 function TNewProject.GetUnnamed: Boolean;
 begin
-  Result := True;
+  Result := False;
 end;
 
 procedure TNewProject.NewDefaultModule;
