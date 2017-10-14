@@ -287,7 +287,7 @@ begin
         }
           // Now create a Form for the Project since the code added to the Project expects it.
           LViewCreate := TViewCreator.Create(GetNewPath('Views'),
-            LIdentProject, true);
+            LIdentProject, false);//true);
           LViewCreate.BaseProjectType := TBaseProjectType(LItemIndex);
           LViewCreate.Templates.add('%ModuleIdent=' + (LIdentProject));
           LViewCreate.Templates.add('%UnitBase=' + LAppName);
