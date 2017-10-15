@@ -210,6 +210,8 @@ type
     FControllerGuid: TGuid;
     FPageView: TPageView;
     Procedure DoCloseMessage(var TMessage); message WM_TABSHEET_CLOSE;
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -708,7 +710,8 @@ begin
     if not LCanClose then
       abort;
     try
-      FPageFactory.Remove(FControllerGuid);
+      if assigned(FPageFactory) then
+        FPageFactory.Remove(FControllerGuid);
     except
     end;
     FPageView := nil;
@@ -753,7 +756,7 @@ begin
   result := nil;
   ts := PageControl.Pages[AIndex];
   I := IndexOfTab(ts);
-  if i>=0 then
+  if I >= 0 then
     result := TPageView(Items[I]);
 end;
 
@@ -1112,7 +1115,7 @@ begin
 
   if assigned(FOnClose) then
     FOnClose(self);
-  Free;
+  free;
 
   js := TInterfacedJson.New;
   try
@@ -1134,6 +1137,14 @@ end;
 function TTabSheetView.GetCaption: string;
 begin
   result := inherited Caption;
+end;
+
+procedure TTabSheetView.Notification(AComponent: TComponent;
+AOperation: TOperation);
+begin
+  inherited;
+  if AComponent.Equals(FPageFactory) and (AOperation = TOperation.opRemove) then
+    FPageFactory := nil;
 end;
 
 constructor TTabSheetView.Create(AOwner: TComponent);
@@ -1697,6 +1708,6 @@ LPageControlExtender :=
 
 finalization
 
-LPageControlExtender.Free;
+LPageControlExtender.free;
 
 end.

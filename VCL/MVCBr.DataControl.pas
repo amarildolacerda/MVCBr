@@ -19,6 +19,8 @@ type
     procedure DataChange(Sender: TObject);
     function GetDataField: String;
     function GetDatasource: TDatasource;
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -68,7 +70,8 @@ end;
 
 procedure TMVCBrDataControl.DataChange(Sender: TObject);
 begin
-  if assigned(FDataLink.Field) and assigned(FDelegateTo) then
+  if assigned(FDataLink.Dataset) and assigned(FDataLink.Field) and
+    assigned(FDelegateTo) then
   begin
     FDelegateTo(FDataLink.Dataset);
   end;
@@ -103,6 +106,16 @@ end;
 function TMVCBrDataControl.GetDatasource: TDatasource;
 begin
   result := FDataLink.Datasource;
+end;
+
+procedure TMVCBrDataControl.Notification(AComponent: TComponent;
+  AOperation: TOperation);
+begin
+  inherited;
+  if assigned(FDataLink.Datasource) then
+    if AComponent.Equals(FDataLink.Datasource) and
+      (AOperation = TOperation.opRemove) then
+      FDataLink.Datasource := nil;
 end;
 
 procedure TMVCBrDataControl.SetDataField(const Value: String);
