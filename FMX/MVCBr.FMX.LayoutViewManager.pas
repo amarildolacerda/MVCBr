@@ -64,7 +64,8 @@ type
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
-    function NewTab(APageView: TPageView;ACaption:String=''): TObject; override;
+    function NewTab(APageView: TPageView; ACaption: String = '')
+      : TObject; override;
     function AddView(AView: IView): TPageView; override;
     function AddView(Const AController: TGuid): TPageView; overload; override;
     property ActiveTab: TLayoutTabItem read GetActiveTab;
@@ -214,11 +215,13 @@ begin
               Layout.RemoveObject(iChild);
           end;
           TFormFactory(APageView.View).isShowModal := false;
+          if assigned(frm.OnShow) then
+            frm.OnShow(nil);
           if iChild = 0 then
           begin
             Layout.AddObject(TLayout(LLayout.GetLayout));
-            if supports(APageView.View, IView, v) then
-              v.Init();
+//            if supports(APageView.View, IView, v) then
+//              v.Init();
           end;
           if assigned(AfterCreateComplete) then
             AfterCreateComplete(APageView.This);
@@ -233,13 +236,12 @@ begin
           Layout.AddObject(TLayoutTabItem(APageView.This.Tab).FViewer);
           BorderStyle := TFmxFormBorderStyle.None;
           TLayoutTabItem(APageView.This.Tab).Text := APageView.This.Text;
-          if APageView.View.InheritsFrom(TFormFactory) then
+          if APageView.View.InheritsFrom(TCustomFormFactory) then
           begin
-            TFormFactory(APageView.View).isShowModal := false;
-            if supports(APageView.View, IView, v) then
-              v.ShowView(nil);
-          end
-          else if assigned(AfterCreateComplete) then
+            if assigned(frm.OnShow) then
+              frm.OnShow(nil);
+          end;
+          if assigned(AfterCreateComplete) then
             AfterCreateComplete(APageView.This);
 
         end;
@@ -253,11 +255,12 @@ begin
   result.Controller(AController);
 end;
 
-function TFMXLayoutViewManager.NewTab(APageView: TPageView;ACaption:String=''): TObject;
+function TFMXLayoutViewManager.NewTab(APageView: TPageView;
+  ACaption: String = ''): TObject;
 var
   Tab: TLayoutTabItem;
 begin
-  //APageView.Tab := APageView;
+  // APageView.Tab := APageView;
   Tab := TLayoutTabItem.create(self);
   Tab.LayoutContainer := GetLayoutContainer;
   Tab.Parent := GetLayoutContainer;
@@ -322,12 +325,12 @@ begin
   CanClose(LCanClose);
   if not LCanClose then
     abort;
-  if assigned(PageView) then
-  begin
+  { if assigned(PageView) then
+    begin
     PageView.remove;
     PageView := nil;
-  end;
-  inherited;
+    end;
+  } inherited;
 end;
 
 end.
