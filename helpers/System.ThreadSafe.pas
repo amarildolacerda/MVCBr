@@ -58,13 +58,13 @@ type
 
   IStringList = interface
     ['{1A388037-6C6B-4D1E-968F-5D295A879C14}']
-    function This:TThreadSafeStringList;
+    function This: TThreadSafeStringList;
     procedure Clear;
     function Count: integer;
 
   end;
 
-  TThreadSafeStringList = class(TObjectLock,IStringList)
+  TThreadSafeStringList = class(TObjectLock, IStringList)
   private
     FList: TStringList;
     FOnNotify: TNotifyEvent;
@@ -88,8 +88,8 @@ type
   public
     constructor create; override;
     destructor destroy; override;
-    class function New:IStringList;
-    function This:TThreadSafeStringList;
+    class function New: IStringList;
+    function This: TThreadSafeStringList;
     procedure Clear;
     function Count: integer;
 
@@ -242,7 +242,7 @@ end;
 
 class function TThreadSafeStringList.New: IStringList;
 begin
-   result :=  TThreadSafeStringList.create;
+  result := TThreadSafeStringList.create;
 end;
 
 function TThreadSafeStringList.Peek: String;
@@ -805,6 +805,8 @@ procedure TThreadSafeObjectList<T>.Remove(AValue: T);
 var
   i: integer;
 begin
+  if not Assigned(FList) then
+    Exit;
   i := IndexOf(AValue);
   if i >= 0 then
     Delete(i);

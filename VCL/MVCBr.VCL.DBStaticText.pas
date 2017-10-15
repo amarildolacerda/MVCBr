@@ -69,6 +69,7 @@ begin
   result := FDataControl.Dataset;
 end;
 
+
 destructor TDBStaticText.Destroy;
 begin
   FDataControl.free;

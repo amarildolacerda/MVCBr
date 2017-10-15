@@ -23,6 +23,8 @@ type
     procedure SetAfterTabCreate(const Value: TNotifyEvent);
     procedure SetAfterCreate(const Value: TNotifyEvent);
     procedure DoPageChange(Sender: TObject);
+    procedure Notification(AComponent: TComponent;
+      AOperation: TOperation); override;
   protected
     Procedure DoQueryClose(const APageView: TPageView;
       var ACanClose: boolean); override;
@@ -84,7 +86,8 @@ procedure TFMXPageViewManager.DoPageChange(Sender: TObject);
 begin
   if assigned(FOldPageChange) then
     FOldPageChange(Sender);
-  ActivePageIndex := TTabControl(FPageContainer).TabIndex;
+  if assigned(FPageContainer) then
+    ActivePageIndex := TTabControl(FPageContainer).TabIndex;
 end;
 
 function TFMXPageViewManager.GetPageContainerClass: TComponentClass;
@@ -135,11 +138,11 @@ begin
       end;
 end;
 
-constructor TTabItemView.create(AOwner: TComponent);
+constructor TTabItemView.Create(AOwner: TComponent);
 begin
   inherited;
   FPageView := nil;
-  FViewer := TLayout.create(self);
+  FViewer := TLayout.Create(self);
   FViewer.Parent := self;
   FViewer.Align := TAlignLayout.Client;
 end;
@@ -211,7 +214,7 @@ end;
 
 class function TFMXPageViewManager.New(AController: IController): IPageViews;
 begin
-  result := TFMXPageViewManager.create(nil);
+  result := TFMXPageViewManager.Create(nil);
   result.Controller(AController);
 end;
 
@@ -220,7 +223,7 @@ function TFMXPageViewManager.NewTab(APageView: TPageView;
 var
   Tab: TTabItemView;
 begin
-  Tab := GetPageTabClass.create(FPageContainer) as TTabItemView;
+  Tab := GetPageTabClass.Create(FPageContainer) as TTabItemView;
   Tab.Parent := TTabControl(FPageContainer);
   Tab.PageView := APageView;
   Tab.text := ACaption;
@@ -233,7 +236,14 @@ end;
 procedure TFMXPageViewManager.SetActivePage(const Tab: TObject);
 begin
   inherited;
-  TTabControl(FPageContainer).ActiveTab := TTabItem(Tab);
+  if assigned(FPageContainer) then
+    TTabControl(FPageContainer).ActiveTab := TTabItem(Tab);
+end;
+
+procedure TFMXPageViewManager.Notification(AComponent: TComponent;
+  AOperation: TOperation);
+begin
+  inherited;
 end;
 
 procedure TFMXPageViewManager.SetAfterCreate(const Value: TNotifyEvent);
