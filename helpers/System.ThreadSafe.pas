@@ -47,8 +47,6 @@ type
     destructor destroy; override;
   end;
 
-  TThreadSafeList = TThreadList;
-
   TStringListHelper = class helper for TStringList
   public
     procedure Erase(ATexto: string);
@@ -170,6 +168,9 @@ type
     function Add(const AItem: T): integer; overload;
     property Items[idx: integer]: T read Getitems write Setitems;
     function Pop: T; virtual;
+  end;
+
+  TThreadSafeList<T:Class> = class(TThreadedList<T>)
   end;
 
   TThreadSafeInterfaceList<T: IInterface> = class(TInterfacedObject,

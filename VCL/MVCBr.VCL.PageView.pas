@@ -86,6 +86,7 @@ type
     TPageHistory = class(TMVCBrMementoFactory<string>)
     end;
   private
+    FLock: TObject;
     FOnDestroing: boolean;
     FPageHistory: TPageHistory;
     FOldPageChange: TNotifyEvent;
@@ -122,6 +123,8 @@ type
     function GetPageViewClass: TPageViewClass; override;
     function InvokePageHistory: TPageHistory;
   public
+    procedure Lock;
+    procedure Unlock;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     class function New(AController: IController): IPageViews;
@@ -581,14 +584,20 @@ end;
 function TVCLPageViewManager.AddView(Const AController: TGuid;
   ABeforeShow: TProc<IView>): TPageView;
 begin
-  result := inherited AddView(AController, ABeforeShow);
-  if assigned(result) then
-    TTabSheetView(result.tab).FControllerGuid := AController;
+  Lock;
+  try
+    result := inherited AddView(AController, ABeforeShow);
+    if assigned(result) then
+      TTabSheetView(result.tab).FControllerGuid := AController;
+  finally
+    Unlock;
+  end;
 end;
 
 constructor TVCLPageViewManager.Create(AOwner: TComponent);
 begin
   inherited;
+  FLock := TObject.Create;
   FUsePageHistory := true;
   InvokePageHistory;
 
@@ -623,6 +632,7 @@ begin
     FPageHistory.disposeOf;
     FPageHistory := nil;
   end;
+  FLock.free;
   inherited;
 end;
 
@@ -805,47 +815,52 @@ var
   frm: TForm;
   v: IView;
 begin
-  if assigned(APageView) then
-    if assigned(APageView.This.view) then
-    begin
-      if APageView.This.view.InheritsFrom(TViewFactoryAdapter) then
+  Lock;
+  try
+    if assigned(APageView) then
+      if assigned(APageView.This.view) then
       begin
-        frm := TForm(TViewFactoryAdapter(APageView.This.view).form);
-        APageView.This.text := frm.Caption;
-      end
-      else
-        frm := TForm(APageView.This.view);
-      with frm do
-      begin
-        parent := TTabSheet(APageView.This.tab);
-        with TTabSheetView(APageView.This.tab) do
+        if APageView.This.view.InheritsFrom(TViewFactoryAdapter) then
         begin
-          FShowTabClose := true;
-          OnClose := DoTabClose;
-        end;
-        Align := alClient;
-        BorderStyle := bsNone;
-        TTabSheetView(APageView.This.tab).Caption := APageView.This.text;
-
-        supports(APageView.view, IView, v);
-        if APageView.view.InheritsFrom(TFormFactory) then
-        begin
-          OnCloseQuery := DoFormCloseQuery;
-          TFormFactory(APageView.view).isShowModal := false;
-
-          with TFormFactory(APageView.view) do
-            if assigned(APageView.This.OnBeforeShowDelegate) then
-              APageView.This.OnBeforeShowDelegate(v);
-          v.ShowView(nil);
-          v.Init;
-          show;
+          frm := TForm(TViewFactoryAdapter(APageView.This.view).form);
+          APageView.This.text := frm.Caption;
         end
         else
-          show;
+          frm := TForm(APageView.This.view);
+        with frm do
+        begin
+          parent := TTabSheet(APageView.This.tab);
+          with TTabSheetView(APageView.This.tab) do
+          begin
+            FShowTabClose := true;
+            OnClose := DoTabClose;
+          end;
+          Align := alClient;
+          BorderStyle := bsNone;
+          TTabSheetView(APageView.This.tab).Caption := APageView.This.text;
+
+          supports(APageView.view, IView, v);
+          if APageView.view.InheritsFrom(TFormFactory) then
+          begin
+            OnCloseQuery := DoFormCloseQuery;
+            TFormFactory(APageView.view).isShowModal := false;
+
+            with TFormFactory(APageView.view) do
+              if assigned(APageView.This.OnBeforeShowDelegate) then
+                APageView.This.OnBeforeShowDelegate(v);
+            v.ShowView(nil);
+            v.Init;
+            show;
+          end
+          else
+            show;
+        end;
+        if assigned(FAfterCreateComplete) then
+          FAfterCreateComplete(APageView.This);
       end;
-      if assigned(FAfterCreateComplete) then
-        FAfterCreateComplete(APageView.This);
-    end;
+  finally
+    Unlock;
+  end;
 end;
 
 function TVCLPageViewManager.InvokePageHistory: TPageHistory;
@@ -859,6 +874,11 @@ begin
     FPageHistory.MaxItens := 20;
   end;
   result := FPageHistory;
+end;
+
+procedure TVCLPageViewManager.Lock;
+begin
+  System.TMonitor.Enter(FLock);
 end;
 
 class function TVCLPageViewManager.New(AController: IController): IPageViews;
@@ -1054,6 +1074,11 @@ begin
         result := I;
         exit;
       end;
+end;
+
+procedure TVCLPageViewManager.Unlock;
+begin
+  System.TMonitor.exit(FLock);
 end;
 
 function TVCLPageViewManager.Update: IModel;
@@ -1292,7 +1317,7 @@ begin
     if trim(TabSheet.Caption) = 'hide' then
       exit;
     if TabSheet.Caption = '' then
-      TabSheet.Caption := index.toString;
+      TabSheet.Caption := (index+1).toString;
     if LPageControlExtender.ContainsKey(PageControl) then
     begin
       ARec := LPageControlExtender.Items[PageControl];
