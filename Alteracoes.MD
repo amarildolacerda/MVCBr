@@ -1,3 +1,6 @@
+19/10/2017 - AL
+   * Lock/Unlock para VCL.PageView
+   
 15/10/2017 - AL
    * correção de access violation ao sair no TLayoutManager
    

@@ -147,6 +147,8 @@ type
     procedure Notification(AComponent: TComponent;
       AOperation: TOperation); override;
   public
+    procedure Lock;
+    procedure UnLock;
     destructor Destroy; override;
     procedure AfterConstruction; override;
     function NewTab(APageView: TPageView; ACaption: String = '')
@@ -294,21 +296,25 @@ function TCustomPageViewFactory.AddView(AView: IView; ABeforeShow: TProc<IView>)
 var
   ATitle: String;
 begin
-  if AView.Title <> '' then
-    ATitle := AView.Title
-  else if AView.This.InheritsFrom(TForm) then
-    ATitle := TForm(AView.This).Caption;
+  Lock;
+  try
+    if AView.Title <> '' then
+      ATitle := AView.Title
+    else if AView.This.InheritsFrom(TForm) then
+      ATitle := TForm(AView.This).Caption;
 
-  result := NewItem(ATitle);
-  result.Controller := AView.GetController;
-  result.FView := AView.This;
-  result.Guid := TMVCBr.GetGuid(AView);
-  result.OnBeforeShowDelegate := ABeforeShow;
-  DoViewCreate(AView.This);
-  Init(result);
-  if assigned(AView) then
-    AView.DoCommand('pageview', []);
-
+    result := NewItem(ATitle);
+    result.Controller := AView.GetController;
+    result.FView := AView.This;
+    result.Guid := TMVCBr.GetGuid(AView);
+    result.OnBeforeShowDelegate := ABeforeShow;
+    DoViewCreate(AView.This);
+    Init(result);
+    if assigned(AView) then
+      AView.DoCommand('pageview', []);
+  finally
+    unlock;
+  end;
 end;
 
 function TCustomPageViewFactory.ActivePage: TPageView;
@@ -464,6 +470,11 @@ end;
 
 procedure TCustomPageViewFactory.Init(APageView: TPageView);
 begin
+end;
+
+procedure TCustomPageViewFactory.Lock;
+begin
+  System.TMonitor.Enter(FPageContainer);
 end;
 
 function TCustomPageViewFactory.FindView(const AGuidController: TGuid)
@@ -653,6 +664,11 @@ end;
 procedure TCustomPageViewFactory.SetPageContainer(const Value: TComponent);
 begin
   FPageContainer := Value;
+end;
+
+procedure TCustomPageViewFactory.UnLock;
+begin
+  System.TMonitor.exit(FPageContainer);
 end;
 
 procedure TCustomPageViewFactory.ViewEvent(AMessage: String);

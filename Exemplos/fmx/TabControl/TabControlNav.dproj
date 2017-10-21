@@ -183,6 +183,7 @@
         <Icon_MainIcon>TabControlNav_Icon.ico</Icon_MainIcon>
         <Manifest_File>(None)</Manifest_File>
         <DCC_MapFile>3</DCC_MapFile>
+        <DCC_Define>madExcept;$(DCC_Define)</DCC_Define>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
