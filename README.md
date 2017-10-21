@@ -19,7 +19,9 @@ Model-view-controller (MVC), em português modelo-visão-controlador, é um padr
   
   Adicionar o local (pasta) no path do delphi para ele localizar a pasta raiz  \MVCBr 
   
-<a href="http://bit.ly/2gyBpVp">Youtube: Inicio do projeto - in Português</a>
+* Links  
+<a href="http://bit.ly/2gyBpVp">Youtube: Inicio do projeto - in Português</a><br>
+<a href="http://bit.ly/2yQVQnT">Blog Tirei de Letra</a><br>
 
 
 <b>MVCBr Group - Credits</b>
