@@ -9,9 +9,9 @@ Model-view-controller (MVC), em português modelo-visão-controlador, é um padr
 
 
 * Install
-  Seattle:  MVCBrPackageSeattle.dpr
-  Berlin:   MVCBrPackageBerlin.dpr;
-  Tokyo:    MVCBrPackageTokyo.dpr
+  Seattle:  MVCBrPackageSeattle.dpr<br>
+  Berlin:   MVCBrPackageBerlin.dpr;<br>
+  Tokyo:    MVCBrPackageTokyo.dpr;<br>
   
 * Another way to install its MVCBrInstall.exe - this is all for;
   
