@@ -1,5 +1,7 @@
 # Delphi MVCBr
 
+Model-view-controller (MVC) is a software design pattern that separates the representation of information from user interaction with it. The model consists of application data, business rules, logic, and functions. A view can be any output representation of the data, such as a table or a diagram. You can have multiple views of the same data, such as a bar chart for management and a tabular view for counters. The controller mediates the input, converting it into commands for the model or view. The core ideas behind MVC are code reuse and concept separation.
+
 Model-view-controller (MVC), em português modelo-visão-controlador, é um padrão de arquitetura de software (design pattern) que separa a representação da informação da interação do usuário com ele. O modelo (model) consiste nos dados da aplicação, regras de negócios, lógica e funções. Uma visão (view) pode ser qualquer saída de representação dos dados, como uma tabela ou um diagrama. É possível ter várias visões do mesmo dado, como um gráfico de barras para gerenciamento e uma visão tabular para contadores. O controlador (controller) faz a mediação da entrada, convertendo-a em comandos para o modelo ou visão. As ideias centrais por trás do MVC são a reusabilidade de código e separação de conceitos... <a href="http://pt.wikipedia.org/wiki/MVC">ler mais....</a>
 
 <img src="/330px-ModelViewControllerDiagram2.svg.png"></a>
