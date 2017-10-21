@@ -13,17 +13,19 @@ Model-view-controller (MVC), em português modelo-visão-controlador, é um padr
   Berlin:   MVCBrPackageBerlin.dpr;
   Tokyo:    MVCBrPackageTokyo.dpr
   
-  Após a instalção da package ir no Delphi:  Novo Projeto / MVCBr / MVCBr assistente para criar projeto
+* Another way to install its MVCBrInstall.exe - this is all for;
+  
+  After install:  New/ Other / MVCBr / MVCBr Project - create a MVCBr project;
   
   Adicionar o local (pasta) no path do delphi para ele localizar a pasta raiz  \MVCBr 
   
-Ver o Video de apresentação do projeto no canal Youtube.  
+<a href="http://bit.ly/2gyBpVp">Youtube: Inicio do projeto - in Português</a>
 
 
-<b>Grupo MVCBr - Créditos</b>
+<b>MVCBr Group - Credits</b>
 <pre>
 Kleberson Toro - fundador e idealizador do projeto;
-Amarildo Lacerda - fundador e implementação;
+Amarildo Lacerda - fundador e implementação (coder);
 Oteniel Furquim - contribuição com debates e definição;
 Ivan Cesar     - contribuição nos debates e implementação do MemDataset para o OData;
 Elizangela Borato - contribuição com driver Postgres para o servidor OData e implementação do gerador de metadata.
