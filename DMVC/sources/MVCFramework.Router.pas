@@ -1,3 +1,4 @@
+
 // ***************************************************************************
 //
 // Delphi MVC Framework
@@ -146,7 +147,7 @@ function TMVCRouter.ExecuteRouting(const ARequestPathInfo: string;
   out AResponseContentMediaType: string;
   out AResponseContentCharset: string): Boolean;
 var
-  LRequestPathInfo: string;
+  lURLSegment,LRequestPathInfo: string;
   LRequestAccept: string;
   LRequestContentType: string;
   LControllerMappedPath: string;
