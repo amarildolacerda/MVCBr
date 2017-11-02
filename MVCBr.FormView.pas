@@ -235,7 +235,7 @@ type
     function Observable: IMVCBrObservable; virtual;
     procedure RegisterObserver(const AName: String);
     procedure UnRegisterObserver(const AName: String);
-
+    procedure Notify(ACommand: string; AJson: TJsonValue);
     property Text: string read GetTitle write SetTitle;
 
 {$IFDEF LINUX}
@@ -279,7 +279,7 @@ type
 
 implementation
 
-uses MVCBr.MiddlewareFactory;
+uses MVCBr.MiddlewareFactory, MVCBr.Observable;
 
 { TViewFormFacotry }
 procedure TCustomFormFactory.AfterConstruction;
@@ -613,6 +613,11 @@ begin
     AView.ViewEvent(AMessage, AHandled);
 end;
 
+procedure TCustomFormFactory.Notify(ACommand: string; AJson: TJsonValue);
+begin
+  TMVCBrObservable.Notify(ACommand, AJson);
+end;
+
 function TCustomFormFactory.Observable: IMVCBrObservable;
 begin
   result := TMVCBr.Observable;
@@ -745,7 +750,7 @@ begin
   { TODO }
 {$ELSE}
 {$IFDEF LINUX}
-  for i := 0 to AControl.ComponentCount  - 1 do
+  for i := 0 to AControl.ComponentCount - 1 do
   begin
     if not AControl.Components[i].InheritsFrom(TBaseControl) then
       continue;
