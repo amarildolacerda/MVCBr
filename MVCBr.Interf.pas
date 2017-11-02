@@ -359,6 +359,7 @@ type
     function GetLayout: TObject;
   end;
 
+
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
     mtNavigate, mtOrmModel, mtComponent, mtPattern);

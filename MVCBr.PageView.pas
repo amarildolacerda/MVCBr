@@ -140,6 +140,7 @@ type
     /// ligação para o PageControl component
     property PageContainer: TComponent read GetPageContainer
       write SetPageContainer;
+    /// chamado quando inicializa a view
     procedure Init(APageView: TPageView); virtual;
     Procedure DoQueryClose(const APageView: TPageView;
       var ACanClose: Boolean); virtual;
