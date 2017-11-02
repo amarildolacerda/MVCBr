@@ -259,6 +259,7 @@ end;
 
 function TMVCBrMongoDataset.Open(AWhereArray: array of Variant;
   AProcBeforePost: TProc = nil): integer;
+var AJson:IJSONDocument;
 begin
   checkNil;
   FLoading := true;
@@ -266,8 +267,9 @@ begin
     if not Active then
       Active := true;
     EmptyDataSet;
+    AJson :=mongoJSON(AWhereArray);
     result := Connection.Params.GetDataset(FCollectionName,
-      mongoJSON(AWhereArray), self, AProcBeforePost);
+      AJson, self, AProcBeforePost);
   finally
     FLoading := false;
   end;
