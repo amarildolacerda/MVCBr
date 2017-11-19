@@ -86,8 +86,9 @@ type
   private
   public
     function JsonObject(var AJSONObject: TJsonObject; ANulls: boolean = true;
-      AFields: string = ''): integer;
-    function ToJson(ANulls: boolean = true; AFields: string = ''): string;
+      AFields: string = ''; AChangedOnly: boolean = false): integer;
+    function ToJson(ANulls: boolean = true; AFields: string = '';
+      AChangedOnly: boolean = false): string;
     function JsonValue(AFields: string = ''): TJsonValue;
     procedure FillFromJson(AJson: string);
   end;
@@ -97,6 +98,7 @@ type
     function Trunc: TField;
     function FromStream(stream: TStream): TField;
     function ToStream(stream: TStream): TField;
+    function Changed: boolean;
   end;
 
 implementation
@@ -577,90 +579,93 @@ var
   fs: TFormatSettings;
   MS: TMemoryStream;
   SS: TStringStream;
-
 begin
   try
     j := TJsonObject.Parse(AJson);
     try
       for it in self do
       begin
-        key := lowercase(it.FieldName);
-        jp := j.Get(key);
-        if assigned(jp) then
-          if not(jp.JsonValue is TJSONNull) then
-            V := j.Get(key).JsonValue;
-        if (not assigned(jp)) or (not assigned(V)) then
-        begin
-          it.clear;
-          continue;
-        end;
+        try
+          key := lowercase(it.FieldName);
+          jp := j.Get(key);
+          if assigned(jp) then
+            if not(jp.JsonValue is TJSONNull) then
+              V := j.Get(key).JsonValue;
+          if (not assigned(jp)) or (not assigned(V)) or (jp.JsonValue is TJSONNull) then
+          begin
+            it.clear;
+            continue;
+          end;
 
-        case it.DataType of
-          TFieldType.ftInteger, TFieldType.ftAutoInc, TFieldType.ftSmallint,
-            TFieldType.ftShortint:
-            begin
-              it.AsInteger := (V as TJSONNumber).AsInt;
-            end;
-          TFieldType.ftLargeint:
-            begin
-              it.AsLargeInt := (V as TJSONNumber).AsInt64;
-            end;
-          TFieldType.ftSingle, TFieldType.ftFloat:
-            begin
-              it.AsFloat := (V as TJSONNumber).AsDouble;
-            end;
-          ftString, ftWideString, ftMemo, ftWideMemo:
-            begin
-              it.AsString := (V as TJSONString).Value;
-            end;
-          TFieldType.ftDate:
-            begin
-              it.asDateTime := ISOStrToDate((V as TJSONString).Value);
-            end;
-          TFieldType.ftDateTime:
-            begin
-              it.asDateTime := ISOStrToDateTime((V as TJSONString).Value);
-            end;
-          TFieldType.ftTimeStamp:
-            begin
-              it.AsSQLTimeStamp := StrToSQLTimeStamp((V as TJSONString).Value);
-            end;
-          TFieldType.ftCurrency:
-            begin
-              fs.DecimalSeparator := '.';
-{$IF CompilerVersion <= 27}
-              it.AsCurrency := StrToCurr((V as TJSONString).Value, fs);
-{$ELSE} // Delphi XE7 introduces method "ToJSON" to fix some old bugs...
-              it.AsCurrency := StrToCurr((V as TJSONNumber).ToJson, fs);
-{$ENDIF}
-            end;
-          TFieldType.ftFMTBcd:
-            begin
-              it.AsBcd := DoubleToBcd((V as TJSONNumber).AsDouble);
-            end;
-          TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
-            begin
-              MS := TMemoryStream.Create;
-              try
-                SS := TStringStream.Create((V as TJSONString).Value,
-                  TEncoding.ASCII);
-                try
-                  DecodeStream(SS, MS);
-                  MS.Position := 0;
-                  TBlobField(it).LoadFromStream(MS);
-                finally
-                  SS.Free;
-                end;
-              finally
-                MS.Free;
+          case it.DataType of
+            TFieldType.ftInteger, TFieldType.ftAutoInc, TFieldType.ftSmallint,
+              TFieldType.ftShortint:
+              begin
+                it.AsInteger := (V as TJSONNumber).AsInt;
               end;
-            end;
-          // else
-          // raise EMapperException.Create('Cannot find type for field ' + key);
+            TFieldType.ftLargeint:
+              begin
+                it.AsLargeInt := (V as TJSONNumber).AsInt64;
+              end;
+            TFieldType.ftSingle, TFieldType.ftFloat:
+              begin
+                it.AsFloat := (V as TJSONNumber).AsDouble;
+              end;
+            ftString, ftWideString, ftMemo, ftWideMemo:
+              begin
+                it.AsString := (V as TJSONString).Value;
+              end;
+            TFieldType.ftDate:
+              begin
+                it.asDateTime := ISOStrToDate((V as TJSONString).Value);
+              end;
+            TFieldType.ftDateTime:
+              begin
+                it.asDateTime := ISOStrToDateTime((V as TJSONString).Value);
+              end;
+            TFieldType.ftTimeStamp:
+              begin
+                it.AsSQLTimeStamp :=
+                  StrToSQLTimeStamp((V as TJSONString).Value);
+              end;
+            TFieldType.ftCurrency:
+              begin
+                fs.DecimalSeparator := '.';
+{$IF CompilerVersion <= 27}
+                it.AsCurrency := StrToCurr((V as TJSONString).Value, fs);
+{$ELSE} // Delphi XE7 introduces method "ToJSON" to fix some old bugs...
+                it.AsCurrency := StrToCurr((V as TJSONNumber).ToJson, fs);
+{$ENDIF}
+              end;
+            TFieldType.ftFMTBcd:
+              begin
+                it.AsBcd := DoubleToBcd((V as TJSONNumber).AsDouble);
+              end;
+            TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+              begin
+                MS := TMemoryStream.Create;
+                try
+                  SS := TStringStream.Create((V as TJSONString).Value,
+                    TEncoding.ASCII);
+                  try
+                    DecodeStream(SS, MS);
+                    MS.Position := 0;
+                    TBlobField(it).LoadFromStream(MS);
+                  finally
+                    SS.Free;
+                  end;
+                finally
+                  MS.Free;
+                end;
+              end;
+            // else
+            // raise EMapperException.Create('Cannot find type for field ' + key);
+
+          end;
+        except
         end;
 
       end;
-
     finally
       FreeAndNil(j);
     end;
@@ -670,14 +675,14 @@ begin
   end;
 end;
 
-function TFieldsHelper.ToJson(ANulls: boolean = true;
-AFields: string = ''): string;
+function TFieldsHelper.ToJson(ANulls: boolean = true; AFields: string = '';
+AChangedOnly: boolean = false): string;
 var
   AJSONObject: TJsonObject;
 begin
   AJSONObject := TJsonObject.Create;
   try
-    JsonObject(AJSONObject, ANulls, AFields);
+    JsonObject(AJSONObject, ANulls, AFields, AChangedOnly);
     result := AJSONObject.ToString;
   finally
     AJSONObject.Free;
@@ -690,7 +695,8 @@ begin
 end;
 
 function TFieldsHelper.JsonObject(var AJSONObject: TJsonObject;
-ANulls: boolean = true; AFields: string = ''): integer;
+ANulls: boolean = true; AFields: string = '';
+AChangedOnly: boolean = false): integer;
 var
   i: integer;
   key: string;
@@ -715,6 +721,10 @@ begin
   begin
     if not FieldValid then
       continue;
+
+    if AChangedOnly and (not it.Changed) then
+      continue;
+
     key := lowercase(it.FieldName);
     if not ANulls then
       if it.isNull or it.AsString.IsEmpty then
@@ -815,6 +825,16 @@ begin
 end;
 
 { TFieldHelper }
+
+function TFieldHelper.Changed: boolean;
+begin
+  if (DataSet.State in [dsInsert]) and (not isNull) then
+    exit(true);
+  if DataSet.State in [dsEdit] then
+    if Value <> OldValue then
+      exit(true);
+  exit(false);
+end;
 
 function TFieldHelper.FromStream(stream: TStream): TField;
 begin

@@ -51,6 +51,7 @@ type
 
   type
     TIoCRegistration<T: IMVCBrIOC> = class
+    private
       FGuid: TGuid;
       FName: string;
       FIInterface: PTypeInfo;
@@ -59,6 +60,7 @@ type
       FIsSingleton: boolean;
       [unsafe]
       FInstance: IMVCBrIOC;
+    public
       Destructor Destroy; override;
       function ImplementClass(AImplements: TInterfacedClass)
         : TIoCRegistration<T>;
