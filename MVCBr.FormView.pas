@@ -341,7 +341,7 @@ end;
 
 function TCustomFormFactory.GetModel(AII: TGuid): IModel;
 begin
-  FController.GetModel(AII, result);
+  TControllerAbstract(FController.this).GetModel(AII, result);
 end;
 
 function TCustomFormFactory.GetModel<TIModel>: TIModel;

@@ -84,7 +84,7 @@ uses System.Classes, System.SysUtils,
   System.RTTI;
 
 type
-
+  {$M-}
   IMVCBrObserver = interface;
   IMVCBrObservable = interface;
   IViewBase = interface;
@@ -487,8 +487,8 @@ type
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
     procedure Run; overload;
-    procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
-      AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
+    //procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
+    //  AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
     function This: TObject;
     function Count: integer;
     function Add(const AController: IController): integer;
@@ -602,7 +602,7 @@ type
     function ResolveController(const AName: string): IController; overload;
     function ResolveController(const AIID: TGuid): IController; overload;
     // procedure RevokeInstance;
-    procedure GetModel(const IID: TGuid; out intf); overload;
+    //procedure GetModel(const IID: TGuid; out intf); overload;
     function GetModel(const IID: TGuid): IModel; overload;
     function This: TControllerAbstract;
     function Start: IController;

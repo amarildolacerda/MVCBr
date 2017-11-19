@@ -138,7 +138,7 @@ end;
 
 function TViewFactory.GetModel(AII: TGuid): IModel;
 begin
-  FController.GetModel(AII, result);
+  TControllerAbstract(FController.this).GetModel(AII, result);
 end;
 
 function TViewFactory.GetTitle: String;

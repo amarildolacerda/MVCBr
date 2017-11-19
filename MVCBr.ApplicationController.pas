@@ -287,7 +287,7 @@ begin
     function(ACtrl: IController): boolean
     begin
       result := false;
-      ACtrl.GetModel(AGuid, rst);
+      TControllerAbstract(ACtrl.this).GetModel(AGuid, rst);
       if assigned(rst) then
         result := true;
     end);
