@@ -41,12 +41,15 @@ Type
   IFireEventProc = interface
     ['{BBC08E72-6518-4BF8-8BEE-0A46FD8B351C}']
     procedure SetOnEvent(const Value: TProc<TObject>);
+
     procedure FireEvent(Sender: TObject);
   end;
 
   IObjectAdapter<T: Class> = interface(TFunc<T>)
     ['{17EB68E7-7212-4AE9-B686-FC4CC3A08F07}']
     property Instance: T read Invoke;
+    procedure Null;
+    procedure Release;
   end;
 
   TObjectAdapter<T: Class> = class(TInterfacedObject, IObjectAdapter<T>,
@@ -64,9 +67,12 @@ Type
     constructor Create; overload; virtual;
     constructor Create(AClass: T); overload; virtual;
     Destructor Destroy; override;
+    procedure Null;
     procedure Release; virtual;
     [weak]
-    class function New: IObjectAdapter<T>;
+    class function New: IObjectAdapter<T>; overload;
+    [weak]
+    class function New(Obj: TObject): IObjectAdapter<T>; overload;
     [weak]
     function InstanceOf(AClass: TClass): IObjectAdapter<T>;
     [weak]
@@ -128,8 +134,9 @@ Type
       overload; static;
 
     // RTTI
-    procedure CopyFrom(Obj: TObject);
-    procedure CopyTo(Obj:TObject);
+    procedure CopyFrom(Obj: TObject;
+      const AVisibility: TMemberVisibilitySet = [mvPublished]);
+    procedure CopyTo(Obj: TObject);
     function ContextPropertyCount: Integer;
     function ContextPropertyName(idx: Integer): string;
     property ContextProperties[AName: string]: TValue read GetContextProperties
@@ -270,10 +277,22 @@ end;
 procedure TObjectHelper.FromJson(AJson: string);
 var
   oJs: TJsonObject;
+  lst: TStringList;
+  pair: TJsonPair;
+  s: string;
 begin
 {$IFNDEF BPL}
   oJs := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
-  TJson.JsonToObject(self, oJs);
+  lst := TStringList.Create;
+  try
+    for pair in oJs do
+    begin
+      ContextProperties[pair.JsonString.Value] := pair.JsonValue.Value;
+      ContextFields[pair.JsonString.Value] := pair.JsonValue.Value;
+    end;
+  finally
+    lst.Free;
+  end;
 {$ENDIF}
 end;
 
@@ -693,25 +712,61 @@ begin
   end;
 end;
 
-procedure TObjectHelper.CopyFrom(Obj: TObject);
+procedure TObjectHelper.CopyFrom(Obj: TObject;
+const AVisibility: TMemberVisibilitySet = [mvPublished]);
 var
   aCtx: TRttiContext;
   aProperty: TRttiProperty;
+  aFields: TRttiField;
   aRtti: TRttiType;
-  aVal : TValue;
+  aTrib: TCustomAttribute;
+  aVal: TValue;
+  skip: Boolean;
 begin
   aCtx := TRttiContext.Create;
   try
     aRtti := aCtx.GetType(self.ClassType);
     for aProperty in aRtti.GetProperties do
     begin
-      if aProperty.PropertyType.TypeKind in [tkInteger, tkChar, tkFloat, tkString,
+      if aProperty.PropertyType.TypeKind in [tkInteger, tkChar, tkFloat,
+        tkString, tkWChar, tkLString, tkWString, tkVariant, tkInt64, tkUString]
+      then
+      begin
+        skip := false;
+        aVal := Obj.ContextProperties[aProperty.name];
+        if aVal.IsEmpty then
+          continue;
+        for aTrib in aProperty.GetAttributes do
+        begin
+          if aTrib.ClassName.Contains('hide') then
+            skip := true;
+        end;
+        if skip then
+          continue;
+        if aProperty.Visibility in AVisibility then
+          // usar somente Published para não pegar sujeira.
+          aProperty.SetValue(self, aVal);
+      end;
+    end;
+    for aFields in aRtti.GetFields do
+    begin
+      if aFields.FieldType.TypeKind in [tkInteger, tkChar, tkFloat, tkString,
         tkWChar, tkLString, tkWString, tkVariant, tkInt64, tkUString] then
       begin
-        aVal := Obj.ContextProperties[aProperty.name];
-        if not aVal.IsEmpty then
-          if aProperty.Visibility in [mvPublished] then  // usar somente Published para não pegar sujeira.
-            aProperty.SetValue(self, aVal);
+        skip := false;
+        aVal := Obj.ContextFields[aFields.name];
+        if aVal.IsEmpty then
+          continue;
+        for aTrib in aFields.GetAttributes do
+        begin
+          if aTrib.ClassName.Contains('hide') then
+            skip := true;
+        end;
+        if skip then
+          continue;
+        if aFields.Visibility in AVisibility then
+          // usar somente Published para não pegar sujeira.
+          aFields.SetValue(self, aVal);
       end;
     end;
   finally
@@ -722,7 +777,7 @@ end;
 
 procedure TObjectHelper.CopyTo(Obj: TObject);
 begin
-   obj.CopyFrom(self);
+  Obj.CopyFrom(self);
 end;
 
 class procedure TObjectHelper.Queue(Proc: TProc);
@@ -1079,6 +1134,22 @@ function TObjectAdapter<T>.Invoke: T;
 begin
   Initialize;
   result := FInstance;
+end;
+
+class function TObjectAdapter<T>.New(Obj: TObject): IObjectAdapter<T>;
+var
+  XObj: TObjectAdapter<T>;
+begin
+  XObj := TObjectAdapter<T>.Create(nil);
+  XObj.InstanceOf(TClass(T));
+  XObj.FInstance := T(Obj);
+  result := XObj;
+end;
+
+procedure TObjectAdapter<T>.Null;
+begin
+  FInstance := nil;
+  FCreated := false;
 end;
 
 function TObjectAdapter<T>.QueryInterface(const AIID: TGUID; out Obj): HResult;

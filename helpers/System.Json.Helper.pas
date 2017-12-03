@@ -68,11 +68,12 @@ type
     function JsonValue: TJsonValue;
     function isNull: Boolean;
     function AsArray: TJsonArray;
-    function addPair(AKey:String; AValue: TGuid): TJsonObject; overload;
+    function addPair(AKey: String; AValue: TGuid): TJsonObject; overload;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
     function addPair(AKey: string; AValue: double): TJsonObject; overload;
+    function addPair(AKey: string; AValue: boolean): TJsonObject; overload;
     function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
     function AddChild(AKey, AJson: string): TJsonObject;
     function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
@@ -114,9 +115,10 @@ type
     function JsonValue: TJsonValue;
     function AsArray: TJsonArray;
     function isNull: Boolean;
-    function addPair(AKey:String; AValue: TGuid): TJsonObject; overload;
+    function addPair(AKey: String; AValue: TGuid): TJsonObject; overload;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
+    function addPair(AKey: string; AValue: Boolean): TJsonObject; Overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
     function addPair(AKey: string; AValue: double): TJsonObject; overload;
     function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
@@ -171,6 +173,7 @@ type
     class function FromObject<T: Class>(AObject: T;
       AVisibility: TMemberVisibilitySet = [mvPublic, mvPublished])
       : TJsonObject; overload;
+    class Function ToObject<T: Class>(AJsonValue:TJsonValue; var AObject:T):TJsonObject;
 {$IFDEF CompilerVersion<=30}
     function addPair(chave: string; Value: string): TJsonObject; overload;
 {$ENDIF}
@@ -910,6 +913,12 @@ begin
   result := so.ToJson;
 end;
 
+class function TJSONObjectHelper.ToObject<T>(AJsonValue: TJsonValue;
+  var AObject: T): TJsonObject;
+begin
+
+end;
+
 class function TJSONValueHelper.ToRecord<T>(AJson: string): T;
 var
   j: TJsonValue;
@@ -1350,11 +1359,20 @@ begin
   result := self.addPair(AKey, ISODateTimeToString(AValue));
 end;
 
-function TInterfacedJSON.addPair(AKey:String; AValue: TGuid): TJsonObject;
-var sGuid:String;
+function TInterfacedJSON.addPair(AKey: string; AValue: Boolean): TJsonObject;
+begin
+  if AValue then
+    result := self.addPair(AKey, TJSONTrue.create)
+  else
+    result := self.addPair(AKey, TJSONFalse.create);
+end;
+
+function TInterfacedJSON.addPair(AKey: String; AValue: TGuid): TJsonObject;
+var
+  sGuid: String;
 begin
   sGuid := GuidToString(AValue);
-  result := self.addPair(AKey, sGuid );
+  result := self.addPair(AKey, sGuid);
 end;
 
 function TInterfacedJSON.addPair(AKey: string; AValue: double): TJsonObject;
