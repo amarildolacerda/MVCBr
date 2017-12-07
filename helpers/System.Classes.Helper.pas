@@ -84,21 +84,32 @@ Type
     Function Items: TStrings;
   end;
 
-  TObjectExt = class(System.TObject)
+  TContinuationAction<T, T1> = reference to function(const arg: T): T1;
+
+  TContinuationOptions = (NotOnCompleted, NotOnFaulted, NotOnCanceled,
+    OnlyOnCompleted, OnlyOnFaulted, OnlyOnCanceled);
+
+  TObjectFired = class(System.TObject)
   private
     FOnFireEvent: TProc<TObject>;
+    FContinueTo: TContinuationAction<TContinuationOptions, Boolean>;
     procedure SetOnFireEvent(const Value: TProc<TObject>);
+    procedure SetContinueTo(
+      const Value: TContinuationAction<TContinuationOptions, Boolean>);
   public
+    function ContinueWith(ASender: TContinuationOptions): Boolean; virtual;
     procedure FireEvent; overload;
     procedure FireEvent(Sender: TObject); overload;
     property OnFireEvent: TProc<TObject> read FOnFireEvent write SetOnFireEvent;
+    property ContinueTo: TContinuationAction<TContinuationOptions, Boolean>
+      read FContinueTo write SetContinueTo;
   end;
 
   TCustomAttributeClass = class of TCustomAttribute;
   TMemberVisibilitySet = set of TMemberVisibility;
 
   TValueNamed = record
-    name: string;
+    Name: string;
     Value: TValue;
   end;
 
@@ -245,7 +256,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TObjectExt.FireEvent;
+procedure TObjectFired.FireEvent;
 begin
   FireEvent(self);
 end;
@@ -931,13 +942,25 @@ end;
 
 { TObject }
 
-procedure TObjectExt.FireEvent(Sender: TObject);
+function TObjectFired.ContinueWith(ASender: TContinuationOptions): Boolean;
+begin
+  if assigned(FContinueTo) then
+    result := FContinueTo(ASender);
+end;
+
+procedure TObjectFired.FireEvent(Sender: TObject);
 begin
   if assigned(FOnFireEvent) then
     FOnFireEvent(Sender);
 end;
 
-procedure TObjectExt.SetOnFireEvent(const Value: TProc<TObject>);
+procedure TObjectFired.SetContinueTo(
+  const Value: TContinuationAction<TContinuationOptions, Boolean>);
+begin
+  FContinueTo := Value;
+end;
+
+procedure TObjectFired.SetOnFireEvent(const Value: TProc<TObject>);
 begin
   FOnFireEvent := Value;
 end;
