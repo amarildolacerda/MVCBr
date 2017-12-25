@@ -97,11 +97,16 @@ type
       write SetItems;
   end;
 
+  IConfigFile = interface;
+
   IObjectConfigList = interface(IObjectConfigListComum)
     ['{302562A0-2A11-43F6-A249-4BD42E1133F2}']
     procedure SetFileName(const Value: string);
     function GetFileName: string;
     property FileName: string read GetFileName write SetFileName;
+    Function GetContentFile: IConfigFile;
+    procedure SetContentType(const Value: TObjectConfigContentType);
+    // property ContentType: TObjectConfigContentType read FContentType
   end;
 
   IDBObjectConfigList = interface(IObjectConfigListComum)
@@ -113,7 +118,6 @@ type
     procedure SetGroupID(const Value: string);
     property GroupID: string read GetGroupID write SetGroupID;
   end;
-
 
   IObjectConfigListItem = interface
     ['{AD786625-5C1A-4486-B000-2F61BB0C0A27}']
@@ -300,6 +304,8 @@ type
 
 implementation
 
+uses System.Classes.Helper  {$ifdef MSWINDOWS} , Dialogs {$endif};
+
 type
   TValueHelper = record helper for TValue
     function isBoolean: boolean;
@@ -328,7 +334,7 @@ begin
     var
       FOut: TValue;
     begin
-      {$D+}
+{$D+}
       FOut := sender.Value;
       ReadItem(sender.Section, sender.Item, FOut);
       sender.Value := FOut;
@@ -336,7 +342,7 @@ begin
 
   FProcWrite := procedure(sender: TObjectConfigListItem)
     begin
-      {$D+}
+{$D+}
       WriteItem(sender.Section, sender.Item, sender.Value);
     end;
 
@@ -374,7 +380,7 @@ end;
 
 function TObjectConfigModelCustom.GetItems(idx: integer): TObjectConfigListItem;
 begin
-  result := TObjectConfigListItem(FList.Items[idx]) ;
+  result := TObjectConfigListItem(FList.Items[idx]);
 end;
 
 class function TObjectConfigModel.new: IObjectConfigList;
@@ -560,17 +566,33 @@ begin
 end;
 
 function TObjectConfigListItem.GetValue: TValue;
+var
+  s: TValue;
 begin
-  result := nil;
+  result := TValue.Empty;
   if not assigned(FControl) then
     exit;
-
   if FControl.InheritsFrom(TEdit) then
     result := TEdit(FControl).text
   else if FControl.InheritsFrom(TCheckBox) then
     result := TCheckBox(FControl).checked
   else if FControl.InheritsFrom(TComboBox) then
-    result := TComboBox(FControl).text;
+    result := TComboBox(FControl).text
+  else if FControl.IsContextProperty('text') then
+  begin
+    result := FControl.ContextProperties['text'];
+  end
+  else if FControl.IsContextProperty('value') then
+  begin
+    result := FControl.ContextProperties['value'];
+  end
+  else if FControl.IsContextProperty('checked') then
+  begin
+    result := FControl.ContextProperties['checked'];
+  end;
+
+  showMessage(FControl.name+': '+result.asString);
+
 end;
 
 class function TObjectConfigListItem.new(ASection, AItem: string; AControl:
@@ -598,12 +620,22 @@ end;
 
 procedure TObjectConfigListItem.SetValue(const Value: TValue);
 begin
+
   if FControl.InheritsFrom(TEdit) then
     TEdit(FControl).text := Value.AsString
   else if FControl.InheritsFrom(TCheckBox) then
     TCheckBox(FControl).checked := Value.AsBoolean
   else if FControl.InheritsFrom(TComboBox) then
-    TComboBox(FControl).text := Value.AsString;
+    TComboBox(FControl).text := Value.AsString
+  else if FControl.IsContextProperty('text') then
+    FControl.ContextProperties['text'] := Value.AsString
+  else if FControl.IsContextProperty('value') then
+    FControl.ContextProperties['value'] := Value
+  else if FControl.IsContextProperty('checked') then
+    FControl.ContextProperties['checked'] := Value;
+
+  showMessage(FControl.name+': '+value.asString);
+
 end;
 
 function TObjectConfigListItem.This: TObjectConfigListItem;

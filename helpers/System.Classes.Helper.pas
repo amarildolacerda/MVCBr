@@ -41,8 +41,13 @@ Type
   IFireEventProc = interface
     ['{BBC08E72-6518-4BF8-8BEE-0A46FD8B351C}']
     procedure SetOnEvent(const Value: TProc<TObject>);
-
     procedure FireEvent(Sender: TObject);
+  end;
+
+  IObjectAdapted<T> = interface
+    ['{6A8BEF14-2F3C-42A4-8B20-9233492170EC}']
+    function Invoke: T;
+    property This: T read Invoke;
   end;
 
   IObjectAdapter<T: Class> = interface(TFunc<T>)
@@ -53,7 +58,7 @@ Type
   end;
 
   TObjectAdapter<T: Class> = class(TInterfacedObject, IObjectAdapter<T>,
-    IInterface)
+    IInterface, IObjectAdapted<T>)
   private
     FCreated: Boolean;
     FDelegate: TFunc<T>;
@@ -84,21 +89,32 @@ Type
     Function Items: TStrings;
   end;
 
-  TObjectExt = class(System.TObject)
+  TContinuationAction<T, T1> = reference to function(const arg: T): T1;
+
+  TContinuationOptions = (NotOnCompleted, NotOnFaulted, NotOnCanceled,
+    OnlyOnCompleted, OnlyOnFaulted, OnlyOnCanceled);
+
+  TObjectFired = class(System.TObject)
   private
     FOnFireEvent: TProc<TObject>;
+    FContinueTo: TContinuationAction<TContinuationOptions, Boolean>;
     procedure SetOnFireEvent(const Value: TProc<TObject>);
+    procedure SetContinueTo(const Value
+      : TContinuationAction<TContinuationOptions, Boolean>);
   public
+    function ContinueWith(ASender: TContinuationOptions): Boolean; virtual;
     procedure FireEvent; overload;
     procedure FireEvent(Sender: TObject); overload;
     property OnFireEvent: TProc<TObject> read FOnFireEvent write SetOnFireEvent;
+    property ContinueTo: TContinuationAction<TContinuationOptions, Boolean>
+      read FContinueTo write SetContinueTo;
   end;
 
   TCustomAttributeClass = class of TCustomAttribute;
   TMemberVisibilitySet = set of TMemberVisibility;
 
   TValueNamed = record
-    name: string;
+    Name: string;
     Value: TValue;
   end;
 
@@ -245,7 +261,7 @@ begin
 {$ENDIF}
 end;
 
-procedure TObjectExt.FireEvent;
+procedure TObjectFired.FireEvent;
 begin
   FireEvent(self);
 end;
@@ -256,7 +272,7 @@ var
 begin
   aCtx := TRttiContext.Create;
   try
-    result := aCtx.GetType(self.ClassType).GetFields[idx].name;
+    result := aCtx.GetType(self.ClassType).GetFields[idx].Name;
   finally
     aCtx.Free;
   end;
@@ -350,7 +366,7 @@ begin
           if LAttr is HideAttribute then
             LTemAtributo := true; // é um Field [HIDE]
         if not LTemAtributo then
-          AList.Add(AFld.name);
+          AList.Add(AFld.Name);
       end;
     end;
   finally
@@ -387,10 +403,10 @@ begin
             LContinue := false; // é um Field [HIDE]
 
         if assigned(AFunc) and LContinue then
-          LContinue := AFunc(AField.name);
+          LContinue := AFunc(AField.Name);
 
         if LContinue then
-          AStrings.Add(lowercase(AField.name));
+          AStrings.Add(lowercase(AField.Name));
       end;
     end;
   finally
@@ -409,7 +425,7 @@ begin
     LRecord := LContext.GetType(TypeInfo(T)).AsRecord;
     for LField in LRecord.GetFields do
     begin
-      if sameText(LField.name, aNome) then
+      if sameText(LField.Name, aNome) then
       begin
         result := LField.GetValue(@rec);
         exit;
@@ -452,7 +468,7 @@ begin
           if LAttr is HideAttribute then
             LTemAtributo := true; // é um Field [HIDE]
         if not LTemAtributo then
-          AList.Add(aMethod.name);
+          AList.Add(aMethod.Name);
       end;
     end;
   finally
@@ -565,11 +581,11 @@ begin
       begin
         AValue := aProperty.GetValue(self);
         if AValue.IsDate or AValue.IsDateTime then
-          AList.Add(aProperty.name + '=' + ISODateTimeToString(AValue.AsDouble))
+          AList.Add(aProperty.Name + '=' + ISODateTimeToString(AValue.AsDouble))
         else if AValue.IsBoolean then
-          AList.Add(aProperty.name + '=' + ord(AValue.AsBoolean).ToString)
+          AList.Add(aProperty.Name + '=' + ord(AValue.AsBoolean).ToString)
         else
-          AList.Add(aProperty.name + '=' + AValue.ToString);
+          AList.Add(aProperty.Name + '=' + AValue.ToString);
       end;
     end;
   finally
@@ -593,7 +609,7 @@ begin
     for aProperty in aRtti.GetProperties do
     begin
       if aProperty.Visibility in AVisibility then
-        AList.Add(aProperty.name);
+        AList.Add(aProperty.Name);
     end;
   finally
     aCtx.Free;
@@ -684,7 +700,7 @@ var
 begin
   aCtx := TRttiContext.Create;
   try
-    result := aCtx.GetType(self.ClassType).GetProperties[idx].name;
+    result := aCtx.GetType(self.ClassType).GetProperties[idx].Name;
   finally
     aCtx.Free;
   end;
@@ -703,7 +719,7 @@ begin
     LRecord := LContext.GetType(TypeInfo(T)).AsRecord;
     for LField in LRecord.GetFields do
     begin
-      LNamed.name := LField.name;
+      LNamed.Name := LField.Name;
       LNamed.Value := LField.GetValue(@ARec);
       AList.Add(LNamed);
     end;
@@ -733,7 +749,7 @@ begin
       then
       begin
         skip := false;
-        aVal := Obj.ContextProperties[aProperty.name];
+        aVal := Obj.ContextProperties[aProperty.Name];
         if aVal.IsEmpty then
           continue;
         for aTrib in aProperty.GetAttributes do
@@ -754,7 +770,7 @@ begin
         tkWChar, tkLString, tkWString, tkVariant, tkInt64, tkUString] then
       begin
         skip := false;
-        aVal := Obj.ContextFields[aFields.name];
+        aVal := Obj.ContextFields[aFields.Name];
         if aVal.IsEmpty then
           continue;
         for aTrib in aFields.GetAttributes do
@@ -931,13 +947,25 @@ end;
 
 { TObject }
 
-procedure TObjectExt.FireEvent(Sender: TObject);
+function TObjectFired.ContinueWith(ASender: TContinuationOptions): Boolean;
+begin
+  if assigned(FContinueTo) then
+    result := FContinueTo(ASender);
+end;
+
+procedure TObjectFired.FireEvent(Sender: TObject);
 begin
   if assigned(FOnFireEvent) then
     FOnFireEvent(Sender);
 end;
 
-procedure TObjectExt.SetOnFireEvent(const Value: TProc<TObject>);
+procedure TObjectFired.SetContinueTo(const Value
+  : TContinuationAction<TContinuationOptions, Boolean>);
+begin
+  FContinueTo := Value;
+end;
+
+procedure TObjectFired.SetOnFireEvent(const Value: TProc<TObject>);
 begin
   FOnFireEvent := Value;
 end;
@@ -1166,6 +1194,7 @@ begin
   freeAndNil(FInstance);
   FCreated := false;
 end;
+
 
 class function TObjectAdapter<T>.New: IObjectAdapter<T>;
 var

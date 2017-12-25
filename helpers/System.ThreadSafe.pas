@@ -145,9 +145,9 @@ type
   protected
     FItemClass: TClass;
   public
-    constructor create(AOwnedObject: boolean = true); overload; virtual;
-    constructor create(AClass: TClass); overload; virtual;
-    destructor destroy; override;
+    constructor Create(AOwnedObject: boolean = true); overload; virtual;
+    constructor Create(AClass: TClass); overload; virtual;
+    destructor Destroy; override;
     procedure Push(AValue: T); virtual;
     procedure Pop; virtual;
     function Peek: T; virtual;
@@ -732,13 +732,13 @@ begin
     end;
 end;
 
-constructor TThreadSafeObjectList<T>.create(AClass: TClass);
+constructor TThreadSafeObjectList<T>.Create(AClass: TClass);
 begin
-  create(true);
+  Create(true);
   FItemClass := AClass;
 end;
 
-constructor TThreadSafeObjectList<T>.create(AOwnedObject: boolean = true);
+constructor TThreadSafeObjectList<T>.Create(AOwnedObject: boolean = true);
 begin
   inherited create;
   FLock := TObject.create;
@@ -758,7 +758,7 @@ begin
     end;
 end;
 
-destructor TThreadSafeObjectList<T>.destroy;
+destructor TThreadSafeObjectList<T>.Destroy;
 begin
   while Count > 0 do
     Delete(0);
@@ -1241,12 +1241,12 @@ begin
 
 end;
 
-{constructor TThreadSafeDictionary<TKey, TValue>.create;
-begin
+{ constructor TThreadSafeDictionary<TKey, TValue>.create;
+  begin
   inherited;
   FOwnedList := [doOwnsKeys, doOwnsValues];
   Invoke;
-end;
+  end;
 }
 
 function TThreadSafeDictionary<TKey, TValue>.ToArray
@@ -1342,7 +1342,6 @@ begin
   System.TMonitor.Enter(FLock);
   result := FDictionary;
 end;
-
 
 procedure TThreadSafeDictionary<TKey, TValue>.Remove(const Key: TKey);
 begin

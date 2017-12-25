@@ -103,6 +103,8 @@ type
 
   end;
 
+  TODataServices = class;
+
   IODataServices = interface
     ['{051E22D6-6BB1-4C35-A1DA-9885360283CD}']
     procedure LoadFromJsonFile(AJson: String);
@@ -115,7 +117,7 @@ type
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
       AMethod: String; ARelations: TJsonValue);
-    function This: TObject;
+    function This: TODataServices;
   end;
 
   TODataServices = class(TInterfacedObject, IODataServices)
@@ -131,13 +133,14 @@ type
     destructor destroy; override;
     function LockJson: TJsonObject; virtual;
     procedure UnlockJson; virtual;
-    function This: TObject;
+    function This: TODataServices;
     procedure LoadFromJsonFile(AJson: String);
     function hasResource(AName: String): boolean; virtual;
     function resource(AName: string): IJsonODataServiceResource; virtual;
 
     function ResourceList: TJsonArray;
     function GetRoot: TJsonArray;
+    class function ExpandFilePath(APath: string): string;
     procedure reload;
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
@@ -152,6 +155,9 @@ implementation
 // uses VCL.Dialogs;
 { TODataServices }
 
+var
+  ODataConfig: string;
+
 constructor TODataServices.create;
 begin
   inherited;
@@ -163,6 +169,19 @@ begin
   FreeAndNil(FJson);
   FreeAndNil(FLock);
   inherited;
+end;
+
+class function TODataServices.ExpandFilePath(APath: string): string;
+var
+  old: String;
+begin
+  old := ODataConfig;
+  if APath <> '' then
+    SetODataConfigFilePath(APath);
+  ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
+  result := ODataConfig;
+  if result <> old then
+    ODataServices.LoadFromJsonFile(result);
 end;
 
 function TODataServices.GetRoot: TJsonArray;
@@ -291,6 +310,7 @@ end;
 
 procedure TODataServices.reload;
 begin
+  ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
   LoadFromJsonFile(FFileJson);
 end;
 
@@ -346,7 +366,7 @@ begin
   result := arr;
 end;
 
-function TODataServices.This: TObject;
+function TODataServices.This: TODataServices;
 begin
   result := self;
 end;
@@ -619,15 +639,15 @@ begin
 
 end;
 
-var
-  ODataConfig: string;
-
 initialization
 
 ODataServices := TODataServices.create;
 try
-  ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
-  ODataServices.LoadFromJsonFile(ODataConfig);
+  /// <summary>
+  ///   Set file path and load -
+  ///   if need to load from private locate, use ExpandFilePath to load;
+  /// </summary>
+  TODataServices.ExpandFilePath(''); // default and load file config
 except
 end;
 

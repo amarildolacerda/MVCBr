@@ -73,7 +73,7 @@ type
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
     function addPair(AKey: string; AValue: double): TJsonObject; overload;
-    function addPair(AKey: string; AValue: boolean): TJsonObject; overload;
+    function addPair(AKey: string; AValue: Boolean): TJsonObject; overload;
     function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
     function AddChild(AKey, AJson: string): TJsonObject;
     function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
@@ -173,7 +173,8 @@ type
     class function FromObject<T: Class>(AObject: T;
       AVisibility: TMemberVisibilitySet = [mvPublic, mvPublished])
       : TJsonObject; overload;
-    class Function ToObject<T: Class>(AJsonValue:TJsonValue; var AObject:T):TJsonObject;
+    class Function ToObject<T: Class>(AJsonValue: TJsonValue; var AObject: T)
+      : TJsonObject;
 {$IFDEF CompilerVersion<=30}
     function addPair(chave: string; Value: string): TJsonObject; overload;
 {$ENDIF}

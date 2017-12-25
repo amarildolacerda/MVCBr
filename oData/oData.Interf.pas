@@ -147,6 +147,7 @@ Type
   end;
 
 function GetODataConfigFilePath: string;
+procedure SetODataConfigFilePath(APath: string);
 
 implementation
 
@@ -168,6 +169,11 @@ begin
   end;
 end;
 {$ENDIF}
+
+procedure SetODataConfigFilePath(APath: string);
+begin
+  FConfigFilePath := APath;
+end;
 
 function GetODataConfigFilePath: string;
 begin
