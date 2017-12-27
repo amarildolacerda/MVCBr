@@ -1,3 +1,20 @@
+/// <summary>
+/// TTimer.CreateAnonymousTimer
+///
+/// Auth:  amarildo lacerda - tireideletra.com.br
+///
+/// </summary>
+
+(*
+  sample:
+  TTimer.createAnonymousTimer(
+  function: boolean
+  begin
+  /// executa em loop enquanto retornar FALSE... para finalizar o Timer: retornar  TRUE; 
+  return  :=  not queroContinuar();
+  end, 10, 500);
+*)
+
 unit System.Timer.Helper;
 
 interface
@@ -6,12 +23,27 @@ uses System.Classes, System.SysUtils, VCL.ExtCtrls;
 
 type
 
+  /// <summary>
+  /// Criar um timer com metodo anonymous
+  /// </summary>
   TTimerHelper = class helper for TTimer
   public
-    class function CreateAnonymousTimer(proc: TProc; AInicial: Integer;
-      AInterval: Integer): TTimer;overload;
-    class function CreateAnonymousTimer(proc: TFunc<Boolean>; AInicial: Integer;
-      AInterval: Integer): TTimer;overload;
+    class function CreateAnonymousTimer(AProc: TProc; AInicial: Integer;
+      AInterval: Integer): TTimer; overload;
+    /// <summary>
+    /// Executa em LOOP enquanto a AFunc retornar false
+    /// </summary>
+    /// <param name="AFunc">
+    /// Anonymous para validar  TRUE encerrar   FALSE continuar
+    /// </param>
+    /// <param name="AInicial">
+    /// Intervalo inicial para  a primeira execução
+    /// </param>
+    /// <param name="AInterval">
+    /// Intervalo para as demais execuções
+    /// </param>
+    class function CreateAnonymousTimer(AFunc: TFunc<Boolean>;
+      AIntervalInit: Integer; AInterval: Integer): TTimer; overload;
   end;
 
 implementation
@@ -38,10 +70,10 @@ end;
 
 procedure TTimerExtended.DoTimer(Sender: TObject);
 var
-  FOld: Boolean;
-  stop: Boolean;
+  LOldEnabled: Boolean;
+  LStoped: Boolean;
 begin
-  FOld := Enabled and (FIntervalAfter > 0);
+  LOldEnabled := Enabled;
   try
     Enabled := false;
     try
@@ -49,44 +81,44 @@ begin
         FProc
       else if assigned(FFunc) then
       begin
-        stop := FFunc;
-        if stop then
+        LStoped := FFunc;
+        if LStoped then
           FIntervalAfter := 0;
       end;
     except
     end;
-    if FIntervalAfter = 0 then
+    if FIntervalAfter <= 0 then
       free
     else
       Interval := FIntervalAfter;
   finally
-    Enabled := FOld;
+    Enabled := LOldEnabled and (FIntervalAfter > 0);
   end;
 
 end;
 
-class function TTimerHelper.CreateAnonymousTimer(proc: TProc; AInicial: Integer;
-  AInterval: Integer): TTimer;
+class function TTimerHelper.CreateAnonymousTimer(AProc: TProc;
+  AIntervalFirst: Integer; AIntervalAfter: Integer): TTimer;
 var
   FTimer: TTimerExtended;
 begin
   FTimer := TTimerExtended.Create(Application);
-  FTimer.FProc := proc;
-  FTimer.FIntervalAfter := AInterval;
-  FTimer.Interval := AInicial;
+  FTimer.FProc := AProc;
+  FTimer.FIntervalAfter := AIntervalRegular;
+  FTimer.Interval := AIntervalFirst;
   FTimer.Enabled := true;
   result := FTimer;
 end;
 
-class function TTimerHelper.CreateAnonymousTimer(proc: TFunc<Boolean>;
-  AInicial, AInterval: Integer): TTimer;
+class function TTimerHelper.CreateAnonymousTimer(AFunc: TFunc<Boolean>;
+  AIntervalFirst, AIntervalRegular: Integer): TTimer;
 var
   FTimer: TTimerExtended;
 begin
   FTimer := TTimerExtended.Create(Application);
-  FTimer.FFunc := proc;
-  FTimer.FIntervalAfter := AInterval;
-  FTimer.Interval := AInicial;
+  FTimer.FFunc := AFunc;
+  FTimer.FIntervalAfter := AIntervalRegular;
+  FTimer.Interval := AIntervalFirst;
   FTimer.Enabled := true;
   result := FTimer;
 end;
