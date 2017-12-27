@@ -51,7 +51,7 @@ type
   TJsonStringResult = string;
 
   TJsonType = (jtUnknown, jtObject, jtArray, jtString, jtTrue, jtFalse,
-    jtNumber, jtDate, jtDateTime, jtBytes, jtNull);
+    jtNumber, jtDate, jtDateTime, jtBytes, jtNull, jtDatetimeISO8601);
 
   TMemberVisibilitySet = set of TMemberVisibility;
 
@@ -502,6 +502,8 @@ end;
 class function TJSONObjectHelper.GetJsonType(AJsonValue: TJsonValue): TJsonType;
 var
   LJsonString: TJSONString;
+  dt: TDatetime;
+  S: String;
 begin
   if AJsonValue is TJSONNull then
     result := jtNull
@@ -518,6 +520,13 @@ begin
   else if AJsonValue is TJSONString then
   begin
     LJsonString := (AJsonValue as TJSONString);
+    S := LJsonString.Value;
+    if (S.Length = 24) and (S.Chars[23] = 'Z') and (S.Chars[10] = 'T') then
+      if TryISO8601ToDate(S, dt, true) then
+      begin
+        result := jtDatetimeISO8601;
+        exit;
+      end;
     if TRegEx.IsMatch(LJsonString.Value,
       '^([0-9]{4})-?(1[0-2]|0[1-9])-?(3[01]|0[1-9]|[12][0-9])(T| )(2[0-3]|[01][0-9]):?([0-5][0-9]):?([0-5][0-9])$')
     then

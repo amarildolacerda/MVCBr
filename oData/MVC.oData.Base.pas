@@ -238,7 +238,7 @@ var
   JSONResponse: TJsonObject;
   arr: TJsonArray;
   n: integer;
-  r: string;
+  r,LAllow: string;
   erro: TJsonObject;
 begin
   try
@@ -253,6 +253,11 @@ begin
       r := CTX.Request.Body;
       n := FOData.ExecutePATCH(r, JSONResponse);
       JSONResponse.addPair('@odata.count', n.ToString);
+
+      if JSONResponse.TryGetValue<string>('allow', LAllow) then
+      begin
+        CTX.Response.CustomHeaders.Add('Allow=' + LAllow);
+      end;
 
       if n > 0 then
         CTX.Response.StatusCode := 201

@@ -10,7 +10,7 @@ interface
 
 uses
   System.Classes, System.SysUtils, Data.Db, oData.SQL, System.JSON,
-  MVCBr.Interf,System.JSON.Helper,
+  MVCBr.Interf, System.JSON.Helper,
   FireDAC.Comp.Client;
 
 type
@@ -19,6 +19,7 @@ type
     FQuery: TFdQuery;
     FConnection: TFDConnection;
     procedure SetConnection(const Value: TFDConnection);
+    procedure paramFromJson(q: TFdQuery; ji: TJsonObject);
   public
     destructor destroy; override;
     function GetPrimaryKey(AConnection: TObject; ACollection: string)
@@ -27,13 +28,13 @@ type
 
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
-    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJSONObject)
+    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJsonObject)
       : TObject; override;
-    function ExecuteDELETE(ABody: string; var JSONResponse: TJSONObject)
+    function ExecuteDELETE(ABody: string; var JSONResponse: TJsonObject)
       : Integer; override;
-    function ExecutePOST(ABody: string; var JSONResponse: TJSONObject)
+    function ExecutePOST(ABody: string; var JSONResponse: TJsonObject)
       : Integer; override;
-    function ExecutePATCH(ABody: string; var JSONResponse: TJSONObject)
+    function ExecutePATCH(ABody: string; var JSONResponse: TJsonObject)
       : Integer; override;
 
     procedure CreateExpandCollections(AQuery: TObject); override;
@@ -42,7 +43,9 @@ type
 
 implementation
 
-uses System.Rtti, idURI, oData.ServiceModel, oData.JSON, oData.engine;
+uses System.DateUtils, FireDAC.Stan.Param, System.Rtti, idURI,
+  oData.ServiceModel, oData.JSON, oData.Dialect,
+  oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -58,7 +61,7 @@ begin
 end;
 
 function TODataFiredacQuery.ExecuteDELETE(ABody: string;
-  var JSONResponse: TJSONObject): Integer;
+  var JSONResponse: TJsonObject): Integer;
 var
   AJson: string;
   js: IJsonObject;
@@ -72,7 +75,7 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    js := TInterfacedJson.New(TJSONObject.ParseJSONValue(ABody), false);
+    js := TInterfacedJson.New(TJsonObject.ParseJSONValue(ABody), false);
     if (not assigned(js)) or (not assigned(js.JSON)) then
       raise Exception.Create
         ('JSON string inválido, revisar o body da mensagem');
@@ -95,6 +98,7 @@ begin
         inc(iLin);
         FQuery.SQL.Text := CreateDeleteQuery(FODataParse, ji,
           GetPrimaryKey(FQuery.Connection, FResource.collection));
+        paramFromJson(FQuery, ji as TJsonObject);
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -109,6 +113,7 @@ begin
       else
         FQuery.SQL.Text := CreateDeleteQuery(FODataParse, js.JsonValue,
           GetPrimaryKey(FQuery.Connection, FResource.collection));
+      paramFromJson(FQuery, js.JsonObject);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -138,7 +143,7 @@ end;
 
 }
 function TODataFiredacQuery.ExecutePATCH(ABody: string;
-  var JSONResponse: TJSONObject): Integer;
+  var JSONResponse: TJsonObject): Integer;
 var
   AJson: string;
   jo: TJsonValue;
@@ -147,6 +152,7 @@ var
   ji: TJsonValue;
   sKeys: string;
   iLin: Integer;
+  LRowState: string;
 begin
   inherited;
   iLin := 0;
@@ -154,7 +160,7 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    jo := TJSONObject.ParseJSONValue(ABody);
+    jo := TJsonObject.ParseJSONValue(ABody);
     if assigned(jo) then
     begin
       js := TInterfacedJson.New(jo, false);
@@ -185,7 +191,18 @@ begin
         if sKeys = '' then
           sKeys := FResource.keyID;
         FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji, sKeys);
+        paramFromJson(FQuery, ji as TJsonObject);
         FQuery.ExecSQL;
+        if (FQuery.RowsAffected = 0) then
+        begin
+          if TJsonObject(ji).TryGetValue<string>(cODataRowState, LRowState) then
+            if LRowState = cODataModifiedORInserted then
+            begin
+              FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji);
+              paramFromJson(FQuery, ji as TJsonObject);
+              FQuery.ExecSQL;
+            end;
+        end;
         result := result + FQuery.RowsAffected;
       end;
 
@@ -195,6 +212,7 @@ begin
       inc(iLin);
       FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue,
         GetPrimaryKey(FQuery.Connection, FResource.collection));
+      paramFromJson(FQuery, js.JsonObject);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -213,8 +231,50 @@ begin
   end;
 end;
 
+procedure TODataFiredacQuery.paramFromJson(q: TFdQuery; ji: TJsonObject);
+var
+  p: TJsonPair;
+  n: string;
+  v: TValue;
+  prm: TFDParam;
+  dt: TDatetime;
+begin
+  for p in ji do
+  begin
+    n := p.JsonString.Value;
+    prm := q.findParam(n);
+    if assigned(prm) then
+    begin
+      v := p.JsonValue.Value;
+
+      case TInterfacedJson.GetJsonType(p) of
+        jtNumber:
+          prm.AsExtended := p.JsonValue.AsFloat;
+        jtTrue:
+          prm.asBoolean := true;
+        jtFalse:
+          prm.asBoolean := false;
+        jtDate:
+          prm.asDateTime := strToDateTimeDef(v.AsString, 0);
+        jtDatetimeISO8601:
+          begin
+            if TryISO8601ToDate(v.AsString, dt, true) then
+              prm.asDateTime := dt
+            else
+              prm.Value := v.asVariant;
+          end;
+        jtString:
+          prm.AsString := v.AsString;
+      else
+        prm.Value := v.asVariant;
+      end;
+    end;
+
+  end;
+end;
+
 function TODataFiredacQuery.ExecutePOST(ABody: string;
-  var JSONResponse: TJSONObject): Integer;
+  var JSONResponse: TJsonObject): Integer;
 var
   AJson: string;
   js: IJsonObject;
@@ -228,7 +288,7 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    js := TInterfacedJson.New(TJSONObject.ParseJSONValue(ABody), false);
+    js := TInterfacedJson.New(TJsonObject.ParseJSONValue(ABody), false);
     if (not assigned(js)) or (not assigned(js.JSON)) then
       raise Exception.Create
         ('JSON string inválido, revisar o body da mensagem');
@@ -250,6 +310,7 @@ begin
       begin
         inc(iLin);
         FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji);
+        paramFromJson(FQuery, ji as TJsonObject);
         FQuery.ExecSQL;
         result := result + FQuery.RowsAffected;
       end;
@@ -259,6 +320,7 @@ begin
     begin
       inc(iLin);
       FQuery.SQL.Text := CreatePOSTQuery(FODataParse, js.JsonValue);
+      paramFromJson(FQuery, js.JsonObject);
       FQuery.ExecSQL;
       result := result + FQuery.RowsAffected;
     end;
@@ -319,7 +381,7 @@ begin
 end;
 
 function TODataFiredacQuery.ExecuteGET(AJsonBody: TJsonValue;
-  var JSONResponse: TJSONObject): TObject;
+  var JSONResponse: TJsonObject): TObject;
 var
   i: Integer;
   v: TValue;
@@ -361,7 +423,7 @@ begin
       for i := 0 to FQuery.ParamCount - 1 do
       begin
         if AJsonBody.TryGetValue<TValue>(FQuery.Params[i].Name, v) then
-          FQuery.Params[i].Value := v.AsVariant
+          FQuery.Params[i].Value := v.asVariant
       end;
 
     LSql := FQuery.SQL.Text;
@@ -371,14 +433,15 @@ begin
     CreateEntitiesSchema(FQuery, JSONResponse);
 
     if FODataParse.oData.Debug.Equals('on') then
-       JSONResponse.AddPair(TJsonPair.Create('query',FQuery.SQL.text));
+      JSONResponse.AddPair(TJsonPair.Create('query', FQuery.SQL.Text));
 
   except
     on e: Exception do
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, e.Message+'<'+FQuery.SQL.Text+'>'));
+        raise Exception.Create(TODataError.Create(501,
+          e.Message + '<' + FQuery.SQL.Text + '>'));
   end;
 end;
 

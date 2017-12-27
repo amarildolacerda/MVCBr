@@ -199,7 +199,7 @@ begin
   LJson := TInterfacedJson.New(AJsonBody,false);
   if LJson.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
   begin
-    if LRowState = cODataModified then
+    if (LRowState = cODataModified) or (LRowState = cODataModifiedORInserted) then
       result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody,AKeys)
     else if LRowState = cODataDeleted then
       result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody,AKeys)

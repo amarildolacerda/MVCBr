@@ -17,6 +17,7 @@ const
   cODataModified = 'modified';
   cODataDeleted = 'deleted';
   cODataInserted = 'inserted';
+  cODataModifiedORInserted = 'modifyORinsert';
 
 Type
 
@@ -104,7 +105,7 @@ function TODataDialect.GetInsertFromJson(AJson: TJsonValue): string;
 var
   js: IJsonObject;
   p: TJsonPair;
-  cols, params: string;
+  cols, params, v: string;
 begin
   Result := '';
   js := TInterfacedJson.New(AJson as TJSONObject, false);
@@ -132,8 +133,11 @@ begin
     cols := cols + p.JsonString.Value;
 
     case TInterfacedJson.GetJsonType(p) of
-      jtNumber:
-        params := params + p.JsonValue.Value;
+      jtNumber, jtString, jtTrue, jtFalse, jtDatetimeISO8601, jtDateTime:
+        begin
+          params := params + ':' + p.JsonString.Value;
+          // p.JsonValue.Value.Replace(FormatSettings.DecimalSeparator,'.',[]);
+        end;
     else
       params := params + QuotedStr(p.JsonValue.Value);
     end;
@@ -160,6 +164,15 @@ var
   js: IJsonObject;
   p: TJsonPair;
   cols: string;
+  procedure local_addColumn(aCol: string);
+  begin
+    if cols <> '' then
+    begin
+      cols := cols + ', ' ;
+    end;
+    cols := cols + aCol
+  end;
+
 begin
   Result := '';
   js := TInterfacedJson.New(AJson as TJSONObject, false);
@@ -173,20 +186,13 @@ begin
       (ODataIgnoreColumns.IndexOfItem(FResourceName, p.JsonString.Value) >= 0)
     then
       continue;
-
-    if TInterfacedJson.GetJsonType(p) = jtNull then
-      continue;
-
-    if cols <> '' then
-    begin
-      cols := cols + ',';
-    end;
-
     case TInterfacedJson.GetJsonType(p) of
-      jtNumber:
-        cols := cols + p.JsonString.Value + '=' + p.JsonValue.Value;
+      jtNumber, jtDateTime, jtString, jtDatetimeISO8601, jtTrue, jtFalse:
+        local_addColumn(p.JsonString.Value + '=' + ' :' + p.JsonString.Value);
+      jtNull:
+        ; // noop
     else
-      cols := cols + p.JsonString.Value + '=' + QuotedStr(p.JsonValue.Value);
+      local_addColumn(p.JsonString.Value + '=' + QuotedStr(p.JsonValue.Value));
     end;
   end;
   Result := 'Set ' + cols;
@@ -197,9 +203,9 @@ function TODataDialect.GetWhereFromKeys(AKeys: string;
 var
   str: TStringList;
   sKeys: string;
-  jv:TJsonValue;
+  jv: TJsonValue;
 begin
-  result := '';
+  Result := '';
   str := TStringList.Create;
   try
     str.Delimiter := ',';
@@ -208,19 +214,19 @@ begin
     begin
       if assigned(AJson) then
       begin
-        jv := (AJson as TJsonObject).GetValue(sKeys);
+        jv := (AJson as TJSONObject).GetValue(sKeys);
         if assigned(jv) then
         begin
-          if result <> '' then
-            result := result + ' and ';
+          if Result <> '' then
+            Result := Result + ' and ';
           case TInterfacedJson.GetJsonType(jv) of
-            jtNumber:
-              result := result + sKeys + '=' + jv.Value;
+            jtNumber, jtDateTime, jtDatetimeISO8601, jtString, jtTrue, jtFalse:
+              Result := Result + sKeys + '= :' + sKeys;
             jtNull:
               begin // nothing
               end;
           else
-            result := result + sKeys + '=' + QuotedStr(jv.Value);
+            Result := Result + sKeys + '=' + QuotedStr(jv.Value);
           end;
         end;
       end;
@@ -333,7 +339,7 @@ begin
     Result := Result + ' group by ' + FGroupBy;
 end;
 
-function TODataDialect.CreatePostQuery(oData: IODataDecode;
+function TODataDialect.CreatePOSTQuery(oData: IODataDecode;
   AJson: TJsonValue): String;
 var
   AResource: IJsonODataServiceResource;
@@ -509,7 +515,7 @@ begin
   end;
 end;
 
-function TODataDialect.createDeleteQuery(oData: IODataDecode; AJson: TJsonValue;
+function TODataDialect.createDELETEQuery(oData: IODataDecode; AJson: TJsonValue;
   AKeys: string): string;
 var
   i: integer;
@@ -533,13 +539,13 @@ begin
   begin
     FWhere2 := GetWhereFromKeys(FKeys, AJson);
   end;
-  if FWhere2<>'' then
-   begin
-     if FWhere<>'' then FWhere := '('+FWhere+') ';
-     FWhere := FWhere+FWhere2;
-     FWhere2 := '';
-   end;
-
+  if FWhere2 <> '' then
+  begin
+    if FWhere <> '' then
+      FWhere := '(' + FWhere + ') ';
+    FWhere := FWhere + FWhere2;
+    FWhere2 := '';
+  end;
 
   if FWhere = '' then
     if assigned(AJson) then
