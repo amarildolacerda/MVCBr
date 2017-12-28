@@ -22,7 +22,7 @@ begin
     try
       add('/// <summary>                                 ');
       add('/// ODataBr - Generate NG5 Script                           ');
-      add('/// Date: ' + DateTimeToStr(now)+'                          ');
+      add('/// Date: ' + DateTimeToStr(now) + '                          ');
       add('/// Auth:  amarildo lacerda - tireideletra.com.br           ');
       add('///        gerado pelo Servidor ODataBr: .../OData/hello/ng   ');
       add('/// </summary>                                 ');
@@ -36,12 +36,27 @@ begin
       add('export class ODataBrProvider {');
       add('  token:string=""; ');
       add('  urlBase:string=""; ');
-      add('  port:number = 8080; ');
+      add('  urlPort:number = 8080; ');
       add('  headers: HttpHeaders;');
       add('');
+      add('  port(aPort:number):ODataBrProvider{');
+      add('     this.urlPort = aPort;');
+      add('     return this;');
+      add('  } ');
+      add('  url(aUrl:string):ODataBrProvider{');
+      add('    this.urlBase = aUrl;');
+      add('    return this;');
+      add('  }');
+      add('');
+
+      add('  getJson(url:string):Observable<any>{');
+      add('    this.configOptions();');
+      add('    return this._odata.getJson(url);');
+      add('  }');
+
       add('  private configOptions(){ ');
       add('      if (this.token!="") { this._odata.token = this.token; }; ');
-      add('      this._odata.createUrlBase(this.urlBase,this.port); ');
+      add('      this._odata.createUrlBase(this.urlBase,this.urlPort); ');
       add('      if (this.headers.keys().length>0) {');
       add('        //this._odata.headers.clear;');
       add('        for(let item of this.headers.keys() ){ ');
@@ -65,40 +80,48 @@ begin
                   add('   get_' + AResource +
                     '( query:ODataService ):ODataProviderService { ');
                   add('      this.configOptions(); ');
-                  add('      query.resource = "'+AResource+'";');
+                  add('      query.resource = "' + AResource + '";');
                   add('      return this._odata.getValue( query ); ');
                   add('   }');
                   add('');
                 end;
                 if AMethod.Contains('PUT') then
                 begin
-                  add('   put_' + AResource +'( item: any, erroProc:any=null): Observable<any> { ');
+                  add('   put_' + AResource +
+                    '( item: any, erroProc:any=null): Observable<any> { ');
                   add('      this.configOptions(); ');
-                  add('      return this._odata.putItem("'+AResource+'", item, erroProc ); ');
+                  add('      return this._odata.putItem("' + AResource +
+                    '", item, erroProc ); ');
                   add('   }');
                   add('');
                 end;
                 if AMethod.Contains('POST') then
                 begin
-                  add('   post_' + AResource +'( item: any, erroProc:any=null): Observable<any> { ');
+                  add('   post_' + AResource +
+                    '( item: any, erroProc:any=null): Observable<any> { ');
                   add('      this.configOptions(); ');
-                  add('      return this._odata.postItem("'+AResource+'", item, erroProc ); ');
+                  add('      return this._odata.postItem("' + AResource +
+                    '", item, erroProc ); ');
                   add('   }');
                   add('');
                 end;
                 if AMethod.Contains('PATCH') then
                 begin
-                  add('   patch_' + AResource +'( item: any, erroProc:any=null): Observable<any> { ');
+                  add('   patch_' + AResource +
+                    '( item: any, erroProc:any=null): Observable<any> { ');
                   add('      this.configOptions(); ');
-                  add('      return this._odata.patchItem("'+AResource+'", item, erroProc ); ');
+                  add('      return this._odata.patchItem("' + AResource +
+                    '", item, erroProc ); ');
                   add('   }');
                   add('');
                 end;
                 if AMethod.Contains('DELETE') then
                 begin
-                  add('   delete_' + AResource +'( item: any, erroProc:any=null): Observable<any> { ');
+                  add('   delete_' + AResource +
+                    '( item: any, erroProc:any=null): Observable<any> { ');
                   add('      this.configOptions(); ');
-                  add('      return this._odata.deleteItem("'+AResource+'", item, erroProc ); ');
+                  add('      return this._odata.deleteItem("' + AResource +
+                    '", item, erroProc ); ');
                   add('   }');
                   add('');
                 end;

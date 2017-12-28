@@ -30,7 +30,7 @@ type
 
   TODataFiredacQuery = class(TODataSQL)
   private
-    FQuery: IQueryAdapter<TFdQuery>;
+    FQuery: TFdQuery; //IQueryAdapter<TFdQuery>;
     FConnection: TFDConnection;
     procedure SetConnection(const Value: TFDConnection);
     procedure paramFromJson(q: TFdQuery; ji: TJsonObject);
@@ -71,8 +71,8 @@ end;
 
 destructor TODataFiredacQuery.Destroy;
 begin
-  FQuery := nil;
-  // freeAndNil(FQuery); // passou para a Interface
+  //FQuery := nil;
+  freeAndNil(FQuery);
   inherited;
 end;
 
@@ -103,7 +103,7 @@ begin
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
     as IJsonODataServiceResource;
 
-  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
+  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
   PrepareQuery(FQuery);
 
   FQuery.Connection.StartTransaction;
@@ -192,7 +192,7 @@ begin
     as IJsonODataServiceResource;
 
   result := 0;
-  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
+  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
   PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
@@ -327,7 +327,7 @@ begin
 
   result := 0;
   freeAndNil(FQuery);
-  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
+  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
   PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
@@ -417,7 +417,7 @@ var
   LSql: string;
 begin
   InLineRecordCount := -1;
-  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
+  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
   PrepareQuery(FQuery);
   result := FQuery;
 
