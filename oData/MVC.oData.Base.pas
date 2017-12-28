@@ -1,5 +1,5 @@
 { //************************************************************// }
-{ //         Projeto MVCBr                                      // }
+{ //         Projeto ODataBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
 { //************************************************************// }
 { // Data: 03/03/2017                                           // }
@@ -16,7 +16,7 @@ uses System.Classes, System.SysUtils,
 type
 
   [MVCPath('/OData')]
-  [MVCDoc('Implements OData protocol')]
+  [MVCDoc('ODataBr - Implements OData protocol - tireideletra.com.br')]
   TODataController = class(TMVCController)
   public
     function CreateJson(CTX: TWebContext; const AValue: string): TJsonObject;
@@ -29,22 +29,6 @@ type
     // [MVCDoc('General parse OData URI')]
     procedure GetQueryBase(CTX: TWebContext);
   public
-
-    [MVCHTTPMethod([httpGET])]
-    [MVCPath('')]
-    [MVCPath('/')]
-    [MVCDoc('Get Resources list')]
-    procedure ResourceList(CTX: TWebContext);
-
-    [MVCHTTPMethod([httpGET])]
-    [MVCPath('/$metadata')]
-    [MVCDoc('Get config metadata file')]
-    procedure MetadataCollection(CTX: TWebContext);
-
-    [MVCHTTPMethod([httpGET])]
-    [MVCPath('/reset')]
-    [MVCDoc('Reset/reload metadata file')]
-    procedure ResetCollection(CTX: TWebContext);
 
     [MVCHTTPMethod([httpGET])]
     [MVCPath('/OData.svc/($collection)')]
@@ -89,6 +73,27 @@ type
     [MVCDoc('Default method to OPTIONS OData')]
     procedure OPTIONSCollection1(CTX: TWebContext);
 
+    [MVCHTTPMethod([httpGET])]
+    [MVCPath('')]
+    [MVCPath('/')]
+    [MVCDoc('Get Resources list')]
+    procedure ResourceList(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpGET])]
+    [MVCPath('/hello/($engine)')]
+    [MVCDoc('Get script code')]
+    procedure GenScriptEngine(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpGET])]
+    [MVCPath('/$metadata')]
+    [MVCDoc('Get config metadata file')]
+    procedure MetadataCollection(CTX: TWebContext);
+
+    [MVCHTTPMethod([httpGET])]
+    [MVCPath('/reset')]
+    [MVCDoc('Reset/reload metadata file')]
+    procedure ResetCollection(CTX: TWebContext);
+
     procedure OnBeforeAction(Context: TWebContext; const AActionName: string;
       var Handled: Boolean); override;
     procedure OnAfterAction(Context: TWebContext;
@@ -100,8 +105,9 @@ type
 
 implementation
 
-uses MVCFramework.DataSet.Utils, WS.Common, oData.ProxyBase, oData.SQL,
-  oData.ServiceModel, oData.Engine,
+uses
+  MVCFramework.DataSet.Utils, WS.Common, oData.ProxyBase, oData.SQL,
+  oData.ServiceModel, oData.Engine, oData.GenScript,
 {$IFDEF LOGEVENTS}
   System.LogEvents.progress, System.LogEvents,
 {$ENDIF}
@@ -238,7 +244,7 @@ var
   JSONResponse: TJsonObject;
   arr: TJsonArray;
   n: integer;
-  r,LAllow: string;
+  r, LAllow: string;
   erro: TJsonObject;
 begin
   try
@@ -349,6 +355,15 @@ end;
 procedure TODataController.QueryCollection1(CTX: TWebContext);
 begin
   GetQueryBase(CTX);
+end;
+
+procedure TODataController.GenScriptEngine(CTX: TWebContext);
+var
+  eng: string;
+begin
+  CTX.Request.SegmentParam('engine',eng);
+  ctx.Response.Content := TODataGenScript.GetScript(eng);
+  ctx.Response.ContentType := 'text/plan';
 end;
 
 procedure TODataController.GetQueryBase(CTX: TWebContext);

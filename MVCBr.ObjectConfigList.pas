@@ -304,7 +304,7 @@ type
 
 implementation
 
-uses System.Classes.Helper  {$ifdef MSWINDOWS} , Dialogs {$endif};
+uses System.Classes.Helper ;
 
 type
   TValueHelper = record helper for TValue
@@ -591,7 +591,7 @@ begin
     result := FControl.ContextProperties['checked'];
   end;
 
-  showMessage(FControl.name+': '+result.asString);
+  //showMessage(FControl.name+': '+result.asString);
 
 end;
 
@@ -634,7 +634,7 @@ begin
   else if FControl.IsContextProperty('checked') then
     FControl.ContextProperties['checked'] := Value;
 
-  showMessage(FControl.name+': '+value.asString);
+  //showMessage(FControl.name+': '+value.asString);
 
 end;
 

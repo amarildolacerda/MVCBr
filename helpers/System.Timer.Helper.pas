@@ -28,8 +28,8 @@ type
   /// </summary>
   TTimerHelper = class helper for TTimer
   public
-    class function CreateAnonymousTimer(AProc: TProc; AInicial: Integer;
-      AInterval: Integer): TTimer; overload;
+    class function CreateAnonymousTimer(AProc: TProc; AIntervalFirst: Integer;
+      AIntervalRegular: Integer): TTimer; overload;
     /// <summary>
     /// Executa em LOOP enquanto a AFunc retornar false
     /// </summary>
@@ -43,7 +43,7 @@ type
     /// Intervalo para as demais execuções
     /// </param>
     class function CreateAnonymousTimer(AFunc: TFunc<Boolean>;
-      AIntervalInit: Integer; AInterval: Integer): TTimer; overload;
+      AIntervalFirst: Integer; AIntervalRegular: Integer): TTimer; overload;
   end;
 
 implementation
@@ -98,7 +98,7 @@ begin
 end;
 
 class function TTimerHelper.CreateAnonymousTimer(AProc: TProc;
-  AIntervalFirst: Integer; AIntervalAfter: Integer): TTimer;
+  AIntervalFirst: Integer; AIntervalRegular: Integer): TTimer;
 var
   FTimer: TTimerExtended;
 begin

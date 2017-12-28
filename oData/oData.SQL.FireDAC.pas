@@ -14,14 +14,29 @@ uses
   FireDAC.Comp.Client;
 
 type
+
+  IQueryAdapter<T> = interface(TFunc<T>) // like    System.classes.helper
+    ['{B6835263-1731-4E51-9322-0AD7870C588A}']
+  end;
+
+  TQueryAdapter = class(TInterfacedObject, IQueryAdapter<TFdQuery>)
+  private
+    FInstance: TFdQuery;
+    function Invoke: TFdQuery;
+  public
+    Constructor Create(AInstance: TObject);
+    Destructor Destroy; override;
+  end;
+
   TODataFiredacQuery = class(TODataSQL)
   private
-    FQuery: TFdQuery;
+    FQuery: IQueryAdapter<TFdQuery>;
     FConnection: TFDConnection;
     procedure SetConnection(const Value: TFDConnection);
     procedure paramFromJson(q: TFdQuery; ji: TJsonObject);
+    procedure PrepareQuery(FQuery: TFdQuery);
   public
-    destructor destroy; override;
+    destructor Destroy; override;
     function GetPrimaryKey(AConnection: TObject; ACollection: string)
       : string; override;
     function GetConnection(ADataset: TDataset): TObject; override;
@@ -54,7 +69,7 @@ begin
 
 end;
 
-destructor TODataFiredacQuery.destroy;
+destructor TODataFiredacQuery.Destroy;
 begin
   freeAndNil(FQuery);
   inherited;
@@ -88,7 +103,9 @@ begin
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
     as IJsonODataServiceResource;
 
-  FQuery := QueryClass.Create(nil) as TFdQuery;
+  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  PrepareQuery(FQuery);
+
   FQuery.Connection.StartTransaction;
   try
     if isArray then
@@ -175,8 +192,8 @@ begin
     as IJsonODataServiceResource;
 
   result := 0;
-  freeAndNil(FQuery);
-  FQuery := QueryClass.Create(nil) as TFdQuery;
+  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
     if isArray then
@@ -273,6 +290,15 @@ begin
   end;
 end;
 
+procedure TODataFiredacQuery.PrepareQuery(FQuery: TFdQuery);
+begin
+  FQuery.FetchOptions.RowsetSize := 0;
+  FQuery.FetchOptions.Unidirectional := true;
+  FQuery.ResourceOptions.CmdExecTimeout := 60000 * 10;
+  FQuery.ResourceOptions.DirectExecute := true;
+  FQuery.ResourceOptions.SilentMode := true;
+end;
+
 function TODataFiredacQuery.ExecutePOST(ABody: string;
   var JSONResponse: TJsonObject): Integer;
 var
@@ -300,7 +326,8 @@ begin
 
   result := 0;
   freeAndNil(FQuery);
-  FQuery := QueryClass.Create(nil) as TFdQuery;
+  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
 
@@ -390,8 +417,8 @@ var
 begin
   InLineRecordCount := -1;
   freeAndNil(FQuery);
-  FQuery := QueryClass.Create(nil) as TFdQuery;
-  FQuery.FetchOptions.RowsetSize := 0;
+  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  PrepareQuery(FQuery);
   result := FQuery;
 
   try
@@ -453,6 +480,28 @@ end;
 procedure TODataFiredacQuery.SetConnection(const Value: TFDConnection);
 begin
   FConnection := Value;
+end;
+
+{ TQueryAdapter }
+
+constructor TQueryAdapter.Create(AInstance: TObject);
+begin
+  FInstance := AInstance as TFdQuery;
+end;
+
+destructor TQueryAdapter.Destroy;
+begin
+  if assigned(FInstance) then
+    FInstance.DisposeOf;
+  FInstance := nil;
+  inherited;
+end;
+
+function TQueryAdapter.Invoke: TFdQuery;
+begin
+  if not assigned(FInstance) then
+    FInstance := TFdQuery.Create(nil);
+  result := FInstance;
 end;
 
 end.

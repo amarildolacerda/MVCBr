@@ -26,17 +26,19 @@ type
 implementation
 
 uses WS.Common,
-  MVCFramework.Logger, WS.Controller;
+  MVCFramework.Logger, WS.Controller, oData.GenScript.Typescript;
 
 procedure TWSHelloController.Index;
 begin
   render('<http><body>'+
-   'MVCBr - OData Server<hr />'+
-   'Hello teste:  <a href="./hello/MVCBr">/hello/[nome]</a><br>'+
-  '<a href="./system/describeserver.info">describeserver.info</a><br>'+
-  '<a href="./OData">OData Services</a><br>'+
-  '<a href="./OData/$metadata">OData $metadata</a><br>'+
-  '<a href="http://www.odata.org">Especificação by OData.Org</a>'+
+   'ODataBr - OData Server<hr />'+
+   '  Hello teste:  <a href="./hello/MVCBr">/hello/[nome]</a><br>'+
+  '  <a href="./system/describeserver.info">describeserver.info</a><br>'+
+  '  <a href="./OData">OData Services</a><br>'+
+  '  <a href="./OData/$metadata">OData $metadata</a><br>'+
+  '  <a href="http://www.odata.org">Especificação by OData.Org</a><br>'+
+  '<b>Geradores Scripts</b><br>'+
+  '  <a href="./OData/hello/ng">Script Angular5</a>'+
    '<hr />Powered by: DelphiMVCFramework with OData/MVCBr'+
   '</body></http>');
 end;

@@ -145,9 +145,9 @@ type
   protected
     FItemClass: TClass;
   public
-    constructor Create(AOwnedObject: boolean = true); overload; virtual;
-    constructor Create(AClass: TClass); overload; virtual;
-    destructor Destroy; override;
+    constructor create(AOwnedObject: boolean = true); overload; virtual;
+    constructor create(AClass: TClass); overload; virtual;
+    destructor destroy; override;
     procedure Push(AValue: T); virtual;
     procedure Pop; virtual;
     function Peek: T; virtual;
@@ -221,8 +221,9 @@ type
     function Invoke: TObjectDictionary<TKey, TValue>;
     function GetCount: integer;
   public
-    constructor create(AOwnedList: TDictionaryOwnerShips); overload;
-    destructor destroy; override;
+    constructor Create; Reintroduce; overload;
+    constructor Create(AOwnedList: TDictionaryOwnerShips); overload;
+    destructor Destroy; override;
     function LockList: TDictionary<TKey, TValue>;
     procedure UnlockList;
 
@@ -732,13 +733,13 @@ begin
     end;
 end;
 
-constructor TThreadSafeObjectList<T>.Create(AClass: TClass);
+constructor TThreadSafeObjectList<T>.create(AClass: TClass);
 begin
-  Create(true);
+  create(true);
   FItemClass := AClass;
 end;
 
-constructor TThreadSafeObjectList<T>.Create(AOwnedObject: boolean = true);
+constructor TThreadSafeObjectList<T>.create(AOwnedObject: boolean = true);
 begin
   inherited create;
   FLock := TObject.create;
@@ -758,7 +759,7 @@ begin
     end;
 end;
 
-destructor TThreadSafeObjectList<T>.Destroy;
+destructor TThreadSafeObjectList<T>.destroy;
 begin
   while Count > 0 do
     Delete(0);
@@ -1177,7 +1178,7 @@ end;
 
 { TThreadSafeDictionary<TKey, TValue> }
 
-constructor TThreadSafeDictionary<TKey, TValue>.create
+constructor TThreadSafeDictionary<TKey, TValue>.Create
   (AOwnedList: TDictionaryOwnerShips);
 begin
   inherited create;
@@ -1190,7 +1191,7 @@ procedure TThreadSafeDictionary<TKey, TValue>.Add(const Key: TKey;
 begin
   with LockList do
     try
-      Add(Key, Value);
+      FDictionary.Add(Key, Value);
     finally
       UnlockList;
     end;
@@ -1201,7 +1202,7 @@ procedure TThreadSafeDictionary<TKey, TValue>.AddOrSetValue(const Key: TKey;
 begin
   with LockList do
     try
-      AddOrSetValue(Key, Value);
+      FDictionary.AddOrSetValue(Key, Value);
     finally
       UnlockList;
     end;
@@ -1211,7 +1212,7 @@ procedure TThreadSafeDictionary<TKey, TValue>.Clear;
 begin
   with LockList do
     try
-      Clear;
+      FDictionary.Clear;
     finally
       UnlockList;
     end;
@@ -1222,7 +1223,7 @@ function TThreadSafeDictionary<TKey, TValue>.ContainsKey
 begin
   with LockList do
     try
-      result := ContainsKey(Key);
+      result := FDictionary.ContainsKey(Key);
     finally
       UnlockList;
     end;
@@ -1234,11 +1235,17 @@ function TThreadSafeDictionary<TKey, TValue>.ContainsValue
 begin
   with LockList do
     try
-      result := ContainsValue(Value);
+      result := FDictionary.ContainsValue(Value);
     finally
       UnlockList;
     end;
 
+end;
+
+constructor TThreadSafeDictionary<TKey, TValue>.Create;
+begin
+  //raise exception.create('Use  .create([]); instead create');
+  self.Create([]);
 end;
 
 { constructor TThreadSafeDictionary<TKey, TValue>.create;
@@ -1254,7 +1261,7 @@ function TThreadSafeDictionary<TKey, TValue>.ToArray
 begin
   with LockList do
     try
-      result := ToArray;
+      result := FDictionary.ToArray;
     finally
       UnlockList;
     end;
@@ -1265,7 +1272,7 @@ procedure TThreadSafeDictionary<TKey, TValue>.TrimExcess;
 begin
   with LockList do
     try
-      TrimExcess;
+      FDictionary.TrimExcess;
     finally
       UnlockList;
     end;
@@ -1276,13 +1283,13 @@ function TThreadSafeDictionary<TKey, TValue>.TryGetValue(const Key: TKey;
 begin
   with LockList do
     try
-      result := TryGetValue(Key, Value);
+      result := FDictionary.TryGetValue(Key, Value);
     finally
       UnlockList;
     end;
 end;
 
-destructor TThreadSafeDictionary<TKey, TValue>.destroy;
+destructor TThreadSafeDictionary<TKey, TValue>.Destroy;
 begin
   if FInited then
   begin
@@ -1297,7 +1304,7 @@ function TThreadSafeDictionary<TKey, TValue>.ExtractPair(const Key: TKey)
 begin
   with LockList do
     try
-      result := ExtractPair(Key);
+      result := FDictionary.ExtractPair(Key);
     finally
       UnlockList;
     end;
@@ -1318,7 +1325,7 @@ function TThreadSafeDictionary<TKey, TValue>.GetItem(const Key: TKey): TValue;
 begin
   with LockList do
     try
-      result := GetItem(Key);
+      FDictionary.TryGetValue(Key, result);
     finally
       UnlockList;
     end;
@@ -1347,7 +1354,7 @@ procedure TThreadSafeDictionary<TKey, TValue>.Remove(const Key: TKey);
 begin
   with LockList do
     try
-      Remove(Key);
+      FDictionary.Remove(Key);
     finally
       UnlockList;
     end;

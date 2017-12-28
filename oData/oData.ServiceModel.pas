@@ -136,6 +136,8 @@ type
     destructor destroy; override;
     function LockJson: TJsonObject; virtual;
     procedure UnlockJson; virtual;
+    class function TryGetODataService(Js: TJsonObject;
+      out res: TJsonArray): boolean; static;
     procedure Clear;
     function This: TODataServices;
     function hasResource(AName: String): boolean; virtual;
@@ -150,6 +152,8 @@ type
       AMethod: String; ARelations: TJsonValue);
   end;
 
+procedure RegisterODataCustomServiceLoad(AProc: TProc);
+
 var
   ODataServices: IODataServices;
 
@@ -162,6 +166,13 @@ uses System.IOUtils;
 var
   ODataConfig: string;
 
+  threadvar FoDataServiceCustomLoad: TProc;
+
+procedure RegisterODataCustomServiceLoad(AProc: TProc);
+begin
+  FoDataServiceCustomLoad := AProc;
+end;
+
 procedure TODataServices.Clear;
 begin
   FFileJson := '';
@@ -172,6 +183,21 @@ constructor TODataServices.create;
 begin
   inherited;
   FLock := TObject.create;
+end;
+
+class function TODataServices.TryGetODataService(Js: TJsonObject;
+  out res: TJsonArray): boolean;
+var
+  p: TJsonPair;
+begin
+  result := false;
+  for p in Js do
+    if p.JsonString.Value.Equals('OData.Services') then
+    begin
+      res := p.JsonValue.AsArray;
+      result := true;
+      exit;
+    end;
 end;
 
 destructor TODataServices.destroy;
@@ -257,19 +283,6 @@ var
   achei: boolean;
   pair: TJsonPair;
   LPath, s: String;
-  function TryGetODataService(Js: TJsonObject; out res: TJsonArray): boolean;
-  var
-    p: TJsonPair;
-  begin
-    result := false;
-    for p in Js do
-      if p.JsonString.Value.Equals('OData.Services') then
-      begin
-        res := p.JsonValue.AsArray;
-        result := true;
-        exit;
-      end;
-  end;
 
 begin
   try
@@ -303,7 +316,7 @@ begin
               achei := false;
               for jvService in LServiceMain do
               begin
-                if jvService.S('resource').Equals(jv.s('resource')) then
+                if jvService.s('resource').Equals(jv.s('resource')) then
                 begin
                   achei := true;
                   break;
@@ -352,6 +365,8 @@ var
   LServices: TJsonArray;
   LResource: TJsonObject;
 begin
+  if hasResource(AResource) then
+    exit;
   LServices := GetRoot;
   if not assigned(LServices) then
     exit;
@@ -367,12 +382,21 @@ begin
     if assigned(ARelations) then
       LResource.addPair('relation', ARelations);
   finally
-    LServices.Add(LResource);
+    LockJson;
+    try
+      LServices.Add(LResource);
+    finally
+      UnlockJson;
+    end;
   end;
 end;
 
 procedure TODataServices.EndJson;
 begin
+
+  if assigned(FoDataServiceCustomLoad) then
+    FoDataServiceCustomLoad;
+
   with FJson do
   begin
     addPair('suports.$filter', 'yes');
