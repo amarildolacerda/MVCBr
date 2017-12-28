@@ -71,7 +71,8 @@ end;
 
 destructor TODataFiredacQuery.Destroy;
 begin
-  freeAndNil(FQuery);
+  FQuery := nil;
+  // freeAndNil(FQuery); // passou para a Interface
   inherited;
 end;
 
@@ -98,12 +99,11 @@ begin
   end;
 
   result := 0;
-  freeAndNil(FQuery);
 
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
     as IJsonODataServiceResource;
 
-  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
   PrepareQuery(FQuery);
 
   FQuery.Connection.StartTransaction;
@@ -192,7 +192,7 @@ begin
     as IJsonODataServiceResource;
 
   result := 0;
-  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
   PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
@@ -293,10 +293,11 @@ end;
 procedure TODataFiredacQuery.PrepareQuery(FQuery: TFdQuery);
 begin
   FQuery.FetchOptions.RowsetSize := 0;
-  FQuery.FetchOptions.Unidirectional := true;
+  // FQuery.FetchOptions.Unidirectional := true;
   FQuery.ResourceOptions.CmdExecTimeout := 60000 * 10;
   FQuery.ResourceOptions.DirectExecute := true;
   FQuery.ResourceOptions.SilentMode := true;
+  FQuery.FetchOptions.AutoClose := true;
 end;
 
 function TODataFiredacQuery.ExecutePOST(ABody: string;
@@ -326,7 +327,7 @@ begin
 
   result := 0;
   freeAndNil(FQuery);
-  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
   PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
@@ -416,8 +417,7 @@ var
   LSql: string;
 begin
   InLineRecordCount := -1;
-  freeAndNil(FQuery);
-  FQuery := TQueryAdapter.create(QueryClass.Create(nil));
+  FQuery := TQueryAdapter.Create(QueryClass.Create(nil));
   PrepareQuery(FQuery);
   result := FQuery;
 

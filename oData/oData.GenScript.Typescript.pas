@@ -65,6 +65,7 @@ begin
                   add('   get_' + AResource +
                     '( query:ODataService ):ODataProviderService { ');
                   add('      this.configOptions(); ');
+                  add('      query.resource = "'+AResource+'";');
                   add('      return this._odata.getValue( query ); ');
                   add('   }');
                   add('');
