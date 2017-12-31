@@ -1,3 +1,13 @@
+30/12/2017 - AL - Alterações para o ODataBr
+   + incluido geração automatica de view que se inciam com 'ODATA_' dispensando inclui-las no metadata; (testado firebird) - para consulta passou a devolver um "new" com novo servicemodel gerado na mesma pasta do server;
+   + incluido no OData.ServiceModel.json a possibilidade de importar um json externo:
+       .. ,import: [ 'x.json','y.json' ], ...
+   + altera o rowstate para aceitar  'updateORinsert' -> quando o update não encontrar registro executar um insert;
+   = a clausula   $filter é utilizada no POST,PATCH,PUT para formar a where que deseja usar para atualização;
+   = no POST,PUT,PATCH... caso não seja indicado um $filter é utilizado a chave primaria.
+   + alguns browser não estão aceitando enviar PATCH.. em substuição enviar como PUT, marcando o "rowstate";
+   + melhoria na configuração de busca no banco para reduzir tempo de resposta, desligando alguns recursos do firedac;
+
 19/10/2017 - AL
    * Lock/Unlock para VCL.PageView
    

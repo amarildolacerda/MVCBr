@@ -32,6 +32,8 @@ begin
       add('import { ODataProviderService,ODataFactory,ODataService } from ''./odata-provider.service'';');
       add('import { Observable } from ''rxjs/Rx'';');
       add('');
+      add('export interface ODataBrQuery extends ODataService{} ');
+      add('');
       add('@Injectable()');
       add('export class ODataBrProvider {');
       add('  token:string=""; ');
@@ -78,7 +80,7 @@ begin
                 if AMethod.Contains('GET') then
                 begin
                   add('   get_' + AResource +
-                    '( query:ODataService ):ODataProviderService { ');
+                    '( query:ODataBrQuery ):ODataProviderService { ');
                   add('      this.configOptions(); ');
                   add('      query.resource = "' + AResource + '";');
                   add('      return this._odata.getValue( query ); ');

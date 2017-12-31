@@ -108,6 +108,7 @@ type
   IODataServices = interface
     ['{051E22D6-6BB1-4C35-A1DA-9885360283CD}']
     procedure LoadFromJsonFile(AJson: String);
+    procedure SaveToJsonFile(AJson:string);
     function resource(AName: string): IJsonODataServiceResource;
     function hasResource(AName: String): boolean;
     function LockJson: TJsonObject;
@@ -127,6 +128,7 @@ type
     FFileJson: string;
     FJson: TJsonObject;
     procedure LoadFromJsonFile(AJson: String);
+    procedure SaveToJsonFile(AJson:string);
     procedure EndJson;
 
   const
@@ -136,8 +138,8 @@ type
     destructor destroy; override;
     function LockJson: TJsonObject; virtual;
     procedure UnlockJson; virtual;
-    class function TryGetODataService(Js: TJsonObject;
-      out res: TJsonArray): boolean; static;
+    class function TryGetODataService(Js: TJsonObject; out res: TJsonArray)
+      : boolean; static;
     procedure Clear;
     function This: TODataServices;
     function hasResource(AName: String): boolean; virtual;
@@ -146,13 +148,15 @@ type
     function ResourceList: TJsonArray;
     function GetRoot: TJsonArray;
     class function ExpandFilePath(APath: string): string;
-    procedure reload;
+    procedure Reload;
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
       AMethod: String; ARelations: TJsonValue);
+    class procedure Invalidate;
   end;
 
-procedure RegisterODataCustomServiceLoad(AProc: TProc);
+function RegisterODataCustomServiceLoad(AProc: TProc;
+  ASubstituir: boolean = true): boolean;
 
 var
   ODataServices: IODataServices;
@@ -168,9 +172,14 @@ var
 
   threadvar FoDataServiceCustomLoad: TProc;
 
-procedure RegisterODataCustomServiceLoad(AProc: TProc);
+function RegisterODataCustomServiceLoad(AProc: TProc;
+  ASubstituir: boolean = true): boolean;
 begin
+  result := false;
+  if (not ASubstituir) and assigned(FoDataServiceCustomLoad) then
+    exit;
   FoDataServiceCustomLoad := AProc;
+  result := true;
 end;
 
 procedure TODataServices.Clear;
@@ -269,6 +278,14 @@ begin
   finally
     UnlockJson;
   end;
+end;
+
+class procedure TODataServices.Invalidate;
+var old:String;
+begin
+    old := ExtractFilePath(ODataConfig);
+    ODataConfig := '';
+    self.ExpandFilePath(old);
 end;
 
 procedure TODataServices.LoadFromJsonFile(AJson: String);
@@ -476,6 +493,11 @@ begin
     arr.AddElement(jv);
   end;
   result := arr;
+end;
+
+procedure TODataServices.SaveToJsonFile(AJson: string);
+begin
+   FJson.SaveToFile(AJson);
 end;
 
 function TODataServices.This: TODataServices;
@@ -751,16 +773,12 @@ begin
 
 end;
 
+
+
+
 initialization
 
 ODataServices := TODataServices.create;
-try
-  /// <summary>
-  /// Set file path and load -
-  /// if need to load from private locate, use ExpandFilePath to load;
-  /// </summary>
-  TODataServices.ExpandFilePath(''); // default and load file config
-except
-end;
+TODataServices.ExpandFilePath('');
 
 end.

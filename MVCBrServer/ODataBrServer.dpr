@@ -76,6 +76,9 @@ begin
 
       LServer.DefaultPort := APort;
       LServer.Active := True;
+
+      RegisterAutoLoadResource;
+
       LogI(Format('Server started on port %s', [APort.ToString]));
       MVCFramework.Logger.LogLevelLimit := TLogLevel.levError;
       { more info about MaxConnections
