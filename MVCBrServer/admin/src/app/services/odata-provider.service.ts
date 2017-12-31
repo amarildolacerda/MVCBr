@@ -50,6 +50,7 @@ export class ODataFactory implements ODataService {
     rt += ((ref.orderBy) ? "&orderby=" + ref.orderBy.join(",") : "");
     return rt;
   }
+  /// create URL for ODataBr
   public static createServicePath(collection: string, rootService : string ='/OData/OData.svc/'): string {
     return rootService + collection;
   }
@@ -62,6 +63,7 @@ export class ODataProviderService {
   private observable: Observable<any>;
   query_data: ODataService;
   base_url: string;
+  root : string = "/OData/OData.svc/"
   token: string = "";
   headers: HttpHeaders;
   response: any;
@@ -83,7 +85,7 @@ export class ODataProviderService {
     return this.observable;
   }
 
-  public createUrlBase(base: string, port: number) {
+  private createUrlBase(base: string, port: number) {
     if (port==null)
        console.log("não passou a porta do servidor");
     let lport:string = port.toFixed(0);
@@ -105,13 +107,13 @@ export class ODataProviderService {
     this.count = 0;
     return { headers: this.headers };
   }
-  public getUrl(collection: string, aParam: string = "") {
+  private getUrl(collection: string, aParam: string = "") {
     let p = (aParam != "" ? "&" + aParam : "");
-    return this.base_url + ODataFactory.createServicePath(collection) +
+    return this.base_url + ODataFactory.createServicePath(collection,this.root) +
       '?token=' + this.token + p;
   }
 
-  public query(qry: ODataService): ODataProviderService {
+  private query(qry: ODataService): ODataProviderService {
     this.getValue(qry);
     return this;
   }
@@ -147,6 +149,7 @@ export class ODataProviderService {
     }
   }
 
+  /// async call
   public subscribe(proc: any, erroProc: any = null) {
     this.observable.subscribe(rsp => {
       this.fillResponse(rsp);
@@ -162,6 +165,7 @@ export class ODataProviderService {
     })
   }
 
+  /// prepare for async call
   public getValue(query: ODataService): ODataProviderService {
     try {
       this.observable = this.http.request('GET', this.getUrl(query.resource) +
@@ -175,21 +179,27 @@ export class ODataProviderService {
     }
     return this;
   }
+
+  /// get from generic URL... No regular path, but its OData
   public getOData( url:string):ODataProviderService{
     let path = this.base_url+url+'?token=' + this.token;
     this.observable = this.getJson(path);
     return this;
   }
+
+  /// call generic resource on the server - get for all needs
   public getJson(url:string):Observable<any>{
    return this.http.get(url,this.getOptions())
   }
+
+  // regular GET on ODataBr
   public getReponse(query: ODataService): Observable<any> {
     this.observable = this.http.request('GET', this.getUrl(query.resource) +
-      ODataFactory.createFinalStr(query), this.getOptions())
-      .map(res => { return res });
+      ODataFactory.createFinalStr(query), this.getOptions());
     return this.observable;
   }
 
+  // PUT item - send some data to server with PUT method
   public putItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.put(this.getUrl(collection),
@@ -203,6 +213,7 @@ export class ODataProviderService {
     return this.observable;
   }
 
+  // POST method
   public postItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.post(this.getUrl(collection),
@@ -214,6 +225,8 @@ export class ODataProviderService {
       });
     return this.observable;
   }
+
+  // PATCH method
   public patchItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     /// o comando put = patch o mvcbr.odata; os browsers mantem restrição para uso do patch.
@@ -229,6 +242,8 @@ export class ODataProviderService {
       });
     return this.observable;
   }
+  
+  // DELETE method
   public deleteItem(collection: string, params: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.delete(this.getUrl(collection, params),
