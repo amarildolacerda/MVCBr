@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 
 import { ODataProviderService }  from './odata-provider.service';
-import { GlobalsService } from './globals.service';
+import { ODataBrAdminService} from './odatabr-admin.service';
 
 @NgModule({
   imports: [
@@ -17,17 +17,10 @@ import { GlobalsService } from './globals.service';
   declarations: [],
   providers:[
     ODataProviderService,
-    GlobalsService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (ds: GlobalsService) => function () { return ds.load() },
-      deps: [GlobalsService],
-      multi: true
-    },
+    ODataBrAdminService,
     
   ],
   exports:[
-    
   ]
 })
 export class ServicesModule { }

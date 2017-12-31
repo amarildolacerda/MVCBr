@@ -17,14 +17,22 @@ export class GlobalsService {
     this.config = cfgJson;
     this.config.loaded = false;
     this.observable = this.http.get('./assets/config.json');
+    this.subscribe(r=>{});
    }
+
+  ngOnInit() {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    
+  }  
 
   subscribe(proc:any) {
     if (this.config.loaded == false) {
-      this.observable.subscribe(r => {
+     let resp = this.observable.subscribe(r => {
         this.config = r;
         this.config.loaded = true;
         this.server = r.server;
+        console.log(r);
         proc(this)
       })
     } else {  /// ja executou, nao precisa charmar novamente

@@ -84,6 +84,8 @@ export class ODataProviderService {
   }
 
   public createUrlBase(base: string, port: number) {
+    if (port==null)
+       console.log("não passou a porta do servidor");
     let lport:string = port.toFixed(0);
     if (port==0){
        lport = window.location.port;
@@ -163,8 +165,7 @@ export class ODataProviderService {
   public getValue(query: ODataService): ODataProviderService {
     try {
       this.observable = this.http.request('GET', this.getUrl(query.resource) +
-        ODataFactory.createFinalStr(query), this.getOptions())
-        .map(res => { return res; });
+        ODataFactory.createFinalStr(query), this.getOptions());
       if (this.observable == null) {
         throw new TypeError("Não criou uma conexão com o servidor Query: "+query);
       }
@@ -172,6 +173,11 @@ export class ODataProviderService {
     catch (e) {
       alert(e.message);
     }
+    return this;
+  }
+  public getOData( url:string):ODataProviderService{
+    let path = this.base_url+url+'?token=' + this.token;
+    this.observable = this.getJson(path);
     return this;
   }
   public getJson(url:string):Observable<any>{

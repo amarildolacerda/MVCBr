@@ -1,14 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersComponent } from './users/users.component';
-import { MenuModule } from '../menu/menu.module'
+import { MenuModule } from '../menu/menu.module';
+import { ServicesModule } from '../services/services.module';
+//import {ODataBrAdminService } from '../services/odatabr-admin.service';
 
 @NgModule({
   imports: [
     CommonModule,
-    MenuModule
+    MenuModule,
+    ServicesModule,
+    //ODataBrAdminService
   ],
-  declarations: [UsersComponent],
-  exports: [UsersComponent]
+  declarations: [
+    //ODataBrAdminService,
+    UsersComponent],
+  exports: [
+    //ODataBrAdminService,
+    UsersComponent]
 })
 export class ViewsModule { }
