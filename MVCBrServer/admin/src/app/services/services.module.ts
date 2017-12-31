@@ -1,20 +1,33 @@
-import { NgModule } from '@angular/core';
+///
+/// modulos de serviços
+/// amarildo lacerda - tireideletra.com.br
+///
+import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ODataProviderService,ODataFactory }  from './odata-provider.service';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+
+import { ODataProviderService }  from './odata-provider.service';
 import { GlobalsService } from './globals.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    HttpClientModule, HttpClientJsonpModule
   ],
   declarations: [],
   providers:[
     ODataProviderService,
-    GlobalsService
+    GlobalsService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (ds: GlobalsService) => function () { return ds.load() },
+      deps: [GlobalsService],
+      multi: true
+    },
+    
   ],
   exports:[
-    GlobalsService,
-    ODataProviderService,ODataFactory
+    
   ]
 })
 export class ServicesModule { }
