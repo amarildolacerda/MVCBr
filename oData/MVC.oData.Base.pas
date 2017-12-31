@@ -11,7 +11,7 @@ interface
 uses System.Classes, System.SysUtils,
   MVCFramework, MVCFramework.Commons,
   Data.Db, oData.Interf, oData.Dialect,
-  System.JSON;
+  oData.Packet, System.JSON;
 
 type
 
@@ -19,11 +19,11 @@ type
   [MVCDoc('ODataBr - Implements OData protocol - tireideletra.com.br')]
   TODataController = class(TMVCController)
   public
-    function CreateJson(CTX: TWebContext; const AValue: string): TJsonObject;
+    function CreateJson(CTX: TWebContext; const AValue: string)
+      : IODataJsonPacket;
     // [MVCDoc('Finalize JSON response')]
-    procedure EndsJson(var AJson: TJsonObject);
     // [MVCDoc('Overload Render')]
-    procedure RenderA(AJson: TJsonObject);
+    procedure RenderA(AJson: TODataJsonPacket);
     procedure RenderError(CTX: TWebContext; ATexto: String);
   private
     // [MVCDoc('General parse OData URI')]
@@ -116,21 +116,20 @@ uses
 { TODataController }
 
 function TODataController.CreateJson(CTX: TWebContext; const AValue: string)
-  : TJsonObject;
+  : IODataJsonPacket;
 begin
   CTX.Response.SetCustomHeader('OData-Version', '4.0');
   // CTX.Response.ContentType := 'application/json;odata.metadata=minimal';  // AL - DMVC3, nao consegue buscar conector se houver mais 1 item na lista
   CTX.Response.ContentType := 'application/json';
-  result := TJsonObject.create as TJsonObject;
-  result.addPair('@odata.context', AValue);
-  result.addPair('StartsAt', DateToISO8601(now));
+  result :=  TODataJsonPacket.create(AValue,false);
 end;
 
 procedure TODataController.DeleteCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSONResponse: TJsonObject;
+  JSONResponse: IODataJsonPacket;
+  jo: TJsonObject;
   arr: TJsonArray;
   n: integer;
   erro: TJsonObject;
@@ -143,8 +142,10 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecuteDELETE(CTX.Request.Body, JSONResponse);
-    JSONResponse.addPair('@odata.count', n.ToString);
+    jo := JSONResponse.asJsonObject;
+    n := FOData.ExecuteDELETE(CTX.Request.Body, jo);
+
+    JSONResponse.Counts(n);
 
     if n > 0 then
       CTX.Response.StatusCode := 200
@@ -158,11 +159,6 @@ begin
       RenderError(CTX, e.message);
   end;
 
-end;
-
-procedure TODataController.EndsJson(var AJson: TJsonObject);
-begin
-  AJson.addPair('EndsAt', DateToISO8601(now));
 end;
 
 procedure TODataController.MetadataCollection(CTX: TWebContext);
@@ -213,8 +209,9 @@ end;
 procedure TODataController.OPTIONSCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
-  JSONResponse: TJsonObject;
+  JSONResponse: IODataJsonPacket;
   LAllow: string;
+  jo: TJsonObject;
 begin
   try
 {$IFDEF LOGEVENTS}
@@ -224,7 +221,8 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    FOData.ExecuteOPTIONS(JSONResponse);
+    jo := JSONResponse.asJsonObject;
+    FOData.ExecuteOPTIONS(jo);
     if JSONResponse.TryGetValue<string>('allow', LAllow) then
     begin
       CTX.Response.CustomHeaders.Add('Allow=' + LAllow);
@@ -241,7 +239,8 @@ procedure TODataController.PATCHCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSONResponse: TJsonObject;
+  JSONResponse: IODataJsonPacket;
+  jo: TJsonObject;
   arr: TJsonArray;
   n: integer;
   r, LAllow: string;
@@ -257,8 +256,9 @@ begin
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
     try
       r := CTX.Request.Body;
-      n := FOData.ExecutePATCH(r, JSONResponse);
-      JSONResponse.addPair('@odata.count', n.ToString);
+      jo := JSONResponse.asJsonObject;
+      n := FOData.ExecutePATCH(r, jo);
+      JSONResponse.Counts(n);
 
       if JSONResponse.TryGetValue<string>('allow', LAllow) then
       begin
@@ -284,7 +284,8 @@ procedure TODataController.POSTCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSONResponse: TJsonObject;
+  JSONResponse: IODataJsonPacket;
+  jo: TJsonObject;
   arr: TJsonArray;
   n: integer;
   r: string;
@@ -298,9 +299,10 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecutePOST(CTX.Request.Body, JSONResponse);
+    jo := JSONResponse.asJsonObject;
+    n := FOData.ExecutePOST(CTX.Request.Body, jo);
 
-    JSONResponse.addPair('@odata.count', n.ToString);
+    JSONResponse.Counts(n);
 
     if n > 0 then
       CTX.Response.StatusCode := 201
@@ -320,7 +322,8 @@ procedure TODataController.PUTCollection1(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSONResponse: TJsonObject;
+  JSONResponse: IODataJsonPacket;
+  jo: TJsonObject;
   arr: TJsonArray;
   n: integer;
   r: string;
@@ -334,9 +337,10 @@ begin
     FOData := ODataBase.create();
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-    n := FOData.ExecutePATCH(CTX.Request.Body, JSONResponse);
+    jo := JSONResponse.asJsonObject;
+    n := FOData.ExecutePATCH(CTX.Request.Body, jo);
 
-    JSONResponse.addPair('@odata.count', n.ToString);
+    JSONResponse.Counts(n);
 
     if n > 0 then
       CTX.Response.StatusCode := 200
@@ -361,16 +365,17 @@ procedure TODataController.GenScriptEngine(CTX: TWebContext);
 var
   eng: string;
 begin
-  CTX.Request.SegmentParam('engine',eng);
-  ctx.Response.Content := TODataGenScript.GetScript(eng);
-  ctx.Response.ContentType := 'text/plan';
+  CTX.Request.SegmentParam('engine', eng);
+  CTX.Response.Content := TODataGenScript.GetScript(eng);
+  CTX.Response.ContentType := 'text/plan';
 end;
 
 procedure TODataController.GetQueryBase(CTX: TWebContext);
 var
   FOData: IODataBase;
   FDataset: TDataset;
-  JSONResponse: TJsonObject;
+  JSONResponse: IODataJsonPacket;
+  jo: TJsonObject;
   arr: TJsonArray;
   n: integer;
   erro: TJsonObject;
@@ -383,24 +388,19 @@ begin
       FOData := ODataBase.create();
       FOData.DecodeODataURL(CTX);
       JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
-
-      FDataset := TDataset(FOData.ExecuteGET(nil, JSONResponse));
+      jo := JSONResponse.asJsonObject;
+      FDataset := TDataset(FOData.ExecuteGET(nil, jo));
       FDataset.first;
-      // arr := TJsonArray.create;
-      // Mapper.DataSetToJSONArray(FDataset, arr, False);
       arr := TJsonObject.ParseJSONValue(FDataset.AsJSONArray) as TJsonArray;
       if assigned(arr) then
       begin
-        JSONResponse.addPair('value', arr);
+        JSONResponse.values(arr);
       end;
       if FOData.inLineRecordCount < 0 then
         FOData.inLineRecordCount := FDataset.RecordCount;
-      JSONResponse.addPair('@odata.count', FOData.inLineRecordCount.ToString);
-      if FOData.GetParse.oData.Top > 0 then
-        JSONResponse.addPair('@odata.top', FOData.GetParse.oData.Top.ToString);
-      if FOData.GetParse.oData.Skip > 0 then
-        JSONResponse.addPair('@odata.skip',
-          FOData.GetParse.oData.Skip.ToString);
+      JSONResponse.Counts(FOData.inLineRecordCount);
+      JSONResponse.Tops(FOData.GetParse.oData.Top);
+      JSONResponse.skips(FOData.GetParse.oData.Skip);
 
       RenderA(JSONResponse);
     finally
@@ -433,10 +433,10 @@ begin
   GetQueryBase(CTX);
 end;
 
-procedure TODataController.RenderA(AJson: TJsonObject);
+procedure TODataController.RenderA(AJson: TODataJsonPacket);
 begin
-  EndsJson(AJson);
-  render(AJson);
+  AJson.Ends;
+  render(AJson.asJsonObject);
 end;
 
 procedure TODataController.RenderError(CTX: TWebContext; ATexto: String);

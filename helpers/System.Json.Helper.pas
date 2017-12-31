@@ -208,8 +208,8 @@ type
     function ToJson: string;
 {$ENDIF}
     class Function New(AKey, AValue: String): TJsonValue; overload;
-    class Function New(AKey:string; AValue: Integer): TJsonValue; overload;
-    procedure addPair(AKey, AValue: string);
+    class Function New(AKey: string; AValue: Integer): TJsonValue; overload;
+    function addPair(AKey, AValue: string): TJsonValue;
     function ToRecord<T>: T; overload;
     function ToRecord<T: Record >(var ARec: T): T; overload;
     class function ToRecord<T: record >(AJson: string): T; overload; static;
@@ -916,6 +916,7 @@ begin
     addPair(chave, Value)
   else
   begin
+    V.JsonValue.free; // trick
     V.JsonValue := TJSONString.Create(Value);
   end;
 end;
@@ -1142,8 +1143,9 @@ end;
 {$ENDIF}
 { TJSONValueHelper }
 
-procedure TJSONValueHelper.addPair(AKey, AValue: string);
+function TJSONValueHelper.addPair(AKey, AValue: string): TJsonValue;
 begin
+  result := self;
   (self as TJsonObject).addPair(AKey, AValue);
 end;
 
@@ -1254,12 +1256,12 @@ begin
   result := (self as TJsonObject).I(chave);
 end;
 
-class function TJSONValueHelper.New(AKey:string; AValue: Integer): TJsonValue;
+class function TJSONValueHelper.New(AKey: string; AValue: Integer): TJsonValue;
 var
   APair: TJsonObject;
 begin
   APair := TJsonObject.Create;
-  APair.addPair(AKey,AValue);
+  APair.addPair(AKey, AValue);
   result := APair;
 end;
 

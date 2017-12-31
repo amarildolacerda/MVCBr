@@ -1,0 +1,103 @@
+object produtosView: TprodutosView
+  Left = 0
+  Top = 0
+  Caption = 'produtosView'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  OnShow = FormShow
+  DesignerMasterStyle = 0
+  object Layout1: TLayout
+    Align = Client
+    Size.Width = 640.000000000000000000
+    Size.Height = 480.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+    object Grid1: TGrid
+      Align = Client
+      CanFocus = True
+      ClipChildren = True
+      Size.Width = 640.000000000000000000
+      Size.Height = 455.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      RowCount = 4
+      Viewport.Width = 636.000000000000000000
+      Viewport.Height = 430.000000000000000000
+    end
+    object NavigatorBindSourceDB1: TBindNavigator
+      Align = Top
+      Size.Width = 640.000000000000000000
+      Size.Height = 25.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      DataSource = BindSourceDB1
+      xRadius = 4.000000000000000000
+      yRadius = 4.000000000000000000
+    end
+  end
+  object MVCBrMongoConnection1: TMVCBrMongoConnection
+    Active = True
+    Host = 'localhost'
+    Database = 'mvcbrDB'
+    Left = 112
+    Top = 104
+  end
+  object MVCBrMongoDataset1: TMVCBrMongoDataset
+    CollectionName = 'produtos'
+    KeyFields = 'codigo'
+    Connection = MVCBrMongoConnection1
+    FieldDefs = <
+      item
+        Name = 'codigo'
+        DataType = ftString
+        Size = 18
+      end
+      item
+        Name = 'nome'
+        DataType = ftString
+        Size = 50
+      end>
+    Active = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 112
+    Top = 280
+    object MVCBrMongoDataset1codigo: TStringField
+      FieldName = 'codigo'
+      Size = 18
+    end
+    object MVCBrMongoDataset1nome: TStringField
+      FieldName = 'nome'
+      Size = 50
+    end
+  end
+  object BindSourceDB1: TBindSourceDB
+    DataSet = MVCBrMongoDataset1
+    ScopeMappings = <>
+    Left = 304
+    Top = 224
+  end
+  object BindingsList1: TBindingsList
+    Methods = <>
+    OutputConverters = <>
+    Left = 20
+    Top = 5
+    object LinkGridToDataSourceBindSourceDB1: TLinkGridToDataSource
+      Category = 'Quick Bindings'
+      DataSource = BindSourceDB1
+      GridControl = Grid1
+      Columns = <
+        item
+          MemberName = 'codigo'
+        end
+        item
+          MemberName = 'nome'
+          Width = 250
+        end>
+    end
+  end
+end

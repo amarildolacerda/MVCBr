@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{02B0094C-0DB2-43CC-8FB3-22208AEE1ED6}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MongoDBModel.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\..\package\MVCBrFireDAC.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MongoDBModel">
+        <MSBuild Projects="MongoDBModel.dproj"/>
+    </Target>
+    <Target Name="MongoDBModel:Clean">
+        <MSBuild Projects="MongoDBModel.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MongoDBModel:Make">
+        <MSBuild Projects="MongoDBModel.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MVCBrFireDAC">
+        <MSBuild Projects="..\..\..\package\MVCBrFireDAC.dproj"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Clean">
+        <MSBuild Projects="..\..\..\package\MVCBrFireDAC.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MVCBrFireDAC:Make">
+        <MSBuild Projects="..\..\..\package\MVCBrFireDAC.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MongoDBModel;MVCBrFireDAC"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MongoDBModel:Clean;MVCBrFireDAC:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MongoDBModel:Make;MVCBrFireDAC:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

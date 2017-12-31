@@ -8,7 +8,7 @@ unit oData.Interf;
 
 interface
 
-uses System.Classes, System.SysUtils, System.JSON;
+uses System.Classes, System.SysUtils, System.JSON, OData.Packet;
 
 Type
 
