@@ -12,6 +12,7 @@ import {AppRoutingModule} from './router.module';
 
 
 import { AppComponent } from './app.component';
+import { InternalModule } from './internal/internal.module';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { AppComponent } from './app.component';
     ViewsModule,
     MenuModule,
     ServicesModule,
+    InternalModule
   ],
   providers: [
 

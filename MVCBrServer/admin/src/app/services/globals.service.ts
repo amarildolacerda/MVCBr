@@ -11,13 +11,9 @@ import * as cfgJson from '../../assets/config.json';
 @Injectable()
 export class GlobalsService {
   observable: Observable<any>;
-  config: any ;
+  config: any ={loaded:false};
   server: any = [];
   constructor(private http: HttpClient) {
-    this.config = cfgJson;
-    this.config.loaded = false;
-    this.observable = this.http.get('./assets/config.json');
-    this.subscribe(r=>{});
    }
 
   ngOnInit() {
@@ -28,20 +24,26 @@ export class GlobalsService {
 
   subscribe(proc:any) {
     if (this.config.loaded == false) {
-     let resp = this.observable.subscribe(r => {
+  
+      this.observable = this.http.get('./assets/config.json');
+  
+      let resp = this.observable.subscribe(r => {
         this.config = r;
         this.config.loaded = true;
         this.server = r.server;
-        console.log(r);
+        console.log('Resp: '+JSON.stringify(r));
         proc(this)
       })
     } else {  /// ja executou, nao precisa charmar novamente
+      console.log('Reaproveitou config anterior');
       proc(this)
     }
   }
 
   load() {
     // chamado na carga do app
-    this.subscribe(r=>{});
+    if (this.config.loaded == false) {
+      this.subscribe(r=>{  console.log('Loaded config')});
+    }
   }
 }

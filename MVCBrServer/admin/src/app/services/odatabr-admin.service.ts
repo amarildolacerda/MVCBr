@@ -27,4 +27,13 @@ constructor(private rest:ODataProviderService, private globals:GlobalsService) {
    this.observable =  this.rest.getOData('/OData/admin/token/new') ;
    return this;   
   } 
+ public odata_services():Observable<any>{
+   return this.rest.getJson('/OData');
+ }
+ public odata_metadata():Observable<any>{
+   return this.rest.getJson('/OData/$metadata')
+ }
+ public describe_server():Observable<any>{
+   return this.rest.getJson('/system/describeserver.info');
+ }
 }

@@ -85,7 +85,7 @@ export class ODataProviderService {
     return this.observable;
   }
 
-  private createUrlBase(base: string, port: number) {
+  public createUrlBase(base: string, port: number) {
     if (port==null)
        console.log("não passou a porta do servidor");
     let lport:string = port.toFixed(0);
@@ -184,7 +184,7 @@ export class ODataProviderService {
   // get from generic URL... 
   // No regular path, but its OData reponse
   public getOData( url:string):ODataProviderService{
-    let path = this.base_url+url+'?token=' + this.token;
+    let path = url+'?token=' + this.token;
     this.observable = this.getJson(path);
     return this;
   }
