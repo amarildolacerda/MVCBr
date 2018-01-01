@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {AppRoutingModule } from '../router.module';
+import { VeiwsRouterRoutingModule } from './views.router';
+
 import { UsersComponent } from './users/users.component';
 import { MenuModule } from '../menu/menu.module';
 import { ServicesModule } from '../services/services.module';
@@ -10,6 +13,8 @@ import { MaterialModule } from '../material/material.module';
 
 @NgModule({
   imports: [
+    AppRoutingModule,
+    VeiwsRouterRoutingModule,
     CommonModule,
     MenuModule,
     ServicesModule,

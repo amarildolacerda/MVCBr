@@ -3,3 +3,7 @@
 .block-right{
     flex: 1 1 auto;
   }
+  mat-card-title{
+      font-style: oblique;
+      font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }  

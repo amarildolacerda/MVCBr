@@ -1,5 +1,6 @@
 <mat-toolbar>
-    <span>ODataBr</span>
+    <button mat-button routerLink='/'><mat-icon>home</mat-icon> ODataBr - Admin </button>
     <span class="block-right" ></span>
-    <button mat-button    routerLink="/sobre" >Sobre</button>
+    <button mat-button    [routerLink]="['/sobre']" >Sobre</button>
+    <button mat-button > <mat-icon>apps</mat-icon>  </button>
   </mat-toolbar>

@@ -42,6 +42,7 @@ import { InternalModule } from './internal/internal.module';
 
   ],
   exports:[
+    AppRoutingModule,
     MaterialModule,
     ServicesModule
   ],

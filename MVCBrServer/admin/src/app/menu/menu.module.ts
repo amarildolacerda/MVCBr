@@ -6,11 +6,13 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { LeftComponent } from './left/left.component';
 import { ContentComponent } from './content/content.component';
+import {AppRoutingModule } from '../router.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule,
+    AppRoutingModule
   ],
   declarations: [HeaderComponent, FooterComponent, LeftComponent, ContentComponent],
   exports:[

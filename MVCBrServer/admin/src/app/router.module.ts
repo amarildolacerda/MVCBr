@@ -14,7 +14,7 @@ const routes: Routes = [
     { path: 'sobre', component: SobreComponent },
     { path: 'internal.services', component: InternalServicesComponent},
     { path: 'internal.metadata', component: InternalMetadataComponent},
-    { path: 'internal.describe', component: InternalDescribeComponent}
+    { path: 'internal.describe', component: InternalDescribeComponent},
 
    ];
 
