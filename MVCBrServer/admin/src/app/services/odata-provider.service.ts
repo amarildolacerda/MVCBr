@@ -165,7 +165,8 @@ export class ODataProviderService {
     })
   }
 
-  /// prepare for async call
+  // prepare for async call
+  // ordinary call for ODataBr, expect OData response from server
   public getValue(query: ODataService): ODataProviderService {
     try {
       this.observable = this.http.request('GET', this.getUrl(query.resource) +
@@ -180,26 +181,30 @@ export class ODataProviderService {
     return this;
   }
 
-  /// get from generic URL... No regular path, but its OData
+  // get from generic URL... 
+  // No regular path, but its OData reponse
   public getOData( url:string):ODataProviderService{
     let path = this.base_url+url+'?token=' + this.token;
     this.observable = this.getJson(path);
     return this;
   }
 
-  /// call generic resource on the server - get for all needs
+  /// call generic resource on the server - 
+  //  get for all needs - 
+  //  no format url
+  //  no OData Response
   public getJson(url:string):Observable<any>{
-   return this.http.get(url,this.getOptions())
+   return this.http.get(this.base_url+url,this.getOptions())
   }
 
-  // regular GET on ODataBr
+  // generic ordinary GET method
   public getReponse(query: ODataService): Observable<any> {
     this.observable = this.http.request('GET', this.getUrl(query.resource) +
       ODataFactory.createFinalStr(query), this.getOptions());
     return this.observable;
   }
 
-  // PUT item - send some data to server with PUT method
+  // PUT method
   public putItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.put(this.getUrl(collection),
@@ -242,7 +247,7 @@ export class ODataProviderService {
       });
     return this.observable;
   }
-  
+
   // DELETE method
   public deleteItem(collection: string, params: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.

@@ -39,10 +39,13 @@ uses
   oData.Dialect.MSSQL in '..\oData\oData.Dialect.MSSQL.pas',
   oData.Dialect.PostgreSQL in '..\oData\oData.Dialect.PostgreSQL.pas',
   MVCBr.ObjectConfigList in '..\MVCBr.ObjectConfigList.pas',
-  MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
   MVCAsyncMiddleware in 'MVCAsyncMiddleware.pas',
   oData.Dialect.Oracle in '..\oData\oData.Dialect.Oracle.pas',
-  ws.OData.Procedures in 'ws.OData.Procedures.pas';
+  ws.OData.Procedures in 'ws.OData.Procedures.pas',
+  oData.GenScript in '..\oData\oData.GenScript.pas',
+  MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
+  MVCServerAdmin in 'MVCServerAdmin.pas',
+  oData.Packet in '..\oData\oData.Packet.pas';
 
 {$R *.res}
 
