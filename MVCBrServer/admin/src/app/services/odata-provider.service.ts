@@ -101,17 +101,25 @@ export class ODataProviderService {
       url = loc.protocol + '//' + loc.hostname + ':' + lport;
     }
     this.base_url = url;
+    console.log('Server base_url: '+url);
     return url;
   }
   private getOptions() {
     this.count = 0;
     return { headers: this.headers };
   }
-  private getUrl(collection: string, aParam: string = "") {
+  public getUrl(collection: string, aParam: string = "") {
     let p = (aParam != "" ? "&" + aParam : "");
     return this.base_url + ODataFactory.createServicePath(collection,this.root) +
       '?token=' + this.token + p;
   }
+
+  public getUrlBase(url: string, aParam: string = "") {
+    let p = (aParam != "" ? "&" + aParam : "");
+    return this.base_url + url +
+      '?token=' + this.token + p;
+  }
+
 
   private query(qry: ODataService): ODataProviderService {
     this.getValue(qry);
@@ -194,7 +202,7 @@ export class ODataProviderService {
   //  no format url
   //  no OData Response
   public getJson(url:string):Observable<any>{
-   return this.http.get(this.base_url+url,this.getOptions())
+   return this.http.get(this.getUrlBase(url),this.getOptions())
   }
 
   // generic ordinary GET method
@@ -217,6 +225,9 @@ export class ODataProviderService {
       });
     return this.observable;
   }
+  public putData(url:string,param:any="", body:any=null):Observable<any>{
+   return this.http.put(this.getUrlBase(url,param),body,this.getOptions());
+  }
 
   // POST method
   public postItem(collection: string, item: any, erroProc: any = null): Observable<any> {
@@ -230,7 +241,10 @@ export class ODataProviderService {
       });
     return this.observable;
   }
-
+  public postData(url:string,param:any="", body:any=null):Observable<any>{
+    return this.http.post(this.getUrlBase(url,param),body,this.getOptions());
+   }
+ 
   // PATCH method
   public patchItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
@@ -247,6 +261,9 @@ export class ODataProviderService {
       });
     return this.observable;
   }
+  public patchData(url:string,param:any="",item:any=null):Observable<any>{
+    return this.http.patch(this.getUrlBase(url,param),item,this.getOptions());
+   }
 
   // DELETE method
   public deleteItem(collection: string, params: any, erroProc: any = null): Observable<any> {
@@ -260,5 +277,8 @@ export class ODataProviderService {
       });
     return this.observable;
   }
+  public deleteData(url:string,param:any=""):Observable<any>{
+    return this.http.delete(this.getUrlBase(url,param),this.getOptions());
+   }
 
 }

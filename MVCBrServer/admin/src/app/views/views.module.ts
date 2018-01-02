@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {AppRoutingModule } from '../router.module';
-import { VeiwsRouterRoutingModule } from './views.router';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 
+import {AppRoutingModule } from '../router.module';
+import { ViewsRoutesModule } from './views.router';
 import { UsersComponent } from './users/users.component';
 import { MenuModule } from '../menu/menu.module';
 import { ServicesModule } from '../services/services.module';
@@ -10,24 +11,27 @@ import { LoginComponent } from './login/login.component';
 import { PrincipalComponent } from './principal/principal.component';
 import { SobreComponent } from './sobre/sobre.component';
 import { MaterialModule } from '../material/material.module';
+import { InternalModule } from '../internal/internal.module';
+
 
 @NgModule({
   imports: [
     AppRoutingModule,
-    VeiwsRouterRoutingModule,
+    ViewsRoutesModule,
     CommonModule,
     MenuModule,
     ServicesModule,
-    MaterialModule
+    MaterialModule,
+    InternalModule,
+    FormsModule,ReactiveFormsModule
   ],
   declarations: [
-    //ODataBrAdminService,
     UsersComponent,
     LoginComponent,
     PrincipalComponent,
-    SobreComponent],
+    SobreComponent,
+  ],
   exports: [
-    //ODataBrAdminService,
     UsersComponent]
 })
 export class ViewsModule { }

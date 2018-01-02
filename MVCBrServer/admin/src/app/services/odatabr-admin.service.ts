@@ -12,6 +12,7 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class ODataBrAdminService {
   observable:ODataProviderService;
+  
 
 constructor(private rest:ODataProviderService, private globals:GlobalsService) {
 
@@ -20,6 +21,15 @@ constructor(private rest:ODataProviderService, private globals:GlobalsService) {
   });
 
    }
+ public init(proc:any){
+  this.globals.subscribe(r=>{
+    this.rest.createUrlBase(this.globals.server.url,this.globals.server.port ); 
+    proc(r);
+  });
+ }  
+ public gerResourceLink(resource){
+     return this.rest.getUrl(resource);
+ }  
  public subscribe(proc:any){
    this.observable.subscribe(r=>{ proc(r); });
  }  
@@ -27,6 +37,9 @@ constructor(private rest:ODataProviderService, private globals:GlobalsService) {
    this.observable =  this.rest.getOData('/OData/admin/token/new') ;
    return this;   
   } 
+ public addUser(token,nome,secret,group):Observable<any>{
+   return this.rest.putData(`/OData/admin/token/${token}/${nome}/${secret}/${group}`);
+ }  
  public odata_services():Observable<any>{
    return this.rest.getJson('/OData');
  }

@@ -8,8 +8,5 @@ const viewsRoutes: Routes = [
   { path: 'users', component: UsersComponent }
 ];
 
-@NgModule({
-  imports: [RouterModule.forChild(viewsRoutes)],
-  exports: [RouterModule],
-})
-export class VeiwsRouterRoutingModule { }
+export const ViewsRoutesModule = RouterModule.forChild(viewsRoutes);
+

@@ -5,7 +5,6 @@ import { MaterialModule } from '../material/material.module';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { LeftComponent } from './left/left.component';
-import { ContentComponent } from './content/content.component';
 import {AppRoutingModule } from '../router.module';
 
 @NgModule({
@@ -14,9 +13,15 @@ import {AppRoutingModule } from '../router.module';
     MaterialModule,
     AppRoutingModule
   ],
-  declarations: [HeaderComponent, FooterComponent, LeftComponent, ContentComponent],
+  declarations: [
+    HeaderComponent, 
+    FooterComponent, 
+    LeftComponent
+  ], 
   exports:[
-    HeaderComponent, FooterComponent, LeftComponent, ContentComponent
+    HeaderComponent, 
+    FooterComponent, 
+    LeftComponent, 
   ]
 })
 export class MenuModule { }

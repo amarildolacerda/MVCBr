@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule,APP_INITIALIZER } from '@angular/core';
-
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { GlobalsService } from './services/globals.service';
 
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,7 +27,9 @@ import { InternalModule } from './internal/internal.module';
     ViewsModule,
     MenuModule,
     ServicesModule,
-    InternalModule
+    InternalModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
 
@@ -42,7 +44,6 @@ import { InternalModule } from './internal/internal.module';
 
   ],
   exports:[
-    AppRoutingModule,
     MaterialModule,
     ServicesModule
   ],

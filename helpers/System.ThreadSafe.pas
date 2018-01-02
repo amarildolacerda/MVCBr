@@ -221,9 +221,9 @@ type
     function Invoke: TObjectDictionary<TKey, TValue>;
     function GetCount: integer;
   public
-    constructor Create; Reintroduce; overload;
-    constructor Create(AOwnedList: TDictionaryOwnerShips); overload;
-    destructor Destroy; override;
+    constructor create; Reintroduce; overload;
+    constructor create(AOwnedList: TDictionaryOwnerShips); overload;
+    destructor destroy; override;
     function LockList: TDictionary<TKey, TValue>;
     procedure UnlockList;
 
@@ -240,14 +240,20 @@ type
 
     property Items[const Key: TKey]: TValue read GetItem write SetItem; default;
     property Count: integer read GetCount;
+  end;
 
+  TThreadSafeDictionaryObject<TValue: Class> = class
+    (TThreadSafeDictionary<string, TValue>)
+  public
+    function ToJson: String;
+    procedure FromJson(AJson: String);
   end;
 
 implementation
 
 {$IFNDEF BPL}
 
-uses REST.Json;
+uses REST.Json, System.Classes.Helper;
 {$ENDIF}
 
 constructor TThreadSafeStringList.create;
@@ -891,7 +897,7 @@ begin
       for i := 0 to Count - 1 do
       begin
         ob := Items[i];
-        result.Add(TJson.ObjectToJsonObject(ob));
+        result.Add( Rest.Json.TJson.ObjectToJsonObject(ob));
       end;
     finally
       UnlockList;
@@ -1178,7 +1184,7 @@ end;
 
 { TThreadSafeDictionary<TKey, TValue> }
 
-constructor TThreadSafeDictionary<TKey, TValue>.Create
+constructor TThreadSafeDictionary<TKey, TValue>.create
   (AOwnedList: TDictionaryOwnerShips);
 begin
   inherited create;
@@ -1242,10 +1248,10 @@ begin
 
 end;
 
-constructor TThreadSafeDictionary<TKey, TValue>.Create;
+constructor TThreadSafeDictionary<TKey, TValue>.create;
 begin
-  //raise exception.create('Use  .create([]); instead create');
-  self.Create([]);
+  // raise exception.create('Use  .create([]); instead create');
+  self.create([]);
 end;
 
 { constructor TThreadSafeDictionary<TKey, TValue>.create;
@@ -1289,7 +1295,7 @@ begin
     end;
 end;
 
-destructor TThreadSafeDictionary<TKey, TValue>.Destroy;
+destructor TThreadSafeDictionary<TKey, TValue>.destroy;
 begin
   if FInited then
   begin
@@ -1359,6 +1365,73 @@ begin
       UnlockList;
     end;
 
+end;
+
+procedure TThreadSafeDictionaryObject<TValue>.FromJson(AJson: String);
+var
+  arr: TJsonArray;
+  it: TJsonValue;
+  Key: string;
+  Value: TValue;
+  j: TJsonObject;
+  AClass: TClass;
+begin
+
+  LockList;
+  try
+    arr := TJsonObject.ParseJSONValue(AJson) as TJsonArray;
+    try
+      for it in arr do
+        if it.TryGetValue<string>('key', Key) then
+        begin
+          j := it.GetValue<TJsonValue>('value') as TJsonObject;
+          if Assigned(j) then
+          begin
+            AClass := TValue;
+
+            Value := TValue(AClass.create);
+            value.FromJson(j.toJson);
+            FDictionary.AddOrSetValue(Key, Value);
+          end;
+        end;
+    finally
+      arr.Free;
+    end;
+  finally
+    UnlockList;
+  end;
+end;
+
+function TThreadSafeDictionaryObject<TValue>.ToJson: String;
+var
+  Key: string;
+  Value: TValue;
+  arr: TJsonArray;
+  jKey: TJsonObject;
+  jValue: TJsonObject;
+  obj: TObject;
+begin
+  result := '{}';
+  with LockList do
+    try
+      arr := TJsonArray.create;
+      try
+        for Key in FDictionary.Keys do
+          if FDictionary.TryGetValue(Key, Value) then
+          begin
+            jValue := Rest.Json.TJson.ObjectToJsonObject(Value);
+            jKey := TJsonObject.create();
+            jKey.AddPair('key', Key);
+            jKey.AddPair('value', jValue);
+            arr.AddElement(jKey);
+          end;
+        result := arr.ToJson;
+      finally
+        arr.Free;
+      end;
+    finally
+      UnlockList;
+    end;
 end;
 
 procedure TThreadSafeDictionary<TKey, TValue>.SetItem(const Key: TKey;

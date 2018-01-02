@@ -416,15 +416,15 @@ begin
 
   with FJson do
   begin
-    addPair('suports.$filter', 'yes');
-    addPair('suports.$select', 'yes');
-    addPair('suports.groupby', 'yes');
-    addPair('suports.$orderby', 'yes');
-    addPair('suports.$format', 'json');
-    addPair('suports.$top', 'yes');
-    addPair('suports.$skip', 'yes');
-    addPair('suports.$inlinecount', 'yes');
-    addPair('suports.$skiptoken', 'no');
+    addPair('supports.$filter', 'yes');
+    addPair('supports.$select', 'yes');
+    addPair('supports.groupby', 'yes');
+    addPair('supports.$orderby', 'yes');
+    addPair('supports.$format', 'json');
+    addPair('supports.$top', 'yes');
+    addPair('supports.$skip', 'yes');
+    addPair('supports.$inlinecount', 'yes');
+    addPair('supports.$skiptoken', 'no');
     addPair('odata.ServiceFile', FFileJson);
   end;
 

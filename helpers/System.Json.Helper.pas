@@ -928,9 +928,27 @@ end;
 
 class function TJSONObjectHelper.ToObject<T>(AJsonValue: TJsonValue;
   var AObject: T): TJsonObject;
+var
+  oJs: TJsonObject;
+  lst: TStringList;
+  pair: TJsonPair;
+  s: string;
 begin
-
+{$IFNDEF BPL}
+  oJs := AJsonValue as TJsonObject;
+  lst := TStringList.Create;
+  try
+    for pair in oJs do
+    begin
+      AObject.ContextProperties[pair.JsonString.Value] := pair.JsonValue.Value;
+      AObject.ContextFields[pair.JsonString.Value] := pair.JsonValue.Value;
+    end;
+  finally
+    lst.Free;
+  end;
+{$ENDIF}
 end;
+
 
 class function TJSONValueHelper.ToRecord<T>(AJson: string): T;
 var
