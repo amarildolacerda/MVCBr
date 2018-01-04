@@ -677,6 +677,7 @@ FTokenKindArray.Add('$skiptoken', ptSkipToken);
 FTokenKindArray.Add('$inlinecount', ptInLineCount);
 FTokenKindArray.Add('$count', ptCount);
 FTokenKindArray.Add('$expand', ptExpand);
+FTokenKindArray.Add('group', ptGroupBy);
 FTokenKindArray.Add('groupby', ptGroupBy);
 FTokenKindArray.Add('$group', ptGroupBy);
 FTokenKindArray.Add('debug', ptDebug);

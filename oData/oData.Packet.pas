@@ -31,11 +31,13 @@ type
     function Contexts(AValue: string): TODataJsonPacket; virtual;
     procedure Starts; virtual;
     function Values(AJson: TJsonArray): TODataJsonPacket;
+    function addPair(Key, Value: string): TODataJsonPacket;
     function GenValue(AChave: String; AValue: String): TODataJsonPacket;
     function Tops(AValue: Integer): TODataJsonPacket;
     function Skips(AValue: Integer): TODataJsonPacket;
     function Ends: TODataJsonPacket; virtual;
     procedure Counts(ACount: Integer); virtual;
+    class function Error(cod: Integer; mess: string): TJsonObject;
   end;
 
 implementation
@@ -44,6 +46,12 @@ uses MVCFramework.DataSet.Utils, System.Json.Helper,
   System.DateUtils;
 
 { TODataJsonPacket }
+
+function TODataJsonPacket.addPair(Key, Value: string): TODataJsonPacket;
+begin
+  result := self;
+  FJson.addPair(Key, Value);
+end;
 
 function TODataJsonPacket.AsJsonObject: TJsonObject;
 begin
@@ -103,12 +111,19 @@ begin
   FJson.addPair('EndsAt', DateToISO8601(now));
 end;
 
+class function TODataJsonPacket.Error(cod: Integer; mess: string): TJsonObject;
+begin
+  result := TJsonObject.Create;
+  result.addPair('Error', cod);
+  result.addPair('Message', mess);
+end;
+
 function TODataJsonPacket.GenValue(AChave, AValue: String): TODataJsonPacket;
 var
   arr: TJsonArray;
 begin
   arr := TJsonArray.Create;
-  arr.AddElement(TJsonValue.new(AChave, AValue));
+  arr.AddElement(TJsonValue.New(AChave, AValue));
   Values(arr);
   Ends;
 end;

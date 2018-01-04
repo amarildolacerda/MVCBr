@@ -182,6 +182,7 @@ type
     function addPair(chave: string; Value: Integer): TJsonObject; overload;
     function addPair(chave: string; Value: double): TJsonObject; overload;
     function addPair(chave: string; Value: TDatetime): TJsonObject; overload;
+    function addPair(chave: string; Value: Boolean): TJsonObject; overload;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
     function Coalesce(chave: string; Value: string): TJsonPair;
     // procedure FromRecord<T :record>(rec:T);
@@ -191,6 +192,7 @@ type
   public
     function Length: Integer;
     function Find(AJson: string): TJsonObject;
+    class function CreateItem(it: TJsonValue): TJsonArray;
   end;
 
   TJsonValuesList = class(TObjectList<TJsonPair>)
@@ -932,7 +934,7 @@ var
   oJs: TJsonObject;
   lst: TStringList;
   pair: TJsonPair;
-  s: string;
+  S: string;
 begin
 {$IFNDEF BPL}
   oJs := AJsonValue as TJsonObject;
@@ -944,11 +946,10 @@ begin
       AObject.ContextFields[pair.JsonString.Value] := pair.JsonValue.Value;
     end;
   finally
-    lst.Free;
+    lst.free;
   end;
 {$ENDIF}
 end;
-
 
 class function TJSONValueHelper.ToRecord<T>(AJson: string): T;
 var
@@ -1112,7 +1113,23 @@ begin
   result := ToString;
 end;
 {$ENDIF}
+
+function TJSONObjectHelper.addPair(chave: string; Value: Boolean): TJsonObject;
+begin
+  result := self;
+  if Value then
+    addPair(chave, TJSONTrue.Create)
+  else
+    addPair(chave, TJSONFalse.Create);
+end;
+
 { TJSONArrayHelper }
+
+class function TJSONArrayHelper.CreateItem(it: TJsonValue): TJsonArray;
+begin
+  result := TJsonArray.Create;
+  result.AddElement(it);
+end;
 
 function TJSONArrayHelper.Find(AJson: string): TJsonObject;
 var

@@ -411,7 +411,7 @@ begin
     on e: Exception do
     begin
       freeAndNil(FDataset);
-      freeAndNil(JSONResponse);
+      //freeAndNil(JSONResponse);
       CTX.Response.StatusCode := 501;
       RenderError(CTX, e.message);
     end;
