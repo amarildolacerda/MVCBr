@@ -261,9 +261,9 @@ var
 begin
   result := false;
   jr := GetRoot;
+  with LockJson do
   try
     if assigned(jr) then
-      with LockJson do
       begin
         for it in jr do
         begin
