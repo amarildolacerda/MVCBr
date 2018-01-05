@@ -21,7 +21,7 @@ type
     function AfterCreateSQL(var SQL: string):boolean; override;
 
   public
-    function createGETQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: Boolean = false): string; override;
   end;
 
@@ -56,7 +56,7 @@ begin
 
 end;
 
-function TODataDialectMSSQL.createGETQuery(oData: IODataDecode; AFilter: string;
+function TODataDialectMSSQL.createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
   const AInLineCount: Boolean): string;
 begin
   Result := inherited;

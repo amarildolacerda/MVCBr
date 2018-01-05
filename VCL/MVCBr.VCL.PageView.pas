@@ -1324,8 +1324,8 @@ begin
   begin
     PageControl := TPageControl(Control);
     TabSheet := PageControl.Pages[index];
-    if (trim(TabSheet.Caption) = 'hide') or
-      (TMVCBrTabSheetView(TabSheet).ShowCaption = false) then
+    if (trim(TabSheet.Caption) = 'hide') {or
+      (TMVCBrTabSheetView(TabSheet).ShowCaption = false)} then
       exit;
     if TabSheet.Caption = '' then
       TabSheet.Caption := (index + 1).toString;

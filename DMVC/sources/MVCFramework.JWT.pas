@@ -519,6 +519,7 @@ var
   lJAlg: TJSONString;
   lAlgName: string;
 begin
+  Result := False;
   Error := '';
   lPieces := Token.Split(['.']);
   if Length(lPieces) <> 3 then
@@ -609,6 +610,8 @@ var
   lIsRegistered: Boolean;
   lValue: string;
 begin
+  lJHeader := nil;
+  lJPayload := nil;
   Result := IsValidToken(Token, lJHeader, lJPayload, Error);
   try
     if not Result then

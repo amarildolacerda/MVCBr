@@ -10,7 +10,7 @@ interface
 
 uses System.Classes, System.SysUtils, oData.ServiceModel,
   System.JSON, System.JSON.Helper, System.Generics.Collections,
-  oData.Interf;
+  oData.Engine,oData.Interf;
 
 const
   cODataRowState = 'rowstate';
@@ -31,23 +31,23 @@ Type
     FResource: IJsonODataServiceResource;
     FCollection: string;
     FResourceName: string;
-    FOData: IODataDecode;
+    FOData: TODataDecodeAbstract;
     function GetResource: IInterface; overload;
-    function createDELETEQuery(oData: IODataDecode; AJson: TJsonValue;
+    function createDELETEQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
       AKeys: string): string; virtual;
-    function createGETQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
-    function CreatePOSTQuery(oData: IODataDecode; AJson: TJsonValue)
+    function CreatePOSTQuery(oData: TODataDecodeAbstract; AJson: TJsonValue)
       : String; virtual;
-    function createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;
+    function createPATCHQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
       AKeys: string): String; virtual;
 
     procedure CreateGroupBy(var Result: string; FGroupBy: string); virtual;
-    procedure CreateOrderBy(oData: IODataDecode; const AInLineCount: Boolean;
+    procedure CreateOrderBy(oData: TODataDecodeAbstract; const AInLineCount: Boolean;
       var Result: string); virtual;
-    procedure CreateCrossJoin(oData: IODataDecode; var Result, FWhere: string;
+    procedure CreateCrossJoin(oData: TODataDecodeAbstract; var Result, FWhere: string;
       AResource: IJsonODataServiceResource; FCollectionFinal: string;
-      var FLastFields: string; child: IODataDecode; FKeys: string); virtual;
+      var FLastFields: string; child: TODataDecodeAbstract; FKeys: string); virtual;
     procedure CreateFilter(AFilter: string; var FWhere: string); virtual;
 
     // $top / $skip support
@@ -68,7 +68,7 @@ Type
     function Relation(AResource: string; ARelation: String)
       : IJsonObject; virtual;
     function GetWhereFromJson(const AJson: TJsonValue): String; virtual;
-    function GetWhereFromParams(AOData: IODataDecode; alias, keys: string)
+    function GetWhereFromParams(AOData: TODataDecodeAbstract; alias, keys: string)
       : string; virtual;
     function GetInsertFromJson(AJson: TJsonValue): string; virtual;
     function GetUpdateFromJson(AJson: TJsonValue): string; virtual;
@@ -87,7 +87,7 @@ var
 
 implementation
 
-uses oData.parse, oData.Engine;
+uses oData.parse;
 
 function iff(b: Boolean; t, f: string): string;
 begin
@@ -273,7 +273,7 @@ begin
   end;
 end;
 
-function TODataDialect.GetWhereFromParams(AOData: IODataDecode; alias: string;
+function TODataDialect.GetWhereFromParams(AOData: TODataDecodeAbstract; alias: string;
   keys: string): string;
 var
   s: string;
@@ -339,7 +339,7 @@ begin
     Result := Result + ' group by ' + FGroupBy;
 end;
 
-function TODataDialect.CreatePOSTQuery(oData: IODataDecode;
+function TODataDialect.CreatePOSTQuery(oData: TODataDecodeAbstract;
   AJson: TJsonValue): String;
 var
   AResource: IJsonODataServiceResource;
@@ -363,7 +363,7 @@ begin
   Result := Result + ' ' + FIns;
 end;
 
-procedure TODataDialect.CreateOrderBy(oData: IODataDecode;
+procedure TODataDialect.CreateOrderBy(oData: TODataDecodeAbstract;
   const AInLineCount: Boolean; var Result: string);
 var
   FOrderBy: string;
@@ -376,13 +376,13 @@ begin
   end;
 end;
 
-function TODataDialect.createPATCHQuery(oData: IODataDecode; AJson: TJsonValue;
+function TODataDialect.createPATCHQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
   AKeys: string): String;
 var
   AResource: IJsonODataServiceResource;
   FUpdate: string;
   FWhere, FWhere2: string;
-  child: IODataDecode;
+  child: TODataDecodeAbstract;
   FKeys, sKeys: string;
   AValue: TJsonValue;
   js: IJsonObject;
@@ -455,9 +455,9 @@ begin
   end;
 end;
 
-procedure TODataDialect.CreateCrossJoin(oData: IODataDecode; var Result: string;
+procedure TODataDialect.CreateCrossJoin(oData: TODataDecodeAbstract; var Result: string;
   var FWhere: string; AResource: IJsonODataServiceResource;
-  FCollectionFinal: string; var FLastFields: string; child: IODataDecode;
+  FCollectionFinal: string; var FLastFields: string; child: TODataDecodeAbstract;
   FKeys: string);
 var
   ARelation: IJsonODataServiceRelation;
@@ -515,12 +515,12 @@ begin
   end;
 end;
 
-function TODataDialect.createDELETEQuery(oData: IODataDecode; AJson: TJsonValue;
+function TODataDialect.createDELETEQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
   AKeys: string): string;
 var
   i: integer;
   AResource: IJsonODataServiceResource;
-  child: IODataDecode;
+  child: TODataDecodeAbstract;
   FWhere, FWhere2, FKeys: string;
   FKeysStrings: TStringList;
 begin
@@ -580,13 +580,13 @@ begin
 
 end;
 
-function TODataDialect.createGETQuery(oData: IODataDecode; AFilter: string;
+function TODataDialect.createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
   const AInLineCount: Boolean): string;
 var
   FWhere, FCollectionFinal, FKeys, FFields: string;
   FGroupBy: string;
   LLevel: integer;
-  child: IODataDecode;
+  child: TODataDecodeAbstract;
   ATop, ASkip: integer;
   FLastFields: String;
   FFieldsReq: string;

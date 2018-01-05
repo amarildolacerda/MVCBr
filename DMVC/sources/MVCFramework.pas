@@ -63,7 +63,7 @@ uses
 
   {$ENDIF}
 
-  // Delphi XE4 (all update) and XE5 (with no update) dont contains this unit. Look for the bug in QC
+  // Delphi XE4 (all update) and XE5 (with no update) don't contains this unit. Look for the bug in QC
   // https://quality.embarcadero.com/browse/RSP-17216
 
   {$IFNDEF VER320}
@@ -397,13 +397,17 @@ type
     FContentCharset: string;
     FResponseStream: TStringBuilder;
     FViewModel: TMVCViewDataObject;
-    FViewDataSets: TObjectDictionary<string, TDataSet>;
+    FViewDataSets: TMVCViewDataSet;
     function GetContext: TWebContext;
     function GetSession: TWebSession;
     function GetContentType: string;
     function GetStatusCode: Integer;
     procedure SetContentType(const AValue: string);
     procedure SetStatusCode(const AValue: Integer);
+    function GetViewData(const aModelName: String): TObject;
+    function GetViewDataset(const aDataSetName: String): TDataSet;
+    procedure SetViewData(const aModelName: String; const Value: TObject);
+    procedure SetViewDataset(const aDataSetName: String; const Value: TDataSet);
   protected const
     CLIENTID_KEY = '__clientid';
   protected
@@ -416,7 +420,7 @@ type
     function GetClientId: string;
     function GetCurrentWebModule: TWebModule;
     function GetViewModel: TMVCViewDataObject;
-    function GetViewDataSets: TObjectDictionary<string, TDataSet>;
+    function GetViewDataSets: TMVCViewDataSet;
     function GetRenderedView(const AViewNames: TArray<string>): string; virtual;
 
     /// <summary>
@@ -467,20 +471,26 @@ type
     procedure Render(const AErrorCode: Integer; const AErrorMessage: string; const AErrorClassName: string = ''); overload;
     procedure Render(const AException: Exception; AExceptionItems: TList<string> = nil; const AOwns: Boolean = True); overload;
     procedure Render(const AError: TMVCErrorResponse; const AOwns: Boolean = True); overload;
-
+    // SSE Support
+    procedure RenderSSE(const EventID: string; const EventData: string; EventName: string = ''; const Retry: Integer = TMVCConstants.SSE_RETRY_DEFAULT);
+    // Properties
     property Context: TWebContext read GetContext write FContext;
     property Session: TWebSession read GetSession;
     property ContentType: string read GetContentType write SetContentType;
     property StatusCode: Integer read GetStatusCode write SetStatusCode;
-    property ViewModel: TMVCViewDataObject read GetViewModel;
-    property ViewDataSets: TObjectDictionary<string, TDataSet> read GetViewDataSets;
+    property ViewModelList: TMVCViewDataObject read GetViewModel;
+    property ViewDataSetList: TMVCViewDataSet read GetViewDataSets;
+
   public
     constructor Create;
     destructor Destroy; override;
 
     // procedure PushToView(const AModelName: string; const AModel: string);
-    procedure PushObjectToView(const AModelName: string; const AModel: TObject);
-    procedure PushDataSetToView(const AModelName: string; const ADataSet: TDataSet);
+    procedure PushObjectToView(const AModelName: string; const AModel: TObject); deprecated 'Use "ViewData"';
+    procedure PushDataSetToView(const AModelName: string; const ADataSet: TDataSet); deprecated 'Use "ViewDataSet"';
+
+    property ViewData[const aModelName: String]: TObject read GetViewData write SetViewData;
+    property ViewDataset[const aDataSetName: String]: TDataSet read GetViewDataset write SetViewDataset;
   end;
 
   TMVCControllerClazz = class of TMVCController;
@@ -988,7 +998,7 @@ end;
 procedure TMVCWebRequest.DefineContentType;
 begin
   SplitContentMediaTypeAndCharset(FWebRequest.GetFieldByName('Content-Type'), FContentMediaType, FCharset);
-  FContentType := CreateContentType(FContentMediaType, FCharset);
+  FContentType := BuildContentType(FContentMediaType, FCharset);
 end;
 
 destructor TMVCWebRequest.Destroy;
@@ -1605,6 +1615,7 @@ constructor TMVCEngine.Create(
 begin
   inherited Create(AWebModule);
   FWebModule := AWebModule;
+  FixUpWebModule;
   FConfig := TMVCConfig.Create;
   FSerializers := TDictionary<string, IMVCSerializer>.Create;
   FMiddlewares := TList<IMVCMiddleware>.Create;
@@ -1616,7 +1627,6 @@ begin
   WebRequestHandler.CacheConnections := True;
   WebRequestHandler.MaxConnections := 4096;
 
-  FixUpWebModule;
   MVCFramework.Logger.SetDefaultLogger(ACustomLogger);
   ConfigDefaultValues;
 
@@ -1708,7 +1718,7 @@ begin
                   LSelectedController.MVCControllerAfterCreate;
                   try
                     LHandled := False;
-                    LSelectedController.ContentType := CreateContentType(LResponseContentMediaType, LResponseContentCharset);
+                    LSelectedController.ContentType := BuildContentType(LResponseContentMediaType, LResponseContentCharset);
                     // LSelectedController.ContentCharset := LResponseContentCharset;
                     if not LHandled then
                     begin
@@ -2036,8 +2046,12 @@ end;
 procedure TMVCEngine.OnBeforeDispatch(ASender: TObject; ARequest: TWebRequest; AResponse: TWebResponse; var AHandled: Boolean);
 begin
   AHandled := False;
-  if Assigned(FSavedOnBeforeDispatch) then
-    FSavedOnBeforeDispatch(ASender, ARequest, AResponse, AHandled);
+  { there is a bug in WebBroker Linux on 10.2.1 tokyo }
+  // if Assigned(FSavedOnBeforeDispatch) then
+  // begin
+  // FSavedOnBeforeDispatch(ASender, ARequest, AResponse, AHandled);
+  // end;
+
   if not AHandled then
   begin
     try
@@ -2058,7 +2072,7 @@ procedure TMVCEngine.RegisterDefaultsSerializers;
 var
   lDefaultSerializerContentType: string;
 begin
-  lDefaultSerializerContentType := CreateContentType(TMVCMediaType.APPLICATION_JSON, TMVCCharset.UTF_8);
+  lDefaultSerializerContentType := BuildContentType(TMVCMediaType.APPLICATION_JSON, TMVCCharset.UTF_8);
   if not FSerializers.ContainsKey(lDefaultSerializerContentType) then
   begin
     FSerializers.Add(
@@ -2067,7 +2081,7 @@ begin
   end;
 
   // register the same serializer without the charset in the contenttype
-  lDefaultSerializerContentType := CreateContentType(TMVCMediaType.APPLICATION_JSON, '');
+  lDefaultSerializerContentType := BuildContentType(TMVCMediaType.APPLICATION_JSON, '');
   if not FSerializers.ContainsKey(lDefaultSerializerContentType) then
   begin
     FSerializers.Add(
@@ -2126,9 +2140,9 @@ begin
   if TFile.Exists(AFileName) then
   begin
     if FMediaTypes.TryGetValue(LowerCase(ExtractFileExt(AFileName)), LContentType) then
-      LContentType := CreateContentType(lContentType, FConfig[TMVCConfigKey.DefaultContentCharset])
+      LContentType := BuildContentType(lContentType, FConfig[TMVCConfigKey.DefaultContentCharset])
     else
-      LContentType := CreateContentType(TMVCMediaType.APPLICATION_OCTETSTREAM, '');
+      LContentType := BuildContentType(TMVCMediaType.APPLICATION_OCTETSTREAM, '');
     TMVCStaticContents.SendFile(AFileName, LContentType, AContext);
     Result := True;
   end;
@@ -2313,10 +2327,22 @@ begin
   Result := GetContext.Response.StatusCode;
 end;
 
-function TMVCController.GetViewDataSets: TObjectDictionary<string, TDataSet>;
+function TMVCController.GetViewData(const aModelName: String): TObject;
+begin
+  if not FViewModel.TryGetValue(aModelName, Result) then
+    Result := nil;
+end;
+
+function TMVCController.GetViewDataset(const aDataSetName: String): TDataSet;
+begin
+  if not FViewDataSets.TryGetValue(aDataSetName, Result) then
+    Result := nil;
+end;
+
+function TMVCController.GetViewDataSets: TMVCViewDataSet;
 begin
   if not Assigned(FViewDataSets) then
-    FViewDataSets := TObjectDictionary<string, TDataSet>.Create;
+    FViewDataSets := TMVCViewDataSet.Create;
   Result := FViewDataSets;
 end;
 
@@ -2411,7 +2437,7 @@ begin
     lCharset := TMVCConstants.DEFAULT_CONTENT_CHARSET;
   if LContentType.IsEmpty then
     LContentType := TMVCConstants.DEFAULT_CONTENT_TYPE;
-  lContentType := CreateContentType(LContentType, lCharset);
+  lContentType := BuildContentType(LContentType, lCharset);
 
   LOutEncoding := TEncoding.GetEncoding(lCharset);
   try
@@ -2511,6 +2537,17 @@ begin
   GetContext.Response.StatusCode := AValue;
 end;
 
+procedure TMVCController.SetViewData(const aModelName: String; const Value: TObject);
+begin
+  GetViewModel.Add(AModelName, Value);
+end;
+
+procedure TMVCController.SetViewDataset(const aDataSetName: String;
+  const Value: TDataSet);
+begin
+  GetViewDataSets.Add(aDataSetName, Value);
+end;
+
 procedure TMVCController.Render(const AObject: TObject; const AOwns: Boolean; const AType: TMVCSerializationType);
 begin
   try
@@ -2605,8 +2642,8 @@ begin
       View := FEngine.ViewEngineClass.Create(
         Engine,
         Context,
-        ViewModel,
-        ViewDataSets,
+        ViewModelList,
+        ViewDataSetList,
         ContentType);
       try
 
@@ -2646,6 +2683,41 @@ end;
 procedure TMVCController.RenderResponseStream;
 begin
   Render(ResponseStream.ToString);
+end;
+
+procedure TMVCController.RenderSSE(const EventID, EventData: string;
+  EventName: string; const Retry: Integer);
+begin
+  // setting up the correct SSE headers
+  ContentType := 'text/event-stream';
+  Context.Response.SetCustomHeader('Cache-Control', 'no-cache');
+  Context.Response.StatusCode := HTTP_STATUS.OK;
+
+  // render the response using SSE compliant data format
+
+  // current event id (the client will resend this number at the next request)
+  ResponseStream.Append(Format('id: %s'#13, [EventID]));
+
+  // The browser attempts to reconnect to the source roughly 3 seconds after
+  // each connection is closed. You can change that timeout by including a line
+  // beginning with "retry:", followed by the number of milliseconds to wait
+  // before trying to reconnect.
+
+  if Retry > -1 then
+  begin
+    ResponseStream.Append(Format('retry: %d'#13, [Retry]));
+  end;
+
+  if not EventName.IsEmpty then
+  begin
+    ResponseStream.Append(Format('event: %s'#13, [EventName]));
+  end;
+
+  // actual message
+  ResponseStream.Append('data: ' + EventData + #13#13);
+
+  // render all the stuff
+  RenderResponseStream;
 end;
 
 procedure TMVCController.Render(const ACollection: IMVCList);

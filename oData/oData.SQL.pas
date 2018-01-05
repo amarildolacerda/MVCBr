@@ -263,11 +263,12 @@ begin
   inherited;
   try
     url := FCTX.Request.PathInfo;
-    if FCTX.Request.QueryStringParams.Count > 0 then
+    {if FCTX.Request.QueryStringParams.Count > 0 then
     begin
       url := url + '?' + FCTX.Request.RawWebRequest.Query;
-    end;
-    FODataParse.parse(url);
+    end;}
+    FODataParse.parseURL(url);
+    FODataParse.parseURLParams(FCTX.Request.RawWebRequest.Query);
   finally
   end;
 end;

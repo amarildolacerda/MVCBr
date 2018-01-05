@@ -60,7 +60,7 @@ implementation
 
 uses System.DateUtils, FireDAC.Stan.Param, System.Rtti, idURI,
   oData.ServiceModel, oData.JSON, oData.Dialect,
-  oData.engine;
+  oData.Interf,oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -415,15 +415,18 @@ var
   v: TValue;
   n: Integer;
   LSql: string;
+  oData:TODataDecodeAbstract;
 begin
+  oData := FODataParse.oData;
+  try
   InLineRecordCount := -1;
   FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
   PrepareQuery(FQuery);
   result := FQuery;
 
   try
-    if (FODataParse.oData.count = 'true') and
-      ((FODataParse.oData.Skip > 0) or (FODataParse.oData.Top > 0)) then
+    if (oData.inLineCount = 'true') and
+      ((oData.Skip > 0) or (oData.Top > 0)) then
     begin
       FQuery.SQL.Text := CreateGETQuery(FODataParse, true);
       FQuery.Open;
@@ -433,16 +436,16 @@ begin
 
     FQuery.SQL.Text := CreateGETQuery(FODataParse);
 
-    if FODataParse.oData.Search <> '' then
+    if oData.Search <> '' then
     begin
-      FQuery.Filter := createSearchFields(FODataParse, FODataParse.oData.Search,
+      FQuery.Filter := createSearchFields(FODataParse, oData.Search,
         FResource.searchFields);
       FQuery.Filtered := FQuery.Filter <> '';
     end;
 
     // criar NextedDataset -   $expand  command
-    if (FODataParse.oData.Expand <> '') and
-      (not(FODataParse.oData.count = 'true')) then
+    if (oData.Expand <> '') and
+      (not(oData.inLineCount = 'true')) then
       CreateExpandCollections(FQuery);
 
     // preenche os parametros....
@@ -459,7 +462,7 @@ begin
     FQuery.Open;
     CreateEntitiesSchema(FQuery, JSONResponse);
 
-    if FODataParse.oData.Debug.Equals('on') then
+    if oData.Debug.Equals('on') then
       JSONResponse.AddPair(TJsonPair.Create('query', FQuery.SQL.Text));
 
   except
@@ -469,6 +472,9 @@ begin
       else
         raise Exception.Create(TODataError.Create(501,
           e.Message + '<' + FQuery.SQL.Text + '>'));
+  end;
+  finally
+    oData := nil;
   end;
 end;
 

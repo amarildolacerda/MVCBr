@@ -210,7 +210,7 @@ type
     property Items[AIndex: integer]: T read Getitems write Setitems;
   end;
 
-  TThreadSafeDictionary<TKey, TValue> = class
+  TThreadSafeDictionary<TKey, TValue> = class(TInterfacedObject)
   private
     FOwnedList: TDictionaryOwnerShips;
     FInited: boolean;
@@ -897,7 +897,7 @@ begin
       for i := 0 to Count - 1 do
       begin
         ob := Items[i];
-        result.Add( Rest.Json.TJson.ObjectToJsonObject(ob));
+        result.Add(REST.Json.TJson.ObjectToJsonObject(ob));
       end;
     finally
       UnlockList;
@@ -1388,10 +1388,11 @@ begin
           if Assigned(j) then
           begin
             AClass := TValue;
-
+{$IFNDEF BPL}
             Value := TValue(AClass.create);
-            value.FromJson(j.toJson);
+            Value.FromJson(j.ToJson);
             FDictionary.AddOrSetValue(Key, Value);
+{$ENDIF}
           end;
         end;
     finally
@@ -1419,11 +1420,13 @@ begin
         for Key in FDictionary.Keys do
           if FDictionary.TryGetValue(Key, Value) then
           begin
-            jValue := Rest.Json.TJson.ObjectToJsonObject(Value);
+          {$ifndef BPL}
+            jValue := REST.Json.TJson.ObjectToJsonObject(Value);
             jKey := TJsonObject.create();
             jKey.AddPair('key', Key);
             jKey.AddPair('value', jValue);
             arr.AddElement(jKey);
+          {$endif}
           end;
         result := arr.ToJson;
       finally

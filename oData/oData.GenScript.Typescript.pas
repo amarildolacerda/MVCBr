@@ -56,6 +56,11 @@ begin
       add('    return this._odata.getJson(url);');
       add('  }');
 
+      add('  getOData(query:ODataService):ODataProviderService{');
+      add('    this.configOptions();');
+      add('    return this._odata.getValue(query);');
+      add('  }');
+
       add('  private configOptions(){ ');
       add('      if (this.token!="") { this._odata.token = this.token; }; ');
       add('      this._odata.createUrlBase(this.urlBase,this.urlPort); ');
