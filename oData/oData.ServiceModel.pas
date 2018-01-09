@@ -342,7 +342,7 @@ begin
               if not achei then
               begin
                 (LServiceMain)
-                  .AddElement(TJsonObject.ParseJSONValue(jvService.toJson));
+                  .AddElement(TJsonObject.ParseJSONValue(jv.toJson));
                 // adiciona item importado
               end;
             end;

@@ -424,8 +424,10 @@ begin
           ftLargeint, ftAutoInc:
             AJsonObject.L[FieldName] := ADataSet.Fields[I].AsLargeInt;
 
+         {$if compilerVersion>32}
           ftGuid:
             AJsonObject.S[FieldName] := GUIDToString(ADataSet.Fields[I].AsGuid);
+         {$endif}
 
           ftSingle, ftFloat:
             AJsonObject.F[FieldName] := ADataSet.Fields[I].AsFloat;
@@ -776,9 +778,10 @@ begin
         TFieldType.ftTimeStamp, TFieldType.ftTime:
           Field.AsDateTime := ISOTimeToTime(AJsonObject.S[name]);
 
+{$if CompilerVersion>32}
         TFieldType.ftGuid:
           Field.AsGuid := StringToGUID(AJsonObject.S[name]);
-
+{$endif}
         TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
           begin
             SS := TStringStream.Create(AJsonObject.S[name]);

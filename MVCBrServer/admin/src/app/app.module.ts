@@ -22,14 +22,14 @@ import { InternalModule } from './internal/internal.module';
   imports: [
     AppRoutingModule,
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     NoopAnimationsModule,
     MaterialModule,
     ViewsModule,
     MenuModule,
     ServicesModule,
     InternalModule,
-    FormsModule,
-    ReactiveFormsModule
   ],
   providers: [
 

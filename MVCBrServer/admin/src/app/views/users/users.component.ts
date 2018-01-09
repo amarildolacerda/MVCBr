@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ODataBrAdminService } from '../../services/odatabr-admin.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ODataBrAdminService } from '../../services/odatabr-admin.service';
 
 @Component({
   selector: 'app-users',
