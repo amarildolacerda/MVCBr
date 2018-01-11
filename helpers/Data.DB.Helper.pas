@@ -85,10 +85,10 @@ type
   TFieldsHelper = class helper for TFields
   private
   public
-    function JsonObject(var AJSONObject: TJsonObject; ANulls: boolean = true;
-      AFields: string = ''; AChangedOnly: boolean = false): integer;
-    function ToJson(ANulls: boolean = true; AFields: string = '';
-      AChangedOnly: boolean = false): string;
+    function JsonObject(var AJSONObject: TJsonObject;const ANulls: boolean = true;
+      AFields: string = '';const AChangedOnly: boolean = false;  AKeyFields:string=''): integer;
+    function ToJson(const ANulls: boolean = true;const AFields: string = '';
+     const AChangedOnly: boolean = false; const AKeyFields:string=''): string;
     function JsonValue(AFields: string = ''): TJsonValue;
     procedure FillFromJson(AJson: string);
   end;
@@ -675,14 +675,14 @@ begin
   end;
 end;
 
-function TFieldsHelper.ToJson(ANulls: boolean = true; AFields: string = '';
-AChangedOnly: boolean = false): string;
+function TFieldsHelper.ToJson(const ANulls: boolean = true; const AFields: string = '';
+const AChangedOnly: boolean = false; const AKeyFields:string=''): string;
 var
   AJSONObject: TJsonObject;
 begin
   AJSONObject := TJsonObject.Create;
   try
-    JsonObject(AJSONObject, ANulls, AFields, AChangedOnly);
+    JsonObject(AJSONObject, ANulls, AFields, AChangedOnly,AKeyFields);
     result := AJSONObject.ToString;
   finally
     AJSONObject.Free;
@@ -695,8 +695,8 @@ begin
 end;
 
 function TFieldsHelper.JsonObject(var AJSONObject: TJsonObject;
-ANulls: boolean = true; AFields: string = '';
-AChangedOnly: boolean = false): integer;
+const ANulls: boolean = true;  AFields: string = '';
+const AChangedOnly: boolean = false;  AKeyFields:string=''): integer;
 var
   i: integer;
   key: string;
@@ -713,6 +713,10 @@ var
 begin
   if AFields <> '' then
     AFields := ',' + lowercase(AFields.Replace(';', ',')) + ',';
+  if AKeyFields<>'' then
+    AKeyFields :=   ',' + lowercase(AKeyFields.Replace(';', ',')) + ',';
+
+
   result := 0;
   if not assigned(AJSONObject) then
     raise exception.Create('Error Message, not init JSONOject ');
@@ -722,7 +726,7 @@ begin
     if not FieldValid then
       continue;
 
-    if AChangedOnly and (not it.Changed) then
+    if AChangedOnly and (not it.Changed) and (not AKeyFields.Contains(it.FieldName.ToLower)) then
       continue;
 
     key := lowercase(it.FieldName);
