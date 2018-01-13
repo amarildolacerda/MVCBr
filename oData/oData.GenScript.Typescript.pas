@@ -87,7 +87,7 @@ begin
                   add('   get_' + AResource +
                     '( query:ODataBrQuery ):ODataProviderService { ');
                   add('      this.configOptions(); ');
-                  add('      query.resource = "' + AResource + '";');
+                  add('      query.resource = "' + AResource + '"+(query.join?query.join:"");');
                   add('      return this._odata.getValue( query ); ');
                   add('   }');
                   add('');

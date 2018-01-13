@@ -30,7 +30,7 @@ type
 
   TODataFiredacQuery = class(TODataSQL)
   private
-    FQuery: TFdQuery; //IQueryAdapter<TFdQuery>;
+    FQuery: TFdQuery; // IQueryAdapter<TFdQuery>;
     FConnection: TFDConnection;
     procedure SetConnection(const Value: TFDConnection);
     procedure paramFromJson(q: TFdQuery; ji: TJsonObject);
@@ -60,7 +60,7 @@ implementation
 
 uses System.DateUtils, FireDAC.Stan.Param, System.Rtti, idURI,
   oData.ServiceModel, oData.JSON, oData.Dialect,
-  oData.Interf,oData.engine;
+  oData.Interf, oData.engine;
 { TODataFiredacQuery }
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
@@ -71,7 +71,7 @@ end;
 
 destructor TODataFiredacQuery.Destroy;
 begin
-  //FQuery := nil;
+  // FQuery := nil;
   freeAndNil(FQuery);
   inherited;
 end;
@@ -103,7 +103,7 @@ begin
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
     as IJsonODataServiceResource;
 
-  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
+  FQuery := { TQueryAdapter.Create( } QueryClass.Create(nil) as TFdQuery; { ); }
   PrepareQuery(FQuery);
 
   FQuery.Connection.StartTransaction;
@@ -170,6 +170,8 @@ var
   sKeys: string;
   iLin: Integer;
   LRowState: string;
+  ra: Integer;
+  methods: string;
 begin
   inherited;
   iLin := 0;
@@ -190,9 +192,10 @@ begin
 
   FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
     as IJsonODataServiceResource;
+  methods := FResource.method;
 
   result := 0;
-  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
+  FQuery := { TQueryAdapter.Create( } QueryClass.Create(nil) as TFdQuery; { ); }
   PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
@@ -200,6 +203,7 @@ begin
     begin
       for ji in js.AsArray do
       begin
+        ra := 0;
         inc(iLin);
         if not assigned(FResource) then
           FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
@@ -207,10 +211,16 @@ begin
         sKeys := GetPrimaryKey(FQuery.Connection, FResource.collection);
         if sKeys = '' then
           sKeys := FResource.keyID;
-        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji, sKeys);
-        paramFromJson(FQuery, ji as TJsonObject);
-        FQuery.ExecSQL;
-        if (FQuery.RowsAffected = 0) then
+        if methods.Contains('POST') or
+          methods.Contains('PATCH') then
+        begin
+          FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji, sKeys);
+          paramFromJson(FQuery, ji as TJsonObject);
+          FQuery.ExecSQL;
+          ra := FQuery.RowsAffected;
+        end;
+        if (ra = 0) and (methods.Contains('PUT') or
+          methods.Contains('PATCH')) then
         begin
           if TJsonObject(ji).TryGetValue<string>(cODataRowState, LRowState) then
             if LRowState = cODataModifiedORInserted then
@@ -218,20 +228,39 @@ begin
               FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji);
               paramFromJson(FQuery, ji as TJsonObject);
               FQuery.ExecSQL;
+              ra := FQuery.RowsAffected;
             end;
         end;
-        result := result + FQuery.RowsAffected;
+        result := result + ra;
       end;
 
     end
     else
     begin
       inc(iLin);
-      FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue,
-        GetPrimaryKey(FQuery.Connection, FResource.collection));
-      paramFromJson(FQuery, js.JsonObject);
-      FQuery.ExecSQL;
-      result := result + FQuery.RowsAffected;
+      ra := 0;
+      if methods.Contains('POST') or methods.Contains('PATCH')
+      then
+      begin
+        FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue,
+          GetPrimaryKey(FQuery.Connection, FResource.collection));
+        paramFromJson(FQuery, js.JsonObject);
+        FQuery.ExecSQL;
+        ra := FQuery.RowsAffected;
+      end;
+      if (ra = 0) and (methods.Contains('PUT') or
+        methods.Contains('PATCH')) then
+      begin
+        if js.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
+          if LRowState = cODataModifiedORInserted then
+          begin
+            FQuery.SQL.Text := CreatePOSTQuery(FODataParse, js.JsonObject);
+            paramFromJson(FQuery, js.JsonObject);
+            FQuery.ExecSQL;
+            ra := FQuery.RowsAffected;
+          end;
+      end;
+      result := result + ra;
     end;
     FQuery.Connection.Commit;
   except
@@ -327,7 +356,7 @@ begin
 
   result := 0;
   freeAndNil(FQuery);
-  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
+  FQuery := { TQueryAdapter.Create( } QueryClass.Create(nil) as TFdQuery; { ); }
   PrepareQuery(FQuery);
   FQuery.Connection.StartTransaction;
   try
@@ -415,64 +444,64 @@ var
   v: TValue;
   n: Integer;
   LSql: string;
-  oData:TODataDecodeAbstract;
+  oData: TODataDecodeAbstract;
 begin
   oData := FODataParse.oData;
   try
-  InLineRecordCount := -1;
-  FQuery := {TQueryAdapter.Create(}QueryClass.Create(nil) as TFdQuery;{);}
-  PrepareQuery(FQuery);
-  result := FQuery;
+    InLineRecordCount := -1;
+    FQuery := { TQueryAdapter.Create( } QueryClass.Create(nil)
+      as TFdQuery; { ); }
+    PrepareQuery(FQuery);
+    result := FQuery;
 
-  try
-    if (oData.inLineCount = 'true') and
-      ((oData.Skip > 0) or (oData.Top > 0)) then
-    begin
-      FQuery.SQL.Text := CreateGETQuery(FODataParse, true);
-      FQuery.Open;
-      InLineRecordCount := FQuery.FieldByName('N__Count').AsInteger;
-      FQuery.Close;
-    end;
-
-    FQuery.SQL.Text := CreateGETQuery(FODataParse);
-
-    if oData.Search <> '' then
-    begin
-      FQuery.Filter := createSearchFields(FODataParse, oData.Search,
-        FResource.searchFields);
-      FQuery.Filtered := FQuery.Filter <> '';
-    end;
-
-    // criar NextedDataset -   $expand  command
-    if (oData.Expand <> '') and
-      (not(oData.inLineCount = 'true')) then
-      CreateExpandCollections(FQuery);
-
-    // preenche os parametros....
-    if AJsonBody <> nil then
-      for i := 0 to FQuery.ParamCount - 1 do
+    try
+      if (oData.inLineCount = 'true') and ((oData.Skip > 0) or (oData.Top > 0))
+      then
       begin
-        if AJsonBody.TryGetValue<TValue>(FQuery.Params[i].Name, v) then
-          FQuery.Params[i].Value := v.asVariant
+        FQuery.SQL.Text := CreateGETQuery(FODataParse, true);
+        FQuery.Open;
+        InLineRecordCount := FQuery.FieldByName('N__Count').AsInteger;
+        FQuery.Close;
       end;
 
-    LSql := FQuery.SQL.Text;
-    if AdapterAPI.AfterCreateSQL(LSql) then
-      FQuery.SQL.Text := LSql;
-    FQuery.Open;
-    CreateEntitiesSchema(FQuery, JSONResponse);
+      FQuery.SQL.Text := CreateGETQuery(FODataParse);
 
-    if oData.Debug.Equals('on') then
-      JSONResponse.AddPair(TJsonPair.Create('query', FQuery.SQL.Text));
+      if oData.Search <> '' then
+      begin
+        FQuery.Filter := createSearchFields(FODataParse, oData.Search,
+          FResource.searchFields);
+        FQuery.Filtered := FQuery.Filter <> '';
+      end;
 
-  except
-    on e: Exception do
-      if e.Message.StartsWith('{') then
-        raise
-      else
-        raise Exception.Create(TODataError.Create(501,
-          e.Message + '<' + FQuery.SQL.Text + '>'));
-  end;
+      // criar NextedDataset -   $expand  command
+      if (oData.Expand <> '') and (not(oData.inLineCount = 'true')) then
+        CreateExpandCollections(FQuery);
+
+      // preenche os parametros....
+      if AJsonBody <> nil then
+        for i := 0 to FQuery.ParamCount - 1 do
+        begin
+          if AJsonBody.TryGetValue<TValue>(FQuery.Params[i].Name, v) then
+            FQuery.Params[i].Value := v.asVariant
+        end;
+
+      LSql := FQuery.SQL.Text;
+      if AdapterAPI.AfterCreateSQL(LSql) then
+        FQuery.SQL.Text := LSql;
+      FQuery.Open;
+      CreateEntitiesSchema(FQuery, JSONResponse);
+
+      if oData.Debug.Equals('on') then
+        JSONResponse.AddPair(TJsonPair.Create('query', FQuery.SQL.Text));
+
+    except
+      on e: Exception do
+        if e.Message.StartsWith('{') then
+          raise
+        else
+          raise Exception.Create(TODataError.Create(501,
+            e.Message + '<' + FQuery.SQL.Text + '>'));
+    end;
   finally
     oData := nil;
   end;

@@ -56,8 +56,8 @@ begin
   ATo := 0;
   if nSkip>0 then
   begin
-     ARows := nSkip;
-     ATo := ARows + nTop;
+     ARows := nSkip+1;
+     ATo := nSkip + nTop;
   end;
   CreateTopSkip(result, ARows, ATo);
 {$ENDIF}

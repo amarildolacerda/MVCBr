@@ -328,6 +328,7 @@ var
   n: integer;
   r: string;
   erro: TJsonObject;
+  body:string;
 begin
   try
 {$IFDEF LOGEVENTS}
@@ -338,7 +339,8 @@ begin
     FOData.DecodeODataURL(CTX);
     JSONResponse := CreateJson(CTX, CTX.Request.PathInfo);
     jo := JSONResponse.asJsonObject;
-    n := FOData.ExecutePATCH(CTX.Request.Body, jo);
+    body := CTX.Request.Body;
+    n := FOData.ExecutePATCH(body, jo);
 
     JSONResponse.Counts(n);
 
