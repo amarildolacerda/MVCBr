@@ -33,20 +33,19 @@ constructor(private rest:ODataProviderService, private globals:GlobalsService) {
  public subscribe(proc:any){
    this.observable.subscribe(r=>{ proc(r); });
  }  
- public get_token_new():ODataBrAdminService{
-   this.observable =  this.rest.getOData('/OData/admin/token/new') ;
-   return this;   
+ public get_token_new():Observable<any>{
+   return   this.rest.getBase('/OData/admin/token/new') ;
   } 
  public addUser(token,nome,secret,group):Observable<any>{
-   return this.rest.putData(`/OData/admin/token/${token}/${nome}/${secret}/${group}`);
+   return this.rest.http.put(this.rest.base_url+`/OData/admin/token/${token}/${nome}/${secret}/${group}`,{});
  }  
  public odata_services():Observable<any>{
-   return this.rest.getJson('/OData');
+   return this.rest.getBase('/OData');
  }
  public odata_metadata():Observable<any>{
-   return this.rest.getJson('/OData/$metadata')
+   return this.rest.getBase('/OData/$metadata')
  }
  public describe_server():Observable<any>{
-   return this.rest.getJson('/system/describeserver.info');
+   return this.rest.getBase('/system/describeserver.info');
  }
 }

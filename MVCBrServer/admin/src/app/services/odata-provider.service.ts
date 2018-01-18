@@ -2,7 +2,7 @@
 //  ODataBr Provider
 //  Auth: amarildo lacerda - tireideletra.com.br
 // </summary>
-import { Injectable, Inject } from '@angular/core';
+import { Injectable,Input, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
 
@@ -118,11 +118,16 @@ export class ODataProviderService {
   endsAt: any;
 
 
-  constructor(private http: HttpClient) {
+  constructor(private server: HttpClient) {
     this.headers = new HttpHeaders();
     this.headers.append('Content-Type', 'application/json; charset=UTF-8');
   }
 
+  @Input()
+  get http(){
+    return this.server;
+  }
+  
   public getObservable(): Observable<any> {
     return this.observable;
   }
@@ -228,7 +233,7 @@ export class ODataProviderService {
       .map(res => { return res });
     return this.observable;
   }
-
+  
   public putItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.put(this.getUrl(collection),

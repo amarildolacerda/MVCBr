@@ -10,7 +10,7 @@ import { ServicesModule } from '../services/services.module';
 import { LoginComponent } from './login/login.component';
 import { PrincipalComponent } from './principal/principal.component';
 import { SobreComponent } from './sobre/sobre.component';
-imposrt { MaterialModule } from '../material/material.module';
+import { MaterialModule } from '../material/material.module';
 import { InternalModule } from '../internal/internal.module';
 
 
