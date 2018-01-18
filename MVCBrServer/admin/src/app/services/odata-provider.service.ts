@@ -10,6 +10,7 @@ import { Observable } from 'rxjs/Rx';
 
 export interface ODataService {
   resource?: string;
+  join?: string;
   select?: Array<string>;
   filter?: string;
   groupBy?: Array<string>;
@@ -20,7 +21,7 @@ export interface ODataService {
 }
 
 export class ODataFactory implements ODataService {
-  
+
   resource: string;
   select: Array<string>;
   filter: string;
@@ -46,13 +47,56 @@ export class ODataFactory implements ODataService {
     rt += ((ref.top) ? "&$top=" + ref.top.toFixed(0) : "");
     rt += ((ref.skip) ? "&$skip=" + ref.skip.toFixed(0) : "");
     rt += ((ref.filter) ? "&$filter=" + ref.filter : "");
-    rt += ((ref.groupBy) ? "&groupby=" + ref.groupBy.join(',') : "");
-    rt += ((ref.orderBy) ? "&orderby=" + ref.orderBy.join(",") : "");
+    rt += ((ref.groupBy) ? "&$group=" + ref.groupBy.join(',') : "");
+    rt += ((ref.orderBy) ? "&$order=" + ref.orderBy.join(",") : "");
     return rt;
   }
-  /// create URL for ODataBr
-  public static createServicePath(collection: string, rootService : string ='/OData/OData.svc/'): string {
+  public static createServicePath(collection: string, rootService: string = '/OData/OData.svc/'): string {
     return rootService + collection;
+  }
+
+}
+
+export class ODataResponse {
+  static decode(rsp: any): any {
+    if (rsp == null) {
+      return { count: 0, value: [] };
+    } else {
+      let ret: any = {};
+      for (let it in rsp) {
+        switch (it) {
+          case '@odata.count': {
+            ret.count = rsp[it];
+            break;
+          }
+          case 'keys': {
+            ret.keys = rsp[it];
+            break;
+          }
+          case 'properties': {
+            ret.properties = rsp[it];
+            break;
+          }
+          case "@odata.top": {
+            ret.top = rsp[it];
+            break;
+          }
+          case "StartsAt": {
+            ret.startsAt = rsp[it];
+            break;
+          }
+          case "EndsAt": {
+            ret.endsAt = rsp[it];
+            break;
+          }
+          case "value": {
+            ret.value = rsp[it];
+            break;
+          }
+        }
+      }
+      return ret;
+    }
   }
 
 }
@@ -62,8 +106,7 @@ export class ODataFactory implements ODataService {
 export class ODataProviderService {
   private observable: Observable<any>;
   query_data: ODataService;
-  base_url: string;
-  root : string = "/OData/OData.svc/"
+  base_url: string = "http://localhost:8080";
   token: string = "";
   headers: HttpHeaders;
   response: any;
@@ -76,7 +119,6 @@ export class ODataProviderService {
 
 
   constructor(private http: HttpClient) {
-    this.createUrlBase('',0);
     this.headers = new HttpHeaders();
     this.headers.append('Content-Type', 'application/json; charset=UTF-8');
   }
@@ -86,22 +128,15 @@ export class ODataProviderService {
   }
 
   public createUrlBase(base: string, port: number) {
-    if (port==null)
-       console.log("não passou a porta do servidor");
-    let lport:string = port.toFixed(0);
-    if (port==0){
-       lport = window.location.port;
-    }
     let url = "";
     if (base != "") {
       url = base;
     }
     else {
       let loc = window.location;
-      url = loc.protocol + '//' + loc.hostname + ':' + lport;
+      url = loc.protocol + '//' + loc.hostname + ':' + port;
     }
     this.base_url = url;
-    console.log('Server base_url: '+url);
     return url;
   }
   private getOptions() {
@@ -110,18 +145,11 @@ export class ODataProviderService {
   }
   public getUrl(collection: string, aParam: string = "") {
     let p = (aParam != "" ? "&" + aParam : "");
-    return this.base_url + ODataFactory.createServicePath(collection,this.root) +
+    return this.base_url + ODataFactory.createServicePath(collection) +
       '?token=' + this.token + p;
   }
 
-  public getUrlBase(url: string, aParam: string = "") {
-    let p = (aParam != "" ? "&" + aParam : "");
-    return this.base_url + url +
-      '?token=' + this.token + p;
-  }
-
-
-  private query(qry: ODataService): ODataProviderService {
+  public query(qry: ODataService): ODataProviderService {
     this.getValue(qry);
     return this;
   }
@@ -157,7 +185,6 @@ export class ODataProviderService {
     }
   }
 
-  /// async call
   public subscribe(proc: any, erroProc: any = null) {
     this.observable.subscribe(rsp => {
       this.fillResponse(rsp);
@@ -168,19 +195,18 @@ export class ODataProviderService {
         erroProc(err.error);
       } else {
         console.log(err);
-       // throw new TypeError(err.error.error);
+        // throw new TypeError(err.error.error);
       }
     })
   }
 
-  // prepare for async call
-  // ordinary call for ODataBr, expect OData response from server
   public getValue(query: ODataService): ODataProviderService {
     try {
       this.observable = this.http.request('GET', this.getUrl(query.resource) +
-        ODataFactory.createFinalStr(query), this.getOptions());
+        ODataFactory.createFinalStr(query), this.getOptions())
+        .map(res => { return res; });
       if (this.observable == null) {
-        throw new TypeError("Não criou uma conexão com o servidor Query: "+query);
+        throw new TypeError("Não criou uma conexão com o servidor Query: " + query);
       }
     }
     catch (e) {
@@ -188,31 +214,21 @@ export class ODataProviderService {
     }
     return this;
   }
-
-  // get from generic URL... 
-  // No regular path, but its OData reponse
-  public getOData( url:string):ODataProviderService{
-    let path = url+'?token=' + this.token;
-    this.observable = this.getJson(path);
-    return this;
+  public getJson(url: string): Observable<any> {
+    return this.http.get(url, this.getOptions())
   }
 
-  /// call generic resource on the server - 
-  //  get for all needs - 
-  //  no format url
-  //  no OData Response
-  public getJson(url:string):Observable<any>{
-   return this.http.get(this.getUrlBase(url),this.getOptions())
+  public getBase(url: string): Observable<any> {
+    return this.http.get(this.base_url + url, this.getOptions());
   }
 
-  // generic ordinary GET method
   public getReponse(query: ODataService): Observable<any> {
     this.observable = this.http.request('GET', this.getUrl(query.resource) +
-      ODataFactory.createFinalStr(query), this.getOptions());
+      ODataFactory.createFinalStr(query), this.getOptions())
+      .map(res => { return res });
     return this.observable;
   }
 
-  // PUT method
   public putItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.put(this.getUrl(collection),
@@ -225,11 +241,7 @@ export class ODataProviderService {
       });
     return this.observable;
   }
-  public putData(url:string,param:any="", body:any=null):Observable<any>{
-   return this.http.put(this.getUrlBase(url,param),body,this.getOptions());
-  }
 
-  // POST method
   public postItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.post(this.getUrl(collection),
@@ -241,11 +253,6 @@ export class ODataProviderService {
       });
     return this.observable;
   }
-  public postData(url:string,param:any="", body:any=null):Observable<any>{
-    return this.http.post(this.getUrlBase(url,param),body,this.getOptions());
-   }
- 
-  // PATCH method
   public patchItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     /// o comando put = patch o mvcbr.odata; os browsers mantem restrição para uso do patch.
@@ -261,11 +268,6 @@ export class ODataProviderService {
       });
     return this.observable;
   }
-  public patchData(url:string,param:any="",item:any=null):Observable<any>{
-    return this.http.patch(this.getUrlBase(url,param),item,this.getOptions());
-   }
-
-  // DELETE method
   public deleteItem(collection: string, params: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.delete(this.getUrl(collection, params),
@@ -277,8 +279,5 @@ export class ODataProviderService {
       });
     return this.observable;
   }
-  public deleteData(url:string,param:any=""):Observable<any>{
-    return this.http.delete(this.getUrlBase(url,param),this.getOptions());
-   }
 
 }
