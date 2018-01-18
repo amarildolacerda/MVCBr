@@ -10,7 +10,7 @@ interface
 
 uses System.Classes, System.SysUtils, oData.ServiceModel,
   System.JSON, System.JSON.Helper, System.Generics.Collections,
-  oData.Engine,oData.Interf;
+  oData.Engine, oData.Interf;
 
 const
   cODataRowState = 'rowstate';
@@ -34,20 +34,22 @@ Type
     FOData: TODataDecodeAbstract;
     function GetResource: IInterface; overload;
     function createDELETEQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
-      AKeys: string): string; virtual;
+      AKeys: string; AResource: TObject): string; virtual;
     function createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: Boolean = false): string; virtual;
-    function CreatePOSTQuery(oData: TODataDecodeAbstract; AJson: TJsonValue)
-      : String; virtual;
+    function CreatePOSTQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
+      AResource: TObject): String; virtual;
+
     function createPATCHQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
-      AKeys: string): String; virtual;
+      AKeys: string; AResource: TObject): String; virtual;
 
     procedure CreateGroupBy(var Result: string; FGroupBy: string); virtual;
-    procedure CreateOrderBy(oData: TODataDecodeAbstract; const AInLineCount: Boolean;
-      var Result: string); virtual;
-    procedure CreateCrossJoin(oData: TODataDecodeAbstract; var Result, FWhere: string;
-      AResource: IJsonODataServiceResource; FCollectionFinal: string;
-      var FLastFields: string; child: TODataDecodeAbstract; FKeys: string); virtual;
+    procedure CreateOrderBy(oData: TODataDecodeAbstract;
+      const AInLineCount: Boolean; var Result: string); virtual;
+    procedure CreateCrossJoin(oData: TODataDecodeAbstract;
+      var Result, FWhere: string; AResource: IJsonODataServiceResource;
+      FCollectionFinal: string; var FLastFields: string;
+      child: TODataDecodeAbstract; FKeys: string); virtual;
     procedure CreateFilter(AFilter: string; var FWhere: string); virtual;
 
     // $top / $skip support
@@ -68,10 +70,12 @@ Type
     function Relation(AResource: string; ARelation: String)
       : IJsonObject; virtual;
     function GetWhereFromJson(const AJson: TJsonValue): String; virtual;
-    function GetWhereFromParams(AOData: TODataDecodeAbstract; alias, keys: string)
-      : string; virtual;
-    function GetInsertFromJson(AJson: TJsonValue): string; virtual;
-    function GetUpdateFromJson(AJson: TJsonValue): string; virtual;
+    function GetWhereFromParams(AOData: TODataDecodeAbstract;
+      alias, keys: string): string; virtual;
+    function GetInsertFromJson(AJson: TJsonValue): string; overload; virtual;
+    class function GetInsertFromJson(FResourceName: string; AJson: TJsonValue)
+      : string; overload; virtual;
+    function GetUpdateFromJson(AJson: TJsonValue): string; overload; virtual;
   end;
 
   TODataDialectClass = class of TODataDialect;
@@ -100,8 +104,13 @@ end;
 { TODataDialectClass }
 
 { TODataDialect }
-
 function TODataDialect.GetInsertFromJson(AJson: TJsonValue): string;
+begin
+  Result := GetInsertFromJson(FResourceName, AJson);
+end;
+
+class function TODataDialect.GetInsertFromJson(FResourceName: string;
+  AJson: TJsonValue): string;
 var
   js: IJsonObject;
   p: TJsonPair;
@@ -168,7 +177,7 @@ var
   begin
     if cols <> '' then
     begin
-      cols := cols + ', ' ;
+      cols := cols + ', ';
     end;
     cols := cols + aCol
   end;
@@ -273,8 +282,8 @@ begin
   end;
 end;
 
-function TODataDialect.GetWhereFromParams(AOData: TODataDecodeAbstract; alias: string;
-  keys: string): string;
+function TODataDialect.GetWhereFromParams(AOData: TODataDecodeAbstract;
+  alias: string; keys: string): string;
 var
   s: string;
   key: string;
@@ -340,21 +349,26 @@ begin
 end;
 
 function TODataDialect.CreatePOSTQuery(oData: TODataDecodeAbstract;
-  AJson: TJsonValue): String;
+  AJson: TJsonValue; AResource: TObject): String;
 var
-  AResource: IJsonODataServiceResource;
   FIns: string;
+  LResource: TJsonODataServiceResource;
 begin
   if not assigned(AJson) then
     raise Exception.Create(TODataError.Create(500,
       'Não enviou dados a serem inseridos'));
-  AResource := GetResource(oData.resource) as IJsonODataServiceResource;
 
-  if not AResource.method.Contains('POST') then
+  if AResource = nil then
+    AResource := (GetResource(oData.resource)
+      as IJsonODataServiceResource).this;
+
+  LResource := TJsonODataServiceResource(AResource);
+
+  if not LResource.method.Contains('POST') then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
-  Result := 'insert into ' + AResource.Collection;
+  Result := 'insert into ' + LResource.Collection;
   FIns := GetInsertFromJson(AJson);
   if FIns = '' then
     raise Exception.Create(TODataError.Create(500,
@@ -376,10 +390,9 @@ begin
   end;
 end;
 
-function TODataDialect.createPATCHQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
-  AKeys: string): String;
+function TODataDialect.createPATCHQuery(oData: TODataDecodeAbstract;
+  AJson: TJsonValue; AKeys: string; AResource: TObject): String;
 var
-  AResource: IJsonODataServiceResource;
   FUpdate: string;
   FWhere, FWhere2: string;
   child: TODataDecodeAbstract;
@@ -388,18 +401,23 @@ var
   js: IJsonObject;
   jv: TJsonValue;
   str: TStringList;
+  LResource: TJsonODataServiceResource;
 begin
   if not assigned(AJson) then
     raise Exception.Create(TODataError.Create(500,
       'Não enviou dados a serem inseridos'));
-  AResource := GetResource(oData.resource) as IJsonODataServiceResource;
+  if not assigned(AResource) then
+    AResource := (GetResource(oData.resource)
+      as IJsonODataServiceResource).this;
 
-  if (not AResource.method.Contains('PUT')) and
-    (not AResource.method.Contains('PATCH')) then
+  LResource := TJsonODataServiceResource(AResource);
+
+  if (not LResource.method.Contains('PUT')) and
+    (not LResource.method.Contains('PATCH')) then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
-  Result := 'update ' + AResource.Collection;
+  Result := 'update ' + LResource.Collection;
   FUpdate := GetUpdateFromJson(AJson);
   if FUpdate = '' then
     raise Exception.Create(TODataError.Create(500,
@@ -413,7 +431,7 @@ begin
   if child.ResourceParams.Count > 0 then
   /// checa se tem parameteros   ex:   grupos ('07')
   begin
-    FKeys := GetWhereFromParams(child, '', AResource.keyID);
+    FKeys := GetWhereFromParams(child, '', LResource.keyID);
     /// gera a where para o parametro
     if FWhere <> '' then
       FWhere := '(' + FWhere + ') and (' + FKeys + ')'
@@ -455,10 +473,10 @@ begin
   end;
 end;
 
-procedure TODataDialect.CreateCrossJoin(oData: TODataDecodeAbstract; var Result: string;
-  var FWhere: string; AResource: IJsonODataServiceResource;
-  FCollectionFinal: string; var FLastFields: string; child: TODataDecodeAbstract;
-  FKeys: string);
+procedure TODataDialect.CreateCrossJoin(oData: TODataDecodeAbstract;
+  var Result: string; var FWhere: string; AResource: IJsonODataServiceResource;
+  FCollectionFinal: string; var FLastFields: string;
+  child: TODataDecodeAbstract; FKeys: string);
 var
   ARelation: IJsonODataServiceRelation;
   ARelationResource: IJsonODataServiceResource;
@@ -515,22 +533,25 @@ begin
   end;
 end;
 
-function TODataDialect.createDELETEQuery(oData: TODataDecodeAbstract; AJson: TJsonValue;
-  AKeys: string): string;
+function TODataDialect.createDELETEQuery(oData: TODataDecodeAbstract;
+  AJson: TJsonValue; AKeys: string; AResource: TObject): string;
 var
   i: integer;
-  AResource: IJsonODataServiceResource;
+  LResource: TJsonODataServiceResource;
   child: TODataDecodeAbstract;
   FWhere, FWhere2, FKeys: string;
   FKeysStrings: TStringList;
 begin
-  AResource := GetResource(oData.resource) as IJsonODataServiceResource;
+  if AResource=nil then
+  AResource := (GetResource(oData.resource) as IJsonODataServiceResource).this;
 
-  if not AResource.method.Contains('DELETE') then
+  LResource :=  TJsonODataServiceResource(AResource);
+
+  if not LResource.method.Contains('DELETE') then
     raise Exception.Create(TODataError.Create(403,
       'Método solicitado não autorizado'));
 
-  Result := 'delete from ' + AResource.Collection;
+  Result := 'delete from ' + LResource.Collection;
   FWhere := oData.Filter;
 
   FKeys := AKeys;
@@ -564,7 +585,7 @@ begin
 
   if child.ResourceParams.Count > 0 then
   begin
-    FKeys := GetWhereFromParams(child, '', AResource.keyID);
+    FKeys := GetWhereFromParams(child, '', LResource.keyID);
     /// gera a where para o parametro
     if FWhere <> '' then
       FWhere := '(' + FWhere + ') and (' + FKeys + ')'
@@ -580,8 +601,8 @@ begin
 
 end;
 
-function TODataDialect.createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
-  const AInLineCount: Boolean): string;
+function TODataDialect.createGETQuery(oData: TODataDecodeAbstract;
+  AFilter: string; const AInLineCount: Boolean): string;
 var
   FWhere, FCollectionFinal, FKeys, FFields: string;
   FGroupBy: string;

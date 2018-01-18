@@ -80,7 +80,7 @@ type
     function Expands: IJsonODataServiceExpands;
   end;
 
-  TJsonODastaServiceResource = class(TInterfacedJson, IJsonODataServiceResource)
+  TJsonODataServiceResource = class(TInterfacedJson, IJsonODataServiceResource)
   private
     FPrimaryKey: string;
     procedure SetPrimaryKey(const Value: string);
@@ -461,7 +461,7 @@ begin
           begin
             if LValue = AName then
             begin
-              result := TJsonODastaServiceResource.New(it as TJsonObject);
+              result := TJsonODataServiceResource.New(it as TJsonObject);
               exit;
             end;
           end;
@@ -512,12 +512,12 @@ end;
 
 { TJsonResource }
 
-function TJsonODastaServiceResource.collection: string;
+function TJsonODataServiceResource.collection: string;
 begin
   JSON.TryGetValue<string>('collection', result);
 end;
 
-function TJsonODastaServiceResource.expand(AName: string)
+function TJsonODataServiceResource.expand(AName: string)
   : IJsonODataServiceExpand;
 var
   r: IJsonODataServiceExpands;
@@ -543,7 +543,7 @@ begin
   end;
 end;
 
-function TJsonODastaServiceResource.Expands: IJsonODataServiceExpands;
+function TJsonODataServiceResource.Expands: IJsonODataServiceExpands;
 var
   jo: TJsonValue;
   jv: TJsonValue;
@@ -557,49 +557,49 @@ begin
   end;
 end;
 
-function TJsonODastaServiceResource.fields: string;
+function TJsonODataServiceResource.fields: string;
 begin
   JSON.TryGetValue<string>('fields', result);
 end;
 
-function TJsonODastaServiceResource.GetPrimaryKey: string;
+function TJsonODataServiceResource.GetPrimaryKey: string;
 begin
   result := FPrimaryKey;
 end;
 
-function TJsonODastaServiceResource.join: string;
+function TJsonODataServiceResource.join: string;
 begin
   JSON.TryGetValue<string>('join', result);
 end;
 
-function TJsonODastaServiceResource.keyID: string;
+function TJsonODataServiceResource.keyID: string;
 begin
   JSON.TryGetValue<string>('keyID', result);
 end;
 
-function TJsonODastaServiceResource.maxpagesize: integer;
+function TJsonODataServiceResource.maxpagesize: integer;
 begin
   if not JSON.TryGetValue<integer>('maxpagesize', result) then
     result := 0;
 end;
 
-function TJsonODastaServiceResource.method: string;
+function TJsonODataServiceResource.method: string;
 begin
   JSON.TryGetValue<string>('method', result);
 end;
 
-class function TJsonODastaServiceResource.New(AJson: TJsonValue)
+class function TJsonODataServiceResource.New(AJson: TJsonValue)
   : IJsonODataServiceResource;
 var
-  j: TJsonODastaServiceResource;
+  j: TJsonODataServiceResource;
 begin
-  j := TJsonODastaServiceResource.create;
+  j := TJsonODataServiceResource.create;
   j.FJson := AJson;
   result := j;
 
 end;
 
-function TJsonODastaServiceResource.relation(AName: string)
+function TJsonODataServiceResource.relation(AName: string)
   : IJsonODataServiceRelation;
 var
   r: IJsonODataServiceRelations;
@@ -625,7 +625,7 @@ begin
   end;
 end;
 
-function TJsonODastaServiceResource.relations: IJsonODataServiceRelations;
+function TJsonODataServiceResource.relations: IJsonODataServiceRelations;
 var
   jo: TJsonValue;
   jv: TJsonValue;
@@ -639,17 +639,17 @@ begin
   end;
 end;
 
-function TJsonODastaServiceResource.resource: string;
+function TJsonODataServiceResource.resource: string;
 begin
   JSON.TryGetValue<string>('resource', result);
 end;
 
-function TJsonODastaServiceResource.searchFields: string;
+function TJsonODataServiceResource.searchFields: string;
 begin
   JSON.TryGetValue<string>('searchFields', result);
 end;
 
-procedure TJsonODastaServiceResource.SetPrimaryKey(const Value: string);
+procedure TJsonODataServiceResource.SetPrimaryKey(const Value: string);
 begin
   FPrimaryKey := Value;
 end;

@@ -8,7 +8,7 @@ unit oData.Interf;
 
 interface
 
-uses System.Classes, System.SysUtils, System.JSON, oData.Packet;
+uses System.Classes, System.SysUtils, System.JSON, oData.Packet.Encode;
 
 Type
 
@@ -170,11 +170,11 @@ Type
     function createGETQuery(AValue: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: boolean = false): string;
     function createDeleteQuery(oData: TODataDecodeAbstract; AJsonBody: TJsonValue;
-      AKeys: string): string;
+      AKeys: string;  AResource: TObject): string;
     function CreatePostQuery(oData: TODataDecodeAbstract;
-      AJsonBody: TJsonValue): String;
+      AJsonBody: TJsonValue;  AResource: TObject): String;
     function createPATCHQuery(oData: TODataDecodeAbstract; AJsonBody: TJsonValue;
-      AKeys: string): String;
+      AKeys: string;  AResource: TObject): String;
     function GetResource(AResource: string): IInterface; overload;
     function AfterCreateSQL(var SQL: string): boolean;
   end;

@@ -11,6 +11,7 @@ interface
 uses
   System.Classes, System.SysUtils, Data.Db, oData.SQL, System.JSON,
   MVCBr.Interf, System.JSON.Helper,
+  oData.ServiceModel,
   FireDAC.Comp.Client;
 
 type
@@ -51,6 +52,8 @@ type
       : Integer; override;
     function ExecutePATCH(ABody: string; var JSONResponse: TJsonObject)
       : Integer; override;
+    function LocalExecutePATCH(ABody: string; var JSONResponse: TJsonObject;
+      AResource: IJsonODataServiceResource): Integer;
 
     procedure CreateExpandCollections(AQuery: TObject); override;
 
@@ -59,7 +62,7 @@ type
 implementation
 
 uses System.DateUtils, FireDAC.Stan.Param, System.Rtti, idURI,
-  oData.ServiceModel, oData.JSON, oData.Dialect,
+  oData.JSON, oData.Dialect,
   oData.Interf, oData.engine;
 { TODataFiredacQuery }
 
@@ -161,6 +164,12 @@ end;
 }
 function TODataFiredacQuery.ExecutePATCH(ABody: string;
   var JSONResponse: TJsonObject): Integer;
+begin
+  result := LocalExecutePATCH(ABody, JSONResponse, nil);
+end;
+
+function TODataFiredacQuery.LocalExecutePATCH(ABody: string;
+  var JSONResponse: TJsonObject; AResource: IJsonODataServiceResource): Integer;
 var
   AJson: string;
   jo: TJsonValue;
@@ -172,6 +181,7 @@ var
   LRowState: string;
   ra: Integer;
   methods: string;
+  ALocalResource: IJsonODataServiceResource;
 begin
   inherited;
   iLin := 0;
@@ -190,9 +200,16 @@ begin
     end;
   end;
 
-  FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
-    as IJsonODataServiceResource;
-  methods := FResource.method;
+  if AResource <> nil then
+    ALocalResource := AResource
+  else
+  begin
+    FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
+      as IJsonODataServiceResource;
+    ALocalResource := FResource;
+  end;
+
+  methods := ALocalResource.method;
 
   result := 0;
   FQuery := { TQueryAdapter.Create( } QueryClass.Create(nil) as TFdQuery; { ); }
@@ -205,27 +222,31 @@ begin
       begin
         ra := 0;
         inc(iLin);
-        if not assigned(FResource) then
+        if not assigned(ALocalResource) then
+        begin
           FResource := AdapterAPI.GetResource(FODataParse.oData.Resource)
             as IJsonODataServiceResource;
-        sKeys := GetPrimaryKey(FQuery.Connection, FResource.collection);
+          ALocalResource := FResource;
+        end;
+        sKeys := GetPrimaryKey(FQuery.Connection, ALocalResource.collection);
         if sKeys = '' then
-          sKeys := FResource.keyID;
-        if methods.Contains('POST') or
-          methods.Contains('PATCH') then
+          sKeys := ALocalResource.keyID;
+        if methods.Contains('POST') or methods.Contains('PATCH') then
         begin
-          FQuery.SQL.Text := CreatePATCHQuery(FODataParse, ji, sKeys);
+          FQuery.SQL.Text := LocalCreatePATCHQuery(FODataParse, ji, sKeys,
+            ALocalResource.this);
           paramFromJson(FQuery, ji as TJsonObject);
           FQuery.ExecSQL;
           ra := FQuery.RowsAffected;
         end;
-        if (ra = 0) and (methods.Contains('PUT') or
-          methods.Contains('PATCH')) then
+        if (ra = 0) and (methods.Contains('PUT') or methods.Contains('PATCH'))
+        then
         begin
           if TJsonObject(ji).TryGetValue<string>(cODataRowState, LRowState) then
             if LRowState = cODataModifiedORInserted then
             begin
-              FQuery.SQL.Text := CreatePOSTQuery(FODataParse, ji);
+              FQuery.SQL.Text := AdapterAPI.CreatePOSTQuery(FODataParse.oData, ji,
+                ALocalResource.this);
               paramFromJson(FQuery, ji as TJsonObject);
               FQuery.ExecSQL;
               ra := FQuery.RowsAffected;
@@ -239,17 +260,16 @@ begin
     begin
       inc(iLin);
       ra := 0;
-      if methods.Contains('POST') or methods.Contains('PATCH')
-      then
+      if methods.Contains('POST') or methods.Contains('PATCH') then
       begin
         FQuery.SQL.Text := CreatePATCHQuery(FODataParse, js.JsonValue,
-          GetPrimaryKey(FQuery.Connection, FResource.collection));
+          GetPrimaryKey(FQuery.Connection, ALocalResource.collection));
         paramFromJson(FQuery, js.JsonObject);
         FQuery.ExecSQL;
         ra := FQuery.RowsAffected;
       end;
-      if (ra = 0) and (methods.Contains('PUT') or
-        methods.Contains('PATCH')) then
+      if (ra = 0) and (methods.Contains('PUT') or methods.Contains('PATCH'))
+      then
       begin
         if js.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
           if LRowState = cODataModifiedORInserted then

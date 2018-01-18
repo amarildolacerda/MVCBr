@@ -44,8 +44,7 @@ uses
   ws.OData.Procedures in 'ws.OData.Procedures.pas',
   oData.GenScript in '..\oData\oData.GenScript.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
-  MVCServerAdmin in 'MVCServerAdmin.pas',
-  oData.Packet in '..\oData\oData.Packet.pas';
+  MVCServerAdmin in 'MVCServerAdmin.pas';
 
 {$R *.res}
 

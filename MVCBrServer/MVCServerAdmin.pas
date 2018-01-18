@@ -49,7 +49,7 @@ implementation
 uses
   System.Json,
   WS.Common, System.ThreadSafe,
-  MVCFramework.Logger, OData.Packet;
+  MVCFramework.Logger, OData.Packet.Encode;
 
 type
   TTokenKey = string;

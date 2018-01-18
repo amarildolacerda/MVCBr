@@ -11,7 +11,7 @@ interface
 uses System.Classes, System.SysUtils,
   MVCFramework, MVCFramework.Commons,
   Data.Db, oData.Interf, oData.Dialect,
-  oData.Packet, System.JSON;
+  oData.Packet.Encode, System.JSON;
 
 type
 
@@ -266,7 +266,7 @@ begin
       end;
 
       if n > 0 then
-        CTX.Response.StatusCode := 201
+        CTX.Response.StatusCode := 200
       else
         CTX.Response.StatusCode := 304;
 

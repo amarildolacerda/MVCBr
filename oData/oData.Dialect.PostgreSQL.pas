@@ -34,7 +34,7 @@ type
     function TopCmdStmt: string; override;
     function SkipCmdStmt: string; override;
   public
-    function createGETQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: Boolean = false): string; override;
   end;
 
@@ -42,7 +42,7 @@ implementation
 
 { TODataDialectMySQL }
 
-function TODataDialectPostgreSQL.createGETQuery(oData: IODataDecode; AFilter: string;
+function TODataDialectPostgreSQL.createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
   const AInLineCount: Boolean): string;
 begin
   result := inherited;
