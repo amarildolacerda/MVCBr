@@ -1,0 +1,10 @@
+1. apresentação
+2. video
+3. porque usar mvcbr
+4. estrutura
+5. demo
+6. acesso a models
+7. acesso a bancos
+8. fechamento
+9. perguntas
+10. bye

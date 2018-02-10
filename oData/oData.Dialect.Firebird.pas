@@ -22,7 +22,7 @@ type
     function TopCmdStmt: string; override;
     function SkipCmdStmt: string; override;
   public
-    function createGETQuery(oData: IODataDecode; AFilter: string;
+    function createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: Boolean = false): string; override;
   end;
 
@@ -31,7 +31,7 @@ uses oData.ServiceModel;
 
 { TODataDialectFirebird }
 
-function TODataDialectFirebird.createGETQuery(oData: IODataDecode;
+function TODataDialectFirebird.createGETQuery(oData: TODataDecodeAbstract;
   AFilter: string; const AInLineCount: Boolean): string;
 begin
   result := inherited;
@@ -56,8 +56,8 @@ begin
   ATo := 0;
   if nSkip>0 then
   begin
-     ARows := nSkip;
-     ATo := ARows + nTop;
+     ARows := nSkip+1;
+     ATo := nSkip + nTop;
   end;
   CreateTopSkip(result, ARows, ATo);
 {$ENDIF}

@@ -9,7 +9,7 @@ unit oData.ProxyBase;
 interface
 
 uses System.Classes, System.SysUtils, Data.DB, MVCFramework,
-  System.JSON,
+  System.JSON,OData.Packet.Encode,
   oData.Interf, oData.engine, oData.Parse, oData.Dialect;
 
 type

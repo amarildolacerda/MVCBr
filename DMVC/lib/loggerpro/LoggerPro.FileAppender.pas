@@ -1,28 +1,3 @@
-// ***************************************************************************
-//
-// LoggerPro
-//
-// Copyright (c) 2015-2017 Daniele Teti
-//
-// https://github.com/danieleteti/loggerpro
-//
-//
-// ***************************************************************************
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// ***************************************************************************
-
 unit LoggerPro.FileAppender;
 { <@abstract(The unit to include if you want to use @link(TLoggerProFileAppender))
   @author(Daniele Teti) }
@@ -79,7 +54,7 @@ type
     function GetLogFileName(const aTag: string;
       const aFileNumber: Integer): string;
     procedure InternalWriteLog(const aStreamWriter: TStreamWriter;
-      const aValue: string);
+      const aValue: string); inline;
   public const
     { @abstract(Defines the default format string used by the @link(TLoggerProFileAppender).)
       The positional parameters are the followings:
@@ -272,7 +247,7 @@ var
   lFileAccessMode: Word;
   lRetries: Integer;
 begin
-  lFileAccessMode := fmOpenWrite or fmShareDenyWrite;
+  lFileAccessMode := fmOpenWrite or fmShareDenyNone;
   if not TFile.Exists(aFileName) then
     lFileAccessMode := lFileAccessMode or fmCreate;
 
@@ -287,8 +262,8 @@ begin
       lFileStream := TFileStream.Create(aFileName, lFileAccessMode);
       try
         lFileStream.Seek(0, TSeekOrigin.soEnd);
-        Result := TStreamWriter.Create(lFileStream, TEncoding.ANSI, 1024);
-        Result.AutoFlush := False;
+        Result := TStreamWriter.Create(lFileStream, TEncoding.Default, 32);
+        Result.AutoFlush := True;
         Result.OwnStream;
         break;
       except

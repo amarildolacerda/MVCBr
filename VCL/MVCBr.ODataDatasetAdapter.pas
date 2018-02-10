@@ -179,7 +179,7 @@ procedure TODataDatasetAdapter.AddRowSet(ATypeChange: TRowSetChangeType;
 var
   js: TJsonObject;
 begin
-  js := TJsonObject.create;
+  js := TJsonObject.Create;
   Mapper.DataSetToJSONObject(ADataset, js, false, nil, fpLowerCase);
   AddChanges(ATypeChange, js);
 end;
@@ -201,12 +201,12 @@ begin
 
 end;
 
-constructor TODataDatasetAdapter.create(AOwner: TComponent);
+constructor TODataDatasetAdapter.Create(AOwner: TComponent);
 begin
   inherited;
-  FParams := TParams.create;
-  FOrigemFieldNameList := TStringList.create;
-  FChanges := TJsonArray.create;
+  FParams := TParams.Create;
+  FOrigemFieldNameList := TStringList.Create;
+  FChanges := TJsonArray.Create;
 end;
 
 procedure TODataDatasetAdapter.CreateDatasetFromJson(AJSON: string);
@@ -331,7 +331,11 @@ var
   ja: TJsonArray;
   jo: TJsonObject;
   fld: TField;
+  error:string;
 begin
+  AJsonArray.tryGetValue<string>('error',error);
+  if error<>'' then
+     raise exception.create(error);
   AJSONArray.TryGetValue(ja);
   Assert(assigned(ja)); // nao passou um json valido ?
 
@@ -485,7 +489,7 @@ begin
     if (FDataset.FieldDefs.Count > 0) and (FDataset.Active = false) then
       FDataset.Open
     else
-      raise Exception.create('Não há dados para mostrar');
+      raise Exception.Create('Não há dados para mostrar');
 
     SetDatasetLoading(FDataset, True);
 
@@ -501,11 +505,11 @@ begin
   end;
 end;
 
-destructor TODataDatasetAdapter.destroy;
+destructor TODataDatasetAdapter.Destroy;
 var
   i: integer;
 begin
-  FChanges.free;//DisposeOf;
+  FChanges.free; // DisposeOf;
   FOrigemFieldNameList.DisposeOf;
   FParams.DisposeOf;
   inherited;
@@ -627,7 +631,7 @@ var
     LDataSets: TFDJSONDatasets;
     memDs: TFDMemTable;
   begin
-    LDataSets := TFDJSONDatasets.create;
+    LDataSets := TFDJSONDatasets.Create;
     TFDJSONInterceptor.JSONObjectToDataSets(AJSON, LDataSets);
 
     if ADataset.InheritsFrom(TFDMemTable) then
@@ -638,7 +642,7 @@ var
     else
     begin
       // cria um MemTable de passagem
-      memDs := TFDMemTable.create(nil);
+      memDs := TFDMemTable.Create(nil);
       try
         TFDMemTable(memDs).AppendData
           (TFDJSONDataSetsReader.GetListValue(LDataSets, achou));
@@ -691,13 +695,16 @@ begin
           ADelegate(ADataset);
 
         DatasetFromJsonObject(ADataset, _jv, FFieldList);
-        s := ';' + AKeys.ToLower + ';';
-        for fld in ADataset.Fields do
+        if AKeys.ToLower <> '' then
         begin
-          if FFieldList.IndexOf(fld.FieldName) >= 0 then
-            fld.ProviderFlags := fld.ProviderFlags + [pfInUpdate];
-          if s.Contains(';' + fld.FieldName.ToLower + ';') then
-            fld.ProviderFlags := fld.ProviderFlags + [pfInWhere];
+          s := ';' + AKeys.ToLower + ';';
+          for fld in ADataset.Fields do
+          begin
+            if FFieldList.IndexOf(fld.FieldName) >= 0 then
+              fld.ProviderFlags := fld.ProviderFlags + [pfInUpdate];
+            if s.Contains(';' + fld.FieldName.ToLower + ';') then
+              fld.ProviderFlags := fld.ProviderFlags + [pfInWhere];
+          end;
         end;
       end;
 
@@ -836,7 +843,8 @@ begin
   FParams := Value;
 end;
 
-procedure TODataDatasetAdapter.SetResponseJSON(const Value: TMVCBrHttpRestClientAbstract);
+procedure TODataDatasetAdapter.SetResponseJSON(const Value
+  : TMVCBrHttpRestClientAbstract);
 begin
   FResponseJSON := Value;
 end;

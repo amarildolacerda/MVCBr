@@ -138,6 +138,8 @@ type
   public
     procedure AfterConstruction; override;
     procedure Init; virtual;
+    class function IsClosing: boolean;
+    class procedure SetClosing(AValue: boolean);
     function FindControl<T: Class>(AControl: TBaseControl; AName: String): T;
     [weak]
     function ApplicationControllerInternal: IApplicationController;
@@ -341,7 +343,7 @@ end;
 
 function TCustomFormFactory.GetModel(AII: TGuid): IModel;
 begin
-  TControllerAbstract(FController.this).GetModel(AII, result);
+  TControllerAbstract(FController.This).GetModel(AII, result);
 end;
 
 function TCustomFormFactory.GetModel<TIModel>: TIModel;
@@ -402,6 +404,11 @@ function TCustomFormFactory.InvokeMethod<T>(AMethod: string;
   const Args: TArray<TValue>): T;
 begin
   result := TMVCBr.InvokeMethod<T>(self, AMethod, Args);
+end;
+
+class function TCustomFormFactory.IsClosing: boolean;
+begin
+  result := TApplicationController.IsClosing;
 end;
 
 function TCustomFormFactory.AttachController(AGuidController: TGuid;
@@ -486,6 +493,11 @@ end;
 procedure TCustomFormFactory.RevokeController(IID: TGuid);
 begin
   ApplicationController.RevokeController(IID);
+end;
+
+class procedure TCustomFormFactory.SetClosing(AValue: boolean);
+begin
+  TApplicationController.SetClosing(AValue);
 end;
 
 procedure TCustomFormFactory.SetController(const AController: IController);

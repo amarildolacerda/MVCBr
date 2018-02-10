@@ -36,6 +36,7 @@ uses
   System.IOUtils,
   System.Generics.Collections,
   MVCFramework.TypesAliases,
+  Data.DB,
   IdGlobal,
   IdCoderMIME;
 
@@ -103,6 +104,9 @@ type
     DEFAULT_CONTENT_TYPE = TMVCMediaType.APPLICATION_JSON;
     CURRENT_USER_SESSION_KEY = '__DMVC_CURRENT_USER__';
     LAST_AUTHORIZATION_HEADER_VALUE = '__DMVC_LAST_AUTHORIZATION_HEADER_VALUE_';
+    SSE_RETRY_DEFAULT = 100;
+    SSE_LAST_EVENT_ID = 'Last-Event-ID';
+    URL_MAPPED_PARAMS_ALLOWED_CHARS = ' אטישעל@\[\]\{\}\(\)\=;&#\.\_\,%\w\d\x2D\x3A';
   end;
 
   TMVCConfigKey = record
@@ -322,6 +326,10 @@ type
     { public declarations }
   end;
 
+  EMVCViewError = class(EMVCException)
+
+  end;
+
   TMVCRequestParamsTable = class(TDictionary<string, string>)
   private
     { private declarations }
@@ -366,16 +374,32 @@ type
     constructor Create;
   end;
 
-  TMVCCriticalSectionHelper = class helper
-    for TCriticalSection
+  TMVCViewDataSet = class(TObjectDictionary<string, TDataSet>)
+  private
+    { private declarations }
+  protected
+    { protected declarations }
+  public
+    constructor Create;
+  end;
+
+  TMVCCriticalSectionHelper = class helper for TCriticalSection
   public
     procedure DoWithLock(const AAction: TProc);
     function DoWithLockTimeout(const AAction: TProc; const ATimeOut: UInt32): TWaitResult;
   end;
 
+  TMultiReadExclusiveWriteSynchronizerHelper = class helper
+    for TMultiReadExclusiveWriteSynchronizer
+  public
+    procedure DoWithWriteLock(const AAction: TProc);
+    procedure DoWithReadLock(const AAction: TProc);
+  end;
+
   TMVCConfig = class sealed
   private
     FConfig: TDictionary<string, string>;
+
     function GetValue(const AIndex: string): string;
     function GetValueAsInt64(const AIndex: string): Int64;
     procedure SetValue(const AIndex: string; const AValue: string);
@@ -419,7 +443,7 @@ function ByteToHex(AInByte: Byte): string;
 function BytesToHex(ABytes: TBytes): string;
 
 procedure SplitContentMediaTypeAndCharset(const aContentType: string; var aContentMediaType: string; var aContentCharSet: string);
-function CreateContentType(const aContentMediaType: string; const aContentCharSet: string): string;
+function BuildContentType(const aContentMediaType: string; const aContentCharSet: string): string;
 
 const
   MVC_HTTP_METHODS_WITHOUT_CONTENT: TMVCHTTPMethods = [httpGET, httpDELETE, httpHEAD, httpOPTIONS];
@@ -514,7 +538,7 @@ begin
     Result := Result + ByteToHex(B);
 end;
 
-function CreateContentType(const aContentMediaType: string; const aContentCharSet: string): string;
+function BuildContentType(const aContentMediaType: string; const aContentCharSet: string): string;
 begin
   if aContentCharSet = '' then
   begin
@@ -524,7 +548,7 @@ begin
   begin
     Result := aContentMediaType + ';charset=' + aContentCharSet;
   end;
-  Result := Result.ToLower.Replace(' ','',[rfReplaceAll]);
+  Result := Result.ToLower.Replace(' ', '', [rfReplaceAll]);
 end;
 
 procedure SplitContentMediaTypeAndCharset(const aContentType: string; var aContentMediaType: string; var aContentCharSet: string);
@@ -587,7 +611,7 @@ end;
 
 constructor TMVCViewDataObject.Create;
 begin
-  inherited Create([doOwnsValues]);
+  inherited Create([]);
 end;
 
 { TMVCCriticalSectionHelper }
@@ -650,28 +674,32 @@ var
   S: string;
   Jo: TJSONObject;
   P: TJSONPair;
-  Jv: TJSONValue;
+  lJConfig: TJSONValue;
   I: Integer;
 begin
   { TODO -oEzequiel -cRefactoring : Replace for custom serializers }
   S := TFile.ReadAllText(AFileName);
-  Jv := TJSONObject.ParseJSONValue(S);
-  if Assigned(Jv) then
-  begin
-    if Jv is TJSONObject then
+  lJConfig := TJSONObject.ParseJSONValue(S);
+  try
+    if Assigned(lJConfig) then
     begin
-      Jo := TJSONObject(Jv);
-      for I := 0 to Jo.Count - 1 do
+      if lJConfig is TJSONObject then
       begin
-        P := Jo.Pairs[I];
-        FConfig.AddOrSetValue(P.JsonString.Value, P.JsonValue.Value);
+        Jo := TJSONObject(lJConfig);
+        for I := 0 to Jo.Count - 1 do
+        begin
+          P := Jo.Pairs[I];
+          FConfig.AddOrSetValue(P.JsonString.Value, P.JsonValue.Value);
+        end
       end
+      else
+        raise EMVCConfigException.Create('DMVCFramework configuration file [' + AFileName + '] does not contain a valid JSONObject');
     end
     else
-      raise EMVCConfigException.Create('DMVCFramework configuration file [' + AFileName + '] does not contain a valid JSONObject');
-  end
-  else
-    raise EMVCConfigException.Create('Cannot load DMVCFramework configuration file [' + AFileName + ']');
+      raise EMVCConfigException.Create('Cannot load DMVCFramework configuration file [' + AFileName + ']');
+  finally
+    lJConfig.Free;
+  end;
 end;
 
 procedure TMVCConfig.SaveToFile(const AFileName: string);
@@ -872,6 +900,37 @@ begin
   else
     raise EExternalException.Create('Illegal base64url length');
   end;
+end;
+
+{ TMultiReadExclusiveWriteSynchronizerHelper }
+
+procedure TMultiReadExclusiveWriteSynchronizerHelper.DoWithReadLock(
+  const AAction: TProc);
+begin
+  Self.BeginRead;
+  try
+    AAction();
+  finally
+    Self.EndRead;
+  end;
+end;
+
+procedure TMultiReadExclusiveWriteSynchronizerHelper.DoWithWriteLock(
+  const AAction: TProc);
+begin
+  Self.BeginWrite;
+  try
+    AAction();
+  finally
+    Self.EndWrite;
+  end;
+end;
+
+{ TMVCViewDataSet }
+
+constructor TMVCViewDataSet.Create;
+begin
+  inherited Create([]);
 end;
 
 initialization

@@ -1,0 +1,36 @@
+<mat-card>
+  <mat-card-header>
+    <div mat-card-avatar><mat-icon>hearing</mat-icon></div>
+    <mat-card-title>ODataBr metadata</mat-card-title>
+    <mat-card-subtitle>{{comment}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+
+
+<mat-table #table [dataSource]="dataSource">
+  <ng-container cdkColumnDef="resource">
+    <mat-header-cell *cdkHeaderCellDef> Resource </mat-header-cell>
+    <mat-cell *cdkCellDef="let row"> 
+    <a href="{{getLink(row.resource)}}" target="_blank">  {{row.resource}} </a>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container cdkColumnDef="method">
+      <mat-header-cell *cdkHeaderCellDef> Method </mat-header-cell>
+      <mat-cell *cdkCellDef="let row"> {{row.method}} </mat-cell>
+    </ng-container>
+  <ng-container cdkColumnDef="keyID">
+    <mat-header-cell *cdkHeaderCellDef> KeyID </mat-header-cell>
+    <mat-cell *cdkCellDef="let row"> {{row.keyID}} </mat-cell>
+  </ng-container>
+
+<ng-container cdkColumnDef="fields">
+  <mat-header-cell *cdkHeaderCellDef> Fields </mat-header-cell>
+  <mat-cell *cdkCellDef="let row"> {{row.fields}} </mat-cell>
+</ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+</mat-card-content>
+</mat-card>

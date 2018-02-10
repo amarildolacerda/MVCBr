@@ -1,9 +1,9 @@
-{//************************************************************//}
-{//         Projeto MVCBr                                      //}
-{//         tireideletra.com.br  / amarildo lacerda            //}
-{//************************************************************//}
-{// Data: 03/03/2017                                           //}
-{//************************************************************//}
+{ //************************************************************// }
+{ //         Projeto MVCBr                                      // }
+{ //         tireideletra.com.br  / amarildo lacerda            // }
+{ //************************************************************// }
+{ // Data: 03/03/2017                                           // }
+{ //************************************************************// }
 unit oData.Engine;
 
 interface
@@ -45,7 +45,7 @@ type
     class function create(cod: integer; mess: string): string; static;
   end;
 
-  TODataDecode = class(TInterfacedObject, IODataDecode)
+  TODataDecode = class(TODataDecodeAbstract, IODataDecode)
   private
     FLock: TObject;
     FSelect: string;
@@ -63,82 +63,61 @@ type
     FGroupBy: string;
     FSearch: string;
     Fdebug: string;
-    procedure SetSelect(const Value: string);
-    procedure SetFilter(const Value: string);
-    procedure SetOrderBy(const Value: string);
-    procedure SetSkip(const Value: integer);
-    procedure SetExpand(const Value: string);
-    procedure SetTop(const Value: integer);
-    procedure SetFormat(const Value: string);
-    procedure SetResource(const Value: string);
-    procedure SetInLineCount(const Value: string);
-    procedure SetSkipToken(const Value: string);
-    function GetExpand: string;
-    function GetFilter: string;
-    function GetFormat: string;
-    function GetInLineCount: string;
-    function GetOrderBy: string;
-    function GetResource: string;
-    function GetSelect: string;
-    function GetSkip: integer;
-    function GetSkipToken: string;
-    function GetTop: integer;
-    function GetResourceParams: IODataDecodeParams;
-    procedure SetBaseURL(const Value: string);
-    procedure SetGroupBy(const Value: string);
-    function GetGroupBy: string;
-    procedure SetSearch(const Value: string);
-    function GetSearch: string;
-    procedure Setdebug(const Value: string);
-    function GetDebug: string;
+    procedure SetSelect(const Value: string); override;
+    procedure SetFilter(const Value: string); override;
+    procedure SetOrderBy(const Value: string); override;
+    procedure SetSkip(const Value: integer); override;
+    procedure SetExpand(const Value: string); override;
+    procedure SetTop(const Value: integer); override;
+    procedure SetFormat(const Value: string); override;
+    procedure SetResource(const Value: string); override;
+    procedure SetCount(const Value: string); override;
+    procedure SetSkipToken(const Value: string); override;
+  public
+    function GetExpand: string; override;
+    function GetFilter: string; override;
+    function GetFormat: string; override;
+    function GetCount: string; override;
+    function GetOrderBy: string; override;
+    function GetResource: string; override;
+    function GetSelect: string; override;
+    function GetSkip: integer; override;
+    function GetSkipToken: string; override;
+    function GetTop: integer; override;
+    function GetResourceParams: IODataDecodeParams; override;
+    procedure SetBaseURL(const Value: string); override;
+    procedure SetGroupBy(const Value: string); override;
+    function GetGroupBy: string; override;
+    procedure SetSearch(const Value: string); override;
+    function GetSearch: string; override;
+    procedure Setdebug(const Value: string); override;
+    function GetDebug: string; override;
   protected
-    FChild: IODataDecode;
-    FExpandItem: TDictionary<string, IODataDecode>;
+    FChild: TODataDecode;
+    FExpandItem: TDictionary<string, TODataDecodeAbstract>;
     function This: TObject; virtual;
-    function Lock: IODataDecode;
-    procedure Unlock;
+    function Lock: TODataDecodeAbstract;override;
+    procedure Unlock;override;
   public
     FParse: IODataParse;
     function GetParse: IODataParse;
 
     constructor create(AParse: IODataParse); virtual;
     destructor destroy; override;
-    function hasChild: boolean;
-    function Child: IODataDecode;
-    function newChild: IODataDecode;
+    function hasChild: boolean;override;
+    function Child: TODataDecodeAbstract;override;
+    function newChild: TODataDecodeAbstract;override;
+    function GetLevel(FLevel: integer; AAutoCreate: boolean = true)
+      : TODataDecodeAbstract;
 
     function hasExpand: boolean;
-    function ExpandItem(const idx: integer): IODataDecode;
+    function ExpandItem(const idx: integer): TODataDecodeAbstract;
     function ExpandCount: integer;
-    function newExpand(const ACollection: string): IODataDecode;
+    function newExpand(const ACollection: string): TODataDecodeAbstract;override;
 
     // define collection do request
     property BaseURL: string read FBaseURL write SetBaseURL;
-    property Resource: string read GetResource write SetResource;
-    property ResourceParams: IODataDecodeParams read GetResourceParams;
-    function GetLevel(FLevel: integer; AAutoCreate: boolean = true)
-      : IODataDecode;
 
-    // write SetResourceParams;
-    // define a list of fields
-    property &Select: string read GetSelect write SetSelect;
-    // define filter (aka where)
-    property &Filter: string read GetFilter write SetFilter;
-    property &Search:string read GetSearch write SetSearch;
-
-    // define orderby
-    property &OrderBy: string read GetOrderBy write SetOrderBy;
-    // expands relation collections
-    property &Expand: string read GetExpand write SetExpand;
-    // format response  (suport only json for now)
-    property &Format: string read GetFormat write SetFormat;
-    // pagination
-    property &Skip: integer read GetSkip write SetSkip;
-    property &Top: integer read GetTop write SetTop;
-    property &SkipToken: string read GetSkipToken write SetSkipToken;
-    property &InLineCount: string read GetInLineCount write SetInLineCount;
-    property &Debug:string read GetDebug write SetDebug;
-    property &GroupBy: string read GetGroupBy write SetGroupBy;
     function ToString: string; virtual;
 
   end;
@@ -148,7 +127,7 @@ implementation
 uses System.JSON;
 { TODataDecode }
 
-function TODataDecode.Child: IODataDecode;
+function TODataDecode.Child: TODataDecodeAbstract;
 begin
   result := FChild;
 end;
@@ -163,24 +142,26 @@ begin
   result := FExpandItem.Count > 0;
 end;
 
-function TODataDecode.Lock: IODataDecode;
+function TODataDecode.Lock: TODataDecodeAbstract;
 begin
   System.TMonitor.Enter(FLock);
   result := self;
 end;
 
-function TODataDecode.newChild: IODataDecode;
+function TODataDecode.newChild: TODataDecodeAbstract;
 begin
   if not hasChild then
     FChild := TODataDecode.create(FParse);
   result := FChild;
 end;
 
-function TODataDecode.newExpand(const ACollection: string): IODataDecode;
+function TODataDecode.newExpand(const ACollection: string): TODataDecodeAbstract;
+var rst: TODataDecode;
 begin
-  result := TODataDecode.create(FParse);
-  result.Resource := ACollection;
-  FExpandItem.add(ACollection, result);
+  rst := TODataDecode.create(FParse);
+  rst.Resource := ACollection;
+  FExpandItem.add(ACollection, rst);
+  result := rst;
 end;
 
 constructor TODataDecode.create(AParse: IODataParse);
@@ -190,7 +171,7 @@ begin
   FParse := AParse;
   FBaseURL := '/';
   FResourceParams := TODataDictionay.create;
-  FExpandItem := TDictionary<string, IODataDecode>.create;
+  FExpandItem := TDictionary<string, TODataDecodeAbstract>.create;
 end;
 
 function TODataDecode.ToString: string;
@@ -233,10 +214,10 @@ begin
     addInt('$skip', Skip);
     addInt('$top', top);
     add('$skiptoken', SkipToken);
-    add('$inlinecount', InLineCount);
+    add('$inlinecount', inLineCount);
     add('$expand', Expand);
     add('$format', Format);
-    add('$debug',Debug);
+    add('$debug', Debug);
     if query.Count > 0 then
       result := result + '?' + query.DelimitedText;
   finally
@@ -252,6 +233,9 @@ end;
 
 destructor TODataDecode.destroy;
 begin
+  if assigned(FChild) then
+    FChild.DisposeOf;
+  FChild := nil;
   FParse := nil;
   FLock.Free;
   FExpandItem.Free;
@@ -264,14 +248,14 @@ begin
   result := FExpandItem.Count;
 end;
 
-function TODataDecode.ExpandItem(const idx: integer): IODataDecode;
+function TODataDecode.ExpandItem(const idx: integer): TODataDecodeAbstract;
 begin
   result := FExpandItem.Values.ToArray[idx];
 end;
 
 function TODataDecode.GetDebug: string;
 begin
-   result := Fdebug;
+  result := Fdebug;
 end;
 
 function TODataDecode.GetExpand: string;
@@ -281,7 +265,7 @@ end;
 
 function TODataDecode.GetFilter: string;
 begin
-  result := TIdURI.URLDecode( FFilter );
+  result := TIdURI.URLDecode(FFilter);
 end;
 
 function TODataDecode.GetFormat: string;
@@ -294,13 +278,13 @@ begin
   result := TIdURI.URLDecode(FGroupBy);
 end;
 
-function TODataDecode.GetInLineCount: string;
+function TODataDecode.GetCount: string;
 begin
   result := FInLineCount;
 end;
 
 function TODataDecode.GetLevel(FLevel: integer; AAutoCreate: boolean = true)
-  : IODataDecode;
+  : TODataDecodeAbstract;
 var
   i: integer;
   cur: TODataDecode;
@@ -309,9 +293,9 @@ begin
   for i := 1 to FLevel do
   begin
     if cur.hasChild then
-      cur := TODataDecode(cur.Child.This)
+      cur := TODataDecode(cur.Child)
     else
-      cur := TODataDecode(cur.newChild.This);
+      cur := TODataDecode(cur.newChild);
     if i = FLevel then
     begin
       break;
@@ -395,7 +379,7 @@ begin
   FGroupBy := Value;
 end;
 
-procedure TODataDecode.SetInLineCount(const Value: string);
+procedure TODataDecode.SetCount(const Value: string);
 begin
   FInLineCount := Value;
 end;

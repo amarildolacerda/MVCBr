@@ -6,7 +6,6 @@
 /// para um numero grande de UNIT;
 /// </summary>
 /// ---------------------------------------------------------------------------
-
 unit MVCBr.Interf;
 { *************************************************************************** }
 { }
@@ -602,7 +601,7 @@ type
     function ResolveController(const AName: string): IController; overload;
     function ResolveController(const AIID: TGuid): IController; overload;
     // procedure RevokeInstance;
-    //procedure GetModel(const IID: TGuid; out intf); overload;
+    procedure GetModel(const IID: TGuid; out intf); overload;
     function GetModel(const IID: TGuid): IModel; overload;
     function This: TControllerAbstract;
     function Start: IController;

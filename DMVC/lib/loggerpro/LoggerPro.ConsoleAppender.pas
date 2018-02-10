@@ -53,16 +53,9 @@ end;
 
 procedure TLoggerProConsoleAppender.Setup;
 begin
-  if IsConsole then
-    raise ELoggerPro.CreateFmt('Cannot use %s in a console app', [ClassName]);
-  TThread.Synchronize(nil,
-    procedure
-    begin
-      if GetStdHandle(STD_OUTPUT_HANDLE) = 0 then
-        raise ELoggerPro.Create
-          ('Console not present' + slineBreak +
-          '[HINT: You can call "AllocConsole" to create a Console in a GUI application]');
-    end);
+  if GetStdHandle(STD_OUTPUT_HANDLE) = 0 then
+    raise ELoggerPro.Create('[TLoggerProConsoleAppender] Console not present' + slineBreak +
+      '[HINT: You can call "AllocConsole" to create a Console in a GUI application]');
 end;
 
 procedure TLoggerProConsoleAppender.TearDown;
@@ -75,6 +68,7 @@ var
   lText: string;
   lColor: Integer;
 begin
+  lColor := FOREGROUND_GREEN;
   case aLogItem.LogType of
     TLogType.Debug:
       lColor := FOREGROUND_GREEN;
@@ -88,12 +82,8 @@ begin
   lText := Format(DEFAULT_LOG_FORMAT, [datetimetostr(aLogItem.TimeStamp),
     aLogItem.ThreadID, aLogItem.LogTypeAsString, aLogItem.LogMessage,
     aLogItem.LogTag]);
-  TThread.Queue(nil,
-    procedure
-    begin
-      SetColor(lColor);
-      Writeln(lText);
-    end);
+  SetColor(lColor);
+  Writeln(lText);
 end;
 
 end.

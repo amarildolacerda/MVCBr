@@ -2,7 +2,8 @@ unit WS.Common;
 
 interface
 
-uses System.Generics.Collections, MVCFramework, MVCFramework.Commons, MVCFramework.SysControllers,MVCFramework.Logger;
+uses System.Generics.Collections, MVCFramework, MVCFramework.Commons,
+  MVCFramework.SysControllers, MVCFramework.Logger;
 
 type
   TMVCControllerClass = class of TMVCController;
@@ -15,7 +16,6 @@ var
 
 implementation
 
-
 uses MVCAsyncMiddleware, MVCFramework.Middleware.CORS,
   MVCgzipMiddleware;
 
@@ -26,6 +26,7 @@ procedure LoadWSControllers(FMVC: TMVCEngine);
 var
   i: integer;
 begin
+  LogLevelLimit := TLogLevel.levException;
   with FList.LockList do
     try
       for i := 0 to Count - 1 do

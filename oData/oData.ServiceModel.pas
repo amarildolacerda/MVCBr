@@ -80,7 +80,7 @@ type
     function Expands: IJsonODataServiceExpands;
   end;
 
-  TJsonODastaServiceResource = class(TInterfacedJson, IJsonODataServiceResource)
+  TJsonODataServiceResource = class(TInterfacedJson, IJsonODataServiceResource)
   private
     FPrimaryKey: string;
     procedure SetPrimaryKey(const Value: string);
@@ -103,9 +103,12 @@ type
 
   end;
 
+  TODataServices = class;
+
   IODataServices = interface
     ['{051E22D6-6BB1-4C35-A1DA-9885360283CD}']
     procedure LoadFromJsonFile(AJson: String);
+    procedure SaveToJsonFile(AJson:string);
     function resource(AName: string): IJsonODataServiceResource;
     function hasResource(AName: String): boolean;
     function LockJson: TJsonObject;
@@ -115,7 +118,8 @@ type
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
       AMethod: String; ARelations: TJsonValue);
-    function This: TObject;
+    function This: TODataServices;
+    procedure Clear;
   end;
 
   TODataServices = class(TInterfacedObject, IODataServices)
@@ -123,6 +127,9 @@ type
     FLock: TObject;
     FFileJson: string;
     FJson: TJsonObject;
+    procedure LoadFromJsonFile(AJson: String);
+    procedure SaveToJsonFile(AJson:string);
+    procedure EndJson;
 
   const
     root: string = 'OData.Services';
@@ -131,26 +138,55 @@ type
     destructor destroy; override;
     function LockJson: TJsonObject; virtual;
     procedure UnlockJson; virtual;
-    function This: TObject;
-    procedure LoadFromJsonFile(AJson: String);
+    class function TryGetODataService(Js: TJsonObject; out res: TJsonArray)
+      : boolean; static;
+    procedure Clear;
+    function This: TODataServices;
     function hasResource(AName: String): boolean; virtual;
     function resource(AName: string): IJsonODataServiceResource; virtual;
 
     function ResourceList: TJsonArray;
     function GetRoot: TJsonArray;
-    procedure reload;
+    class function ExpandFilePath(APath: string): string;
+    procedure Reload;
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
       AMethod: String; ARelations: TJsonValue);
+    class procedure Invalidate;
   end;
+
+function RegisterODataCustomServiceLoad(AProc: TProc;
+  ASubstituir: boolean = true): boolean;
 
 var
   ODataServices: IODataServices;
 
 implementation
 
+uses System.IOUtils;
 // uses VCL.Dialogs;
 { TODataServices }
+
+var
+  ODataConfig: string;
+
+  threadvar FoDataServiceCustomLoad: TProc;
+
+function RegisterODataCustomServiceLoad(AProc: TProc;
+  ASubstituir: boolean = true): boolean;
+begin
+  result := false;
+  if (not ASubstituir) and assigned(FoDataServiceCustomLoad) then
+    exit;
+  FoDataServiceCustomLoad := AProc;
+  result := true;
+end;
+
+procedure TODataServices.Clear;
+begin
+  FFileJson := '';
+  freeAndNil(FJson);
+end;
 
 constructor TODataServices.create;
 begin
@@ -158,11 +194,48 @@ begin
   FLock := TObject.create;
 end;
 
+class function TODataServices.TryGetODataService(Js: TJsonObject;
+  out res: TJsonArray): boolean;
+var
+  p: TJsonPair;
+begin
+  result := false;
+  for p in Js do
+    if p.JsonString.Value.Equals('OData.Services') then
+    begin
+      res := p.JsonValue.AsArray;
+      result := true;
+      exit;
+    end;
+end;
+
 destructor TODataServices.destroy;
 begin
-  FreeAndNil(FJson);
-  FreeAndNil(FLock);
+  freeAndNil(FJson);
+  freeAndNil(FLock);
   inherited;
+end;
+
+class function TODataServices.ExpandFilePath(APath: string): string;
+var
+  old: String;
+begin
+  old := ODataConfig;
+  if APath <> '' then
+    SetODataConfigFilePath(APath);
+  ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
+  result := ODataConfig;
+  if result <> old then
+  begin
+    ODataServices.This.LockJson;
+    try
+      ODataServices.Clear;
+      ODataServices.LoadFromJsonFile(result);
+      ODataServices.This.EndJson;
+    finally
+      ODataServices.This.UnlockJson;
+    end;
+  end;
 end;
 
 function TODataServices.GetRoot: TJsonArray;
@@ -188,9 +261,9 @@ var
 begin
   result := false;
   jr := GetRoot;
+  with LockJson do
   try
     if assigned(jr) then
-      with LockJson do
       begin
         for it in jr do
         begin
@@ -207,41 +280,80 @@ begin
   end;
 end;
 
+class procedure TODataServices.Invalidate;
+var old:String;
+begin
+    old := ExtractFilePath(ODataConfig);
+    ODataConfig := '';
+    self.ExpandFilePath(old);
+end;
+
 procedure TODataServices.LoadFromJsonFile(AJson: String);
 var
   str: TStringList;
+  LJson: IJsonObject;
+  LServiceLocal: TJsonArray;
+  LImport: TJsonArray;
+  jv: TJsonValue;
+  jvService: TJsonValue;
+  LServiceMain: TJsonArray;
+  achei: boolean;
+  pair: TJsonPair;
+  LPath, s: String;
+
 begin
   try
-    FFileJson := AJson;
-    FreeAndNil(FJson);
+    if not assigned(FJson) then
+    begin
+      FJson := TJsonObject.create;
+      FFileJson := AJson;
+    end;
     str := TStringList.create;
     try
       if fileExists(AJson) then
       begin
+        LPath := ExtractFilePath(AJson);
         str.LoadFromFile(AJson);
-        FJson := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
+        LJson := TInterfacedJson.New(str.Text);
         if not assigned(FJson) then
-          raise Exception.create
-            ('Metadata inválido, revisar o JSON do metadata');
-      end
-      else
-      begin
-        FJson := TJsonObject.create;
-        // FJson.addPair('erro', 'Cand find oData Service <' + AJson + '>');
-      end;
-
-      with FJson do
-      begin
-        addPair('suports.$filter', 'yes');
-        addPair('suports.$select', 'yes');
-        addPair('suports.groupby', 'yes');
-        addPair('suports.$orderby', 'yes');
-        addPair('suports.$format', 'json');
-        addPair('suports.$top', 'yes');
-        addPair('suports.$skip', 'yes');
-        addPair('suports.$inlinecount', 'yes');
-        addPair('suports.$skiptoken', 'no');
-        addPair('odata.ServiceFile', AJson);
+          raise Exception.create('Metadata inválido <' + AJson +
+            '>, revisar o JSON do metadata');
+        if LJson.JSONObject.TryGetValue<TJsonArray>('import', LImport) then
+          LJson.JSONObject.RemovePair('import');
+        if not TryGetODataService(FJson, LServiceMain) then
+        begin
+          freeAndNil(FJson);
+          FJson := TJsonObject.ParseJSONValue(LJson.toJson) as TJsonObject;
+        end
+        else
+        begin
+          if TryGetODataService(LJson.JSONObject, LServiceLocal) then
+            for jv in LServiceLocal do
+            begin // carregar;
+              achei := false;
+              for jvService in LServiceMain do
+              begin
+                if jvService.s('resource').Equals(jv.s('resource')) then
+                begin
+                  achei := true;
+                  break;
+                end;
+              end;
+              if not achei then
+              begin
+                (LServiceMain)
+                  .AddElement(TJsonObject.ParseJSONValue(jv.toJson));
+                // adiciona item importado
+              end;
+            end;
+        end;
+        if assigned(LImport) then
+          for jv in LImport do
+          begin
+            s := TPath.Combine(LPath, jv.Value.replace('/',
+              TPath.DirectorySeparatorChar));
+            LoadFromJsonFile(s);
+          end;
       end;
 
     finally
@@ -270,6 +382,8 @@ var
   LServices: TJsonArray;
   LResource: TJsonObject;
 begin
+  if hasResource(AResource) then
+    exit;
   LServices := GetRoot;
   if not assigned(LServices) then
     exit;
@@ -285,13 +399,48 @@ begin
     if assigned(ARelations) then
       LResource.addPair('relation', ARelations);
   finally
-    LServices.Add(LResource);
+    LockJson;
+    try
+      LServices.Add(LResource);
+    finally
+      UnlockJson;
+    end;
   end;
+end;
+
+procedure TODataServices.EndJson;
+begin
+
+  if assigned(FoDataServiceCustomLoad) then
+    FoDataServiceCustomLoad;
+
+  with FJson do
+  begin
+    addPair('supports.$filter', 'yes');
+    addPair('supports.$select', 'yes');
+    addPair('supports.groupby', 'yes');
+    addPair('supports.$orderby', 'yes');
+    addPair('supports.$format', 'json');
+    addPair('supports.$top', 'yes');
+    addPair('supports.$skip', 'yes');
+    addPair('supports.$inlinecount', 'yes');
+    addPair('supports.$skiptoken', 'no');
+    addPair('odata.ServiceFile', FFileJson);
+  end;
+
 end;
 
 procedure TODataServices.reload;
 begin
-  LoadFromJsonFile(FFileJson);
+  LockJson;
+  try
+    ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
+    Clear;
+    LoadFromJsonFile(FFileJson);
+    EndJson;
+  finally
+    UnlockJson;
+  end;
 end;
 
 function TODataServices.resource(AName: string): IJsonODataServiceResource;
@@ -312,7 +461,7 @@ begin
           begin
             if LValue = AName then
             begin
-              result := TJsonODastaServiceResource.New(it as TJsonObject);
+              result := TJsonODataServiceResource.New(it as TJsonObject);
               exit;
             end;
           end;
@@ -346,7 +495,12 @@ begin
   result := arr;
 end;
 
-function TODataServices.This: TObject;
+procedure TODataServices.SaveToJsonFile(AJson: string);
+begin
+   FJson.SaveToFile(AJson);
+end;
+
+function TODataServices.This: TODataServices;
 begin
   result := self;
 end;
@@ -358,12 +512,12 @@ end;
 
 { TJsonResource }
 
-function TJsonODastaServiceResource.collection: string;
+function TJsonODataServiceResource.collection: string;
 begin
   JSON.TryGetValue<string>('collection', result);
 end;
 
-function TJsonODastaServiceResource.expand(AName: string)
+function TJsonODataServiceResource.expand(AName: string)
   : IJsonODataServiceExpand;
 var
   r: IJsonODataServiceExpands;
@@ -389,63 +543,63 @@ begin
   end;
 end;
 
-function TJsonODastaServiceResource.Expands: IJsonODataServiceExpands;
+function TJsonODataServiceResource.Expands: IJsonODataServiceExpands;
 var
   jo: TJsonValue;
   jv: TJsonValue;
 begin
   result := nil;
   jv := JSON.GetValue<TJsonValue>('expands');
-  jo := TJsonObject.ParseJSONValue(jv.ToJSON);
+  jo := TJsonObject.ParseJSONValue(jv.toJson);
   if assigned(jo) then
   begin
     result := TJsonODataServiceExpands.New(jo);
   end;
 end;
 
-function TJsonODastaServiceResource.fields: string;
+function TJsonODataServiceResource.fields: string;
 begin
   JSON.TryGetValue<string>('fields', result);
 end;
 
-function TJsonODastaServiceResource.GetPrimaryKey: string;
+function TJsonODataServiceResource.GetPrimaryKey: string;
 begin
   result := FPrimaryKey;
 end;
 
-function TJsonODastaServiceResource.join: string;
+function TJsonODataServiceResource.join: string;
 begin
   JSON.TryGetValue<string>('join', result);
 end;
 
-function TJsonODastaServiceResource.keyID: string;
+function TJsonODataServiceResource.keyID: string;
 begin
   JSON.TryGetValue<string>('keyID', result);
 end;
 
-function TJsonODastaServiceResource.maxpagesize: integer;
+function TJsonODataServiceResource.maxpagesize: integer;
 begin
   if not JSON.TryGetValue<integer>('maxpagesize', result) then
     result := 0;
 end;
 
-function TJsonODastaServiceResource.method: string;
+function TJsonODataServiceResource.method: string;
 begin
   JSON.TryGetValue<string>('method', result);
 end;
 
-class function TJsonODastaServiceResource.New(AJson: TJsonValue)
+class function TJsonODataServiceResource.New(AJson: TJsonValue)
   : IJsonODataServiceResource;
 var
-  j: TJsonODastaServiceResource;
+  j: TJsonODataServiceResource;
 begin
-  j := TJsonODastaServiceResource.create;
+  j := TJsonODataServiceResource.create;
   j.FJson := AJson;
   result := j;
 
 end;
 
-function TJsonODastaServiceResource.relation(AName: string)
+function TJsonODataServiceResource.relation(AName: string)
   : IJsonODataServiceRelation;
 var
   r: IJsonODataServiceRelations;
@@ -471,31 +625,31 @@ begin
   end;
 end;
 
-function TJsonODastaServiceResource.relations: IJsonODataServiceRelations;
+function TJsonODataServiceResource.relations: IJsonODataServiceRelations;
 var
   jo: TJsonValue;
   jv: TJsonValue;
 begin
   result := nil;
   jv := JSON.GetValue<TJsonValue>('relations');
-  jo := TJsonObject.ParseJSONValue(jv.ToJSON);
+  jo := TJsonObject.ParseJSONValue(jv.toJson);
   if assigned(jo) then
   begin
     result := TJsonODataServiceRelations.New(jo);
   end;
 end;
 
-function TJsonODastaServiceResource.resource: string;
+function TJsonODataServiceResource.resource: string;
 begin
   JSON.TryGetValue<string>('resource', result);
 end;
 
-function TJsonODastaServiceResource.searchFields: string;
+function TJsonODataServiceResource.searchFields: string;
 begin
   JSON.TryGetValue<string>('searchFields', result);
 end;
 
-procedure TJsonODastaServiceResource.SetPrimaryKey(const Value: string);
+procedure TJsonODataServiceResource.SetPrimaryKey(const Value: string);
 begin
   FPrimaryKey := Value;
 end;
@@ -619,16 +773,12 @@ begin
 
 end;
 
-var
-  ODataConfig: string;
+
+
 
 initialization
 
 ODataServices := TODataServices.create;
-try
-  ODataConfig := GetODataConfigFilePath + 'oData.ServiceModel.json';
-  ODataServices.LoadFromJsonFile(ODataConfig);
-except
-end;
+TODataServices.ExpandFilePath('');
 
 end.

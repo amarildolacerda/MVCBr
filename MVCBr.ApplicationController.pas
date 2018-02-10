@@ -144,6 +144,8 @@ type
     procedure UpdateAll;
     /// envia event de Update a um Controller que contenha a IInterface
     procedure Update(const AIID: TGuid);
+    class function IsClosing: boolean;
+    class procedure SetClosing(AValue: boolean);
   end;
 
   /// Singleton
@@ -157,6 +159,8 @@ uses System.TypInfo;
 
 var
   LReleased: boolean;
+
+  threadvar LIsClosing: boolean;
 
 function ApplicationController(): IApplicationController;
 begin
@@ -287,7 +291,7 @@ begin
     function(ACtrl: IController): boolean
     begin
       result := false;
-      TControllerAbstract(ACtrl.this).GetModel(AGuid, rst);
+      TControllerAbstract(ACtrl.This).GetModel(AGuid, rst);
       if assigned(rst) then
         result := true;
     end);
@@ -401,6 +405,11 @@ begin
     end);
 end;
 
+class function TApplicationController.IsClosing: boolean;
+begin
+  result := LIsClosing;
+end;
+
 function TApplicationController.ControllerAsGuid: TGuid;
 begin
   if assigned(FMainView) then
@@ -480,6 +489,11 @@ begin
   if assigned(AController) then
     AController.Release;
   AController := nil;
+end;
+
+class procedure TApplicationController.SetClosing(AValue: boolean);
+begin
+  LIsClosing := AValue;
 end;
 
 procedure TApplicationController.SetMainView(AView: IView);
@@ -683,8 +697,11 @@ end;
 
 initialization
 
+LIsClosing := false;
+
 finalization
 
+LIsClosing := true;
 TThread.Queue(nil,
   procedure
   begin

@@ -43,8 +43,8 @@ type
     FParseCol: integer;
     FLevel: integer;
     [unsafe]
-    FOData: IODataDecode;
-    FCurrentOData: IODataDecode;
+    FOData: TODataDecodeAbstract;
+    FCurrentOData: TODataDecodeAbstract;
 
     function isToken(tken: string): boolean;
     procedure NextToken(AClear: boolean = false;
@@ -61,19 +61,20 @@ type
     procedure ParseExpand(const ATexto: string);
     procedure NextExpand;
     procedure SetOData(const Value: TODataDecode);
-    function GetOData: IODataDecode;
+    function GetOData: TODataDecodeAbstract;
     function GetNextToken: string;
   public
     constructor create;
     destructor destroy; override;
     procedure Release;
 
-    property oData: IODataDecode read GetOData; // write SetOData;
+    property oData: TODataDecodeAbstract read GetOData; // write SetOData;
     function isTokenIsJunk(const tk: TTokenKind): boolean;
     procedure whileIn(AArry: Array of TTokenKind);
     procedure FindToken(tk: TTokenKind);
   public
-    procedure Parse(URL: string); virtual;
+    procedure ParseURL(URL: string); virtual;
+    procedure ParseURLParams(prms: string); virtual;
     procedure DoCollectionInsert(ACurrent: IODataDecode); virtual;
     function Select: string; virtual;
     class function OperatorToString(txt: String): string;
@@ -115,7 +116,11 @@ end;
 
 destructor TODataParse.destroy;
 begin
+  if assigned(FOData) then
+    FOData.DisposeOf;
   FOData := nil;
+  if assigned(FCurrentOData) then
+    FCurrentOData.DisposeOf;
   FCurrentOData := nil;
   inherited;
 end;
@@ -143,7 +148,7 @@ begin
   until false;
 end;
 
-function TODataParse.GetOData: IODataDecode;
+function TODataParse.GetOData: TODataDecodeAbstract;
 begin
   result := FOData;
 end;
@@ -167,7 +172,7 @@ end;
 procedure TODataParse.NextExpand;
 var
   LLevel: integer;
-  procedure ExpandParams(oData: IODataDecode);
+  procedure ExpandParams(oData: TODataDecodeAbstract);
   var
     s: string;
     p: integer;
@@ -183,7 +188,7 @@ var
       if (toToken(TestNextToken) = ptClose) and (p = 0) then
       begin
         inc(p);
-        oData.ResourceParams.AddPair('__P' + intToStr(p), s);
+        TODataDecode(oData).ResourceParams.AddPair('__P' + intToStr(p), s);
       end;
 
       if (toToken(s) = ptFilter) then
@@ -209,7 +214,7 @@ var
 
 var
   s: string;
-  procedure NextExpandItem(rst: IODataDecode);
+  procedure NextExpandItem(rstAbst: TODataDecodeAbstract);
   begin
     NextToken(true);
     s := GetToken;
@@ -229,14 +234,14 @@ var
 
     if s <> '' then
     begin
-      if (LLevel <= 0) or (not assigned(rst)) then
+      if (LLevel <= 0) or (not assigned(rstAbst)) then
       begin
-        rst := oData.newExpand(s);
+        rstAbst := oData.newExpand(s);
         LLevel := 0;
       end
       else
       begin
-        rst := rst.newExpand(s);
+        rstAbst := TODataDecode(rstAbst).newExpand(s);
       end;
     end;
 
@@ -244,11 +249,11 @@ var
       exit;
     NextToken;
     if isTokenType(ptOpen) then
-      ExpandParams(rst);
+      ExpandParams(rstAbst);
     if IsNull then
       exit;
     inc(LLevel);
-    NextExpandItem(rst);
+    NextExpandItem(rstAbst);
   end;
 
 begin
@@ -326,6 +331,11 @@ begin
   if tk = ptNull then
     exit;
 
+  if tk = ptOData then
+  begin
+    NextToken(true, [ptSlash]);
+  end;
+
   if isTokenIsJunk(tk) then
   begin
     token := '';
@@ -353,18 +363,26 @@ begin
 end;
 
 procedure TODataParse.ParseCollections;
+var
+  rt: string;
 begin
   GetToken; // clear;
   NextToken;
-  FCurrentOData := FOData.GetLevel(FLevel, true);
-  FCurrentOData.Resource := GetToken;
+  FCurrentOData := TODataDecode(FOData).GetLevel(FLevel, true);
+  rt := GetToken;
+  if rt = '/' then
+  begin
+    NextToken(true, [ptSlash, ptOpen, ptParams]);
+    rt := GetToken;
+  end;
+  FCurrentOData.Resource := rt;
   if FCurrentOData.Resource = '' then
     exit;
 
   FCurrentOData.ResourceParams.clear;
   if not IsNull then
     ParseCollectionParams;
-  DoCollectionInsert(FCurrentOData);
+  //DoCollectionInsert(FCurrentOData);
   if IsNull then
     exit;
   if isTokenType(ptParams) then
@@ -393,6 +411,22 @@ begin
   end;
 end;
 
+procedure TODataParse.ParseURLParams(prms: string);
+begin
+  if prms = '' then
+    exit;
+
+  FUrl := prms + chr(0);
+  FParseCol := 1;
+
+  // if isTokenType(ptParams) then
+  ParseParams;
+
+  if FOData.Expand <> '' then
+    ParseExpand(FOData.Expand);
+
+end;
+
 procedure TODataParse.ParseParams;
 var
   s, k: string;
@@ -402,9 +436,10 @@ begin
   s := GetToken;
 
   if FTokenKindArray.TryGetValue(s, tk) then
-   case tk of
-     ptCount : oData.Count := 'true';
-   end;
+    case tk of
+      ptCount:
+        oData.inLineCount := 'true';
+    end;
 
   NextToken(true);
   if isTokenType(ptEqual) then
@@ -432,10 +467,10 @@ begin
           oData.SkipToken := k;
         ptInLineCount:
           if sametext(k, 'allpages') then
-            oData.count := 'true';
+            oData.inLineCount := 'true';
         ptCount:
           if sametext(k, 'true') then
-            oData.count := 'true'; // compatibilidade versão V2 com V4
+            oData.inLineCount := 'true'; // compatibilidade versão V2 com V4
         ptExpand:
           oData.Expand := k;
         ptDebug:
@@ -469,17 +504,12 @@ begin
   FOData := Value;
 end;
 
-procedure TODataParse.Parse(URL: string);
+procedure TODataParse.ParseURL(URL: string);
 begin
   FLevel := 0;
-  FUrl := URL + chr(0);
+  FUrl := URL.Substring(16) + chr(0);
   FParseCol := 1;
   ParseCollections;
-  if isTokenType(ptParams) then
-    ParseParams;
-
-  if FOData.Expand <> '' then
-    ParseExpand(FOData.Expand);
 end;
 
 function TODataParse.GetNextToken: string;
@@ -538,7 +568,7 @@ Loop1:
         NextToken(true, [ptQuotation]);
       end;
 
-      if FCurrentOData.ResourceParams.count > 0 then
+      if FCurrentOData.ResourceParams.Count > 0 then
       begin
 
         if toToken(token) in [ptComma, ptOperAnd, ptOperOr] then
@@ -677,6 +707,7 @@ FTokenKindArray.Add('$skiptoken', ptSkipToken);
 FTokenKindArray.Add('$inlinecount', ptInLineCount);
 FTokenKindArray.Add('$count', ptCount);
 FTokenKindArray.Add('$expand', ptExpand);
+FTokenKindArray.Add('group', ptGroupBy);
 FTokenKindArray.Add('groupby', ptGroupBy);
 FTokenKindArray.Add('$group', ptGroupBy);
 FTokenKindArray.Add('debug', ptDebug);

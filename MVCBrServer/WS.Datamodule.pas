@@ -42,11 +42,12 @@ type
   end;
 
   TFDStoredProcAuto = class(TFDStoredProc)
-   public
+  public
     constructor create(AOwner: TComponent); override;
 
   end;
 
+procedure RegisterAutoLoadResource;
 
 var
   WSDatamodule: TWSDatamodule;
@@ -55,12 +56,12 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 // uses FireDAC.Adpt;
-uses System.JSON, System.SyncObjs, WS.Common;
+uses oData.ServiceModel, System.JSON, System.SyncObjs, WS.Common;
 
 {$R *.dfm}
 
 var
-  FContainer:TComponent;
+  FContainer: TComponent;
   // ConnectionStrings: string;
 {$IFDEF LINUX}
 {$ELSE}
@@ -86,7 +87,7 @@ begin
     FDPhysMySQLDriverLink1 := TFDPhysMySQLDriverLink.create(FContainer);
     FDPhysMSSQLDriverLink1 := TFDPhysMSSQLDriverLink.create(FContainer);
     FDPhysPgDriverLink1 := TFDPhysPgDriverLink.create(FContainer);
-    FDPhysOracleDriverLink1:= TFDPhysOracleDriverLink.create(FContainer);
+    FDPhysOracleDriverLink1 := TFDPhysOracleDriverLink.create(FContainer);
 
 {$IFDEF MSWINDOWS}
     FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(FContainer);
@@ -107,13 +108,14 @@ begin
     old := fd.Params.Delimiter;
     try
       fd.Params.Delimiter := ';';
-      fd.Params.DelimitedText := stringReplace( WSConnectionString,'\\','\',[rfReplaceAll]);
+      fd.Params.DelimitedText := stringReplace(WSConnectionString, '\\', '\',
+        [rfReplaceAll]);
     finally
       fd.Params.Delimiter := old;
     end;
   end;
 
-  LVendorLib :=  fd.Params.Values['VendorLib'];
+  LVendorLib := fd.Params.Values['VendorLib'];
   LDriverID := fd.Params.Values['DriverId'].ToUpper;
 
   if not LVendorLib.IsEmpty then
@@ -129,6 +131,7 @@ begin
       FDPhysOracleDriverLink1.VendorLib := LVendorLib
     else if LDriverID.Equals('MSSQL') then
       FDPhysMSSQLDriverLink1.VendorLib := LVendorLib;
+
 end;
 
 procedure TWSDatamodule.AfterConstruction;
@@ -155,12 +158,12 @@ begin
   TInterlocked.Add(LQueryCount, 0);
 
   name := '__query__' + LQueryCount.ToString;
-  Connection := FDManager.AcquireConnection(ConnectionName, name);
-  if Connection.Params.count = 0 then
+  connection := FDManager.AcquireConnection(ConnectionName, name);
+  if connection.Params.count = 0 then
   begin
     assert(WSConnectionString <> '',
       'Falta configurar a conexão de banco de dados');
-    SetConnectionProp(Connection);
+    SetConnectionProp(connection);
   end;
 
 end;
@@ -174,19 +177,76 @@ begin
   TInterlocked.Add(LQueryCount, 0);
 
   name := '__query__' + LQueryCount.ToString;
-  Connection := FDManager.AcquireConnection(ConnectionName, name);
-  if Connection.Params.count = 0 then
+  connection := FDManager.AcquireConnection(ConnectionName, name);
+  if connection.Params.count = 0 then
   begin
     assert(WSConnectionString <> '',
       'Falta configurar a conexão de banco de dados');
-    SetConnectionProp(Connection);
+    SetConnectionProp(connection);
   end;
 
 end;
 
+procedure ODataAutoRegisterResources;
+var
+  AList: TStringList;
+  i, x: Integer;
+  ANome, AResource: string;
+  FQuery: TFDQueryAuto;
+begin
+  try
+    AList := TStringList.create;
+    try
+      FQuery := TFDQueryAuto.create(nil);
+      try
+        if assigned(FQuery.connection) then
+        begin
+          FQuery.connection.GetTableNames('', '', '', AList, [osMy],
+            [tkTable, tkView]);
+          for i := 0 to AList.count - 1 do
+            if AList[i].ToUpper().StartsWith('ODATA_') then
+            begin
+              ANome := AList[i].toLower;
+              AResource := ANome;
+              x := ANome.IndexOf('_');
+              if x >= 0 then
+                AResource := ANome.Substring(x + 1);
+              ODataServices.RegisterResource(AResource, ANome, '', 24, '*', '',
+                'GET', nil);
+            end;
+        end;
+        ODataServices.SaveToJsonFile('OData.ServiceModel.new.json');
+      finally
+        FQuery.free;
+      end;
+    finally
+      AList.free;
+    end;
+  except
+  end;
+end;
+
+threadvar FFirstLoad: boolean;
+
+procedure RegisterAutoLoadResource;
+begin
+  if not FFirstLoad then
+    try
+      FFirstLoad := true;
+      if RegisterODataCustomServiceLoad(ODataAutoRegisterResources, false) then
+        TODataServices.Invalidate;
+    except
+    end;
+end;
+
 initialization
-   FContainer:=TComponent.create(nil);
+
+FFirstLoad := false;
+FContainer := TComponent.create(nil);
+
 finalization
-   FreeAndNil(WSDatamodule);
-   FreeAndNil(FContainer);
+
+FreeAndNil(WSDatamodule);
+FreeAndNil(FContainer);
+
 end.

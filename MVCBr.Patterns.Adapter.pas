@@ -120,12 +120,6 @@ begin
   FAdapter := AObject;
 end;
 
-{
-constructor TMVCBrAdapter<T>.Create;
-begin
-  self.Create(nil);
-end;
-}
 
 function TMVCBrAdapter<T>.DelegateTo(AProc: TFunc<T>): TMVCBrAdapter<T>;
 begin

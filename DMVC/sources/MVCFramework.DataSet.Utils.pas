@@ -66,8 +66,10 @@ procedure TDataSetHelper.LoadFromTValue(const Value: TValue; const aNameCase: TM
 var
   lSer: TMVCJsonDataObjectsSerializer;
 begin
-  if not(Value.IsObject and (Value.AsObject is TJsonArray)) then
+{$if CompilerVersion>32}
+  if not(Value.IsObjectInstance and (Value.AsObject is TJsonArray)) then
     raise Exception.Create('LoadFromTValue requires a TValue containing a TJDOJsonArray');
+{$endif}
 
   lSer := TMVCJsonDataObjectsSerializer.Create;
   try

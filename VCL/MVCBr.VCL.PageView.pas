@@ -52,7 +52,7 @@ type
   protected
     function GetShowCaptions: boolean;
     procedure SetShowCaptions(const Value: boolean);
-
+    procedure Loaded; override;
   public
     Constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
@@ -277,6 +277,13 @@ begin
   result := XGetPageControlExtender(self).ShowTabColor;
 end;
 
+procedure TMVCBrPageControl.Loaded;
+begin
+  inherited;
+  if TabHeight = 1 then
+    ShowCaptions := false;
+end;
+
 procedure TMVCBrPageControl.PageControlCloseButtonMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
@@ -461,9 +468,12 @@ begin
   end
   else
   begin
-    PageControl.Canvas.FillRect(Rect);
-    PageControl.Canvas.TextOut(TabCaption.X, TabCaption.Y,
-      PageControl.Pages[TabIndex].Caption);
+    if ShowCaptions then
+    begin
+      PageControl.Canvas.FillRect(Rect);
+      PageControl.Canvas.TextOut(TabCaption.X, TabCaption.Y,
+        PageControl.Pages[TabIndex].Caption);
+    end;
   end;
   if assigned(FonFormDrawTab) then
     FonFormDrawTab(Control, TabIndex, Rect, Active);
@@ -1314,10 +1324,11 @@ begin
   begin
     PageControl := TPageControl(Control);
     TabSheet := PageControl.Pages[index];
-    if trim(TabSheet.Caption) = 'hide' then
+    if (trim(TabSheet.Caption) = 'hide') {or
+      (TMVCBrTabSheetView(TabSheet).ShowCaption = false)} then
       exit;
     if TabSheet.Caption = '' then
-      TabSheet.Caption := (index+1).toString;
+      TabSheet.Caption := (index + 1).toString;
     if LPageControlExtender.ContainsKey(PageControl) then
     begin
       ARec := LPageControlExtender.Items[PageControl];

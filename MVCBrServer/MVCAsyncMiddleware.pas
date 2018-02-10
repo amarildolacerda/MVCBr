@@ -45,7 +45,7 @@ type
   TMVCContinueBool = Boolean;
 
 var
-  MVCCallBack_FieldName: string = '__callback';
+  MVCCallBack_FieldName: string = 'callback';
   MVCBeforeControllerAction: TFunc<TWebContext, TMVCContinueBool>;
   MVCBeforeControllerRouting: TFunc<TWebContext, TMVCContinueBool>;
   MVCAfterControllerAction: TFunc<TWebContext, TMVCContinueBool>;

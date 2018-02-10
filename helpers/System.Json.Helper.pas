@@ -51,7 +51,7 @@ type
   TJsonStringResult = string;
 
   TJsonType = (jtUnknown, jtObject, jtArray, jtString, jtTrue, jtFalse,
-    jtNumber, jtDate, jtDateTime, jtBytes, jtNull);
+    jtNumber, jtDate, jtDateTime, jtBytes, jtNull, jtDatetimeISO8601);
 
   TMemberVisibilitySet = set of TMemberVisibility;
 
@@ -68,11 +68,12 @@ type
     function JsonValue: TJsonValue;
     function isNull: Boolean;
     function AsArray: TJsonArray;
-    function addPair(AKey:String; AValue: TGuid): TJsonObject; overload;
+    function addPair(AKey: String; AValue: TGuid): TJsonObject; overload;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
     function addPair(AKey: string; AValue: double): TJsonObject; overload;
+    function addPair(AKey: string; AValue: Boolean): TJsonObject; overload;
     function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
     function AddChild(AKey, AJson: string): TJsonObject;
     function addArray(AKey: string; AValue: TJsonArray): TJsonArray; overload;
@@ -95,9 +96,10 @@ type
     FJson: TJsonValue;
     function Invoke: TJsonValue;
   public
-    constructor create(AJson: string); overload;
-    constructor create; overload;
-    destructor destroy; override;
+    constructor Create(AJson: string); overload;
+    constructor Create(AKey: string; AValue: TJsonValue); overload;
+    constructor Create; overload;
+    destructor Destroy; override;
     function This: TInterfacedJSON; virtual;
     class function New(AOwned: Boolean): IJsonObject; overload;
     class function New(AJson: string): IJsonObject; overload;
@@ -114,9 +116,10 @@ type
     function JsonValue: TJsonValue;
     function AsArray: TJsonArray;
     function isNull: Boolean;
-    function addPair(AKey:String; AValue: TGuid): TJsonObject; overload;
+    function addPair(AKey: String; AValue: TGuid): TJsonObject; overload;
     function addPair(AKey, AValue: string): TJsonObject; overload;
     function addPair(AKey: string; AValue: TJsonValue): TJsonObject; overload;
+    function addPair(AKey: string; AValue: Boolean): TJsonObject; Overload;
     function addPair(AKey: string; AValue: Integer): TJsonObject; overload;
     function addPair(AKey: string; AValue: double): TJsonObject; overload;
     function addPair(AKey: string; AValue: TDatetime): TJsonObject; overload;
@@ -146,7 +149,7 @@ type
       useBool: Boolean = false); overload;
     procedure SaveToFile(AFileName: String);
     procedure LoadFromFile(AFileName: String);
-    constructor create(AKey, AValue: String); overload;
+    constructor Create(AKey, AValue: String); overload;
     class function New(AJson: string): IJsonObject;
     function V(chave: String): variant;
     function S(chave: string): string;
@@ -171,12 +174,15 @@ type
     class function FromObject<T: Class>(AObject: T;
       AVisibility: TMemberVisibilitySet = [mvPublic, mvPublished])
       : TJsonObject; overload;
+    class Function ToObject<T: Class>(AJsonValue: TJsonValue; var AObject: T)
+      : TJsonObject;
 {$IFDEF CompilerVersion<=30}
     function addPair(chave: string; Value: string): TJsonObject; overload;
 {$ENDIF}
     function addPair(chave: string; Value: Integer): TJsonObject; overload;
     function addPair(chave: string; Value: double): TJsonObject; overload;
     function addPair(chave: string; Value: TDatetime): TJsonObject; overload;
+    function addPair(chave: string; Value: Boolean): TJsonObject; overload;
     property Value[chave: string]: string read GetValueBase write SetValueBase;
     function Coalesce(chave: string; Value: string): TJsonPair;
     // procedure FromRecord<T :record>(rec:T);
@@ -186,6 +192,7 @@ type
   public
     function Length: Integer;
     function Find(AJson: string): TJsonObject;
+    class function CreateItem(it: TJsonValue): TJsonArray;
   end;
 
   TJsonValuesList = class(TObjectList<TJsonPair>)
@@ -202,8 +209,9 @@ type
 {$IFDEF VER270}
     function ToJson: string;
 {$ENDIF}
-    class Function New(AKey, AValue: String): TJsonValue;
-    procedure addPair(AKey, AValue: string);
+    class Function New(AKey, AValue: String): TJsonValue; overload;
+    class Function New(AKey: string; AValue: Integer): TJsonValue; overload;
+    function addPair(AKey, AValue: string): TJsonValue;
     function ToRecord<T>: T; overload;
     function ToRecord<T: Record >(var ARec: T): T; overload;
     class function ToRecord<T: record >(AJson: string): T; overload; static;
@@ -263,7 +271,7 @@ var
   I: Integer;
 begin
   result := '';
-  AContext := TRttiContext.create;
+  AContext := TRttiContext.Create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     ArrFields := ARecord.GetFields;
@@ -291,10 +299,10 @@ var
   ArrFields: TArray<TRttiField>;
   I: Integer;
 begin
-  result := TJsonObject.create;
+  result := TJsonObject.Create;
   if assigned(AProcBefore) then
     AProcBefore(result as TJsonObject);
-  AContext := TRttiContext.create;
+  AContext := TRttiContext.Create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     ArrFields := ARecord.GetFields;
@@ -310,12 +318,12 @@ begin
           case AField.FieldType.TypeKind of
             tkInteger, tkInt64:
               try
-                result.addPair(AFldName, TJSONNumber.create(AValue.AsInt64));
+                result.addPair(AFldName, TJSONNumber.Create(AValue.AsInt64));
               except
-                result.addPair(AFldName, TJSONNumber.create(0));
+                result.addPair(AFldName, TJSONNumber.Create(0));
               end;
             tkEnumeration:
-              result.addPair(AFldName, TJSONNumber.create(AValue.AsInteger));
+              result.addPair(AFldName, TJSONNumber.Create(AValue.AsInteger));
             tkFloat:
               begin
                 if AField.FieldType.ToString.Equals('TDateTime') then
@@ -330,9 +338,9 @@ begin
                 else
                   try
                     result.addPair(AFldName,
-                      TJSONNumber.create(AValue.AsExtended));
+                      TJSONNumber.Create(AValue.AsExtended));
                   except
-                    result.addPair(AFldName, TJSONNumber.create(0));
+                    result.addPair(AFldName, TJSONNumber.Create(0));
                   end;
               end
           else
@@ -360,8 +368,8 @@ var
   ArrFields: TArray<TRttiField>;
   I: Integer;
 begin
-  result := TJsonArray.create;
-  AContext := TRttiContext.create;
+  result := TJsonArray.Create;
+  AContext := TRttiContext.Create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     ArrFields := ARecord.GetFields;
@@ -387,7 +395,7 @@ var
 begin
   js := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
   try
-    AContext := TRttiContext.create;
+    AContext := TRttiContext.Create;
     try
       ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
       for AField in ARecord.GetFields do
@@ -498,6 +506,8 @@ end;
 class function TJSONObjectHelper.GetJsonType(AJsonValue: TJsonValue): TJsonType;
 var
   LJsonString: TJSONString;
+  dt: TDatetime;
+  S: String;
 begin
   if AJsonValue is TJSONNull then
     result := jtNull
@@ -514,6 +524,13 @@ begin
   else if AJsonValue is TJSONString then
   begin
     LJsonString := (AJsonValue as TJSONString);
+    S := LJsonString.Value;
+    if (S.Length = 24) and (S.Chars[23] = 'Z') and (S.Chars[10] = 'T') then
+      if TryISO8601ToDate(S, dt, true) then
+      begin
+        result := jtDatetimeISO8601;
+        exit;
+      end;
     if TRegEx.IsMatch(LJsonString.Value,
       '^([0-9]{4})-?(1[0-2]|0[1-9])-?(3[01]|0[1-9]|[12][0-9])(T| )(2[0-3]|[01][0-9]):?([0-5][0-9]):?([0-5][0-9])$')
     then
@@ -607,7 +624,7 @@ end;
 function Json: TJson;
 begin
   if not assigned(LJson) then
-    LJson := TJson.create;
+    LJson := TJson.Create;
   result := LJson;
 end;
 
@@ -632,19 +649,19 @@ function TJSONObjectHelper.addPair(chave: string; Value: string)
 var
   pair: TJsonPair;
 begin
-  pair := TJsonPair.create(chave, Value);
+  pair := TJsonPair.Create(chave, Value);
   self.add(pair);
 end;
 {$ENDIF}
 
 function TJSONObjectHelper.addPair(chave: string; Value: Integer): TJsonObject;
 begin
-  result := addPair(chave, TJSONNumber.create(Value));
+  result := addPair(chave, TJSONNumber.Create(Value));
 end;
 
 function TJSONObjectHelper.addPair(chave: string; Value: double): TJsonObject;
 begin
-  result := addPair(chave, TJSONNumber.create(Value));
+  result := addPair(chave, TJSONNumber.Create(Value));
 end;
 
 function TJSONObjectHelper.addPair(chave: string; Value: TDatetime)
@@ -684,9 +701,9 @@ begin
   result := LJSONValue <> nil;
 end;
 
-constructor TJSONObjectHelper.create(AKey, AValue: String);
+constructor TJSONObjectHelper.Create(AKey, AValue: String);
 begin
-  inherited create(TJsonPair.create(AKey, AValue));
+  inherited Create(TJsonPair.Create(AKey, AValue));
 end;
 
 function TJSONObjectHelper.MappingTo(FMapping: TStrings;
@@ -695,7 +712,7 @@ var
   AFrom, ATo: string;
   j: TJsonPair;
 begin
-  result := TJsonObject.create as TJsonObject;
+  result := TJsonObject.Create as TJsonObject;
   for j in self do
   begin
     AFrom := j.JsonString.Value;
@@ -750,7 +767,7 @@ procedure TJSONObjectHelper.LoadFromFile(AFileName: String);
 var
   stream: TStringStream;
 begin
-  stream := TStringStream.create('');
+  stream := TStringStream.Create('');
   try
     if fileExists(AFileName) then
       try
@@ -815,8 +832,8 @@ var
   LAttr: TCustomAttribute;
   LContinue: Boolean;
 begin
-  result := TJsonObject.create;
-  ctx := TRttiContext.create;
+  result := TJsonObject.Create;
+  ctx := TRttiContext.Create;
   typ := ctx.GetType(TypeInfo(T));
   P := TObject(AObject);
   for field in typ.GetFields do
@@ -847,27 +864,27 @@ begin
               end; *)
           end;
         tkInteger:
-          result.addPair(key, TJSONNumber.create(field.GetValue(P).AsInteger));
+          result.addPair(key, TJSONNumber.Create(field.GetValue(P).AsInteger));
         tkFloat:
           begin // System.Classes.Helper
             if sametext(field.FieldType.Name, 'TDateTime') then
-              result.addPair(TJsonPair.create(key,
+              result.addPair(TJsonPair.Create(key,
                 ISODateTimeToString(field.GetValue(P).AsExtended)))
             else if sametext(field.FieldType.Name, 'TDate') then
-              result.addPair(TJsonPair.create(key,
+              result.addPair(TJsonPair.Create(key,
                 ISODateToString(field.GetValue(P).AsExtended)))
             else if sametext(field.FieldType.Name, 'TTime') then
-              result.addPair(TJsonPair.create(key,
+              result.addPair(TJsonPair.Create(key,
                 ISOTimeToString(field.GetValue(P).AsExtended)))
             else if sametext(field.FieldType.Name, 'TTimeStamp') then
-              result.addPair(TJsonPair.create(key,
+              result.addPair(TJsonPair.Create(key,
                 ISODateTimeToString(field.GetValue(P).AsExtended)))
             else
               result.addPair(key,
-                TJSONNumber.create(field.GetValue(P).AsExtended));
+                TJSONNumber.Create(field.GetValue(P).AsExtended));
           end
       else
-        result.addPair(TJsonPair.create(key, field.GetValue(P).ToString));
+        result.addPair(TJsonPair.Create(key, field.GetValue(P).ToString));
       end;
     except
     end;
@@ -884,7 +901,7 @@ procedure TJSONObjectHelper.SaveToFile(AFileName: String);
 var
   stream: TStringStream;
 begin
-  stream := TStringStream.create(TEncoding.UTF8.GetBytes(self.ToJson));
+  stream := TStringStream.Create(TEncoding.UTF8.GetBytes(self.ToJson));
   try
     stream.SaveToFile(AFileName);
   finally
@@ -901,13 +918,37 @@ begin
     addPair(chave, Value)
   else
   begin
-    V.JsonValue := TJSONString.create(Value);
+    V.JsonValue.free; // trick
+    V.JsonValue := TJSONString.Create(Value);
   end;
 end;
 
 class function TJSONObjectHelper.Stringify(so: TJsonObject): string;
 begin
   result := so.ToJson;
+end;
+
+class function TJSONObjectHelper.ToObject<T>(AJsonValue: TJsonValue;
+  var AObject: T): TJsonObject;
+var
+  oJs: TJsonObject;
+  lst: TStringList;
+  pair: TJsonPair;
+  S: string;
+begin
+{$IFNDEF BPL}
+  oJs := AJsonValue as TJsonObject;
+  lst := TStringList.Create;
+  try
+    for pair in oJs do
+    begin
+      AObject.ContextProperties[pair.JsonString.Value] := pair.JsonValue.Value;
+      AObject.ContextFields[pair.JsonString.Value] := pair.JsonValue.Value;
+    end;
+  finally
+    lst.free;
+  end;
+{$ENDIF}
 end;
 
 class function TJSONValueHelper.ToRecord<T>(AJson: string): T;
@@ -932,7 +973,7 @@ var
   AFieldName: String;
   j: TJsonObject;
 begin
-  AContext := TRttiContext.create;
+  AContext := TRttiContext.Create;
   try
 
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
@@ -994,7 +1035,7 @@ var
   AFieldName: String;
   j: TJsonObject;
 begin
-  AContext := TRttiContext.create;
+  AContext := TRttiContext.Create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     j := self as TJsonObject;
@@ -1057,7 +1098,7 @@ function TJSONObjectHelper.asObject: System.TObject;
 var
   m: TJSONunMarshal;
 begin
-  m := TJSONunMarshal.create;
+  m := TJSONunMarshal.Create;
   try
     result := m.Unmarshal(self);
   finally
@@ -1072,7 +1113,23 @@ begin
   result := ToString;
 end;
 {$ENDIF}
+
+function TJSONObjectHelper.addPair(chave: string; Value: Boolean): TJsonObject;
+begin
+  result := self;
+  if Value then
+    addPair(chave, TJSONTrue.Create)
+  else
+    addPair(chave, TJSONFalse.Create);
+end;
+
 { TJSONArrayHelper }
+
+class function TJSONArrayHelper.CreateItem(it: TJsonValue): TJsonArray;
+begin
+  result := TJsonArray.Create;
+  result.AddElement(it);
+end;
 
 function TJSONArrayHelper.Find(AJson: string): TJsonObject;
 var
@@ -1121,8 +1178,9 @@ end;
 {$ENDIF}
 { TJSONValueHelper }
 
-procedure TJSONValueHelper.addPair(AKey, AValue: string);
+function TJSONValueHelper.addPair(AKey, AValue: string): TJsonValue;
 begin
+  result := self;
   (self as TJsonObject).addPair(AKey, AValue);
 end;
 
@@ -1196,7 +1254,7 @@ var
   j: TJsonObject;
   APair: TJsonPair;
 begin
-  AContext := TRttiContext.create;
+  AContext := TRttiContext.Create;
   try
     ARecord := AContext.GetType(TypeInfo(T)).AsRecord;
     for AField in ARecord.GetFields do
@@ -1206,17 +1264,17 @@ begin
       APair := nil;
       case AField.FieldType.TypeKind of
         tkInteger, tkFloat, tkInt64:
-          APair := TJsonPair.create(AFieldName,
-            TJSONNumber.create(AValue.AsExtended));
+          APair := TJsonPair.Create(AFieldName,
+            TJSONNumber.Create(AValue.AsExtended));
         tkString, tkWString, tkLString, tkChar, tkWChar, tkUString:
-          APair := TJsonPair.create(AFieldName, AValue.AsString);
+          APair := TJsonPair.Create(AFieldName, AValue.AsString);
       else
         if sametext(AField.FieldType.Name, 'Boolean') then
         begin
           if AValue.AsBoolean then
-            APair := TJsonPair.create(AFieldName, TJSONTrue.create())
+            APair := TJsonPair.Create(AFieldName, TJSONTrue.Create())
           else
-            APair := TJsonPair.create(AFieldName, TJSONFalse.create());
+            APair := TJsonPair.Create(AFieldName, TJSONFalse.Create());
         end;
       end;
       if assigned(APair) then
@@ -1233,12 +1291,21 @@ begin
   result := (self as TJsonObject).I(chave);
 end;
 
+class function TJSONValueHelper.New(AKey: string; AValue: Integer): TJsonValue;
+var
+  APair: TJsonObject;
+begin
+  APair := TJsonObject.Create;
+  APair.addPair(AKey, AValue);
+  result := APair;
+end;
+
 class function TJSONValueHelper.New(AKey, AValue: String): TJsonValue;
 var
   APair: TJsonPair;
 begin
-  APair := TJsonPair.create(AKey, AValue);
-  result := TJsonObject.create(APair);
+  APair := TJsonPair.Create(AKey, AValue);
+  result := TJsonObject.Create(APair);
 end;
 
 function TJSONValueHelper.S(chave: string): string;
@@ -1294,7 +1361,7 @@ function JSONStoreError(msg: string): TJsonValue;
 var
   js: TJsonObject;
 begin
-  js := TJsonObject.create;
+  js := TJsonObject.Create;
   js.addPair('error', msg);
   js.addPair('ok', 'false');
   result := js;
@@ -1350,21 +1417,30 @@ begin
   result := self.addPair(AKey, ISODateTimeToString(AValue));
 end;
 
-function TInterfacedJSON.addPair(AKey:String; AValue: TGuid): TJsonObject;
-var sGuid:String;
+function TInterfacedJSON.addPair(AKey: string; AValue: Boolean): TJsonObject;
+begin
+  if AValue then
+    result := self.addPair(AKey, TJSONTrue.Create)
+  else
+    result := self.addPair(AKey, TJSONFalse.Create);
+end;
+
+function TInterfacedJSON.addPair(AKey: String; AValue: TGuid): TJsonObject;
+var
+  sGuid: String;
 begin
   sGuid := GuidToString(AValue);
-  result := self.addPair(AKey, sGuid );
+  result := self.addPair(AKey, sGuid);
 end;
 
 function TInterfacedJSON.addPair(AKey: string; AValue: double): TJsonObject;
 begin
-  result := self.addPair(AKey, TJSONNumber.create(AValue));
+  result := self.addPair(AKey, TJSONNumber.Create(AValue));
 end;
 
 function TInterfacedJSON.addPair(AKey: string; AValue: Integer): TJsonObject;
 begin
-  result := self.addPair(AKey, TJSONNumber.create(AValue));
+  result := self.addPair(AKey, TJSONNumber.Create(AValue));
 end;
 
 function TInterfacedJSON.addPair(AKey, AValue: string): TJsonObject;
@@ -1372,20 +1448,20 @@ begin
   result := (FJson as TJsonObject).addPair(AKey, AValue);
 end;
 
-constructor TInterfacedJSON.create;
+constructor TInterfacedJSON.Create;
 begin
-  self.create('{}');
+  self.Create('{}');
 end;
 
-constructor TInterfacedJSON.create(AJson: string);
+constructor TInterfacedJSON.Create(AJson: string);
 begin
-  inherited create;
+  inherited Create;
   if AJson = '' then
     AJson := '{}';
   Parse(AJson);
 end;
 
-destructor TInterfacedJSON.destroy;
+destructor TInterfacedJSON.Destroy;
 begin
   if FInstanceOwned then
     FreeAndNil(FJson);
@@ -1402,7 +1478,7 @@ class function TInterfacedJSON.New(AJson: TJsonValue; AOwned: Boolean)
 var
   jo: TInterfacedJSON;
 begin
-  jo := TInterfacedJSON.create;
+  jo := TInterfacedJSON.Create;
   jo.FJson := AJson;
   jo.FInstanceOwned := AOwned;
   result := jo;
@@ -1427,6 +1503,12 @@ end;
 function TInterfacedJSON.Contains(AKey: string): Boolean;
 begin
   result := JSONObject.Contains(AKey);
+end;
+
+constructor TInterfacedJSON.Create(AKey: string; AValue: TJsonValue);
+begin
+  inherited Create;
+  addPair(AKey, AValue);
 end;
 
 class function TInterfacedJSON.GetJsonType(AJsonValue: TJsonValue): TJsonType;
@@ -1474,12 +1556,12 @@ end;
 
 class function TInterfacedJSON.New: IJsonObject;
 begin
-  result := TInterfacedJSON.create('{}');
+  result := TInterfacedJSON.Create('{}');
 end;
 
 class function TInterfacedJSON.New(AJson: string): IJsonObject;
 begin
-  result := TInterfacedJSON.create(AJson);
+  result := TInterfacedJSON.Create(AJson);
 end;
 
 function TInterfacedJSON.Parse(AJson: string): IJsonObject;

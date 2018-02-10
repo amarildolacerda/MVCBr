@@ -1,0 +1,20 @@
+
+
+<div>Token: <button *ngIf="token==''" mat-button  (click)="get_token_new()" > ainda não tenho um token</button>  
+    {{token}}</div>
+
+    
+
+<form [formGroup]="formUsers" (ngSubmit)="addUser(formUsers.value)">
+   <mat-form-field>
+       <input matInput placeholder="User name" formControlName="userName" >
+   </mat-form-field>
+   <mat-form-field>
+       <input matInput placeholder="Secret" formControlName="secret">
+   </mat-form-field>
+   <mat-form-field>
+    <input matInput placeholder="Group" formControlName="group">
+   </mat-form-field>
+   <button mat-button type="submit"
+    [disabled]="!formUsers.valid" >Send</button>
+</form>

@@ -29,6 +29,17 @@ interface
 uses System.Classes, System.SysUtils, System.Generics.Collections, System.Json;
 
 type
+
+  IObjectAdapter<T> = interface(TFunc<T>)
+  end;
+
+  TObjectAdapter<T: Class> = Class(TInterfacedObject, IObjectAdapter<T>)
+  private
+    FInstance: T;
+  public
+    function Invoke: T;
+  End;
+
   IObjectLock = Interface
     ['{172D89AE-268F-4312-BEF6-4F1A1B6A0F12}']
     procedure Lock;
@@ -170,7 +181,7 @@ type
     function Pop: T; virtual;
   end;
 
-  TThreadSafeList<T:Class> = class(TThreadedList<T>)
+  TThreadSafeList<T: Class> = class(TThreadedList<T>)
   end;
 
   TThreadSafeInterfaceList<T: IInterface> = class(TInterfacedObject,
@@ -199,11 +210,50 @@ type
     property Items[AIndex: integer]: T read Getitems write Setitems;
   end;
 
+  TThreadSafeDictionary<TKey, TValue> = class(TInterfacedObject)
+  private
+    FOwnedList: TDictionaryOwnerShips;
+    FInited: boolean;
+    FLock: TObject;
+    FDictionary: TObjectDictionary<TKey, TValue>;
+    function GetItem(const Key: TKey): TValue;
+    procedure SetItem(const Key: TKey; const Value: TValue);
+    function Invoke: TObjectDictionary<TKey, TValue>;
+    function GetCount: integer;
+  public
+    constructor create; Reintroduce; overload;
+    constructor create(AOwnedList: TDictionaryOwnerShips); overload;
+    destructor destroy; override;
+    function LockList: TDictionary<TKey, TValue>;
+    procedure UnlockList;
+
+    function TryGetValue(const Key: TKey; out Value: TValue): boolean;
+    procedure Add(const Key: TKey; const Value: TValue);
+    procedure Remove(const Key: TKey);
+    function ExtractPair(const Key: TKey): TPair<TKey, TValue>;
+    procedure Clear;
+    procedure TrimExcess;
+    procedure AddOrSetValue(const Key: TKey; const Value: TValue);
+    function ContainsKey(const Key: TKey): boolean;
+    function ContainsValue(const Value: TValue): boolean;
+    function ToArray: TArray<TPair<TKey, TValue>>;
+
+    property Items[const Key: TKey]: TValue read GetItem write SetItem; default;
+    property Count: integer read GetCount;
+  end;
+
+  TThreadSafeDictionaryObject<TValue: Class> = class
+    (TThreadSafeDictionary<string, TValue>)
+  public
+    function ToJson: String;
+    procedure FromJson(AJson: String);
+  end;
+
 implementation
 
 {$IFNDEF BPL}
 
-uses REST.Json;
+uses REST.Json, System.Classes.Helper;
 {$ENDIF}
 
 constructor TThreadSafeStringList.create;
@@ -847,7 +897,7 @@ begin
       for i := 0 to Count - 1 do
       begin
         ob := Items[i];
-        result.Add(TJson.ObjectToJsonObject(ob));
+        result.Add(REST.Json.TJson.ObjectToJsonObject(ob));
       end;
     finally
       UnlockList;
@@ -1130,6 +1180,287 @@ begin
   i := IndexOf(ATexto);
   if i >= 0 then
     Delete(i);
+end;
+
+{ TThreadSafeDictionary<TKey, TValue> }
+
+constructor TThreadSafeDictionary<TKey, TValue>.create
+  (AOwnedList: TDictionaryOwnerShips);
+begin
+  inherited create;
+  FOwnedList := AOwnedList;
+  Invoke;
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.Add(const Key: TKey;
+  const Value: TValue);
+begin
+  with LockList do
+    try
+      FDictionary.Add(Key, Value);
+    finally
+      UnlockList;
+    end;
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.AddOrSetValue(const Key: TKey;
+  const Value: TValue);
+begin
+  with LockList do
+    try
+      FDictionary.AddOrSetValue(Key, Value);
+    finally
+      UnlockList;
+    end;
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.Clear;
+begin
+  with LockList do
+    try
+      FDictionary.Clear;
+    finally
+      UnlockList;
+    end;
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.ContainsKey
+  (const Key: TKey): boolean;
+begin
+  with LockList do
+    try
+      result := FDictionary.ContainsKey(Key);
+    finally
+      UnlockList;
+    end;
+
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.ContainsValue
+  (const Value: TValue): boolean;
+begin
+  with LockList do
+    try
+      result := FDictionary.ContainsValue(Value);
+    finally
+      UnlockList;
+    end;
+
+end;
+
+constructor TThreadSafeDictionary<TKey, TValue>.create;
+begin
+  // raise exception.create('Use  .create([]); instead create');
+  self.create([]);
+end;
+
+{ constructor TThreadSafeDictionary<TKey, TValue>.create;
+  begin
+  inherited;
+  FOwnedList := [doOwnsKeys, doOwnsValues];
+  Invoke;
+  end;
+}
+
+function TThreadSafeDictionary<TKey, TValue>.ToArray
+  : TArray<TPair<TKey, TValue>>;
+begin
+  with LockList do
+    try
+      result := FDictionary.ToArray;
+    finally
+      UnlockList;
+    end;
+
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.TrimExcess;
+begin
+  with LockList do
+    try
+      FDictionary.TrimExcess;
+    finally
+      UnlockList;
+    end;
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.TryGetValue(const Key: TKey;
+  out Value: TValue): boolean;
+begin
+  with LockList do
+    try
+      result := FDictionary.TryGetValue(Key, Value);
+    finally
+      UnlockList;
+    end;
+end;
+
+destructor TThreadSafeDictionary<TKey, TValue>.destroy;
+begin
+  if FInited then
+  begin
+    FDictionary.Free;
+    FLock.Free;
+  end;
+  inherited;
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.ExtractPair(const Key: TKey)
+  : TPair<TKey, TValue>;
+begin
+  with LockList do
+    try
+      result := FDictionary.ExtractPair(Key);
+    finally
+      UnlockList;
+    end;
+
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.GetCount: integer;
+begin
+  with LockList do
+    try
+      result := FDictionary.Count;
+    finally
+      UnlockList;
+    end;
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.GetItem(const Key: TKey): TValue;
+begin
+  with LockList do
+    try
+      FDictionary.TryGetValue(Key, result);
+    finally
+      UnlockList;
+    end;
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.Invoke
+  : TObjectDictionary<TKey, TValue>;
+begin
+  if not FInited then
+  begin
+    FInited := true;
+    FLock := TObject.create;
+    FDictionary := TObjectDictionary<TKey, TValue>.create;
+  end;
+  result := FDictionary;
+end;
+
+function TThreadSafeDictionary<TKey, TValue>.LockList
+  : TDictionary<TKey, TValue>;
+begin
+  System.TMonitor.Enter(FLock);
+  result := FDictionary;
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.Remove(const Key: TKey);
+begin
+  with LockList do
+    try
+      FDictionary.Remove(Key);
+    finally
+      UnlockList;
+    end;
+
+end;
+
+procedure TThreadSafeDictionaryObject<TValue>.FromJson(AJson: String);
+var
+  arr: TJsonArray;
+  it: TJsonValue;
+  Key: string;
+  Value: TValue;
+  j: TJsonObject;
+  AClass: TClass;
+begin
+
+  LockList;
+  try
+    arr := TJsonObject.ParseJSONValue(AJson) as TJsonArray;
+    try
+      for it in arr do
+        if it.TryGetValue<string>('key', Key) then
+        begin
+          j := it.GetValue<TJsonValue>('value') as TJsonObject;
+          if Assigned(j) then
+          begin
+            AClass := TValue;
+{$IFNDEF BPL}
+            Value := TValue(AClass.create);
+            Value.FromJson(j.ToJson);
+            FDictionary.AddOrSetValue(Key, Value);
+{$ENDIF}
+          end;
+        end;
+    finally
+      arr.Free;
+    end;
+  finally
+    UnlockList;
+  end;
+end;
+
+function TThreadSafeDictionaryObject<TValue>.ToJson: String;
+var
+  Key: string;
+  Value: TValue;
+  arr: TJsonArray;
+  jKey: TJsonObject;
+  jValue: TJsonObject;
+  obj: TObject;
+begin
+  result := '{}';
+  with LockList do
+    try
+      arr := TJsonArray.create;
+      try
+        for Key in FDictionary.Keys do
+          if FDictionary.TryGetValue(Key, Value) then
+          begin
+          {$ifndef BPL}
+            jValue := REST.Json.TJson.ObjectToJsonObject(Value);
+            jKey := TJsonObject.create();
+            jKey.AddPair('key', Key);
+            jKey.AddPair('value', jValue);
+            arr.AddElement(jKey);
+          {$endif}
+          end;
+        result := arr.ToJson;
+      finally
+        arr.Free;
+      end;
+    finally
+      UnlockList;
+    end;
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.SetItem(const Key: TKey;
+  const Value: TValue);
+begin
+  with LockList do
+    try
+      SetItem(Key, Value);
+    finally
+      UnlockList;
+    end;
+
+end;
+
+procedure TThreadSafeDictionary<TKey, TValue>.UnlockList;
+begin
+  System.TMonitor.Exit(FLock);
+end;
+
+{ TObjectAdapter<T> }
+
+function TObjectAdapter<T>.Invoke: T;
+begin
+  if not Assigned(FInstance) then
+    FInstance := T(TClass(T).create);
+  result := FInstance;
 end;
 
 end.

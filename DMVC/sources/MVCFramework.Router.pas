@@ -1,4 +1,3 @@
-
 // ***************************************************************************
 //
 // Delphi MVC Framework
@@ -147,7 +146,7 @@ function TMVCRouter.ExecuteRouting(const ARequestPathInfo: string;
   out AResponseContentMediaType: string;
   out AResponseContentCharset: string): Boolean;
 var
-  lURLSegment,LRequestPathInfo: string;
+  LRequestPathInfo: string;
   LRequestAccept: string;
   LRequestContentType: string;
   LControllerMappedPath: string;
@@ -160,9 +159,10 @@ var
   LMethodPath: string;
   LProduceAttribute: MVCProducesAttribute;
   lPathPrefix: string;
-{$IFDEF ODATA}
+  lURLSegment: string;
+{.$IFDEF ODATA}
   xOData: Integer;
-{$ENDIF}
+{.$ENDIF}
 begin
   Result := False;
 
@@ -214,12 +214,12 @@ begin
         LControllerMappedPath := lURLSegment;
       end;
 
-{$IFDEF ODATA}
+{.$IFDEF ODATA}
       // workaround to accept like:    http://serv/odata/products(1) - amarildo lacerda
       xOData := LRequestPathInfo.indexOf('(');
       if xOData >= 0 then
         LRequestPathInfo := LRequestPathInfo.Substring(0, xOData);
-{$ENDIF}
+{.$ENDIF}
       if (LControllerMappedPath = '/') then
         LControllerMappedPath := '';
 
@@ -316,7 +316,7 @@ function TMVCRouter.IsCompatiblePath(
   begin
     Result := V;
     for S in Names do
-      Result := StringReplace(Result, '($' + S + ')', '([ אטישעל@\.\_\,%\w\d\x2D\x3A]*)', [rfReplaceAll]);
+      Result := StringReplace(Result, '($' + S + ')', '([' + TMVCConstants.URL_MAPPED_PARAMS_ALLOWED_CHARS + ']*)', [rfReplaceAll]);
   end;
 
 var
