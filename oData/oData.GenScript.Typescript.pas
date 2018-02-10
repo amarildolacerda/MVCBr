@@ -76,6 +76,31 @@ begin
       add('constructor(private _odata:ODataProviderService ) {');
       add('       this.headers = new HttpHeaders(); ');
       add('}');
+
+      add('getItem(query: ODataBrQuery): ODataProviderService {');
+      add('  this.configOptions();');
+      add('  return this._odata.getValue(query);');
+      add('}');
+      add('postItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
+      add('  this.configOptions();');
+      add('  return this._odata.postItem(resource, item, erroProc);');
+      add('}');
+      add('');
+      add('putItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
+      add('  this.configOptions();');
+      add('  return this._odata.putItem(resource, item, erroProc);');
+      add('}');
+      add('');
+      add('deleteItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
+      add('  this.configOptions();');
+      add('  return this._odata.deleteItem(resource, item, erroProc);');
+      add('}');
+      add('');
+      add('patchItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
+      add('  this.configOptions();');
+      add('  return this._odata.patchItem(resource, item, erroProc);');
+      add('}');
+
       if TODataServices.TryGetODataService(ODataServices.LockJson, serv) then
         try
           for it in serv do
@@ -87,7 +112,8 @@ begin
                   add('   get_' + AResource +
                     '( query:ODataBrQuery ):ODataProviderService { ');
                   add('      this.configOptions(); ');
-                  add('      query.resource = "' + AResource + '"+(query.join?query.join:"");');
+                  add('      query.resource = "' + AResource +
+                    '"+(query.join?query.join:"");');
                   add('      return this._odata.getValue( query ); ');
                   add('   }');
                   add('');

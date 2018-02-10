@@ -331,7 +331,11 @@ var
   ja: TJsonArray;
   jo: TJsonObject;
   fld: TField;
+  error:string;
 begin
+  AJsonArray.tryGetValue<string>('error',error);
+  if error<>'' then
+     raise exception.create(error);
   AJSONArray.TryGetValue(ja);
   Assert(assigned(ja)); // nao passou um json valido ?
 
