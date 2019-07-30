@@ -15,13 +15,10 @@ export class GlobalsService {
   server: any = [];
   constructor(private http: HttpClient) {
    }
-
   ngOnInit() {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    
   }  
-
   subscribe(proc:any) {
     if (this.config.loaded == false) {
   

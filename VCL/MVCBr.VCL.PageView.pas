@@ -133,6 +133,7 @@ type
     function FindByTabIndex(AIndex: Integer): TPageView;
     function IndexOfTab(Sender: TObject): Integer;
     function TabsheetIndexOf(tab: TObject): Integer;
+    function indexOf(ACaption: string): Integer;
 
     function GetPageTabClass: TComponentClass; override;
     function GetPageContainerClass: TComponentClass; override;
@@ -166,6 +167,7 @@ type
     FShowCaption: boolean;
     procedure SetShowCaption(const Value: boolean);
   public
+    data: TObject;
     property ShowCaption: boolean read FShowCaption write SetShowCaption;
   end;
 
@@ -918,6 +920,18 @@ begin
   result := XGetPageControlExtender(TPageControl(FPageContainer)).ShowTabColor;
 end;
 
+function TVCLPageViewManager.indexOf(ACaption: string): Integer;
+var
+  I: Integer;
+begin
+  result := -1;
+  for I := 0 to PageControl.PageCount - 1 do
+  begin
+    if PageControl.Pages[I].Caption = ACaption then
+      exit(I);
+  end;
+end;
+
 { procedure TVCLPageViewManager.DoTabCanClose(Sender: TObject;
   var ACanClose: boolean);
   begin
@@ -1152,7 +1166,7 @@ begin
     FOnClose(self);
   free;
 
-  js := TInterfacedJson.New;
+  js := TInterfacedJson.New(false);
   try
     js.addPair('pagecontrol', sPageName);
     js.addPair('caption', sPage);
@@ -1324,8 +1338,8 @@ begin
   begin
     PageControl := TPageControl(Control);
     TabSheet := PageControl.Pages[index];
-    if (trim(TabSheet.Caption) = 'hide') {or
-      (TMVCBrTabSheetView(TabSheet).ShowCaption = false)} then
+    if (trim(TabSheet.Caption) = 'hide') { or
+      (TMVCBrTabSheetView(TabSheet).ShowCaption = false) } then
       exit;
     if TabSheet.Caption = '' then
       TabSheet.Caption := (index + 1).toString;

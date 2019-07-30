@@ -34,6 +34,7 @@ uses WS.Datamodule, WS.HelloController, MVCFramework.Commons,
   Data.DB, WS.Common, oData.Dialect.MySql, oData.Dialect.MSSQL,
   oData.Dialect.PostgreSQL, oData.Dialect.Oracle,
   oData.ProxyBase, oData.SQL.FireDAC, oData.Dialect, oData.Dialect.Firebird,
+  oData.Dialect.Mongo,
   WS.Controller;
 
 type
@@ -59,7 +60,11 @@ begin
   else if drv.Contains('=ORA') then
     result := TODataDialectOracle
   else if drv.Contains('=PG;') then
-    result := TODataDialectPostgreSQL /// por Elisângela
+    result := TODataDialectPostgreSQL
+    /// por Elisângela
+  else if drv.Contains('=MONGO') then
+    result := TODataDialectMongo
+    /// por Elisângela
   else
     result := TODataDialectFirebird;
   /// nao achou nenhum.
@@ -72,10 +77,14 @@ begin
 end;
 
 procedure TWSWebModule.WebModuleCreate(Sender: TObject);
+var
+  r: TClass;
 begin
-
   // ..... /// some place need init "ODataBase" type
-  ODataBase := TODataFiredacQueryRS; // declared in unit oData.ProxyBase;
+  r := GetODataBase();
+  if not assigned(r) then
+    SetODataBase(TODataFiredacQueryRS);
+  // declared in unit oData.ProxyBase;
 
   FMVC := TMVCEngine.Create(Self,
     procedure(Config: TMVCConfig)
@@ -98,7 +107,7 @@ begin
       // view path
       Config[TMVCConfigKey.ViewPath] := 'templates';
       // Enable STOMP messaging controller
-      //Config[TMVCConfigKey.Messaging] := 'false';
+      // Config[TMVCConfigKey.Messaging] := 'false';
       // Enable Server Signature in response
       Config[TMVCConfigKey.ExposeServerSignature] := 'true';
       // Define a default URL for requests that don't map to a route or a file (useful for client side web app)

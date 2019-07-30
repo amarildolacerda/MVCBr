@@ -44,9 +44,23 @@ uses
   ws.OData.Procedures in 'ws.OData.Procedures.pas',
   oData.GenScript in '..\oData\oData.GenScript.pas',
   MVC.oData.Base in '..\oData\MVC.oData.Base.pas',
-  MVCServerAdmin in 'MVCServerAdmin.pas';
+  MVCServerAdmin in 'MVCServerAdmin.pas' {,
+  MVCServerAutentication in 'MVCServerAutentication.pas',
+  oData.Dialect.Mongo in '..\oData\oData.Dialect.Mongo.pas',
+  oData.ProxyNoSql in '..\oData\oData.ProxyNoSql.pas';
+
+{$R *.res},
+  MVCServerAutentication in 'MVCServerAutentication.pas',
+  oData.Dialect.Mongo in '..\oData\oData.Dialect.Mongo.pas',
+  oData.NoSql in '..\oData\oData.NoSql.pas';
 
 {$R *.res}
+
+procedure Init;
+begin
+  EnableAutentication := false;
+  AutenticatiorServerSecrets := '2018';
+end;
 
 procedure RunServer(APort: Integer);
 var
@@ -77,7 +91,7 @@ begin
     try
 
       LServer.DefaultPort := APort;
-      LServer.Active := True;
+      LServer.Active := true;
 
       RegisterAutoLoadResource;
 
@@ -129,7 +143,7 @@ begin
 {$ENDIF}
       Writeln('Press ESC to stop the server');
       LHandle := GetStdHandle(STD_INPUT_HANDLE);
-      while True do
+      while true do
       begin
         Win32Check(ReadConsoleInput(LHandle, LInputRecord, 1, LEvent));
         if (LInputRecord.EventType = KEY_EVENT) and
@@ -147,9 +161,10 @@ begin
 end;
 
 begin
+  Init;
   ApplicationController.Run(TWSController.New);
-  ReportMemoryLeaksOnShutdown := True;
-  IsMultiThread := True;
+  ReportMemoryLeaksOnShutdown := true;
+  IsMultiThread := true;
   try
     if WebRequestHandler <> nil then
       WebRequestHandler.WebModuleClass := WebModuleClass;

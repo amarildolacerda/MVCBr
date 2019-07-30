@@ -5,6 +5,11 @@ unit MVCBr.InterfaceHelper;
 
 interface
 
+{$DEFINE DUNITX}
+{$IFDEF VER330}
+{$UNDEF DUNITX}
+{$ENDIF}
+
 uses System.Rtti, System.TypInfo, System.Generics.Collections, System.SysUtils;
 
 {$IFNDEF BPL}
@@ -58,7 +63,7 @@ implementation
 {$IFNDEF BPL}
 
 uses System.Classes,
-  System.SyncObjs, DUnitX.Utils;
+  System.SyncObjs {$IFDEF DUNITX}, DUnitX.Utils{$ENDIF};
 
 { TInterfaceHelper }
 
@@ -82,6 +87,7 @@ begin
     Exit;
   end;
 
+{$IFDEF DUNITX}
   // for interfaces obtained from TRawVirtualClass (for exmaple IOS & Android & Mac interfaces)
   if ImplObj.ClassType.InheritsFrom(TRawVirtualClass) then
   begin
@@ -95,7 +101,7 @@ begin
     LGUID := ImplObj.GetField('FIID').GetValue(ImplObj).AsType<TGUID>;
     Result := GetType(LGUID);
   end
-  else
+  else {$ENDIF}
   // for interfaces obtained from Delphi object
   // The code is taken from Remy Lebeau's answer at http://stackoverflow.com/questions/39584234/how-to-obtain-rtti-from-an-interface-reference-in-delphi/
   begin
@@ -232,7 +238,7 @@ begin
   FInterfaceTypes.Clear;
   Cached := False;
   Caching := True;
-  {$ifndef SERVICE}
+{$IFNDEF SERVICE}
   TThread.CreateAnonymousThread(
     procedure
     var
@@ -262,7 +268,7 @@ begin
       Caching := False;
       Cached := True;
     end).Start;
-  {$endif}
+{$ENDIF}
 end;
 
 class procedure TInterfaceHelper.WaitIfCaching;
@@ -294,7 +300,9 @@ var
   LType: TRttiType;
 begin
   Result := nil;
+  {$ifdef DUNITX}
   LType := AIntfInTValue.RttiType;
+  {$ENDIF}
   if LType is TRttiInterfaceType then
     Result := LType as TRttiInterfaceType;
 end;

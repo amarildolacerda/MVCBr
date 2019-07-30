@@ -11,7 +11,7 @@ interface
 uses System.Classes, System.SysUtils, System.Generics.Collections, oData.Interf;
 
 type
-  TODataDictionay = class(TInterfacedObject, IODataDecodeParams)
+  TODataDictionay = class(TOwnedInterfacedObject, IODataDecodeParams)
   private
     FList: TDictionary<string, string>;
     FOperators: TStringList;

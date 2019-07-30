@@ -32,7 +32,8 @@ uses
   Data.DB,
   MVCBr.Interf, MVCBr.Model,
   MongoWire, MongoAuth3, JsonDoc,
-  bsonDoc, bsonUtils, MVCBr.Patterns.Adapter;
+  bsonTools,
+  {bsonDoc,} {bsonUtils,} MVCBr.Patterns.Adapter;
 
 type
   TMongoModelFactory = class;
@@ -46,14 +47,15 @@ type
 
   IJSONArray = JsonDoc.IJSONArray;
   IJSONDocArray = JsonDoc.IJSONDocArray;
+  IMongoConnection = IMVCBrAdapter<TMongoWire>;
   IMongoQuery = IMVCBrAdapter<TMongoWireQuery>;
-  IBSONDocument = bsonDoc.IBSONDocument;
+  //IBSONDocument = bsonDoc.IBSONDocument;
 
   TJSONDocument = class(JsonDoc.TJSONDocument, IJSONDoc)
   public
     class Function New: IJSONDocument; overload;
     class function New(const x: array of Variant): IJSONDocument; overload;
-    class function BsonToJson(Doc: IBSONDocument): WideString;
+    //class function BsonToJson(Doc: IBSONDocument): WideString;
     class function JSON(const x: Variant): IJSONDocument;
     function ToJson: String;
     class function AsArray(item: Variant): IJSONArray;
@@ -87,7 +89,7 @@ type
     function SetConnection(AConn: TMongoWire = nil): IMongoModel;
     /// mongo
     function MongoConnection: TMongoWire;
-    function NewQuery: IMongoQuery;
+    // function NewQuery: IMongoQuery;
 
     procedure SetActive(const Value: Boolean);
     function GetActive: Boolean;
@@ -101,7 +103,7 @@ type
       : IJSONDocArray; overload;
     function Query(Const ACollection: String;
       const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
-    function FillDastaset(Doc: IJSONDocArray; ADataset: TDataset;
+    function FillDataset(Doc: IJSONDocArray; ADataset: TDataset;
       AEventBoforePost: TProc = nil): integer;
     function GetDataset(ACollection: string;
       const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
@@ -198,7 +200,7 @@ type
     function MongoConnection: TMongoWire;
     procedure Open;
     procedure Close;
-    function NewQuery: IMongoQuery;
+    function NewQuery(FConnection: IMongoConnection): IMongoQuery;
     /// Base
 {$REGION "Base connections"}
     [weak]
@@ -224,12 +226,17 @@ type
       : IJSONDocument; overload;
     function Get(const ACollection: String; const AJsonWhere: string)
       : IJSONDocument; overload;
+
+    // query
     function Query(Const ACollection: String; const AWhere: IJSONDocument)
+      : IJSONDocArray; overload;
+    function Query(Const ACollection: String; AWhere: string)
       : IJSONDocArray; overload;
     function Query(Const ACollection: String;
       const AArrayWhere: array of IJSONDocument): IJSONDocArray; overload;
 
-    function FillDastaset(Doc: IJSONDocArray; ADataset: TDataset;
+    // dataset
+    function FillDataset(Doc: IJSONDocArray; ADataset: TDataset;
       AEventBoforePost: TProc = nil): integer;
     function GetDataset(ACollection: string;
       const AArrayWhere: array of IJSONDocument; ADataset: TDataset;
@@ -237,6 +244,7 @@ type
     function GetDataset(ACommand: IJSONDocument; ADataset: TDataset;
       AEvent: TProc = nil): integer; overload;
 
+    // operations
     procedure Update(const ACollection: String;
       const AWhere, ADoc: IJSONDocument; AUpsert: Boolean = false;
       AMultiUpdate: Boolean = false);
@@ -274,10 +282,23 @@ type
 function MongoJSON: IJSONDocument; overload;
 function MongoJSON(const x: array of Variant): IJSONDocument; overload;
 function MongoJSON(const x: Variant): IJSONDocument; overload;
+function MongoJSONArray(): IJSONDocArray; overload;
+//function JsonToBson(AJson: String): IBSONDocument;
 
 implementation
 
-uses Data.DB.Helper, System.JSON, System.JSON.Helper;
+uses vcl.Dialogs, Data.DB.Helper, System.JSON, System.JSON.Helper;
+
+{function JsonToBson(AJson: String): IBSONDocument;
+begin
+  bsonUtils.JsonToBson(AJson);
+end;
+}
+
+function MongoJSONArray(): IJSONDocArray; overload;
+begin
+  result := JsonDoc.JSONDocArray;
+end;
 
 function MongoJSON: IJSONDocument;
 begin
@@ -392,7 +413,7 @@ begin
   result := OpenIfNeed.Eval(ACollection, AJSFn, AArgs, ANoLock);
 end;
 
-function TMongoModelFactory.FillDastaset(Doc: IJSONDocArray; ADataset: TDataset;
+function TMongoModelFactory.FillDataset(Doc: IJSONDocArray; ADataset: TDataset;
 AEventBoforePost: TProc): integer;
 var
   i: integer;
@@ -496,9 +517,10 @@ begin
   if ADataset.FieldCount = 0 then
   begin
     { TODO: dinamics create fields }
+    showMessage(Doc.ToString);
   end;
 
-  result := FillDastaset(Doc, ADataset, AEventBoforePost);
+  result := FillDataset(Doc, ADataset, AEventBoforePost);
 
 end;
 
@@ -561,7 +583,8 @@ begin
   end;
 end;
 
-function TMongoModelFactory.NewQuery: IMongoQuery;
+function TMongoModelFactory.NewQuery(FConnection: IMongoConnection)
+  : IMongoQuery;
 var
   r: TMVCBrAdapter<TMongoWireQuery>;
 begin
@@ -570,7 +593,7 @@ begin
   r.DelegateTo(
     function: TMongoWireQuery
     begin
-      result := TMongoWireQuery.Create(FConnection.Adapter);
+      result := TMongoWireQuery.Create(FConnection);
     end);
   result := r;
 end;
@@ -628,10 +651,10 @@ begin
   q := TMongoWireQuery.Create(MongoConnection);
   try
     r := TJSONDocArray.Create;
-    with q do
-    begin
-      Query(ACollection, AWhere);
-    end;
+    // with q do
+    // begin
+    q.Query(ACollection, AWhere);
+    // end;
     while q.Next(d) do
     begin
       r.Add(d);
@@ -734,10 +757,11 @@ begin
   result := ja(item);
 end;
 
-class function TJSONDocument.BsonToJson(Doc: IBSONDocument): WideString;
+{class function TJSONDocument.BsonToJson(Doc: IBSONDocument): WideString;
 begin
   result := bsonUtils.BsonToJson(Doc);
 end;
+}
 
 class function TJSONDocument.JSON(const x: Variant): IJSONDocument;
 begin
@@ -798,6 +822,14 @@ begin
   finally
     j.free;
   end;
+end;
+
+function TMongoModelFactory.Query(const ACollection: string; AWhere: string)
+  : IJSONDocArray;
+var
+  j: TJsonObject;
+begin
+  result := Query(ACollection, JSON(AWhere) );
 end;
 
 function TMongoModelFactory.QueryRegEx(ACollection, AField, AText: String)

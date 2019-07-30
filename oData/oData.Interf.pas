@@ -15,8 +15,17 @@ Type
   IODataDecodeParams = interface;
   IODataParse = interface;
 
+  TOwnedInterfacedObject = class(TComponent)
+  public
+    Constructor create;
+  end;
+
   TODataDecodeAbstract = class abstract(TInterfacedObject)
+  private
+    FFind: string;
   protected
+    function GetFind: string; virtual;
+    procedure SetFind(const Value: string); virtual;
     procedure SetSelect(const Value: string); virtual; abstract;
     procedure SetFilter(const Value: string); virtual; abstract;
     procedure SetOrderBy(const Value: string); virtual; abstract;
@@ -46,6 +55,7 @@ Type
     procedure Setdebug(const Value: string); virtual; abstract;
     function GetDebug: string; virtual; abstract;
   public
+    constructor create;
     function newExpand(const ACollection: string): TODataDecodeAbstract;
       virtual; abstract;
     property Resource: string read GetResource write SetResource;
@@ -53,14 +63,15 @@ Type
     function hasChild: boolean; virtual; abstract;
     function Child: TODataDecodeAbstract; virtual; abstract;
     function newChild: TODataDecodeAbstract; virtual; abstract;
-    function Lock: TODataDecodeAbstract;virtual; abstract;
-    procedure Unlock;virtual; abstract;
+    function Lock: TODataDecodeAbstract; virtual; abstract;
+    procedure Unlock; virtual; abstract;
     // write SetResourceParams;
     // define a list of fields
     property &Select: string read GetSelect write SetSelect;
     // define filter (aka where)
     property &Filter: string read GetFilter write SetFilter;
     property &Search: string read GetSearch write SetSearch;
+    property &Find: string read GetFind write SetFind;
 
     // define orderby
     property &OrderBy: string read GetOrderBy write SetOrderBy;
@@ -81,7 +92,7 @@ Type
   IODataDecode = interface
     ['{E9DA95A9-534F-495E-9293-2657D4330D4C}']
     function Lock: TODataDecodeAbstract;
-    procedure UnLock;
+    procedure Unlock;
     function GetParse: IODataParse;
     function This: TObject;
     procedure SetSelect(const Value: string);
@@ -111,6 +122,8 @@ Type
     function GetSearch: string;
     procedure Setdebug(const Value: string);
     function GetDebug: string;
+    function GetFind: string;
+    procedure SetFind(const Value: string);
 
     property Resource: string read GetResource write SetResource;
     property ResourceParams: IODataDecodeParams read GetResourceParams;
@@ -130,6 +143,7 @@ Type
     // define filter (aka where)
     property &Filter: string read GetFilter write SetFilter;
     property &Search: string read GetSearch write SetSearch;
+    property &Find: string read GetFind write SetFind;
 
     // define orderby
     property &OrderBy: string read GetOrderBy write SetOrderBy;
@@ -169,12 +183,12 @@ Type
     function GetResource: IInterface; overload;
     function createGETQuery(AValue: TODataDecodeAbstract; AFilter: string;
       const AInLineCount: boolean = false): string;
-    function createDeleteQuery(oData: TODataDecodeAbstract; AJsonBody: TJsonValue;
-      AKeys: string;  AResource: TObject): string;
-    function CreatePostQuery(oData: TODataDecodeAbstract;
-      AJsonBody: TJsonValue;  AResource: TObject): String;
-    function createPATCHQuery(oData: TODataDecodeAbstract; AJsonBody: TJsonValue;
-      AKeys: string;  AResource: TObject): String;
+    function createDeleteQuery(oData: TODataDecodeAbstract;
+      AJsonBody: TJsonValue; AKeys: string; AResource: TObject): string;
+    function CreatePostQuery(oData: TODataDecodeAbstract; AJsonBody: TJsonValue;
+      AResource: TObject): String;
+    function createPATCHQuery(oData: TODataDecodeAbstract;
+      AJsonBody: TJsonValue; AKeys: string; AResource: TObject): String;
     function GetResource(AResource: string): IInterface; overload;
     function AfterCreateSQL(var SQL: string): boolean;
   end;
@@ -186,6 +200,7 @@ Type
     procedure Release;
     function GetOData: TODataDecodeAbstract;
     property oData: TODataDecodeAbstract read GetOData; // write SetOData;
+    function This: TObject;
   end;
 
   IODataBase = interface
@@ -195,7 +210,7 @@ Type
     procedure Release;
 
     function ExecuteGET(AJsonBody: TJsonValue;
-      var JSONResponse: TJSONObject): TObject;
+      out JSONResponse: TJSONObject): TObject;
     function ExecuteDELETE(ABody: string;
       var JSONResponse: TJSONObject): integer;
     function ExecutePOST(ABody: string; var JSON: TJSONObject): integer;
@@ -257,6 +272,31 @@ begin
     end;
   end;
   result := FConfigFilePath;
+end;
+
+{ TODataDecodeAbstract }
+
+constructor TODataDecodeAbstract.create;
+begin
+  inherited;
+  Top := -1; // nao foi atribuido valor
+end;
+
+function TODataDecodeAbstract.GetFind: string;
+begin
+  result := FFind;
+end;
+
+procedure TODataDecodeAbstract.SetFind(const Value: string);
+begin
+  FFind := Value;
+end;
+
+{ TOwnedInterfacedObject }
+
+constructor TOwnedInterfacedObject.create;
+begin
+  inherited create(nil);
 end;
 
 Initialization

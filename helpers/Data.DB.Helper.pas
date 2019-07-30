@@ -62,7 +62,16 @@ type
       ignoreNulls: boolean = true); overload;
     procedure DoLoopEvent(AEvent: TProc); overload;
     procedure DoLoopEvent(AEvent: TProc<TDataset>); overload;
-    procedure ForEach(AEvent: TFunc<TDataset, boolean>);
+    procedure ForEach(AEvent: TFunc<TDataset, boolean>); overload;
+    procedure ForEach(AEvent: TProc); overload;
+    procedure ForEach(AEvent: TProc<TDataset>); overload;
+    function Sum(AField: string): double;
+    function Max(AField: string): Variant;
+    function Min(AField: string): Variant;
+    function ToMinimus(AField: string; AValue: double): double;
+    function ToMaximus(AField: string; AValue: double): double;
+    function ToBetween(AField: string; AMinimus: double;
+      AMaximus: double): double;
     procedure DoEventIf(AFieldName: string; AValue: Variant;
       AEvent: TProc); overload;
     procedure DoEventIf(AFieldName: string; AValue: Variant;
@@ -85,20 +94,24 @@ type
   TFieldsHelper = class helper for TFields
   private
   public
-    function JsonObject(var AJSONObject: TJsonObject;const ANulls: boolean = true;
-      AFields: string = '';const AChangedOnly: boolean = false;  AKeyFields:string=''): integer;
-    function ToJson(const ANulls: boolean = true;const AFields: string = '';
-     const AChangedOnly: boolean = false; const AKeyFields:string=''): string;
+    function JsonObject(var AJSONObject: TJsonObject;
+      const ANulls: boolean = true; AFields: string = '';
+      const AChangedOnly: boolean = false; AKeyFields: string = ''): integer;
+    function ToJson(const ANulls: boolean = true; const AFields: string = '';
+      const AChangedOnly: boolean = false;
+      const AKeyFields: string = ''): string;
     function JsonValue(AFields: string = ''): TJsonValue;
     procedure FillFromJson(AJson: string);
   end;
 
   TFieldHelper = class helper for TField
+  public
     function Round(ADec: integer): TField;
     function Trunc: TField;
     function FromStream(stream: TStream): TField;
     function ToStream(stream: TStream): TField;
     function Changed: boolean;
+    function asJsonPair: TJsonPair;
   end;
 
 implementation
@@ -269,6 +282,26 @@ begin
   f.DisplayLabel := ATitle;
 end;
 
+procedure TDatasetHelper.ForEach(AEvent: TProc<TDataset>);
+begin
+  self.ForEach(
+    function(snd: TDataset): boolean
+    begin
+      AEvent(snd);
+      result := false;
+    end);
+end;
+
+procedure TDatasetHelper.ForEach(AEvent: TProc);
+begin
+  self.ForEach(
+    function(snd: TDataset): boolean
+    begin
+      AEvent;
+      result := false;
+    end);
+end;
+
 procedure TDatasetHelper.ForEach(AEvent: TFunc<TDataset, boolean>);
 var
   book: TBookMark;
@@ -379,9 +412,44 @@ begin
     end).Start;
 end;
 
+function TDatasetHelper.ToMaximus(AField: string; AValue: double): double;
+begin
+  result := FieldByName(AField).asFloat;
+  if FieldByName(AField).asFloat > AValue then
+  begin
+    result := AValue;
+    if (State in dsEditModes) then
+      FieldByName(AField).asFloat := result;
+  end;
+end;
+
+function TDatasetHelper.ToMinimus(AField: string; AValue: double): double;
+begin
+  result := FieldByName(AField).asFloat;
+  if FieldByName(AField).asFloat < AValue then
+  begin
+    result := AValue;
+    if (State in dsEditModes) then
+      FieldByName(AField).asFloat := result;
+  end;
+end;
+
 procedure TDatasetHelper.SetValues(fldName: string; const Value: Variant);
 begin
   FieldByName(fldName).Value := Value;
+end;
+
+function TDatasetHelper.Sum(AField: string): double;
+var
+  rt: double;
+begin
+  rt := 0;
+  ForEach(
+    procedure
+    begin
+      rt := rt + FieldByName(AField).asFloat;
+    end);
+  exit(rt);
 end;
 
 procedure TDatasetHelper.JsonToRecord(sJson: string; AAppend: boolean);
@@ -394,6 +462,50 @@ begin
   finally
     o.Free;
   end;
+end;
+
+function TDatasetHelper.Max(AField: string): Variant;
+var
+  r: Variant;
+  inited: boolean;
+begin
+  inited := false;
+  ForEach(
+    procedure
+    begin
+      if (not inited) and (not FieldByName(AField).isnull) then
+      begin
+        r := FieldByName(AField).Value;
+        inited := true;
+      end;
+      if inited and (not FieldByName(AField).isnull) then
+      begin
+        if r < FieldByName(AField).Value then
+          r := FieldByName(AField).Value;
+      end;
+    end);
+end;
+
+function TDatasetHelper.Min(AField: string): Variant;
+var
+  r: Variant;
+  inited: boolean;
+begin
+  inited := false;
+  ForEach(
+    procedure
+    begin
+      if (not inited) and (not FieldByName(AField).isnull) then
+      begin
+        r := FieldByName(AField).Value;
+        inited := true;
+      end;
+      if inited and (not FieldByName(AField).isnull) then
+      begin
+        if r > FieldByName(AField).Value then
+          r := FieldByName(AField).Value;
+      end;
+    end);
 end;
 
 procedure TDatasetHelper.FromJsonObject(oJson: TJsonObject; AAppend: boolean;
@@ -421,10 +533,10 @@ var
           else
             Edit;
 
-        if ignoreNulls and k.isNull(sName) then
+        if ignoreNulls and k.isnull(sName) then
           continue;
 
-        if k.isNull(sName) then
+        if k.isnull(sName) then
           fld.clear
         else
           case fld.DataType of
@@ -505,6 +617,18 @@ begin
   Post;
 end;
 
+function TDatasetHelper.ToBetween(AField: string;
+AMinimus, AMaximus: double): double;
+begin
+  result := FieldByName(AField).asFloat;
+  if result < AMinimus then
+    result := AMinimus;
+  if result > AMaximus then
+    result := AMaximus;
+  if (State in dsEditModes) and (FieldByName(AField).asFloat <> result) then
+    FieldByName(AField).asFloat := result;
+end;
+
 function TDatasetHelper.ToJson(AAlias: string = ''): String;
 begin
   result := ToJsonObject(AAlias).ToJson;
@@ -573,7 +697,7 @@ procedure TFieldsHack.FillFromJson(AJson: string);
 var
   j: TJsonObject;
   V: TJsonValue;
-  jp: TJSONPair;
+  jp: TJsonPair;
   it: TField;
   key: string;
   fs: TFormatSettings;
@@ -591,7 +715,8 @@ begin
           if assigned(jp) then
             if not(jp.JsonValue is TJSONNull) then
               V := j.Get(key).JsonValue;
-          if (not assigned(jp)) or (not assigned(V)) or (jp.JsonValue is TJSONNull) then
+          if (not assigned(jp)) or (not assigned(V)) or
+            (jp.JsonValue is TJSONNull) then
           begin
             it.clear;
             continue;
@@ -609,7 +734,7 @@ begin
               end;
             TFieldType.ftSingle, TFieldType.ftFloat:
               begin
-                it.AsFloat := (V as TJSONNumber).AsDouble;
+                it.asFloat := (V as TJSONNumber).AsDouble;
               end;
             ftString, ftWideString, ftMemo, ftWideMemo:
               begin
@@ -675,14 +800,15 @@ begin
   end;
 end;
 
-function TFieldsHelper.ToJson(const ANulls: boolean = true; const AFields: string = '';
-const AChangedOnly: boolean = false; const AKeyFields:string=''): string;
+function TFieldsHelper.ToJson(const ANulls: boolean = true;
+const AFields: string = ''; const AChangedOnly: boolean = false;
+const AKeyFields: string = ''): string;
 var
   AJSONObject: TJsonObject;
 begin
   AJSONObject := TJsonObject.Create;
   try
-    JsonObject(AJSONObject, ANulls, AFields, AChangedOnly,AKeyFields);
+    JsonObject(AJSONObject, ANulls, AFields, AChangedOnly, AKeyFields);
     result := AJSONObject.ToString;
   finally
     AJSONObject.Free;
@@ -694,9 +820,10 @@ begin
   TFieldsHack(self).FillFromJson(AJson);
 end;
 
+
 function TFieldsHelper.JsonObject(var AJSONObject: TJsonObject;
-const ANulls: boolean = true;  AFields: string = '';
-const AChangedOnly: boolean = false;  AKeyFields:string=''): integer;
+const ANulls: boolean = true; AFields: string = '';
+const AChangedOnly: boolean = false; AKeyFields: string = ''): integer;
 var
   i: integer;
   key: string;
@@ -713,9 +840,8 @@ var
 begin
   if AFields <> '' then
     AFields := ',' + lowercase(AFields.Replace(';', ',')) + ',';
-  if AKeyFields<>'' then
-    AKeyFields :=   ',' + lowercase(AKeyFields.Replace(';', ',')) + ',';
-
+  if AKeyFields <> '' then
+    AKeyFields := ',' + lowercase(AKeyFields.Replace(';', ',')) + ',';
 
   result := 0;
   if not assigned(AJSONObject) then
@@ -726,16 +852,17 @@ begin
     if not FieldValid then
       continue;
 
-    if AChangedOnly and (not it.Changed) and (not AKeyFields.Contains(it.FieldName.ToLower)) then
+    if AChangedOnly and (not it.Changed) and
+      (not AKeyFields.Contains(it.FieldName.ToLower)) then
       continue;
 
     key := lowercase(it.FieldName);
     if not ANulls then
-      if it.isNull or it.AsString.IsEmpty then
+      if it.isnull or it.AsString.IsEmpty then
       begin
         continue;
       end;
-    if it.isNull then
+    if it.isnull then
     begin
       AJSONObject.addPair(key, TJSONNull.Create);
       continue;
@@ -755,11 +882,11 @@ begin
             continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsLargeInt));
         end;
-      TFieldType.ftSingle, TFieldType.ftFloat:
+      TFieldType.ftSingle, TFieldType.ftFloat, TFieldType.ftExtended :
         begin
-          if (not ANulls) and (it.AsFloat = 0) then
+          if (not ANulls) and (it.asFloat = 0) then
             continue;
-          AJSONObject.addPair(key, TJSONNumber.Create(it.AsFloat));
+          AJSONObject.addPair(key, TJSONNumber.Create(it.asFloat));
         end;
       ftWideString, ftMemo, ftWideMemo:
         AJSONObject.addPair(key, it.AsWideString);
@@ -768,13 +895,13 @@ begin
           [rfReplaceAll]));
       TFieldType.ftDate:
         begin
-          if (not ANulls) and (Trunc(it.AsFloat) = 0) then
+          if (not ANulls) and (Trunc(it.asFloat) = 0) then
             continue;
           AJSONObject.addPair(key, ISODateToString(it.asDateTime));
         end;
       TFieldType.ftDateTime:
         begin
-          if (not ANulls) and (Trunc(it.AsFloat) = 0) then
+          if (not ANulls) and (Trunc(it.asFloat) = 0) then
             continue;
           AJSONObject.addPair(key, ISODateTimeToString(it.asDateTime));
         end;
@@ -786,13 +913,13 @@ begin
         end;
       TFieldType.ftCurrency:
         begin
-          if (not ANulls) and (it.AsFloat = 0) then
+          if (not ANulls) and (it.asFloat = 0) then
             continue;
           AJSONObject.addPair(key, TJSONNumber.Create(it.AsCurrency));
         end;
       TFieldType.ftBCD, TFieldType.ftFMTBcd:
         begin
-          if (not ANulls) and (Trunc(it.AsFloat) = 0) then
+          if (not ANulls) and (Trunc(it.asFloat) = 0) then
             continue;
           AJSONObject.addPair(key, TJSONNumber.Create(BcdToDouble(it.AsBcd)));
         end;
@@ -830,9 +957,84 @@ end;
 
 { TFieldHelper }
 
+function TFieldHelper.asJsonPair: TJsonPair;
+var
+  key: string;
+  jv: TJsonValue;
+  ts: TSQLTimeStamp;
+  MS: TMemoryStream;
+  SS: TStringStream;
+begin
+  key := lowercase(FieldName);
+  jv := nil;
+  case DataType of
+    TFieldType.ftInteger, TFieldType.ftAutoInc, TFieldType.ftSmallint,
+      TFieldType.ftShortint:
+      begin
+        jv := TJSONNumber.Create(AsInteger);
+      end;
+    TFieldType.ftLargeint:
+      begin
+        jv := TJSONNumber.Create(AsLargeInt);
+      end;
+    TFieldType.ftSingle, TFieldType.ftFloat:
+      begin
+        jv := TJSONNumber.Create(asFloat);
+      end;
+    ftWideString, ftMemo, ftWideMemo:
+      jv := TJSONString.Create(AsWideString);
+    ftString:
+      jv := TJSONString.Create(AsString.Replace('\', '\\', [rfReplaceAll]));
+    TFieldType.ftDate:
+      begin
+        jv := TJSONString.Create(ISODateToString(asDateTime));
+      end;
+    TFieldType.ftDateTime:
+      begin
+        jv := TJSONString.Create(ISODateTimeToString(asDateTime));
+      end;
+    TFieldType.ftTimeStamp:
+      begin
+        ts := AsSQLTimeStamp;
+        jv := TJSONString.Create(SQLTimeStampToStr('yyyy-mm-dd hh:nn:ss', ts));
+      end;
+    TFieldType.ftCurrency:
+      begin
+        jv := TJSONNumber.Create(AsCurrency);
+      end;
+    TFieldType.ftBCD, TFieldType.ftFMTBcd:
+      begin
+        jv := TJSONNumber.Create(BcdToDouble(AsBcd));
+      end;
+    TFieldType.ftGraphic, TFieldType.ftBlob, TFieldType.ftStream:
+      begin
+        MS := TMemoryStream.Create;
+        try
+          TBlobField(self).SaveToStream(MS);
+          MS.Position := 0;
+          SS := TStringStream.Create('', TEncoding.ASCII);
+          try
+            EncodeStream(MS, SS);
+            SS.Position := 0;
+            jv := TJSONString.Create(SS.DataString);
+          finally
+            SS.Free;
+          end;
+        finally
+          MS.Free;
+        end;
+      end;
+
+  end;
+
+  if jv <> nil then
+    result := TJsonPair.Create(key, jv);
+
+end;
+
 function TFieldHelper.Changed: boolean;
 begin
-  if (DataSet.State in [dsInsert]) and (not isNull) then
+  if (DataSet.State in [dsInsert]) and (not isnull) then
     exit(true);
   if DataSet.State in [dsEdit] then
     if Value <> OldValue then
@@ -846,7 +1048,7 @@ begin
   TBlobField(self).LoadFromStream(stream);
 end;
 
-function RoundFloat(AValor: Double; ACasaDecimal: integer): Double;
+function RoundFloat(AValor: double; ACasaDecimal: integer): double;
 var
   Ls: string;
   S: string;
@@ -872,7 +1074,7 @@ end;
 function TFieldHelper.Round(ADec: integer): TField;
 begin
   if DataType in [ftFloat, ftCurrency, ftBCD] then
-    AsFloat := RoundFloat(AsFloat, ADec);
+    asFloat := RoundFloat(asFloat, ADec);
 end;
 
 function TFieldHelper.ToStream(stream: TStream): TField;
@@ -884,7 +1086,7 @@ end;
 function TFieldHelper.Trunc: TField;
 begin
   if DataType in [ftFloat, ftCurrency, ftBCD] then
-    AsFloat := System.Trunc(AsFloat)
+    asFloat := System.Trunc(asFloat)
 end;
 
 procedure TDatasetHelper.ChangeAllValuesTo(AFieldName: string; AValue: Variant;

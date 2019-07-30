@@ -66,6 +66,7 @@ type
     ['{F78C1EEF-24B4-49CD-BA33-0BEB7F7F98F9}']
     function resource: string;
     function collection: string;
+    function Roles: string;
     function &fields: string;
     function keyID: string;
     function GetPrimaryKey: string;
@@ -86,12 +87,13 @@ type
     procedure SetPrimaryKey(const Value: string);
     function GetPrimaryKey: string;
   public
-    class function New(AJson: TJsonValue): IJsonODataServiceResource;
+    class function New(AJson: TJsonValue;AOwned: boolean = true): IJsonODataServiceResource;
     function resource: string;
     function collection: string;
     function fields: string;
     function keyID: string;
     function method: string;
+    function Roles: string;
     function searchFields: string;
     function maxpagesize: integer;
     function relations: IJsonODataServiceRelations;
@@ -108,7 +110,7 @@ type
   IODataServices = interface
     ['{051E22D6-6BB1-4C35-A1DA-9885360283CD}']
     procedure LoadFromJsonFile(AJson: String);
-    procedure SaveToJsonFile(AJson:string);
+    procedure SaveToJsonFile(AJson: string);
     function resource(AName: string): IJsonODataServiceResource;
     function hasResource(AName: String): boolean;
     function LockJson: TJsonObject;
@@ -128,7 +130,7 @@ type
     FFileJson: string;
     FJson: TJsonObject;
     procedure LoadFromJsonFile(AJson: String);
-    procedure SaveToJsonFile(AJson:string);
+    procedure SaveToJsonFile(AJson: string);
     procedure EndJson;
 
   const
@@ -148,7 +150,7 @@ type
     function ResourceList: TJsonArray;
     function GetRoot: TJsonArray;
     class function ExpandFilePath(APath: string): string;
-    procedure Reload;
+    procedure reload;
     procedure RegisterResource(AResource: string; ACollection: string;
       AKeyID: string; AMaxPageSize: integer; AFields: String; AJoin: String;
       AMethod: String; ARelations: TJsonValue);
@@ -170,7 +172,8 @@ uses System.IOUtils;
 var
   ODataConfig: string;
 
-  threadvar FoDataServiceCustomLoad: TProc;
+var
+  FoDataServiceCustomLoad: TProc;
 
 function RegisterODataCustomServiceLoad(AProc: TProc;
   ASubstituir: boolean = true): boolean;
@@ -210,7 +213,38 @@ begin
 end;
 
 destructor TODataServices.destroy;
+var
+  j: TJsonPair;
+  function RemoveObject(JSON: TJsonPair): boolean;
+  var
+    jArr: TJsonArray;
+    arr: TJsonValue;
+    o: TObject;
+  begin
+    result := false;
+    if JSON.JsonValue is TJsonArray then
+    begin
+      jArr := JSON.JsonValue as TJsonArray;
+      while jArr.Count > 0 do
+      begin
+        try
+          o := jArr.Items[0];
+          jArr.Remove(0);
+          if o is TJsonArray then
+            RemoveObject(o as TJsonPair);
+          o.free;
+        except
+        end;
+      end;
+      result := true;
+    end;
+  end;
+
 begin
+  for j in FJson do
+  begin
+    RemoveObject(j);
+  end;
   freeAndNil(FJson);
   freeAndNil(FLock);
   inherited;
@@ -262,8 +296,8 @@ begin
   result := false;
   jr := GetRoot;
   with LockJson do
-  try
-    if assigned(jr) then
+    try
+      if assigned(jr) then
       begin
         for it in jr do
         begin
@@ -275,23 +309,24 @@ begin
           end;
         end;
       end;
-  finally
-    UnlockJson;
-  end;
+    finally
+      UnlockJson;
+    end;
 end;
 
 class procedure TODataServices.Invalidate;
-var old:String;
+var
+  old: String;
 begin
-    old := ExtractFilePath(ODataConfig);
-    ODataConfig := '';
-    self.ExpandFilePath(old);
+  old := ExtractFilePath(ODataConfig);
+  ODataConfig := '';
+  self.ExpandFilePath(old);
 end;
 
 procedure TODataServices.LoadFromJsonFile(AJson: String);
 var
   str: TStringList;
-  LJson: IJsonObject;
+  LJson: TJsonObject;
   LServiceLocal: TJsonArray;
   LImport: TJsonArray;
   jv: TJsonValue;
@@ -300,7 +335,8 @@ var
   achei: boolean;
   pair: TJsonPair;
   LPath, s: String;
-
+  LElement: TJsonValue;
+  obj:TObject;
 begin
   try
     if not assigned(FJson) then
@@ -314,50 +350,58 @@ begin
       begin
         LPath := ExtractFilePath(AJson);
         str.LoadFromFile(AJson);
-        LJson := TInterfacedJson.New(str.Text);
-        if not assigned(FJson) then
-          raise Exception.create('Metadata inválido <' + AJson +
-            '>, revisar o JSON do metadata');
-        if LJson.JSONObject.TryGetValue<TJsonArray>('import', LImport) then
-          LJson.JSONObject.RemovePair('import');
-        if not TryGetODataService(FJson, LServiceMain) then
-        begin
-          freeAndNil(FJson);
-          FJson := TJsonObject.ParseJSONValue(LJson.toJson) as TJsonObject;
-        end
-        else
-        begin
-          if TryGetODataService(LJson.JSONObject, LServiceLocal) then
-            for jv in LServiceLocal do
-            begin // carregar;
-              achei := false;
-              for jvService in LServiceMain do
-              begin
-                if jvService.s('resource').Equals(jv.s('resource')) then
+        LJson := TJsonObject.ParseJSONValue(str.Text) as TJsonObject;
+        try
+          if not assigned(FJson) then
+            raise Exception.create('Metadata inválido <' + AJson +
+              '>, revisar o JSON do metadata');
+          if LJson.TryGetValue<TJsonArray>('import', LImport) then
+          begin
+            obj := LJson.RemovePair('import');
+          end;
+          if not TryGetODataService(FJson, LServiceMain) then
+          begin
+            freeAndNil(FJson);
+            FJson := TJsonObject.ParseJSONValue(LJson.toJson) as TJsonObject;
+          end
+          else
+          begin
+            if TryGetODataService(LJson, LServiceLocal) then
+              for jv in LServiceLocal do
+              begin // carregar;
+                achei := false;
+                for jvService in LServiceMain do
                 begin
-                  achei := true;
-                  break;
+                  if jvService.s('resource').Equals(jv.s('resource')) then
+                  begin
+                    achei := true;
+                    break;
+                  end;
+                end;
+                if not achei then
+                begin
+                  LElement := TJsonObject.ParseJSONValue(jv.toJson);
+                  LElement.owned := true;
+                  (LServiceMain).AddElement(LElement);
+                  // adiciona item importado
                 end;
               end;
-              if not achei then
-              begin
-                (LServiceMain)
-                  .AddElement(TJsonObject.ParseJSONValue(jv.toJson));
-                // adiciona item importado
-              end;
-            end;
-        end;
-        if assigned(LImport) then
-          for jv in LImport do
-          begin
-            s := TPath.Combine(LPath, jv.Value.replace('/',
-              TPath.DirectorySeparatorChar));
-            LoadFromJsonFile(s);
           end;
+          if assigned(LImport) then
+            for jv in LImport do
+            begin
+              s := TPath.Combine(LPath, jv.Value.replace('/',
+                TPath.DirectorySeparatorChar));
+              LoadFromJsonFile(s);
+            end;
+        finally
+          freeAndNil(obj);
+          freeAndNil(LJson);
+        end;
       end;
 
     finally
-      str.Free;
+      str.free;
     end;
   except
     on e: Exception do
@@ -396,6 +440,7 @@ begin
     LResource.addPair('fields', AFields);
     LResource.addPair('join', AJoin);
     LResource.addPair('method', AMethod);
+    LResource.addPair('roles', 'NONE');
     if assigned(ARelations) then
       LResource.addPair('relation', ARelations);
   finally
@@ -461,7 +506,7 @@ begin
           begin
             if LValue = AName then
             begin
-              result := TJsonODataServiceResource.New(it as TJsonObject);
+              result := TJsonODataServiceResource.create(it.toJson, true);
               exit;
             end;
           end;
@@ -497,7 +542,7 @@ end;
 
 procedure TODataServices.SaveToJsonFile(AJson: string);
 begin
-   FJson.SaveToFile(AJson);
+  FJson.SaveToFile(AJson);
 end;
 
 function TODataServices.This: TODataServices;
@@ -588,15 +633,13 @@ begin
   JSON.TryGetValue<string>('method', result);
 end;
 
-class function TJsonODataServiceResource.New(AJson: TJsonValue)
-  : IJsonODataServiceResource;
+class function TJsonODataServiceResource.New(AJson: TJsonValue;
+  AOwned: boolean = true): IJsonODataServiceResource;
 var
   j: TJsonODataServiceResource;
 begin
-  j := TJsonODataServiceResource.create;
-  j.FJson := AJson;
+  j := TJsonODataServiceResource.create(AJson.ToString,AOWned);
   result := j;
-
 end;
 
 function TJsonODataServiceResource.relation(AName: string)
@@ -642,6 +685,11 @@ end;
 function TJsonODataServiceResource.resource: string;
 begin
   JSON.TryGetValue<string>('resource', result);
+end;
+
+function TJsonODataServiceResource.Roles: string;
+begin
+  JSON.TryGetValue<string>('roles', result);
 end;
 
 function TJsonODataServiceResource.searchFields: string;
@@ -773,12 +821,13 @@ begin
 
 end;
 
-
-
-
 initialization
 
 ODataServices := TODataServices.create;
 TODataServices.ExpandFilePath('');
+
+finalization
+
+ODataServices := nil;
 
 end.

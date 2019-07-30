@@ -9,10 +9,25 @@ type
   public
     function AddIconAsBitmap(ico: TIcon): integer;
   end;
+  
+   TWinControlHelper = class helper for TWinControl
+    public
+     function TryFocus : boolean;
+  end;
 
 implementation
 
 { TImageListHelper }
+
+function TWinControlHelper.TryFocus: boolean;
+begin
+  Result := False;
+  if self.CanFocus then
+  begin
+     self.setFocus;
+     Result := True;
+  end;
+end;
 
 function TImageListHelper.AddIconAsBitmap(ico: TIcon): integer;
 var

@@ -24,7 +24,8 @@ uses
 {$ENDIF}
   FireDAC.DApt, FireDAC.Phys.MySQLDef, FireDAC.Phys.MySQL, FireDAC.Comp.Client,
   FireDAC.Phys.IBBase, Data.DB, FireDAC.Phys.PGDef, FireDAC.Phys.PG,
-  FireDAC.Phys.OracleDef, FireDAC.Phys.Oracle;
+  FireDAC.Phys.OracleDef, FireDAC.Phys.Oracle, FireDAC.Phys.MongoDBDef,
+  FireDAC.Phys.MongoDB;
 
 type
   TWSDatamodule = class(TDataModule)
@@ -56,7 +57,8 @@ implementation
 
 { %CLASSGROUP 'Vcl.Controls.TControl' }
 // uses FireDAC.Adpt;
-uses oData.ServiceModel, System.JSON, System.SyncObjs, WS.Common;
+uses oData.ServiceModel, System.JSON, System.SyncObjs, WS.Common,
+  oData.ProxyBase, oData.NoSql;
 
 {$R *.dfm}
 
@@ -74,6 +76,7 @@ var
   FDPhysMSSQLDriverLink1: TFDPhysMSSQLDriverLink;
   FDPhysPgDriverLink1: TFDPhysPgDriverLink;
   FDPhysOracleDriverLink1: TFDPhysOracleDriverLink;
+  // FDPhysMongoDriverLink1: TFDPhysMongoDriverLink;
 
   // FDManager1: TFDManager;
   LInited: boolean = false;
@@ -88,6 +91,7 @@ begin
     FDPhysMSSQLDriverLink1 := TFDPhysMSSQLDriverLink.create(FContainer);
     FDPhysPgDriverLink1 := TFDPhysPgDriverLink.create(FContainer);
     FDPhysOracleDriverLink1 := TFDPhysOracleDriverLink.create(FContainer);
+    // FDPhysMongoDriverLink1 := TFDPhysMongoDriverLink.create(FContainer);
 
 {$IFDEF MSWINDOWS}
     FDGUIxWaitCursor1 := TFDGUIxWaitCursor.create(FContainer);
@@ -131,6 +135,12 @@ begin
       FDPhysOracleDriverLink1.VendorLib := LVendorLib
     else if LDriverID.Equals('MSSQL') then
       FDPhysMSSQLDriverLink1.VendorLib := LVendorLib;
+
+  if LDriverID.Equals('MONGO') then
+  begin
+    SetODataBase(TODataBaseNoSql);
+    MongoConnectionConfig := WSConnectionString;
+  end;
 
 end;
 
@@ -226,7 +236,7 @@ begin
   end;
 end;
 
-threadvar FFirstLoad: boolean;
+var FFirstLoad: boolean;
 
 procedure RegisterAutoLoadResource;
 begin

@@ -85,6 +85,7 @@ type
     function GetInstance: T; virtual;
     constructor Create(AInterface: T);
     destructor Destroy; override;
+    [Hide]
     property Default: T read GetInstance;
   end;
 

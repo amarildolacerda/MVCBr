@@ -16,30 +16,29 @@ type
     ['{88A83ED1-2A49-44B4-B79D-9BB731B9D321}']
   end;
 
-
   TODataJsonPacket = class(TInterfacedObject, IODataJsonPacket)
   protected
     FOwned: boolean;
     FJson: TJsonObject;
     function Invoke: TODataJsonPacket;
   public
-    constructor Create(AContext: string; AOwned: boolean); overload;
+    constructor Create(AContext: string); overload;
     constructor Create(); overload;
     destructor Destroy; override;
-    class function New(AContext: string; AOwned: boolean): IODataJsonPacket;
+    class function New(AContext: string): IODataJsonPacket;
     function This: TJsonValue;
     function AsJsonObject: TJsonObject;
     function TryGetValue<T>(AChave: string; out AValue: T): boolean;
     function Contexts(AValue: string): TODataJsonPacket; virtual;
     procedure Starts; virtual;
-    function Values(AJson: TJsonArray): TODataJsonPacket;
+    function Values(AJson: TJsonArray; AOwned: boolean): TODataJsonPacket;
     function addPair(Key, Value: string): TODataJsonPacket;
     function GenValue(AChave: String; AValue: String): TODataJsonPacket;
     function Tops(AValue: integer): TODataJsonPacket;
     function Skips(AValue: integer): TODataJsonPacket;
     function Ends: TODataJsonPacket; virtual;
     procedure Counts(ACount: integer); virtual;
-    class function Error(cod: integer; mess: string): TJsonObject;
+    class function Error(cod: integer; mess: string): string;
   end;
 
 implementation
@@ -77,11 +76,13 @@ end;
 
 procedure TODataJsonPacket.Counts(ACount: integer);
 var
-  js: TJsonPair;
+  obj: TObject;
 const
   _name = '@odata.count';
 begin
-  FJson.RemovePair(_name);
+  obj := FJson.RemovePair(_name);
+  if Assigned(obj) then
+    freeAndNil(obj);
   FJson.addPair(_name, ACount);
 end;
 
@@ -91,19 +92,19 @@ begin
     ('Do create with ..create(context,owned) insteadof create');
 end;
 
-constructor TODataJsonPacket.Create(AContext: string; AOwned: boolean);
+constructor TODataJsonPacket.Create(AContext: string);
 begin
   inherited Create;
   FJson := TJsonObject.Create;
-  FOwned := AOwned;
+  FOwned := true; // AOwned;
   Contexts(AContext);
   Starts;
 end;
 
 destructor TODataJsonPacket.Destroy;
 begin
-  if not FOwned then
-    FreeAndNil(FOwned);
+  if Assigned(FJSON) then
+    FreeAndNil(FJson);
   inherited;
 end;
 
@@ -113,11 +114,18 @@ begin
   FJson.addPair('EndsAt', DateToISO8601(now));
 end;
 
-class function TODataJsonPacket.Error(cod: integer; mess: string): TJsonObject;
+class function TODataJsonPacket.Error(cod: integer; mess: string): string;
+var
+ obj : TJSONObject;
 begin
-  result := TJsonObject.Create;
-  result.addPair('Error', cod);
-  result.addPair('Message', mess);
+ try
+  obj := TJsonObject.Create;
+  obj.addPair('Error', cod);
+  obj.addPair('Message', mess);
+  Result := obj.toString;
+ finally
+   obj.Free;
+ end;
 end;
 
 function TODataJsonPacket.GenValue(AChave, AValue: String): TODataJsonPacket;
@@ -126,7 +134,7 @@ var
 begin
   arr := TJsonArray.Create;
   arr.AddElement(TJsonValue.New(AChave, AValue));
-  Values(arr);
+  Values(arr, true);
   Ends;
 end;
 
@@ -135,10 +143,9 @@ begin
   result := self;
 end;
 
-class function TODataJsonPacket.New(AContext: string; AOwned: boolean)
-  : IODataJsonPacket;
+class function TODataJsonPacket.New(AContext: string): IODataJsonPacket;
 begin
-  result := TODataJsonPacket.Create(AContext, AOwned);
+  result := TODataJsonPacket.Create(AContext);
 end;
 
 function TODataJsonPacket.Skips(AValue: integer): TODataJsonPacket;
@@ -171,12 +178,13 @@ begin
   result := FJson.TryGetValue<T>(AChave, AValue);
 end;
 
-function TODataJsonPacket.Values(AJson: TJsonArray): TODataJsonPacket;
+function TODataJsonPacket.Values(AJson: TJsonArray; AOwned: boolean)
+  : TODataJsonPacket;
 begin
   result := self;
+  AJson.Owned := AOwned;
   FJson.addPair('value', AJson);
   Counts(AJson.Length);
 end;
-
 
 end.

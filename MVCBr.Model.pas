@@ -43,8 +43,10 @@ type
   private
     FID: string;
 {$IFNDEF BPL}
+    [Hide]
     FModelTypes: TModelTypes;
 {$ENDIF}
+    [Hide]
     FController: IController;
   protected
 {$IFNDEF BPL}
@@ -59,6 +61,7 @@ type
     procedure AfterConstruction; override;
     procedure AfterInit; virtual;
 {$IFNDEF BPL}
+    [Hide]
     property ModelTypes: TModelTypes read GetModelTypes write SetModelTypes;
 {$ENDIF}
     procedure SetController(const AController: IController); virtual;
@@ -198,7 +201,7 @@ var
   AController: IController;
   AView: IView;
   js: TJsonObject;
-  AHandled:boolean;
+  AHandled: boolean;
 begin
   AController := GetController;
   if assigned(AController) then
@@ -208,8 +211,8 @@ begin
     begin
       js := TJsonObject.Create;
       try
-        js.addPair('message',AMessage);
-        js.addPair('subject',ASubject);
+        js.addPair('message', AMessage);
+        js.addPair('subject', ASubject);
         AView.ViewEvent(js, AHandled);
       finally
         js.free;

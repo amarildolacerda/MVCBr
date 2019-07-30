@@ -34,13 +34,48 @@ const
   ObjAdapterGUID: TGUID = '{09B8DF51-13F9-478C-B592-3B73E65F8698}';
 
 Type
+  TIntegerMath = record helper for
+    integer
+    function Add(value: integer): integer;
+    function Max(value: integer): integer;
+    function Min(value: integer): integer;
+    function ToString(): string;
+    function Between(a, b: integer): boolean;
+    function Sub(value: integer): Double;
+    function Format(mask: string): string;
+    function DivBy(value: integer): integer;
+    function MulBy(value: integer): integer;
+    function IIF(b: boolean; value: integer): integer;
+    function isValid(value: string): boolean;
+    function Equals(value: integer): boolean; overload;
+    function Equals(value: string): boolean; overload;
+    function clear: integer;
+  end;
+
+  TDoubleMath = record helper for
+    Double
+    function Add(value: Double): Double;
+    function Max(value: Double): Double;
+    function Min(value: Double): Double;
+    function ToString(): string;
+    function Between(a, b: Double): boolean;
+    function Sub(value: Double): Double;
+    function Format(mask: string): string;
+    function DivBy(value: Double): Double;
+    function MulBy(value: Double): Double;
+    function IIF(b: boolean; value: Double): Double;
+    function clear: Double;
+    function isValid(value: string): boolean;
+    function Equals(value: Double): boolean; overload;
+    function Equals(value: string): boolean; overload;
+  end;
 
   HideAttribute = class(TCustomAttribute)
   end;
 
   IFireEventProc = interface
     ['{BBC08E72-6518-4BF8-8BEE-0A46FD8B351C}']
-    procedure SetOnEvent(const Value: TProc<TObject>);
+    procedure SetOnEvent(const value: TProc<TObject>);
     procedure FireEvent(Sender: TObject);
   end;
 
@@ -60,7 +95,7 @@ Type
   TObjectAdapter<T: Class> = class(TInterfacedObject, IObjectAdapter<T>,
     IInterface, IObjectAdapted<T>)
   private
-    FCreated: Boolean;
+    FCreated: boolean;
     FDelegate: TFunc<T>;
     FClass: TClass;
     [weak]
@@ -97,16 +132,16 @@ Type
   TObjectFired = class(System.TObject)
   private
     FOnFireEvent: TProc<TObject>;
-    FContinueTo: TContinuationAction<TContinuationOptions, Boolean>;
-    procedure SetOnFireEvent(const Value: TProc<TObject>);
-    procedure SetContinueTo(const Value
-      : TContinuationAction<TContinuationOptions, Boolean>);
+    FContinueTo: TContinuationAction<TContinuationOptions, boolean>;
+    procedure SetOnFireEvent(const value: TProc<TObject>);
+    procedure SetContinueTo(const value
+      : TContinuationAction<TContinuationOptions, boolean>);
   public
-    function ContinueWith(ASender: TContinuationOptions): Boolean; virtual;
+    function ContinueWith(ASender: TContinuationOptions): boolean; virtual;
     procedure FireEvent; overload;
     procedure FireEvent(Sender: TObject); overload;
     property OnFireEvent: TProc<TObject> read FOnFireEvent write SetOnFireEvent;
-    property ContinueTo: TContinuationAction<TContinuationOptions, Boolean>
+    property ContinueTo: TContinuationAction<TContinuationOptions, boolean>
       read FContinueTo write SetContinueTo;
   end;
 
@@ -115,17 +150,20 @@ Type
 
   TValueNamed = record
     Name: string;
-    Value: TValue;
+    value: TValue;
   end;
 
   TObjectHelper = class helper for TObject
   private
     function GetContextProperties(AName: string): TValue;
-    procedure SetContextProperties(AName: string; const Value: TValue);
+    procedure SetContextProperties(AName: string; const value: TValue);
     function GetContextFields(AName: string): TValue;
-    procedure SetContextFields(AName: string; const Value: TValue);
+    procedure SetContextFields(AName: string; const value: TValue);
     function GetContextMethods(AName: String): TRttiMethod;
+    class function JsonFromObject(AObject: TObject; AExclude: string = '')
+      : TJSONObject; static;
   public
+    function acknowledged: integer;
     // metodos anonimous
     class procedure Using<T>(O: T; Proc: TProc<T>); static;
     class function Anonymous<T: Class>(O: T; Proc: TProc<T>): TObject; static;
@@ -142,8 +180,8 @@ Type
     class procedure RunQueue(Proc: TProc); static;
 
     // JSON
-    function ToJson: string; overload;
-    function ToJsonObject: TJsonObject; overload;
+    function ToJson(AExclude: string = ''): string; overload;
+    function ToJsonObject: TJSONObject; overload;
     procedure FromJson(AJson: string); overload;
     function Clone: System.TObject;
     class function FromJson<T: Class, constructor>(AJson: string): T;
@@ -153,18 +191,18 @@ Type
     procedure CopyFrom(Obj: TObject;
       const AVisibility: TMemberVisibilitySet = [mvPublished]);
     procedure CopyTo(Obj: TObject);
-    function ContextPropertyCount: Integer;
-    function ContextPropertyName(idx: Integer): string;
+    function ContextPropertyCount: integer;
+    function ContextPropertyName(idx: integer): string;
     property ContextProperties[AName: string]: TValue read GetContextProperties
       write SetContextProperties;
-    function IsContextProperty(AName: String): Boolean;
+    function IsContextProperty(AName: String): boolean;
     procedure GetContextPropertiesList(AList: TStrings;
       const AVisibility: TMemberVisibilitySet = [mvPublished, mvPublic]);
     procedure GetContextPropertiesItems(AList: TStrings;
       const AVisibility: TMemberVisibilitySet = [mvPublished, mvPublic]);
 
-    function &ContextFieldsCount: Integer;
-    function &ContextFieldName(idx: Integer): string;
+    function &ContextFieldsCount: integer;
+    function &ContextFieldName(idx: integer): string;
     property ContextFields[AName: string]: TValue read GetContextFields
       write SetContextFields;
     procedure &ContextGetFieldsList(AList: TStrings;
@@ -172,7 +210,7 @@ Type
 
     class procedure &ContextGetRecordFieldsList<T: Record >(AStrings: TStrings;
       ARec: T; const AVisibility: TMemberVisibilitySet = [mvPublic];
-      AFunc: TFunc < string, Boolean >= nil); static;
+      AFunc: TFunc < string, boolean >= nil); static;
     class procedure &ContextRecordValuesList<T: Record >
       (AList: TList<TValueNamed>; ARec: T); static;
     class function GetRecordValue<T: Record >(rec: T; aNome: string)
@@ -183,23 +221,24 @@ Type
       const AVisibility: TMemberVisibilitySet = [mvPublic]);
 
     function ContextHasAttribute(aMethod: TRttiMethod;
-      attribClass: TCustomAttributeClass): Boolean;
+      attribClass: TCustomAttributeClass): boolean;
 
     function ContextInvokeAttribute(attribClass: TCustomAttributeClass;
-      params: array of TValue): Boolean;
+      params: array of TValue): boolean;
     function ContextInvokeMethod(AName: string;
       params: array of TValue): TValue;
+    function WriteTextToFile(AFileName: string; AContent: String): boolean;
   end;
 
   TTaskList = class(TThreadList)
   private
-    FMaxThread: Integer;
-    procedure SetMaxThread(const Value: Integer);
+    FMaxThread: integer;
+    procedure SetMaxThread(const value: integer);
   public
     constructor Create;
-    procedure DoDestroyThread(Value: TObject);
+    procedure DoDestroyThread(value: TObject);
     procedure Run(Proc: TProc);
-    property MaxThread: Integer read FMaxThread write SetMaxThread;
+    property MaxThread: integer read FMaxThread write SetMaxThread;
   end;
 
   TStingListHelper = Class helper for TStringList
@@ -209,18 +248,82 @@ Type
 {$ENDIF}
     class function New(AText: string; ADelimiter: char = ','): TStringList;
     function AsJsonArray: TJsonArray;
-    function AsJsonObject: TJsonObject;
+    function AsJsonObject: TJSONObject;
     function ToJson: string;
     function FromJson(AJson: String): TStringList;
   end;
+
+  TDatetimeHelper = record helper for TDatetime
+  public
+    class function new( aDatetime:string):TDateTime;static;
+    function FromISO(ADateIso: string): TDatetime;
+    function ToISO: string;
+    function ToString:String;
+    function ToDate:TDateTime;
+    function ToTime:TDateTime;
+  end;
+
+function ISODateToString(ADate: TDatetime): string;
+function ISOTimeToString(ATime: TTime): string;
+function ISODateTimeToString(ADateTime: TDatetime): string;
+function ISOStrToDateTime(DateTimeAsString: string): TDatetime;
+function ISOStrToDate(DateAsString: string): TDate;
+function ISOStrToTime(TimeAsString: string): TTime;
 
 implementation
 
 uses {$IF CompilerVersion>28} System.Threading, {$ENDIF}
 {$IFNDEF BPL}
-  REST.Json,
+  // REST.Json,
 {$ENDIF}
   System.DateUtils;
+
+var
+  LAccept: integer;
+
+const
+  nak = 0;
+  ak = 200;
+
+function ISOTimeToString(ATime: TTime): string;
+var
+  fs: TFormatSettings;
+begin
+  fs.TimeSeparator := ':';
+  result := FormatDateTime('hh:nn:ss', ATime, fs);
+end;
+
+function ISODateToString(ADate: TDatetime): string;
+begin
+  result := FormatDateTime('YYYY-MM-DD', ADate);
+end;
+
+function ISODateTimeToString(ADateTime: TDatetime): string;
+begin
+  result := System.DateUtils.DateToISO8601(ADateTime, false);
+end;
+
+function ISOStrToDateTime(DateTimeAsString: string): TDatetime;
+var
+  rt: boolean;
+begin
+  rt := false;
+  if DateTimeAsString.contains('T') or DateTimeAsString.contains('Z') then
+    rt := TryISO8601ToDate(DateTimeAsString, result);
+  if not rt then
+    result := StrToDateTime(DateTimeAsString);
+end;
+
+function ISOStrToTime(TimeAsString: string): TTime;
+begin
+  result := EncodeTime(StrToInt(Copy(TimeAsString, 1, 2)),
+    StrToInt(Copy(TimeAsString, 4, 2)), StrToInt(Copy(TimeAsString, 7, 2)), 0);
+end;
+
+function ISOStrToDate(DateAsString: string): TDate;
+begin
+  result := (trunc(ISOStrToDateTime(DateAsString)));
+end;
 
 class procedure TObjectHelper.Using<T>(O: T; Proc: TProc<T>);
 var
@@ -266,7 +369,7 @@ begin
   FireEvent(self);
 end;
 
-function TObjectHelper.&ContextFieldName(idx: Integer): string;
+function TObjectHelper.&ContextFieldName(idx: integer): string;
 var
   aCtx: TRttiContext;
 begin
@@ -278,7 +381,7 @@ begin
   end;
 end;
 
-function TObjectHelper.&ContextFieldsCount: Integer;
+function TObjectHelper.&ContextFieldsCount: integer;
 var
   aCtx: TRttiContext;
 begin
@@ -292,33 +395,35 @@ end;
 
 procedure TObjectHelper.FromJson(AJson: string);
 var
-  oJs: TJsonObject;
+  oJs: TJSONObject;
   lst: TStringList;
   pair: TJsonPair;
   s: string;
 begin
 {$IFNDEF BPL}
-  oJs := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
+  oJs := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
   lst := TStringList.Create;
   try
     for pair in oJs do
     begin
-      ContextProperties[pair.JsonString.Value] := pair.JsonValue.Value;
-      ContextFields[pair.JsonString.Value] := pair.JsonValue.Value;
+      ContextProperties[pair.JsonString.value] := pair.JsonValue.value;
+      ContextFields[pair.JsonString.value] := pair.JsonValue.value;
     end;
   finally
     lst.Free;
+    oJs.Free;
   end;
 {$ENDIF}
 end;
 
 function TObjectHelper.Clone: System.TObject;
-var
-  oJs: TJsonObject;
+// var
+// oJs: TJSONObject;
 begin
 {$IFNDEF BPL}
-  oJs := TJsonObject.ParseJSONValue(ToJson) as TJsonObject;
-  TJson.JsonToObject(self, oJs);
+  // oJs := TJSONObject.ParseJSONValue(ToJson) as TJSONObject;
+  self.FromJson(ToJson);
+  // TJson.JsonToObject(self, oJs);
 {$ENDIF}
   result := self;
 end;
@@ -326,7 +431,9 @@ end;
 class function TObjectHelper.FromJson<T>(AJson: string): T;
 begin
 {$IFNDEF BPL}
-  result := TJson.JsonToObject<T>(AJson);
+  result := T(TClass(T).Create);
+  result.FromJson(AJson);
+  // result := TJson.JsonToObject<T>(AJson);
 {$ENDIF}
 end;
 
@@ -352,7 +459,7 @@ var
   aCtx: TRttiContext;
   AFld: TRttiField;
   LAttr: TCustomAttribute;
-  LTemAtributo: Boolean;
+  LTemAtributo: boolean;
 begin
   AList.clear;
   aCtx := TRttiContext.Create;
@@ -376,7 +483,7 @@ end;
 
 class procedure TObjectHelper.&ContextGetRecordFieldsList<T>(AStrings: TStrings;
 ARec: T; const AVisibility: TMemberVisibilitySet = [mvPublic];
-AFunc: TFunc < string, Boolean >= nil);
+AFunc: TFunc < string, boolean >= nil);
 var
   AContext: TRttiContext;
   ARecord: TRttiRecordType;
@@ -384,10 +491,10 @@ var
   AJsonValue: TJsonPair;
   AValue: TValue;
   AFieldName: String;
-  j: TJsonObject;
+  j: TJSONObject;
   APair: TJsonPair;
   LAttr: TCustomAttribute;
-  LContinue: Boolean;
+  LContinue: boolean;
 begin
   AContext := TRttiContext.Create;
   try
@@ -399,8 +506,9 @@ begin
         LContinue := true;
 
         for LAttr in AField.GetAttributes do
-          if LAttr is HideAttribute then
-            LContinue := false; // é um Field [HIDE]
+          if assigned(LAttr) then
+            if LAttr is HideAttribute then
+              LContinue := false; // é um Field [HIDE]
 
         if assigned(AFunc) and LContinue then
           LContinue := AFunc(AField.Name);
@@ -454,7 +562,7 @@ var
   aMethod: TRttiMethod;
   aCtx: TRttiContext;
   LAttr: TCustomAttribute;
-  LTemAtributo: Boolean;
+  LTemAtributo: boolean;
 begin
   AList.clear;
   aCtx := TRttiContext.Create;
@@ -496,51 +604,51 @@ type
   // Adiciona funções ao TValue
   TValueHelper = record helper for TValue
   private
-    function IsNumeric: Boolean;
-    function IsFloat: Boolean;
+    function IsNumeric: boolean;
+    function IsFloat: boolean;
     function AsFloat: Extended;
-    function IsBoolean: Boolean;
-    function IsDate: Boolean;
-    function IsDateTime: Boolean;
-    function IsDouble: Boolean;
+    function IsBoolean: boolean;
+    function IsDate: boolean;
+    function IsDateTime: boolean;
+    function IsDouble: boolean;
     function AsDouble: Double;
-    function IsInteger: Boolean;
+    function IsInteger: boolean;
   end;
 
-function TValueHelper.IsNumeric: Boolean;
+function TValueHelper.IsNumeric: boolean;
 begin
   result := Kind in [tkInteger, tkChar, tkEnumeration, tkFloat,
     tkWChar, tkInt64];
 end;
 
-function TValueHelper.IsFloat: Boolean;
+function TValueHelper.IsFloat: boolean;
 begin
   result := Kind = tkFloat;
 end;
 
-function TValueHelper.IsBoolean: Boolean;
+function TValueHelper.IsBoolean: boolean;
 begin
-  result := TypeInfo = System.TypeInfo(Boolean);
+  result := TypeInfo = System.TypeInfo(boolean);
 end;
 
-function TValueHelper.IsDate: Boolean;
+function TValueHelper.IsDate: boolean;
 begin
   result := TypeInfo = System.TypeInfo(TDate);
 end;
 
-function TValueHelper.IsDateTime: Boolean;
+function TValueHelper.IsDateTime: boolean;
 begin
   result := TypeInfo = System.TypeInfo(TDatetime);
 end;
 
-function TValueHelper.IsDouble: Boolean;
+function TValueHelper.IsDouble: boolean;
 begin
   result := TypeInfo = System.TypeInfo(Double);
 end;
 
-function TValueHelper.IsInteger: Boolean;
+function TValueHelper.IsInteger: boolean;
 begin
-  result := TypeInfo = System.TypeInfo(Integer);
+  result := TypeInfo = System.TypeInfo(integer);
 end;
 
 function TValueHelper.AsFloat: Extended;
@@ -551,16 +659,6 @@ end;
 function TValueHelper.AsDouble: Double;
 begin
   result := AsType<Double>;
-end;
-
-function ISODateTimeToString(ADateTime: TDatetime): string;
-begin
-  result := DateToISO8601(ADateTime);
-end;
-
-function ISOStrToDateTime(DateTimeAsString: string): TDatetime;
-begin
-  TryISO8601ToDate(DateTimeAsString, result);
 end;
 
 procedure TObjectHelper.GetContextPropertiesItems(AList: TStrings;
@@ -618,7 +716,7 @@ begin
 end;
 
 function TObjectHelper.ContextHasAttribute(aMethod: TRttiMethod;
-attribClass: TCustomAttributeClass): Boolean;
+attribClass: TCustomAttributeClass): boolean;
 var
   attributes: TArray<TCustomAttribute>;
   attrib: TCustomAttribute;
@@ -631,7 +729,7 @@ begin
 end;
 
 function TObjectHelper.ContextInvokeAttribute(attribClass
-  : TCustomAttributeClass; params: array of TValue): Boolean;
+  : TCustomAttributeClass; params: array of TValue): boolean;
 var
   aCtx: TRttiContext;
   aMethod: TRttiMethod;
@@ -674,7 +772,7 @@ begin
   end;
 end;
 
-function TObjectHelper.IsContextProperty(AName: String): Boolean;
+function TObjectHelper.IsContextProperty(AName: String): boolean;
 var
   v: TValue;
 begin
@@ -682,7 +780,7 @@ begin
   result := not v.IsEmpty;
 end;
 
-function TObjectHelper.ContextPropertyCount: Integer;
+function TObjectHelper.ContextPropertyCount: integer;
 var
   aCtx: TRttiContext;
 begin
@@ -694,7 +792,7 @@ begin
   end;
 end;
 
-function TObjectHelper.ContextPropertyName(idx: Integer): string;
+function TObjectHelper.ContextPropertyName(idx: integer): string;
 var
   aCtx: TRttiContext;
 begin
@@ -720,7 +818,7 @@ begin
     for LField in LRecord.GetFields do
     begin
       LNamed.Name := LField.Name;
-      LNamed.Value := LField.GetValue(@ARec);
+      LNamed.value := LField.GetValue(@ARec);
       AList.Add(LNamed);
     end;
   finally
@@ -737,7 +835,7 @@ var
   aRtti: TRttiType;
   aTrib: TCustomAttribute;
   aVal: TValue;
-  skip: Boolean;
+  skip: boolean;
 begin
   aCtx := TRttiContext.Create;
   try
@@ -754,7 +852,7 @@ begin
           continue;
         for aTrib in aProperty.GetAttributes do
         begin
-          if aTrib.ClassName.Contains('hide') then
+          if aTrib.ClassName.contains('hide') then
             skip := true;
         end;
         if skip then
@@ -775,7 +873,7 @@ begin
           continue;
         for aTrib in aFields.GetAttributes do
         begin
-          if aTrib.ClassName.Contains('hide') then
+          if aTrib.ClassName.contains('hide') then
             skip := true;
         end;
         if skip then
@@ -866,39 +964,72 @@ begin
 {$ENDIF}
 end;
 
-procedure TObjectHelper.SetContextFields(AName: string; const Value: TValue);
+function TObjectHelper.WriteTextToFile(AFileName, AContent: String): boolean;
+begin
+  result := false;
+  try
+    with TStringList.Create do
+      try
+        text := AContent;
+        SaveToFile(AFileName);
+        result := true;
+      finally
+        Free;
+      end;
+  except
+    result := false;
+  end;
+end;
+
+procedure TObjectHelper.SetContextFields(AName: string; const value: TValue);
 var
   AField: TRttiField;
   aCtx: TRttiContext;
 begin
+  LAccept := nak;
   aCtx := TRttiContext.Create;
   try
     AField := aCtx.GetType(self.ClassType).GetField(AName);
     if assigned(AField) then
-      AField.SetValue(self, Value);
+    begin
+      AField.SetValue(self, value);
+      LAccept := ak;
+    end;
   finally
     aCtx.Free;
   end;
 end;
 
 procedure TObjectHelper.SetContextProperties(AName: string;
-const Value: TValue);
+const value: TValue);
 var
   aProperty: TRttiProperty;
   aCtx: TRttiContext;
   AValue: TValue;
 begin
+  LAccept := nak;
   aCtx := TRttiContext.Create;
   try
     aProperty := aCtx.GetType(self.ClassType).GetProperty(AName);
-    if assigned(aProperty) and aProperty.IsWritable then
+    if assigned(aProperty) and aProperty.isWritable then
       try
         case aProperty.PropertyType.TypeKind of
+          tkClass, tkInterface:
+            ;
           tkInteger, tkInt64:
-            aProperty.SetValue(self, trunc(Value.AsExtended));
+            aProperty.SetValue(self, trunc(value.AsExtended));
+          tkFloat:
+            if value.IsNumeric then
+              aProperty.SetValue(self, value.AsFloat)
+            else if (value.asString.contains('T') or
+              (value.asString.contains('Z'))) then
+              aProperty.SetValue(self, ISOStrToDateTime(value.asString))
+            else
+              aProperty.SetValue(self, StrToFloat(value.asString));
         else
-          aProperty.SetValue(self, Value);
+          aProperty.SetValue(self, value);
         end;
+        LAccept := ak;
       except
       end;
   finally
@@ -925,18 +1056,207 @@ begin
     end);
 end;
 
-function TObjectHelper.ToJson: string;
+class function TObjectHelper.JsonFromObject(AObject: TObject;
+AExclude: string = ''): TJSONObject;
+var
+  typ: TRttiType;
+  ctx: TRttiContext;
+  field: TRttiField;
+  aProperty: TRttiProperty;
+  tk: TTypeKind;
+  // P: Pointer;
+  key: String;
+  FRecord: TRttiRecordType;
+  FMethod: TRttiMethod;
+  LAttr: TCustomAttribute;
+  LContinue: boolean;
+  AValue: TValue;
+begin
+
+  AExclude := (';' + AExclude + ';').Replace(',', ';').ToLower;
+
+  result := TJSONObject.Create;
+  ctx := TRttiContext.Create;
+  typ := ctx.GetType(AObject.ClassType);
+  // P := @AObject;
+  for field in typ.GetFields do
+  begin
+    try
+      if not(field.Visibility in [mvPublic, mvPublished]) then
+        continue;
+      LContinue := true;
+      for LAttr in field.GetAttributes do
+      begin
+        if LAttr is HideAttribute then
+          LContinue := false;
+      end;
+      if not LContinue then
+        continue;
+
+      key := field.Name.ToLower;
+      if key.Equals('refcount') then
+        continue;
+
+      if AExclude.contains(';' + key + ';') then
+        continue;
+
+      tk := field.FieldType.TypeKind;
+      case tk of
+        tkClass, tkInterface:
+          ;
+        tkEnumeration: // boolean
+          begin
+            AValue := aProperty.GetValue(AObject);
+            if AValue.IsBoolean then
+              if AValue.AsBoolean then
+                result.addPair(key, TJSONTrue.Create)
+              else
+                result.addPair(key, TJsonFalse.Create);
+          end;
+        tkRecord:
+          begin
+            (* FRecord := ctx.GetType(field.GetValue(P).TypeInfo).AsRecord ;
+              FMethod := FRecord.GetMethod('asJson');
+              if assigned(FMethod) then
+              begin
+              result.AddPair(key,fMethod.asJson );
+              end; *)
+          end;
+        tkInteger:
+          result.addPair(key, TJSONNumber.Create(field.GetValue(AObject)
+            .AsInteger));
+
+        tkFloat:
+          begin // System.Classes.Helper
+            if sameText(field.FieldType.Name, 'TDateTime') then
+              result.addPair(TJsonPair.Create(key,
+                ISODateTimeToString(field.GetValue(AObject).AsExtended)))
+            else if sameText(field.FieldType.Name, 'TDate') then
+              result.addPair(TJsonPair.Create(key,
+                ISODateToString(field.GetValue(AObject).AsExtended)))
+            else if sameText(field.FieldType.Name, 'TTime') then
+              result.addPair(TJsonPair.Create(key,
+                ISOTimeToString(field.GetValue(AObject).AsExtended)))
+            else if sameText(field.FieldType.Name, 'TTimeStamp') then
+              result.addPair(TJsonPair.Create(key,
+                ISODateTimeToString(field.GetValue(AObject).AsExtended)))
+            else
+              result.addPair(key, TJSONNumber.Create(field.GetValue(AObject)
+                .AsExtended));
+          end;
+        tkString, tkUString, tkChar, tkWChar, tkLString,
+          tkWString { , tkWideChar,
+          tkWideString } :
+          result.addPair(TJsonPair.Create(key, field.GetValue(AObject)
+            .ToString.Trim));
+      end;
+    except
+    end;
+  end;
+
+  for aProperty in typ.GetProperties do
+  begin
+    if aProperty.Visibility in [mvPublic, mvPublished] then
+    begin
+      LContinue := true;
+      for LAttr in aProperty.GetAttributes do
+      begin
+        if LAttr is HideAttribute then
+          LContinue := false;
+      end;
+      if not LContinue then
+        continue;
+      try
+        key := aProperty.Name.ToLower;
+
+        if key.Equals('refcount') then
+          continue;
+        if AExclude.contains(';' + key + ';') then
+          continue;
+
+        tk := aProperty.PropertyType.TypeKind;
+        case tk of
+          tkClass, tkInterface:
+            ;
+          tkEnumeration: // boolean
+            begin
+              AValue := aProperty.GetValue(AObject);
+              if AValue.IsBoolean then
+                if AValue.AsBoolean then
+                  result.addPair(key, TJSONTrue.Create)
+                else
+                  result.addPair(key, TJsonFalse.Create);
+            end;
+          tkRecord:
+            begin
+              (* FRecord := ctx.GetType(field.GetValue(P).TypeInfo).AsRecord ;
+                FMethod := FRecord.GetMethod('asJson');
+                if assigned(FMethod) then
+                begin
+                result.AddPair(key,fMethod.asJson );
+                end; *)
+            end;
+          tkInteger:
+            result.addPair(key, TJSONNumber.Create(aProperty.GetValue(AObject)
+              .AsInteger));
+          tkFloat:
+            begin // System.Classes.Helper
+              if sameText(aProperty.PropertyType.Name, 'TDateTime') then
+                result.addPair(TJsonPair.Create(key,
+                  ISODateTimeToString(aProperty.GetValue(AObject).AsExtended)))
+              else if sameText(aProperty.PropertyType.Name, 'TDate') then
+                result.addPair(TJsonPair.Create(key,
+                  ISODateToString(aProperty.GetValue(AObject).AsExtended)))
+              else if sameText(aProperty.PropertyType.Name, 'TTime') then
+                result.addPair(TJsonPair.Create(key,
+                  ISOTimeToString(aProperty.GetValue(AObject).AsExtended)))
+              else if sameText(aProperty.PropertyType.Name, 'TTimeStamp') then
+                result.addPair(TJsonPair.Create(key,
+                  ISODateTimeToString(aProperty.GetValue(AObject).AsExtended)))
+              else
+                result.addPair(key,
+                  TJSONNumber.Create(aProperty.GetValue(AObject).AsExtended));
+            end;
+          tkString, tkUString, tkChar, tkWChar, { tkLString, } tkWString { ,
+            tkWideChar, tkWideString } :
+
+            result.addPair(TJsonPair.Create(key, aProperty.GetValue(AObject)
+              .ToString));
+        end;
+      except
+      end;
+
+    end;
+  end;
+
+end;
+
+function TObjectHelper.ToJson(AExclude: string = ''): string;
+var
+  j: TJSONObject;
 begin // System.uJson
 {$IFNDEF BPL}
-  result := TJson.ObjectToJsonString(self);
+  // result := TJson.ObjectToJsonString(self);
+  j := self.JsonFromObject(self, AExclude);
+  try
+    result := j.ToJson;
+  finally
+    j.Free;
+  end;
 {$ENDIF}
 end;
 
-function TObjectHelper.ToJsonObject: TJsonObject;
+function TObjectHelper.ToJsonObject: TJSONObject;
 begin
 {$IFNDEF BPL}
-  result := TJson.ObjectToJsonObject(self);
+  // result := TJson.ObjectToJsonObject(self);
+  result := self.JsonFromObject(self);
 {$ENDIF}
+end;
+
+function TObjectHelper.acknowledged: integer;
+begin
+  result := LAccept;
 end;
 
 class function TObjectHelper.Anonymous<T>(O: T; Proc: TProc<T>): TObject;
@@ -947,7 +1267,7 @@ end;
 
 { TObject }
 
-function TObjectFired.ContinueWith(ASender: TContinuationOptions): Boolean;
+function TObjectFired.ContinueWith(ASender: TContinuationOptions): boolean;
 begin
   if assigned(FContinueTo) then
     result := FContinueTo(ASender);
@@ -959,15 +1279,15 @@ begin
     FOnFireEvent(Sender);
 end;
 
-procedure TObjectFired.SetContinueTo(const Value
-  : TContinuationAction<TContinuationOptions, Boolean>);
+procedure TObjectFired.SetContinueTo(const value
+  : TContinuationAction<TContinuationOptions, boolean>);
 begin
-  FContinueTo := Value;
+  FContinueTo := value;
 end;
 
-procedure TObjectFired.SetOnFireEvent(const Value: TProc<TObject>);
+procedure TObjectFired.SetOnFireEvent(const value: TProc<TObject>);
 begin
-  FOnFireEvent := Value;
+  FOnFireEvent := value;
 end;
 
 { TThreadedPool }
@@ -978,9 +1298,9 @@ begin
   FMaxThread := 10;
 end;
 
-procedure TTaskList.DoDestroyThread(Value: TObject);
+procedure TTaskList.DoDestroyThread(value: TObject);
 begin
-  Remove(Value);
+  Remove(value);
 end;
 
 {$IF CompilerVersion>28}
@@ -1024,9 +1344,9 @@ begin
 {$ENDIF}
 end;
 
-procedure TTaskList.SetMaxThread(const Value: Integer);
+procedure TTaskList.SetMaxThread(const value: integer);
 begin
-  FMaxThread := Value;
+  FMaxThread := value;
 end;
 
 { TCollectionHelper }
@@ -1049,7 +1369,7 @@ end;
 
 function TStingListHelper.AsJsonArray: TJsonArray;
 var
-  i: Integer;
+  i: integer;
 begin
   result := TJsonArray.Create;
   for i := 0 to count - 1 do
@@ -1064,26 +1384,26 @@ begin
 end;
 {$ENDIF}
 
-function TStingListHelper.AsJsonObject: TJsonObject;
+function TStingListHelper.AsJsonObject: TJSONObject;
 var
-  i: Integer;
+  i: integer;
 begin
-  result := TJsonObject.Create;
+  result := TJSONObject.Create;
   for i := 0 to count - 1 do
     result.addPair(self.Names[i], self.ValueFromIndex[i]);
 end;
 
 function TStingListHelper.FromJson(AJson: String): TStringList;
 var
-  p: TJsonPair;
-  j: TJsonObject;
+  P: TJsonPair;
+  j: TJSONObject;
 begin
   result := self;
-  j := TJsonObject.ParseJSONValue(AJson) as TJsonObject;
+  j := TJSONObject.ParseJSONValue(AJson) as TJSONObject;
   try
-    for p in j do
+    for P in j do
     begin
-      self.addPair(p.JsonString.Value, p.JsonValue.Value);
+      self.addPair(P.JsonString.value, P.JsonValue.value);
     end;
   finally
     j.Free;
@@ -1195,7 +1515,6 @@ begin
   FCreated := false;
 end;
 
-
 class function TObjectAdapter<T>.New: IObjectAdapter<T>;
 var
   Obj: TObjectAdapter<T>;
@@ -1210,6 +1529,223 @@ end;
 function TStringsHelper.Items: TStrings;
 begin
   result := self;
+end;
+
+{ TDoubleMath }
+
+function TDoubleMath.Add(value: Double): Double;
+begin
+  self := self + value;
+  exit(self);
+end;
+
+function TDoubleMath.Between(a, b: Double): boolean;
+begin
+  result := (self >= a) and (self <= b);
+end;
+
+function TDoubleMath.clear: Double;
+begin
+  self := 0;
+  exit(self);
+end;
+
+function TDoubleMath.DivBy(value: Double): Double;
+begin
+  self := self / value;
+  exit(self);
+end;
+
+function TDoubleMath.Equals(value: string): boolean;
+begin
+  result := isValid(value);
+  if result then
+    result := Equals(StrToFloat(value));
+end;
+
+function TDoubleMath.Equals(value: Double): boolean;
+begin
+  result := self = value;
+end;
+
+function TDoubleMath.Format(mask: string): string;
+begin
+  result := FormatFloat(mask, self);
+end;
+
+function TDoubleMath.IIF(b: boolean; value: Double): Double;
+begin
+  if b then
+    self := value;
+  exit(self);
+
+end;
+
+function TDoubleMath.isValid(value: string): boolean;
+begin
+  result := true;
+  try
+    StrToFloat(value);
+  except
+    result := false;
+  end;
+end;
+
+function TDoubleMath.Max(value: Double): Double;
+begin
+  if self > value then
+    self := value;
+  exit(self);
+end;
+
+function TDoubleMath.Min(value: Double): Double;
+begin
+  if self < value then
+    self := value;
+  exit(self);
+end;
+
+function TDoubleMath.MulBy(value: Double): Double;
+begin
+  self := self * value;
+  exit(self);
+end;
+
+function TDoubleMath.Sub(value: Double): Double;
+begin
+  self := self - value;
+  exit(self);
+end;
+
+function TDoubleMath.ToString: string;
+begin
+  exit(FloatToStr(self));
+end;
+
+{ TIntegerMath }
+
+function TIntegerMath.Add(value: integer): integer;
+begin
+  self := self + value;
+  exit(self);
+end;
+
+function TIntegerMath.Between(a, b: integer): boolean;
+begin
+  result := (self >= a) and (self <= b);
+end;
+
+function TIntegerMath.clear: integer;
+begin
+  self := 0;
+  exit(self);
+
+end;
+
+function TIntegerMath.DivBy(value: integer): integer;
+begin
+  self := self div value;
+  exit(self);
+end;
+
+function TIntegerMath.Equals(value: string): boolean;
+begin
+  result := false;
+  if isValid(value) then
+    result := Equals(strToIntDef(value, 0));
+end;
+
+function TIntegerMath.Equals(value: integer): boolean;
+begin
+  result := self = value;
+end;
+
+function TIntegerMath.Format(mask: string): string;
+begin
+  result := FormatFloat(mask, self);
+end;
+
+function TIntegerMath.IIF(b: boolean; value: integer): integer;
+begin
+  if b then
+    self := value;
+  exit(self);
+end;
+
+function TIntegerMath.isValid(value: string): boolean;
+var
+  r: integer;
+begin
+  result := value <> '';
+  try
+    r := StrToInt(value);
+  except
+    result := false;
+  end;
+end;
+
+function TIntegerMath.Max(value: integer): integer;
+begin
+  if self > value then
+    self := value;
+  exit(self);
+end;
+
+function TIntegerMath.Min(value: integer): integer;
+begin
+  if self < value then
+    self := value;
+  exit(self);
+end;
+
+function TIntegerMath.MulBy(value: integer): integer;
+begin
+  self := round(self * value);
+  exit(self);
+end;
+
+function TIntegerMath.Sub(value: integer): Double;
+begin
+  self := self - value;
+  exit(self);
+end;
+
+function TIntegerMath.ToString: string;
+begin
+  result := IntToStr(self);
+end;
+
+{ TDatetimeHelper }
+
+function TDatetimeHelper.fromISO(ADateIso: string): TDatetime;
+begin
+  self := ISOStrToDateTime(ADateIso);
+  result := self;
+end;
+
+class function TDatetimeHelper.new(aDatetime: string): TDateTime;
+begin
+  result.fromIso(ADateTime);
+end;
+
+function TDatetimeHelper.ToDate: TDateTime;
+begin
+  result := round(self);
+end;
+
+function TDatetimeHelper.toISO: string;
+begin
+  result := ISODateTimeToString(self);
+end;
+
+function TDatetimeHelper.ToString: String;
+begin
+    result := DateTimeToStr(self);
+end;
+
+function TDatetimeHelper.ToTime: TDateTime;
+begin
+  result := self - trunc(self);
 end;
 
 end.

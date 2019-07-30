@@ -217,9 +217,8 @@ begin
   checkNil;
   FLoading := true;
   try
-    if not Active then
-      Active := true;
-    EmptyDataSet;
+    if Active then
+      EmptyDataSet;
     j := TJsonObject.Create as TJsonObject;
     try
       if VarIsNull(ACommand.Item['find']) then
@@ -241,13 +240,13 @@ begin
             begin
               doc.AddJson(v.ToString);
             end;
-            result := Connection.Params.This.FillDastaset(doc, self, nil);
+            result := Connection.Params.This.FillDataset(doc, self, nil);
           end;
         finally
           rst.free;
         end;
       finally
-    //     jp.free;
+        // jp.free;
       end;
     finally
       j.free;
@@ -259,17 +258,17 @@ end;
 
 function TMVCBrMongoDataset.Open(AWhereArray: array of Variant;
   AProcBeforePost: TProc = nil): integer;
-var AJson:IJSONDocument;
+var
+  AJson: IJSONDocument;
 begin
   checkNil;
   FLoading := true;
   try
-    if not Active then
-      Active := true;
-    EmptyDataSet;
-    AJson :=mongoJSON(AWhereArray);
-    result := Connection.Params.GetDataset(FCollectionName,
-      AJson, self, AProcBeforePost);
+    if Active then
+      EmptyDataSet;
+    AJson := mongoJSON(AWhereArray);
+    result := Connection.Params.GetDataset(FCollectionName, AJson, self,
+      AProcBeforePost);
   finally
     FLoading := false;
   end;
@@ -287,7 +286,7 @@ begin
   if Value and (not FLoading) and (csDesigning in ComponentState) then
   begin
     try
-     OpenWithCommand( MongoJSON(['limit',10])  );
+      OpenWithCommand(mongoJSON(['limit', 10]));
     except
     end;
   end;

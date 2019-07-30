@@ -5,7 +5,7 @@
 import { NgModule,APP_INITIALIZER } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
-
+import {SessionService,StorageService } from './storage.service';
 import { ODataProviderService }  from './odata-provider.service';
 import { ODataBrAdminService} from './odatabr-admin.service';
 
@@ -18,6 +18,7 @@ import { ODataBrAdminService} from './odatabr-admin.service';
   providers:[
     ODataProviderService,
     ODataBrAdminService,
+    SessionService,StorageService
     
   ],
   exports:[

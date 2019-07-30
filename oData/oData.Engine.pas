@@ -58,7 +58,7 @@ type
     FResource: string;
     FSkipToken: string;
     FInLineCount: string;
-    FResourceParams: IODataDecodeParams;
+    FResourceParams: TODataDictionay;
     FBaseURL: string;
     FGroupBy: string;
     FSearch: string;
@@ -234,12 +234,12 @@ end;
 destructor TODataDecode.destroy;
 begin
   if assigned(FChild) then
-    FChild.DisposeOf;
+    FChild.free;
   FChild := nil;
   FParse := nil;
   FLock.Free;
   FExpandItem.Free;
-  FResourceParams := nil;
+  FResourceParams.free;
   inherited;
 end;
 
@@ -265,6 +265,7 @@ end;
 
 function TODataDecode.GetFilter: string;
 begin
+  if (FFilter='') then exit('');
   result := TIdURI.URLDecode(FFilter);
 end;
 
@@ -275,6 +276,7 @@ end;
 
 function TODataDecode.GetGroupBy: string;
 begin
+  if (FGroupBy='') then exit('');
   result := TIdURI.URLDecode(FGroupBy);
 end;
 
@@ -306,6 +308,7 @@ end;
 
 function TODataDecode.GetOrderBy: string;
 begin
+  if (FOrderBy='') then exit('');
   result := TIdURI.URLDecode(FOrderBy);
 end;
 
@@ -326,11 +329,13 @@ end;
 
 function TODataDecode.GetSearch: string;
 begin
+  if (FSearch='') then exit('');
   result := TIdURI.URLDecode(FSearch);
 end;
 
 function TODataDecode.GetSelect: string;
 begin
+  if (FSelect='') then exit('');
   result := TIdURI.URLDecode(FSelect);
 end;
 

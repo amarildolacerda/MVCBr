@@ -53,7 +53,7 @@ type
     procedure DecodeODataURL(CTX: TObject); override;
     procedure ParseURL(AUrl: string); virtual;
 
-    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJsonObject)
+    function ExecuteGET(AJsonBody: TJsonValue; out JSONResponse: TJsonObject)
       : TObject; override;
     function ExecuteDELETE(ABody: string; var JSONResponse: TJsonObject)
       : Integer; override;
@@ -74,7 +74,7 @@ end;
 function TODataSQL.CreateDeleteQuery(FParse: IODataParse; AJsonBody: TJsonValue;
   AKeys: string): string;
 begin
-  result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody, AKeys,nil);
+  result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody, AKeys, nil);
   FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 end;
 
@@ -206,16 +206,17 @@ var
   LJson: IJsonObject;
   LRowState: string;
 begin
-  LJson := TInterfacedJson.New(AJsonBody, false);
+  LJson := TInterfacedJson.New(AJsonBody.ToString,True);
   if LJson.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
   begin
     if (LRowState = cODataModified) or (LRowState = cODataModifiedORInserted)
     then
       result := LocalCreatePATCHQuery(FParse, AJsonBody, AKeys, nil)
     else if LRowState = cODataDeleted then
-      result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody, AKeys,nil)
+      result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody,
+        AKeys, nil)
     else if LRowState = cODataInserted then
-      result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody,nil)
+      result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody, nil)
     else
       raise Exception.create(tODataError.create(500, 'RowState inválido'));
   end
@@ -230,7 +231,7 @@ var
   LJson: IJsonObject;
   LRowState: string;
 begin
-  LJson := TInterfacedJson.New(AJsonBody, false);
+  LJson := TInterfacedJson.New(AJsonBody.ToString, True);
   if LJson.JsonObject.TryGetValue<string>(cODataRowState, LRowState) then
   begin
     if (LRowState = cODataModified) or (LRowState = cODataModifiedORInserted)
@@ -238,9 +239,11 @@ begin
       result := AdapterAPI.CreatePATCHQuery(FParse.oData, AJsonBody, AKeys,
         ALocalResource)
     else if LRowState = cODataDeleted then
-      result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody, AKeys,ALocalResource)
+      result := AdapterAPI.CreateDeleteQuery(FParse.oData, AJsonBody, AKeys,
+        ALocalResource)
     else if LRowState = cODataInserted then
-      result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody,ALocalResource)
+      result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody,
+        ALocalResource)
     else
       raise Exception.create(tODataError.create(500, 'RowState inválido'));
   end
@@ -253,15 +256,18 @@ end;
 function TODataSQL.CreatePOSTQuery(FParse: IODataParse;
   AJsonBody: TJsonValue): string;
 begin
-  result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody,nil);
+  result := AdapterAPI.CreatePOSTQuery(FParse.oData, AJsonBody, nil);
   FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 end;
 
 function TODataSQL.CreateGETQuery(FParse: IODataParse;
   AInLineCount: boolean = false): string;
+var
+  oData: TODataDecodeAbstract;
 begin
-  result := AdapterAPI.CreateGETQuery(FParse.oData,
-    EncodeFilterSql(FParse.oData.Filter), AInLineCount);
+  oData := FParse.oData;
+  result := AdapterAPI.CreateGETQuery(oData, EncodeFilterSql(oData.Filter),
+    AInLineCount);
   FResource := AdapterAPI.GetResource as IJsonODataServiceResource;
 
 end;
@@ -328,7 +334,7 @@ begin
 end;
 
 function TODataSQL.ExecuteGET(AJsonBody: TJsonValue;
-  var JSONResponse: TJsonObject): TObject;
+  out JSONResponse: TJsonObject): TObject;
 begin
   result := nil;
 end;

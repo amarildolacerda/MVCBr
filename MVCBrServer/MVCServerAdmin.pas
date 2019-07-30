@@ -5,9 +5,17 @@ interface
 uses
   System.Classes, System.SysUtils,
   System.Generics.Collections,
-  MVCFramework, MVCFramework.Commons;
+  MVCFramework, MVCFramework.Commons,
+  MVCFramework.Middleware.JWT, MVCFramework.JWT;
 
 type
+
+  [MVCPath('/OData/login')]
+  TODataLogin = class(TMVCController)
+  public
+    [MVCPath('/($token)')]
+    procedure LoginWithToken(const token: string);
+  end;
 
   [MVCPath('/OData/admin')]
   TODataUsers = class(TMVCController)
@@ -49,6 +57,7 @@ implementation
 uses
   System.Json,
   WS.Common, System.ThreadSafe,
+  MVCServerAutentication,
   MVCFramework.Logger, OData.Packet.Encode;
 
 type
@@ -60,7 +69,7 @@ type
     secret: string;
     group: string;
     ipOrigin: string;
-    constructor Create;virtual;
+    constructor Create; virtual;
   end;
 
   TUsers = class(TThreadSafeDictionaryObject<TTokenAttrib>)
@@ -68,6 +77,7 @@ type
     FFileName: string;
   public
     FError: string;
+    destructor destroy; override;
     procedure LoadFromFile(AFile: string);
     procedure SaveToFile(AFile: String = '');
   public
@@ -84,7 +94,7 @@ var
   s: string;
   r: IODataJsonPacket;
 begin
-  r := TODataJsonPacket.New(self.Context.Request.PathInfo, true);
+  r := TODataJsonPacket.New(self.Context.Request.PathInfo);
   r.GenValue('token', TGuid.NewGuid.ToString());
   Render(r.AsJsonObject);
 end;
@@ -101,7 +111,7 @@ begin
     obj := LTokenUsers.Items[token];
   end
   else
-    obj := TTokenAttrib.create;
+    obj := TTokenAttrib.Create;
   obj.name := name;
   obj.secret := secret;
   obj.group := group;
@@ -109,7 +119,7 @@ begin
   LTokenUsers.AddOrSetValue(token, obj);
   LTokenUsers.SaveToFile();
 
-  r := TODataJsonPacket.New(self.Context.Request.PathInfo, true);
+  r := TODataJsonPacket.New(self.Context.Request.PathInfo);
   r.GenValue('token', token);
   Render(r.AsJsonObject);
 
@@ -121,7 +131,7 @@ var
   key: string;
 begin
   LTokenUsers.Remove(token);
-  r := TODataJsonPacket.New(self.Context.Request.PathInfo, true);
+  r := TODataJsonPacket.New(self.Context.Request.PathInfo);
   r.GenValue('token', token);
   Render(r.AsJsonObject);
 end;
@@ -141,17 +151,17 @@ var
   i: integer;
   item: TPair<string, TTokenAttrib>;
 begin
-  arr := TJsonArray.create;
+  arr := TJsonArray.Create;
   LTokenUsers.LockList;
   try
 
-    r := TODataJsonPacket.New(self.Context.Request.PathInfo, true);
+    r := TODataJsonPacket.New(self.Context.Request.PathInfo);
     for item in LTokenUsers.ToArray do
     begin
       obj := item.Value;
       if (name > '') and (obj.name.Equals(name)) then
       begin
-        j := TJsonObject.create;
+        j := TJsonObject.Create;
         j.addPair('token', item.key);
         j.addPair('name', obj.name);
         j.addPair('group', obj.group);
@@ -160,7 +170,7 @@ begin
       end
       else
       begin
-        j := TJsonObject.create;
+        j := TJsonObject.Create;
         j.addPair('token', item.key);
         j.addPair('name', obj.name);
         j.addPair('group', obj.group);
@@ -168,40 +178,7 @@ begin
       end;
     end;
 
-    r.values(arr);
-    r.Ends;
-
-    Render(arr);
-  finally
-    LTokenUsers.UnlockList;
-  end;
-end;
-
-procedure TODataUsers.ListUserByToken(const token: String);
-var
-  obj: TTokenAttrib;
-  r: IODataJsonPacket;
-  key: string;
-  arr: TJsonArray;
-  j: TJsonObject;
-  i: integer;
-  item: TPair<string, TTokenAttrib>;
-begin
-  arr := TJsonArray.create;
-  LTokenUsers.LockList;
-  try
-
-    r := TODataJsonPacket.New(self.Context.Request.PathInfo, true);
-    obj := LTokenUsers.Items[token];
-    if assigned(obj) then
-    begin
-      j := TJsonObject.create;
-      j.addPair('token', item.key);
-      j.addPair('name', obj.name);
-      j.addPair('group', obj.group);
-      arr.addElement(j);
-      r.values(arr);
-    end;
+    r.values(arr,true);
     r.Ends;
 
     Render(arr);
@@ -228,13 +205,34 @@ end;
 
 { TUsers }
 
+destructor TUsers.destroy;
+var
+  o: TObject;
+  s: String;
+begin
+
+  with LockList do
+    while count > 0 do
+    begin
+      for s in Keys do
+      begin
+        o := Items[s];
+        Remove(s);
+        FreeAndNil(o);
+      end;
+    end;
+  UnlockList;
+
+  inherited;
+end;
+
 procedure TUsers.LoadFromFile(AFile: string);
 var
   str: TStringList;
 begin
   if fileExists(AFile) then
     try
-      str := TStringList.create;
+      str := TStringList.Create;
       try
         FError := '';
         str.DefaultEncoding := TEncoding.UTF8;
@@ -260,7 +258,7 @@ begin
     if AFile = '' then
       AFile := TokenUserFileName;
     FError := '';
-    str := TStringList.create;
+    str := TStringList.Create;
     try
       str.DefaultEncoding := TEncoding.UTF8;
       str.text := toJson;
@@ -278,16 +276,68 @@ end;
 
 constructor TTokenAttrib.Create;
 begin
-   inherited Create;
+  inherited Create;
+end;
+
+procedure TODataUsers.ListUserByToken(const token: String);
+var
+  obj: TTokenAttrib;
+  r: IODataJsonPacket;
+  key: string;
+  arr: TJsonArray;
+  j: TJsonObject;
+  i: integer;
+  item: TPair<string, TTokenAttrib>;
+begin
+  arr := TJsonArray.Create;
+  LTokenUsers.LockList;
+  try
+    r := TODataJsonPacket.New(self.Context.Request.PathInfo);
+    obj := LTokenUsers.Items[token];
+    if assigned(obj) then
+    begin
+      j := TJsonObject.Create;
+      j.addPair('token', item.key);
+      j.addPair('name', obj.name);
+      j.addPair('group', obj.group);
+      arr.addElement(j);
+      r.values(arr,true);
+    end;
+    r.Ends;
+
+    Render(arr);
+  finally
+    LTokenUsers.UnlockList;
+  end;
+end;
+
+{ TODataLogin }
+
+procedure TODataLogin.LoginWithToken(const token: string);
+var
+  obj: TTokenAttrib;
+begin
+  obj := LTokenUsers.Items[token];
+end;
+
+function GetAuthorizedUser(user: TAuthUserName; pass: TAuthPassword;
+  roles: TAuthRoles): Boolean;
+begin
+  result := true;
 end;
 
 initialization
 
-LTokenUsers := TUsers.create([doOwnsValues]);
+LTokenUsers := TUsers.Create(); // [doOwnsValues]
 try
   LTokenUsers.LoadFromFile(ExtractFilePath(paramStr(0)) + TokenUserFileName);
 except
 end;
+
+EnableAutentication := false;
+if not assigned(ODataAutenticationFunc) then
+  ODataAutenticationFunc := GetAuthorizedUser;
+
 RegisterWSController(TODataUsers);
 
 finalization

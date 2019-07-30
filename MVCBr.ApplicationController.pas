@@ -160,7 +160,7 @@ uses System.TypInfo;
 var
   LReleased: boolean;
 
-  threadvar LIsClosing: boolean;
+  var LIsClosing: boolean;
 
 function ApplicationController(): IApplicationController;
 begin

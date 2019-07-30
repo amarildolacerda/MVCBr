@@ -18,11 +18,11 @@ type
     function TopCmdStmt: string; override;
     function SkipCmdStmt: string; override;
     procedure CreateTopSkip(var Result: string; nTop, nSkip: integer); override;
-    function AfterCreateSQL(var SQL: string):boolean; override;
+    function AfterCreateSQL(var SQL: string): boolean; override;
 
   public
     function createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
-      const AInLineCount: Boolean = false): string; override;
+      const AInLineCount: boolean = false): string; override;
   end;
 
 implementation
@@ -43,21 +43,23 @@ uses oData.ServiceModel;
 }
 
 function TODataDialectMSSQL.AfterCreateSQL(var SQL: string): boolean;
-var s:string;
+var
+  s: string;
 begin
   // inherited;
   s := '';
-  if FTop>0 then
-    s := ' top '+intToStr(FTop);
-  if FSkip>0 then
-    Sql := 'select '+s+' * from ('+sql+') cte where cte.IRowNumber > '+IntTostr(FSkip);
+  if FTop >= 0 then
+    s := ' top ' + intToStr(FTop);
+  if FSkip > 0 then
+    SQL := 'select ' + s + ' * from (' + SQL + ') cte where cte.IRowNumber > ' +
+      intToStr(FSkip);
 
-  result := (FTop>0) or (FSkip>0);
+  Result := (FTop > 0) or (FSkip > 0);
 
 end;
 
-function TODataDialectMSSQL.createGETQuery(oData: TODataDecodeAbstract; AFilter: string;
-  const AInLineCount: Boolean): string;
+function TODataDialectMSSQL.createGETQuery(oData: TODataDecodeAbstract;
+  AFilter: string; const AInLineCount: boolean): string;
 begin
   Result := inherited;
 end;
@@ -78,8 +80,9 @@ begin
   FSkip := nSkip;
   FTop := nTop;
   // mySql/firebird;
-  Result := TopCmdStmt + nTop.ToString + ' ';
-   if nSkip > 0 then
+  if nTop >= 0 then
+    Result := TopCmdStmt + nTop.ToString + ' ';
+  if nSkip > 0 then
     Result := ' ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS iRowNumber, ';
 
 end;

@@ -19,9 +19,11 @@ Type
     FTimeout: integer;
     FAcceptEncoding: string;
     FAccept: String;
+    FContentType: string;
     FCustomHeaders: TStrings;
     FResponseCode: integer;
     FContent: String;
+    procedure SetContentType(const Value: string);
   protected
     procedure SetAccept(const Value: String); virtual;
     procedure SetAcceptCharset(const Value: string); virtual;
@@ -40,7 +42,7 @@ Type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    function CreateURI: string;virtual;
+    function CreateURI: string; virtual;
     function Execute(AProc: TProc): boolean; overload; virtual;
     function Execute(): boolean; overload; virtual;
     procedure Prepare; virtual;
@@ -50,6 +52,7 @@ Type
 
     Property URL: string read CreateURI;
     Property Body: TStrings read FBody write SetBody;
+    Property ContentType: string read FContentType write SetContentType;
     Property BaseURL: string read FBaseURL write SetBaseURL;
     Property Resource: string read FResource write SetResource;
     Property ResourcePrefix: string read FResourcePrefix
@@ -70,6 +73,7 @@ constructor TMVCBrHttpRestClientAbstract.Create(AOwner: TComponent);
 begin
   inherited;
   FMethod := rmGET;
+  FContentType := 'application/json';
   FCustomHeaders := TStringList.Create;
   /// workaroud   403 - Forbidden
   // FIdHTTP.Request.UserAgent :=
@@ -141,6 +145,13 @@ end;
 procedure TMVCBrHttpRestClientAbstract.SetContent(const Value: String);
 begin
   FContent := Value;
+end;
+
+procedure TMVCBrHttpRestClientAbstract.SetContentType(const Value: string);
+begin
+  FContentType := Value;
+  if (not Value.Contains('application')) and (not Value.Contains('text')) then
+    FAcceptCharset := '';
 end;
 
 procedure TMVCBrHttpRestClientAbstract.SetCustomHeaders(const Value: TStrings);

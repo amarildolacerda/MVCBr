@@ -358,7 +358,7 @@ end;
 function TSuiteCRMModel.GetEntryPoint(AModule: string; AJson: string = '{}')
   : IJsonObject;
 begin
-  result := TInterfacedJSON.New(AJson);
+  result := TInterfacedJSON.New(AJson,True);
   result.addPair('session', FTokenID);
   result.addPair('module_name', AModule);
 end;
@@ -412,13 +412,13 @@ begin
   FTokenID := '';
   md5 := TIdHashMessageDigest5.Create;
   try
-    JSON := TInterfacedJSON.New();
+    JSON := TInterfacedJSON.New(True);
     JSON.addPair('user_name', AUserID);
     JSON.addPair('password', md5.HashStringAsHex(APasswd));
     JSON.addPair('version', '1');
 
     a := TJsonArray.Create;
-    j := TInterfacedJSON.New;
+    j := TInterfacedJSON.New(True);
     j.addChild('user_auth', JSON.ToJson);
     j.addPair('application', cSugarCRMApplication);
 
@@ -426,7 +426,7 @@ begin
 
     FResponse := Post('login', j.ToJson);
 
-    j := TInterfacedJSON.New(FResponse);
+    j := TInterfacedJSON.New(FResponse,True);
     if not j.isNull then
     begin
       FTokenID := j.Value['id'];
@@ -584,7 +584,7 @@ var
 
 begin
   result := FResponse;
-  j := TInterfacedJSON.New(FResponse);
+  j := TInterfacedJSON.New(FResponse,True);
   if j.isNull then
   begin
     result := '';
@@ -595,7 +595,7 @@ begin
   begin
     j.JSONObject.TryGetValue<TJsonValue>('entry_list', tmp);
     result := tmp.ToJson;
-    with TInterfacedJSON.New(result) do
+    with TInterfacedJSON.New(result,True) do
       if AsArray.Get(0).asObject.Contains('name_value_list') then
       begin
         tmp.Free;
@@ -716,7 +716,7 @@ begin
     v.addPair('name_value_list', j.this.AsNameValues.JSONObject);
     result := FModel.Post('set_entry', v.ToJson);
 
-    with TInterfacedJSON.New(result) do
+    with TInterfacedJSON.New(result,True) do
       if not isNull then
       begin
         if Contains('id') then
@@ -799,7 +799,7 @@ begin
     addPair('deleted', '0');
     FModel.Get('Get_Entries_Count', ToJson);
   end;
-  with TInterfacedJSON.New(FModel.ResponseText) do
+  with TInterfacedJSON.New(FModel.ResponseText,True) do
   begin
     if not isNull then
       result := JSONObject.i('result_count');
@@ -881,7 +881,7 @@ begin
   v.addPair('$related_ids', a);
   result := FModel.Post('set_entry', v.ToJson);
 
-  with TInterfacedJSON.New(result) do
+  with TInterfacedJSON.New(result,True) do
     if not isNull then
     begin
       if Contains('id') then
@@ -918,7 +918,7 @@ begin
     begin
       AFldName := AField.name;
 
-      v := TInterfacedJSON.New;
+      v := TInterfacedJSON.New(True);
       v.addPair('name', AFldName);
 
       AValue := AField.GetValue(@o);
@@ -1019,7 +1019,7 @@ var
 begin
   item := FModel.GetEntryPoint(FModuleNameBase);
   // item.addPair('id', AID);
-  v := TInterfacedJSON.New(AJson);
+  v := TInterfacedJSON.New(AJson,True);
   j := v.this.AsNameValues;
   // j.addpair('id',AID);
 
@@ -1029,7 +1029,7 @@ begin
   item.addPair('name_value_lists', a);
   result := FModel.Put('set_entries', item.ToJson);
 
-  with TInterfacedJSON.New(result) do
+  with TInterfacedJSON.New(result,True) do
     if not isNull then
     begin
       if Contains('ids') then
@@ -1056,13 +1056,13 @@ var
 begin
   item := FModel.GetEntryPoint(FModuleNameBase);
   // item.addPair('id', AID);
-  v := TInterfacedJSON.New(AJson);
+  v := TInterfacedJSON.New(AJson,True);
   j := v.this.AsNameValues;
   // j.addpair('id',AID);
   item.addPair('name_value_list', j.JSONObject);
   result := FModel.Put('set_entry', item.ToJson);
 
-  with TInterfacedJSON.New(result) do
+  with TInterfacedJSON.New(result,True) do
     if not isNull then
     begin
       if Contains('id') then
@@ -1150,7 +1150,7 @@ function TInterfacedJSONHelper.AsNameValues: IJsonObject;
 var
   it: TJsonPair;
 begin
-  result := TInterfacedJSON.New;
+  result := TInterfacedJSON.New(True);
   for it in JSONObject do
   begin
     result.this.addItem(it.JsonString.Value, it.JsonValue.Value);

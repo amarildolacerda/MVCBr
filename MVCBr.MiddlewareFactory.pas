@@ -126,7 +126,7 @@ begin
   inherited;
 end;
 
-Threadvar FReleased: Boolean;
+var FReleased: Boolean;
 
 function TMVCBrMiddlewareFactory.Invoke: TMVCBrMediator<TMVCBrMiddleware>;
 begin
@@ -134,7 +134,8 @@ begin
   begin
     FMiddleware := TMVCBrMediator<TMVCBrMiddleware>.create(TMVCBrMiddleware);
     FReleased := false;
-  end;
+  end else
+    FReleased := true;
   result := FMiddleware;
 end;
 

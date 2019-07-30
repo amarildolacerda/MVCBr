@@ -83,7 +83,7 @@ uses System.Classes, System.SysUtils,
   System.RTTI;
 
 type
-  {$M-}
+{$M-}
   IMVCBrObserver = interface;
   IMVCBrObservable = interface;
   IViewBase = interface;
@@ -92,6 +92,11 @@ type
     ['{96C9AF3D-BF98-4024-BA4E-80B141EB90B2}']
     procedure release;
     // function RefCount:integer;
+  end;
+
+  IMVCBrTest = interface
+    ['{A66E4B0B-C0D1-4642-A812-66953E302D84}']
+    procedure test;
   end;
 
   ///
@@ -358,7 +363,6 @@ type
     function GetLayout: TObject;
   end;
 
-
   // uses IModel to implement Bussines rules
   TModelType = (mtCommon, mtViewModel, mtModule, mtValidate, mtPersistent,
     mtNavigate, mtOrmModel, mtComponent, mtPattern);
@@ -486,8 +490,8 @@ type
     procedure Run(AController: IController;
       AFunc: TFunc < boolean >= nil); overload;
     procedure Run; overload;
-    //procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
-    //  AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
+    // procedure RunMainForm(ATFormClass: TComponentClass; out AFormVar;
+    // AControllerGuid: TGuid; AFunc: TFunc < TObject, boolean >= nil); overload;
     function This: TObject;
     function Count: integer;
     function Add(const AController: IController): integer;
@@ -669,10 +673,15 @@ procedure UnregisterInterfacedClass(const ANome: string);
 
 procedure OutputDebug(const txt: string);
 
+procedure RegisterTestCase(AClass: TComponentClass);
+procedure RunTestCase();
+procedure checkTest(ACond: boolean; ATexto: string; AException: boolean = false;
+  AOutput: string = '');
+
 implementation
 
 uses {$IFNDEF BPL}
-  MVCBr.InterfaceHelper, {$IFDEF MSWINDOWS} Winapi.Windows,{$ENDIF}
+  MVCBr.InterfaceHelper, {$IFDEF MSWINDOWS} Winapi.Windows, {$ENDIF}
 {$ENDIF}
   MVCBr.ApplicationController, MVCBr.IoC,
   MVCBr.Observable;
@@ -700,18 +709,8 @@ end;
 class procedure TMVCBr.RegisterInterfaced<TInterface>(const ANome: string;
   IID: TGuid; AClass: TInterfacedClass; bSingleton: boolean = true);
 begin
-  {
-    TMVCBrIoc.DefaultContainer.RegisterInterfaced<TInterface>(IID, AClass, ANome,
-    bSingleton);
-  }
   TMVCBrIoc.DefaultContainer.RegisterType<TInterface>(ANome).Guid(IID)
-    .ImplementClass(AClass).Singleton(bSingleton); { .DelegateTo(
-    function: TInterface
-    begin
-    result := TInterface(AClass.Create);
-    end);
-  }
-
+    .ImplementClass(AClass).Singleton(bSingleton);
 end;
 
 class procedure TMVCBr.RegisterObserver(AObserver: IMVCBrObserver);
@@ -1421,12 +1420,100 @@ begin
 {$ENDIF}
 end;
 
+var
+  LTestCases: TList<TComponentClass>;
+
+procedure RegisterTestCase(AClass: TComponentClass);
+begin
+{$IFNDEF BPL}
+  LTestCases.Add(AClass);
+{$ENDIF}
+end;
+
+procedure RunTestCase();
+var
+  item: TComponentClass;
+  Obj: TObject;
+  iobj: IMVCBrTest;
+begin
+{$IFNDEF BPL}
+  for item in LTestCases do
+  begin
+    try
+      Obj := item.Create(nil);
+      supports(Obj, TMVCBr.GetGuid<IMVCBrTest>, iobj);
+      if assigned(iobj) then
+        iobj.test
+      else
+        freeAndNil(Obj);
+      iobj := nil;
+    except
+    end;
+  end;
+{$ENDIF}
+end;
+
+var
+  LLockLog: TObject;
+
+procedure Writelog(AFileName: String; ATexto: String);
+var
+  lf: textfile;
+begin
+  if not assigned(LLockLog) then
+    exit;
+  System.TMonitor.Enter(LLockLog);
+  try
+    AssignFile(lf, AFileName);
+    try
+{$I-}
+      Append(lf);
+{$I+}
+      if IOResult <> 0 then // se o arquivo nao existe, criar um novo;
+        Rewrite(lf);
+      WriteLn(lf, ATexto);
+    finally
+      CloseFile(lf);
+    end;
+  finally
+    System.TMonitor.exit(LLockLog);
+  end;
+end;
+
+procedure checkTest(ACond: boolean; ATexto: string; AException: boolean = false;
+  AOutput: string = '');
+var
+  r: string;
+  n: TDatetime;
+begin
+  n := now();
+  r := 'FAIL-';
+  if ACond then
+    r := 'OK-';
+  if AOutput = '' then
+    AOutput := 'testcase.log';
+  Writelog(AOutput, r + '(' + DatetimeToStr(n) + ') ' + ATexto);
+
+  if not ACond then
+  begin
+    OutputDebug(ATexto);
+    if AException then
+      raise exception.Create(ATexto);
+  end;
+end;
+
 initialization
 
-// FControllersClass := TMVCBrIoc.create;
+LLockLog := TObject.Create;
+{$IFNDEF BPL}
+LTestCases := TList<TComponentClass>.Create;
+{$ENDIF}
 
 finalization
 
-// FControllersClass.Free;
+{$IFNDEF BPL}
+  LTestCases.free;
+{$ENDIF}
+freeAndNil(LLockLog);
 
 end.

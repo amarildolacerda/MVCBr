@@ -12,7 +12,7 @@ v1.1.0
 unit bsonTools;
 
 {$WARN SYMBOL_PLATFORM OFF}
-{$D-}
+{$D+}
 {$L-}
 
 interface
@@ -739,7 +739,7 @@ var
     IID_IStream:TGUID='{0000000C-0000-0000-C000-000000000046}';
   var
     i:integer;
-    p1,p2:{$IF CompilerVersion>=30}UInt64{$ELSE}Int64{$ENDIF};
+    p1,p2:{$IFDEF VER310}UInt64{$ELSE}UInt64{$ENDIF};
     ss:IStream;
     d:array[0..dSize-1] of byte;
   begin

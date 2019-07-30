@@ -9,25 +9,26 @@ unit oData.ProxyBase;
 interface
 
 uses System.Classes, System.SysUtils, Data.DB, MVCFramework,
-  System.JSON,OData.Packet.Encode,
+  System.JSON, oData.Packet.Encode,
   oData.Interf, oData.engine, oData.Parse, oData.Dialect;
 
 type
 
   TODataBase = class(TInterfacedObject, IODataBase)
   private
-    FAdapterAPI: IODataDialect;
     procedure SetAdapterAPI(const Value: IODataDialect);
     function getInLineCount: integer;
   protected
     FCTX: TWebContext;
+    FAdapterAPI: IODataDialect;
     [unsafe]
     FODataParse: IODataParse;
     FInLineRecordCount: integer;
+  public
     function This: TObject;
     procedure Release;
 
-    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJSONObject)
+    function ExecuteGET(AJsonBody: TJsonValue; out JSONResponse: TJSONObject)
       : TObject; virtual;
     function ExecuteDELETE(ABody: string; var JSONResponse: TJSONObject)
       : integer; virtual;
@@ -39,10 +40,10 @@ type
 
     procedure CreateExpandCollections(AQuery: TObject); virtual;
 
-    function Collection: string; virtual;
     function GetInLineRecordCount: integer;
     procedure SetInLineRecordCount(const Value: integer);
   public
+    function Collection: string; virtual;
     function GetParse: IODataParse; virtual;
     property AdapterAPI: IODataDialect read FAdapterAPI write SetAdapterAPI;
     property InLineRecordCount: integer read GetInLineRecordCount
@@ -57,13 +58,26 @@ type
 
   TODataBaseClass = class of TODataBase;
 
-var
-  ODataBase: TODataBaseClass;
+procedure SetODataBase(Value: TODataBaseClass);
+function GetODataBase: TODataBaseClass;
 
 implementation
 
 { TODataBase }
 uses oData.ServiceModel;
+
+var
+  FODataBase: TODataBaseClass;
+
+procedure SetODataBase(Value: TODataBaseClass);
+begin
+  FODataBase := Value;
+end;
+
+function GetODataBase: TODataBaseClass;
+begin
+  result := FODataBase;
+end;
 
 function TODataBase.Collection: string;
 begin
@@ -90,7 +104,7 @@ end;
 
 destructor TODataBase.Destroy;
 begin
-  FODataParse := nil;
+  FODataParse.Release;
   FAdapterAPI := nil;
   inherited;
 end;
@@ -122,7 +136,7 @@ begin
 end;
 
 function TODataBase.ExecuteGET(AJsonBody: TJsonValue;
-  var JSONResponse: TJSONObject): TObject;
+  out JSONResponse: TJSONObject): TObject;
 begin
   result := nil;
 end;
@@ -178,6 +192,6 @@ end;
 
 initialization
 
-ODataBase := TODataBase;
+// SetODataBase( TODataBase );
 
 end.

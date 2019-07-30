@@ -31,74 +31,15 @@ begin
       add('import { HttpClient, HttpHeaders } from ''@angular/common/http'';');
       add('import { ODataProviderService,ODataFactory,ODataService } from ''./odata-provider.service'';');
       add('import { Observable } from ''rxjs/Rx'';');
+      add('import { ODataBrServiceBase } from ''./odatabr.service-base''; ');
       add('');
-      add('export interface ODataBrQuery extends ODataService{} ');
-      add('');
+      add('export interface ODataBrQuery extends ODataService { } ');
+
       add('@Injectable()');
-      add('export class ODataBrProvider {');
-      add('  token:string=""; ');
-      add('  urlBase:string=""; ');
-      add('  urlPort:number = 8080; ');
-      add('  headers: HttpHeaders;');
+      add('export class ODataBrProvider extends ODataBrServiceBase {');
       add('');
-      add('  port(aPort:number):ODataBrProvider{');
-      add('     this.urlPort = aPort;');
-      add('     return this;');
-      add('  } ');
-      add('  url(aUrl:string):ODataBrProvider{');
-      add('    this.urlBase = aUrl;');
-      add('    return this;');
-      add('  }');
-      add('');
-
-      add('  getJson(url:string):Observable<any>{');
-      add('    this.configOptions();');
-      add('    return this._odata.getJson(url);');
-      add('  }');
-
-      add('  getOData(query:ODataService):ODataProviderService{');
-      add('    this.configOptions();');
-      add('    return this._odata.getValue(query);');
-      add('  }');
-
-      add('  private configOptions(){ ');
-      add('      if (this.token!="") { this._odata.token = this.token; }; ');
-      add('      this._odata.createUrlBase(this.urlBase,this.urlPort); ');
-      add('      if (this.headers.keys().length>0) {');
-      add('        //this._odata.headers.clear;');
-      add('        for(let item of this.headers.keys() ){ ');
-      add('          this._odata.headers.set(item,this.headers.get(item));');
-      add('         }');
-      add('      }');
-
-      add('  }');
-      add('');
-      add('constructor(private _odata:ODataProviderService ) {');
-      add('       this.headers = new HttpHeaders(); ');
-      add('}');
-
-      add('getItem(query: ODataBrQuery): ODataProviderService {');
-      add('  this.configOptions();');
-      add('  return this._odata.getValue(query);');
-      add('}');
-      add('postItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
-      add('  this.configOptions();');
-      add('  return this._odata.postItem(resource, item, erroProc);');
-      add('}');
-      add('');
-      add('putItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
-      add('  this.configOptions();');
-      add('  return this._odata.putItem(resource, item, erroProc);');
-      add('}');
-      add('');
-      add('deleteItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
-      add('  this.configOptions();');
-      add('  return this._odata.deleteItem(resource, item, erroProc);');
-      add('}');
-      add('');
-      add('patchItem(resource: string, item: any, erroProc: any = null): Observable<any> {');
-      add('  this.configOptions();');
-      add('  return this._odata.patchItem(resource, item, erroProc);');
+      add('constructor (public _odata:ODataProviderService){');
+      add('  super(_odata);');
       add('}');
 
       if TODataServices.TryGetODataService(ODataServices.LockJson, serv) then
@@ -167,6 +108,7 @@ begin
       result := str.text;
     finally
       str.free;
+     // serv.free;   ? precisava testar se é necessário.
     end;
 end;
 

@@ -15,7 +15,7 @@ type
 
   TTokenKind = (ptNone, ptIdentifier, ptNull, ptQuotation, ptSpace, ptComma,
     ptSlash, ptOData, ptOpen, ptClose, ptParams, ptParamsAnd, ptEqual, ptFilter,
-    ptSearch, ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand,
+    ptFind, ptSearch, ptSelect, ptOrderBy, ptTop, ptSkip, ptSkipToken, ptExpand,
     ptInLineCount, ptDebug, ptCount, ptGroupBy, ptOperNe { not equal } ,
     ptOperLt { less than } , ptOperLe { less equal } ,
     ptOperGe { greater or equal } , ptOperGt { greater than } ,
@@ -36,16 +36,15 @@ type
   }
   TSetTokenKind = set of TTokenKind;
 
-  TODataParse = class(TInterfacedObject, IODataParse)
+  TODataParse = class(TOwnedInterfacedObject, IODataParse)
   private
     FUrl: string;
     token: string;
     FParseCol: integer;
     FLevel: integer;
-    [unsafe]
     FOData: TODataDecodeAbstract;
     FCurrentOData: TODataDecodeAbstract;
-
+    FTokenKindArray: TDictionary<string, TTokenKind>;
     function isToken(tken: string): boolean;
     procedure NextToken(AClear: boolean = false;
       AUntil: TSetTokenKind = [ptNone]);
@@ -73,6 +72,7 @@ type
     procedure whileIn(AArry: Array of TTokenKind);
     procedure FindToken(tk: TTokenKind);
   public
+    function this: TObject;
     procedure ParseURL(URL: string); virtual;
     procedure ParseURLParams(prms: string); virtual;
     procedure DoCollectionInsert(ACurrent: IODataDecode); virtual;
@@ -82,10 +82,10 @@ type
 
 implementation
 
+uses System.NetEncoding;
+
 { TODataParse }
 
-var
-  FTokenKindArray: TDictionary<string, TTokenKind>;
 
 function TODataParse.isToken(tken: string): boolean;
 begin
@@ -112,17 +112,61 @@ constructor TODataParse.create;
 begin
   inherited;
   FOData := TODataDecode.create(self);
+  FTokenKindArray := TDictionary<string, TTokenKind>.create;
+  FTokenKindArray.Add(',', ptComma);
+  FTokenKindArray.Add(chr(0), ptNull);
+  FTokenKindArray.Add('/', ptSlash);
+  FTokenKindArray.Add('/OData/', ptOData);
+  FTokenKindArray.Add('OData.svc/', ptOData);
+  FTokenKindArray.Add('(', ptOpen);
+  FTokenKindArray.Add(')', ptClose);
+  FTokenKindArray.Add(' ', ptSpace);
+  FTokenKindArray.Add('?', ptParams);
+  FTokenKindArray.Add('&', ptParamsAnd);
+  FTokenKindArray.Add('=', ptEqual);
+  FTokenKindArray.Add('<=', ptOperLe);
+  FTokenKindArray.Add('<', ptOperLt);
+  FTokenKindArray.Add('<>', ptOperNe);
+  FTokenKindArray.Add('>', ptOperGt);
+  FTokenKindArray.Add('>=', ptOperGe);
+  FTokenKindArray.Add('eq', ptEqual);
+  FTokenKindArray.Add('le', ptOperLe);
+  FTokenKindArray.Add('lt', ptOperLt);
+  FTokenKindArray.Add('ne', ptOperNe);
+  FTokenKindArray.Add('gt', ptOperGt);
+  FTokenKindArray.Add('ge', ptOperGe);
+  FTokenKindArray.Add('$filter', ptFilter);
+  FTokenKindArray.Add('find', ptFind); // comando literal
+  FTokenKindArray.Add('$search', ptSearch);
+  FTokenKindArray.Add('$select', ptSelect);
+  FTokenKindArray.Add('$orderby', ptOrderBy);
+  FTokenKindArray.Add('$order', ptOrderBy);
+  FTokenKindArray.Add('$top', ptTop);
+  FTokenKindArray.Add('$skip', ptSkip);
+  FTokenKindArray.Add('$skiptoken', ptSkipToken);
+  FTokenKindArray.Add('$inlinecount', ptInLineCount);
+  FTokenKindArray.Add('$count', ptCount);
+  FTokenKindArray.Add('$expand', ptExpand);
+  FTokenKindArray.Add('group', ptGroupBy);
+  FTokenKindArray.Add('groupby', ptGroupBy);
+  FTokenKindArray.Add('$group', ptGroupBy);
+  FTokenKindArray.Add('debug', ptDebug);
+  FTokenKindArray.Add('''', ptQuotation);
+  FTokenKindArray.Add('and', ptOperAnd);
+  FTokenKindArray.Add('or', ptOperOr);
+
 end;
 
 destructor TODataParse.destroy;
 begin
   if assigned(FOData) then
-    FOData.DisposeOf;
+    FOData.free;
   FOData := nil;
   if assigned(FCurrentOData) then
-    FCurrentOData.DisposeOf;
+    FCurrentOData.free;
   FCurrentOData := nil;
   inherited;
+  FTokenKindArray.Free;
 end;
 
 procedure TODataParse.DoCollectionInsert(ACurrent: IODataDecode);
@@ -197,6 +241,15 @@ var
         NextToken(true, [ptClose, ptComma]);
         s := GetToken;
         oData.Filter := s;
+        continue;
+      end;
+
+      if (toToken(s) = ptFind) then
+      begin
+        NextToken(true);
+        NextToken(true, [ptClose, ptComma]);
+        s := GetToken;
+        oData.Find := s;
         continue;
       end;
 
@@ -382,7 +435,7 @@ begin
   FCurrentOData.ResourceParams.clear;
   if not IsNull then
     ParseCollectionParams;
-  //DoCollectionInsert(FCurrentOData);
+  // DoCollectionInsert(FCurrentOData);
   if IsNull then
     exit;
   if isTokenType(ptParams) then
@@ -415,6 +468,13 @@ procedure TODataParse.ParseURLParams(prms: string);
 begin
   if prms = '' then
     exit;
+
+  with TURLEncoding.create do
+    try
+      prms := Decode(prms);
+    finally
+      free;
+    end;
 
   FUrl := prms + chr(0);
   FParseCol := 1;
@@ -455,6 +515,8 @@ begin
           oData.Select := k;
         ptFilter:
           oData.Filter := k;
+        ptFind:
+          oData.Find := k;
         ptSearch:
           oData.Search := k;
         ptOrderBy:
@@ -492,6 +554,7 @@ end;
 procedure TODataParse.Release;
 begin
   FCurrentOData := nil;
+  DisposeOf();
 end;
 
 function TODataParse.Select: string;
@@ -641,6 +704,11 @@ begin
   until isToken(result);
 end;
 
+function TODataParse.this: TObject;
+begin
+  result := self;
+end;
+
 function TODataParse.toToken(txt: string): TTokenKind;
 begin
   FTokenKindArray.TryGetValue(txt, result);
@@ -673,50 +741,9 @@ end;
 
 initialization
 
-FTokenKindArray := TDictionary<string, TTokenKind>.create;
-FTokenKindArray.Add(',', ptComma);
-FTokenKindArray.Add(chr(0), ptNull);
-FTokenKindArray.Add('/', ptSlash);
-FTokenKindArray.Add('/OData/', ptOData);
-FTokenKindArray.Add('OData.svc/', ptOData);
-FTokenKindArray.Add('(', ptOpen);
-FTokenKindArray.Add(')', ptClose);
-FTokenKindArray.Add(' ', ptSpace);
-FTokenKindArray.Add('?', ptParams);
-FTokenKindArray.Add('&', ptParamsAnd);
-FTokenKindArray.Add('=', ptEqual);
-FTokenKindArray.Add('<=', ptOperLe);
-FTokenKindArray.Add('<', ptOperLt);
-FTokenKindArray.Add('<>', ptOperNe);
-FTokenKindArray.Add('>', ptOperGt);
-FTokenKindArray.Add('>=', ptOperGe);
-FTokenKindArray.Add('eq', ptEqual);
-FTokenKindArray.Add('le', ptOperLe);
-FTokenKindArray.Add('lt', ptOperLt);
-FTokenKindArray.Add('ne', ptOperNe);
-FTokenKindArray.Add('gt', ptOperGt);
-FTokenKindArray.Add('ge', ptOperGe);
-FTokenKindArray.Add('$filter', ptFilter);
-FTokenKindArray.Add('$search', ptSearch);
-FTokenKindArray.Add('$select', ptSelect);
-FTokenKindArray.Add('$orderby', ptOrderBy);
-FTokenKindArray.Add('$order', ptOrderBy);
-FTokenKindArray.Add('$top', ptTop);
-FTokenKindArray.Add('$skip', ptSkip);
-FTokenKindArray.Add('$skiptoken', ptSkipToken);
-FTokenKindArray.Add('$inlinecount', ptInLineCount);
-FTokenKindArray.Add('$count', ptCount);
-FTokenKindArray.Add('$expand', ptExpand);
-FTokenKindArray.Add('group', ptGroupBy);
-FTokenKindArray.Add('groupby', ptGroupBy);
-FTokenKindArray.Add('$group', ptGroupBy);
-FTokenKindArray.Add('debug', ptDebug);
-FTokenKindArray.Add('''', ptQuotation);
-FTokenKindArray.Add('and', ptOperAnd);
-FTokenKindArray.Add('or', ptOperOr);
 
 finalization
 
-FTokenKindArray.free;
+
 
 end.

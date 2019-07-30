@@ -118,8 +118,9 @@ begin
   end;
 
   case AField.DataType of
+    TFieldType.ftAutoInc: ;// nao envia dados quando for autoInc;
     TFieldType.ftSmallint, TFieldType.ftInteger, TFieldType.ftWord,
-      TFieldType.ftLongWord, TFieldType.ftAutoInc, TFieldType.ftShortint:
+      TFieldType.ftLongWord, TFieldType.ftShortint:
       AJsonObject.AddPair(LFieldName, TJSONNumber.Create(AField.AsInteger));
 
     TFieldType.ftLargeint:

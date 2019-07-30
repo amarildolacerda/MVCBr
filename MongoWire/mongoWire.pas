@@ -2,21 +2,21 @@
 
 TMongoWire: mongoWire.pas
 
-Copyright 2010-2017 Stijn Sanders
+Copyright 2010-2018 Stijn Sanders
 Made available under terms described in file "LICENSE"
 https://github.com/stijnsanders/TMongoWire
 
-v1.1.0
+v1.2.1
 
 }
 unit mongoWire;
 
-{$D-}
+{$D+}
 {$L-}
 
 interface
 
-uses SysUtils, SyncObjs, Classes, simpleSock, jsonDoc,bsonDoc, bsonTools;
+uses SysUtils, SyncObjs, Classes, simpleSock, jsonDoc, bsonTools;
 
 type
   TMongoWire=class(TObject)
@@ -39,7 +39,9 @@ type
     constructor Create(const NameSpace: Widestring);
     destructor Destroy; override;
 
-    procedure Open(const ServerName: string = 'localhost';
+    procedure Open(const ServerName: AnsiString = 'localhost';
+      Port: integer = 27017);
+    procedure OpenSecure(const ServerName: AnsiString = 'localhost';
       Port: integer = 27017);
     procedure Close;
 
@@ -111,10 +113,9 @@ type
       const QryObj:IJSONDocument;
       const ReturnFieldSelector:IJSONDocument=nil;
       Flags:integer=0);
-    function Next(const Doc:IJsonDocument):boolean;
+    function Next(const Doc:IJSONDocument):boolean;
     property NumberToReturn:integer read FNumberToReturn write FNumberToReturn;
     property NumberToSkip:integer read FNumberToSkip write FNumberToSkip;//TODO: set?
-    property NumberReturned:integer read FNumberReturned;
   end;
 
   //TODO: TBSONDocumentsFromVariantArray=class(TBSONDocumentsEnumerator)
@@ -172,7 +173,7 @@ constructor TMongoWire.Create(const NameSpace: WideString);
 begin
   inherited Create;
   FNameSpace:=NameSpace;
-  FSocket:=TTcpSocket.Create;
+  FSocket:=nil;
   FData:=TMemoryStream.Create;
   FData.Size:=MongoWireStartDataSize;//start keeping some data
   FWriteLock:=TCriticalSection.Create;
@@ -183,7 +184,7 @@ end;
 
 destructor TMongoWire.Destroy;
 begin
-  FSocket.Free;
+  if FSocket<>nil then FSocket.Free;
   FData.Free;
   FWriteLock.Free;
   FReadLock.Free;
@@ -191,23 +192,38 @@ begin
   inherited;
 end;
 
-procedure TMongoWire.Open(const ServerName: string; Port: integer);
-var
-  i,l:integer;
+procedure TMongoWire.Open(const ServerName: AnsiString; Port: integer);
 begin
-  FSocket.Disconnect;
+  if FSocket<>nil then
+   begin
+    FSocket.Disconnect;
+    FSocket.Free;
+   end;
+  FSocket:=TTcpSocket.Create;
   FSocket.Connect(ServerName,Port);
   if not FSocket.Connected then
     raise EMongoConnectFailed.Create(
-      'MongoWire: failed to connect to "'+ServerName+':'+IntToStr(Port)+'"');
-  i:=1;
-  l:=4;
-  setsockopt(FSocket.Handle,IPPROTO_TCP,TCP_NODELAY,@i,l);
+      'MongoWire: failed to connect to "'+string(ServerName)+':'+IntToStr(Port)+'"');
+end;
+
+procedure TMongoWire.OpenSecure(const ServerName: AnsiString; Port: integer);
+begin
+  if FSocket<>nil then
+   begin
+    FSocket.Disconnect;
+    FSocket.Free;
+   end;
+  FSocket:=TTcpSecureSocket.Create;
+  FSocket.Connect(ServerName,Port);
+  if not FSocket.Connected then
+    raise EMongoConnectFailed.Create(
+      'MongoWire: failed to connect to "'+string(ServerName)+':'+IntToStr(Port)+'"');
 end;
 
 procedure TMongoWire.Close;
 begin
-  FSocket.Disconnect;
+  if FSocket<>nil then
+    FSocket.Disconnect;
 end;
 
 procedure TMongoWire.DataCString(const x:WideString);
@@ -228,7 +244,7 @@ var
   p:PMongoWireMsgHeader;
 begin
   //assert caller did FQueueLock !!!
-  if not FSocket.Connected then
+  if (FSocket=nil) or not(FSocket.Connected) then
     raise EMongoNotConnected.Create('MongoWire: not connected');
   //message header
   p:=FData.Memory;
@@ -667,7 +683,7 @@ begin
   FCollection:=Collection;
 end;
 
-function TMongoWireQuery.Next(const Doc: IJsonDocument): boolean;
+function TMongoWireQuery.Next(const Doc: IJSONDocument): boolean;
 var
   i:integer;
 begin

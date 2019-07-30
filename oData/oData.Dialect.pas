@@ -10,7 +10,7 @@ interface
 
 uses System.Classes, System.SysUtils, oData.ServiceModel,
   System.JSON, System.JSON.Helper, System.Generics.Collections,
-  oData.Engine, oData.Interf;
+  oData.Engine, oData.Interf, System.SyncObjs;
 
 const
   cODataRowState = 'rowstate';
@@ -23,7 +23,10 @@ Type
 
   TODataDialect = class(TInterfacedObject, IODataDialect)
   private
+    FBaseWhere: string;
     function GetWhereFromKeys(AKeys: string; const AJson: TJsonValue): String;
+    function GetUpdateFromJsonX(AJson: TJsonValue; aWhere: string)
+      : string; virtual;
   protected
     FSkip: integer;
     FTop: integer;
@@ -86,13 +89,27 @@ Type
     function IndexOfItem(AResource: string; AColumnName: string): integer;
   end;
 
-var
-  ODataIgnoreColumns: TODataIgnoreColumns;
+
+
 
 implementation
 
 uses oData.parse;
 
+var
+ _ODataIgnoreColumns : TODataIgnoreColumns;
+ ODataIgnoreColumnsLock : TSpinLock;
+
+
+function ODataIgnoreColumns(): TODataIgnoreColumns;
+begin
+  ODataIgnoreColumnsLock.Enter;
+  try
+    Result := _ODataIgnoreColumns;
+  finally
+   ODataIgnoreColumnsLock.Exit;
+  end;
+end;
 function iff(b: Boolean; t, f: string): string;
 begin
   if b then
@@ -117,7 +134,7 @@ var
   cols, params, v: string;
 begin
   Result := '';
-  js := TInterfacedJson.New(AJson as TJSONObject, false);
+  js := TInterfacedJson.New(AJson.ToString,True);
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar INSERT'));
@@ -172,6 +189,7 @@ function TODataDialect.GetUpdateFromJson(AJson: TJsonValue): string;
 var
   js: IJsonObject;
   p: TJsonPair;
+  AjsonObject : TJSONObject;
   cols: string;
   procedure local_addColumn(aCol: string);
   begin
@@ -184,11 +202,11 @@ var
 
 begin
   Result := '';
-  js := TInterfacedJson.New(AJson as TJSONObject, false);
+  cols := '';
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar UPDATE'));
-  cols := '';
+  js := TInterfacedJSON.New(Ajson.ToString,True);
   for p in js.JSONObject do
   begin
     if (p.JsonString.Value = cODataRowState) or
@@ -197,7 +215,12 @@ begin
       continue;
     case TInterfacedJson.GetJsonType(p) of
       jtNumber, jtDateTime, jtString, jtDatetimeISO8601, jtTrue, jtFalse:
-        local_addColumn(p.JsonString.Value + '=' + ' :' + p.JsonString.Value);
+        begin
+          // nao fazer update em colunas que fazem parte da where
+          if pos(':' + p.JsonString.Value, FBaseWhere) = 0 then
+            local_addColumn(p.JsonString.Value + '=' + ' :' +
+              p.JsonString.Value);
+        end;
       jtNull:
         ; // noop
     else
@@ -205,6 +228,13 @@ begin
     end;
   end;
   Result := 'Set ' + cols;
+end;
+
+function TODataDialect.GetUpdateFromJsonX(AJson: TJsonValue;
+  aWhere: string): string;
+begin
+  FBaseWhere := aWhere;
+  Result := GetUpdateFromJson(AJson);
 end;
 
 function TODataDialect.GetWhereFromKeys(AKeys: string;
@@ -255,7 +285,7 @@ begin
   if AJson = nil then
     exit;
 
-  js := TInterfacedJson.New(AJson as TJSONObject, false);
+  js := TInterfacedJson.New(AJson.ToString, True);
   if (not assigned(AJson)) then
     raise Exception.Create(TODataError.Create(400,
       'JSON inválido para gerar Where'));
@@ -418,12 +448,6 @@ begin
       'Método solicitado não autorizado'));
 
   Result := 'update ' + LResource.Collection;
-  FUpdate := GetUpdateFromJson(AJson);
-  if FUpdate = '' then
-    raise Exception.Create(TODataError.Create(500,
-      'Não é um conjunto JSON válido'));
-
-  Result := Result + ' ' + FUpdate;
 
   FWhere := oData.Filter;
 
@@ -457,6 +481,13 @@ begin
   if FWhere = '' then
     raise Exception.Create(TODataError.Create(403,
       'Não permitidido excluir todas as linhas'));
+
+  FUpdate := GetUpdateFromJsonX(AJson, FWhere);
+  if FUpdate = '' then
+    raise Exception.Create(TODataError.Create(500,
+      'Não é um conjunto JSON válido'));
+
+  Result := Result + ' ' + FUpdate;
 
   Result := Result + ' where ' + FWhere;
 
@@ -542,10 +573,11 @@ var
   FWhere, FWhere2, FKeys: string;
   FKeysStrings: TStringList;
 begin
-  if AResource=nil then
-  AResource := (GetResource(oData.resource) as IJsonODataServiceResource).this;
+  if AResource = nil then
+    AResource := (GetResource(oData.resource)
+      as IJsonODataServiceResource).this;
 
-  LResource :=  TJsonODataServiceResource(AResource);
+  LResource := TJsonODataServiceResource(AResource);
 
   if not LResource.method.Contains('DELETE') then
     raise Exception.Create(TODataError.Create(403,
@@ -707,9 +739,11 @@ end;
 procedure TODataDialect.CreateTopSkip(var Result: string; nTop, nSkip: integer);
 begin
   // mySql/firebird;
+  Result := '';
   FTop := nTop;
   FSkip := nSkip;
-  Result := TopCmdStmt + nTop.ToString + ' ';
+  if nTop >= 0 then
+    Result := TopCmdStmt + nTop.ToString + ' ';
   if nSkip > 0 then
     Result := Result + SkipCmdStmt + nSkip.ToString;
 
@@ -721,7 +755,7 @@ var
 begin
   try
     rs := GetResource(AResource) as IJsonODataServiceResource;
-    Result := TInterfacedJson.New(rs.Relation(ARelation).JSON, false);
+    Result := TInterfacedJson.New(rs.Relation(ARelation).JSON, True);
     if not assigned(Result) then
       raise Exception.Create('Serviços não disponível para o resource detalhe: '
         + ARelation);
@@ -780,10 +814,10 @@ end;
 
 initialization
 
-ODataIgnoreColumns := TODataIgnoreColumns.Create;
-
+_ODataIgnoreColumns := TODataIgnoreColumns.Create;
+ODataIgnoreColumnsLock := TSPinLock.Create(False); //record
 finalization
 
-ODataIgnoreColumns.Free;
+_ODataIgnoreColumns.Free;
 
 end.

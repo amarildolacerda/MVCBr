@@ -95,7 +95,7 @@ type
   /// TFormFactory é utilizado para herança dos TForms para transformar o FORM em VIEW no MVCBr
   /// </summary>
   TCustomFormFactory = class({$IFDEF LINUX} TComponent{$ELSE} TForm{$ENDIF},
-    IMVCBrBase, IView, IMVCBrObserver)
+    IMVCBrBase, IView, IMVCBrObserver, IMVCBrTest)
   private
     FTimeInit: TDateTime;
     FEventRef: Integer;
@@ -144,7 +144,8 @@ type
     [weak]
     function ApplicationControllerInternal: IApplicationController;
     function ApplicationController: TApplicationController;
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); overload; override;
+    constructor Create; reintroduce; overload;
     destructor Destroy; override;
     procedure Release; virtual;
     function GetGuid(AII: IInterface): TGuid;
@@ -251,6 +252,8 @@ type
       write SetOnCommandEvent;
     property OnViewUpdate: TNotifyEvent read FOnViewUpdate
       write SetOnViewUpdate;
+
+    procedure test; virtual;
   end;
 
   TFormFactory = class(TCustomFormFactory)
@@ -279,6 +282,11 @@ type
     property OnViewInit;
   end;
 
+procedure RegisterTestCase(AClass: TComponentClass);
+procedure RunTestCase();
+procedure checkTest(ACond: boolean; ATexto: string; AException: boolean = false;
+  AOutput: string = '');
+
 implementation
 
 uses MVCBr.MiddlewareFactory, MVCBr.Observable;
@@ -296,6 +304,11 @@ function TCustomFormFactory.Controller(const AController: IController): IView;
 begin
   result := self;
   SetController(AController);
+end;
+
+constructor TCustomFormFactory.Create;
+begin
+  inherited Create(nil);
 end;
 
 var
@@ -917,12 +930,33 @@ begin
   ShowView(nil);
 end;
 
+procedure TCustomFormFactory.test;
+begin
+  // fazer override no formulario para carregar test locais;
+end;
+
 function TCustomFormFactory.ShowView(const AProcBeforeShow: TProc<IView>;
 AShowModal: boolean): IView;
 begin
   FShowModal := AShowModal;
   result := self;
   ShowView(AProcBeforeShow);
+end;
+
+procedure RegisterTestCase(AClass: TComponentClass);
+begin
+  MVCBr.Interf.RegisterTestCase(AClass);
+end;
+
+procedure RunTestCase();
+begin
+  MVCBr.Interf.RunTestCase();
+end;
+
+procedure checkTest(ACond: boolean; ATexto: string; AException: boolean = false;
+AOutput: string = '');
+begin
+  MVCBr.Interf.checkTest(ACond, ATexto, AException, AOutput);
 end;
 
 end.

@@ -2,9 +2,10 @@
 //  ODataBr Provider
 //  Auth: amarildo lacerda - tireideletra.com.br
 // </summary>
-import { Injectable,Input, Inject } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Rx';
+import { GlobalsService } from './globals.service';
 
 
 
@@ -105,9 +106,12 @@ export class ODataResponse {
 @Injectable()
 export class ODataProviderService {
   private observable: Observable<any>;
+  public port:number=0;
+  public host:string=''
   query_data: ODataService;
-  base_url: string = "http://localhost:8080";
+  base_url: string = "http://localhost:8886";
   token: string = "";
+  jwtToken :string = "";
   headers: HttpHeaders;
   response: any;
   count: number = 0;
@@ -117,36 +121,53 @@ export class ODataProviderService {
   startsAt: any;
   endsAt: any;
 
+  config:any = {server:{host:'http://localhost',port:8080}};
 
-  constructor(private server: HttpClient) {
+  constructor(public http: HttpClient, public global:GlobalsService) {
     this.headers = new HttpHeaders();
     this.headers.append('Content-Type', 'application/json; charset=UTF-8');
+    this.global.subscribe(r=>{
+      this.config = r;
+      this.createUrlBase( r.server.host,r.server.port );
+    })
   }
+ 
 
-  @Input()
-  get http(){
-    return this.server;
-  }
-  
   public getObservable(): Observable<any> {
     return this.observable;
   }
 
   public createUrlBase(base: string, port: number) {
     let url = "";
+    let _port= port.toFixed(0);
+    if (port==0){
+      _port = window.location.port;
+    }
     if (base != "") {
-      url = base;
+      url = base+':'+_port;
+      this.host = base;
+      this.port = parseInt(_port);
     }
     else {
       let loc = window.location;
-      url = loc.protocol + '//' + loc.hostname + ':' + port;
+      this.host = loc.protocol + '//' + loc.hostname;
+      this.port = parseInt(_port);
+      url = loc.protocol + '//' + loc.hostname + ':' + _port;
     }
     this.base_url = url;
     return url;
   }
   private getOptions() {
     this.count = 0;
+    
+    this.headers.set('token',this.config.server.token);
+    if (this.jwtToken!='')
+      this.headers.set('Autorization',this.jwtToken);
     return { headers: this.headers };
+  }
+  public getLogin(){
+    this.http.get(this.base_url +'/OData/login/'+this.config.token,this.getOptions())
+    .subscribe(r=>{ console.log(r)  });
   }
   public getUrl(collection: string, aParam: string = "") {
     let p = (aParam != "" ? "&" + aParam : "");
@@ -233,7 +254,7 @@ export class ODataProviderService {
       .map(res => { return res });
     return this.observable;
   }
-  
+
   public putItem(collection: string, item: any, erroProc: any = null): Observable<any> {
     /// enviar item para o servidor.
     this.observable = this.http.put(this.getUrl(collection),

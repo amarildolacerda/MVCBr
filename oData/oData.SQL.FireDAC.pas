@@ -33,9 +33,10 @@ type
   private
     FQuery: TFdQuery; // IQueryAdapter<TFdQuery>;
     FConnection: TFDConnection;
-    procedure SetConnection(const Value: TFDConnection);
-    procedure paramFromJson(q: TFdQuery; ji: TJsonObject);
-    procedure PrepareQuery(FQuery: TFdQuery);
+  protected
+    procedure SetConnection(const Value: TFDConnection); virtual;
+    procedure paramFromJson(q: TFdQuery; ji: TJsonObject); virtual;
+    procedure PrepareQuery(FQuery: TFdQuery); virtual;
   public
     destructor Destroy; override;
     function GetPrimaryKey(AConnection: TObject; ACollection: string)
@@ -44,7 +45,7 @@ type
 
     function QueryClass: TDataSetclass; override;
     property Connection: TFDConnection read FConnection write SetConnection;
-    function ExecuteGET(AJsonBody: TJsonValue; var JSONResponse: TJsonObject)
+    function ExecuteGET(AJsonBody: TJsonValue; out JSONResponse: TJsonObject)
       : TObject; override;
     function ExecuteDELETE(ABody: string; var JSONResponse: TJsonObject)
       : Integer; override;
@@ -63,8 +64,11 @@ implementation
 
 uses System.DateUtils, FireDAC.Stan.Param, System.Rtti, idURI,
   oData.JSON, oData.Dialect,
-  oData.Interf, oData.engine;
+  oData.Parse, oData.Interf, oData.engine;
 { TODataFiredacQuery }
+
+const
+  execErrorCode = 412;
 
 procedure TODataFiredacQuery.CreateExpandCollections(AQuery: TObject);
 begin
@@ -146,8 +150,8 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, 'Linha: ' + iLin.toString
-          + ', ' + e.Message));
+        raise Exception.Create(TODataError.Create(execErrorCode,
+          'Linha: ' + iLin.toString + ', ' + e.Message));
     end;
   end;
 end;
@@ -172,7 +176,6 @@ function TODataFiredacQuery.LocalExecutePATCH(ABody: string;
   var JSONResponse: TJsonObject; AResource: IJsonODataServiceResource): Integer;
 var
   AJson: string;
-  jo: TJsonValue;
   js: IJsonObject;
   isArray: boolean;
   ji: TJsonValue;
@@ -189,15 +192,11 @@ begin
   AJson := ABody;
   if ABody <> '' then
   begin
-    jo := TJsonObject.ParseJSONValue(ABody);
-    if assigned(jo) then
-    begin
-      js := TInterfacedJson.New(jo, false);
-      if (not assigned(js)) or (not assigned(js.JSON)) then
-        raise Exception.Create
-          ('JSON string inválido, revisar o body da mensagem');
-      isArray := js.JSON is TJsonArray;
-    end;
+    js := TInterfacedJson.New(ABody, True);
+    if (not assigned(js)) or (not assigned(js.JSON)) then
+      raise Exception.Create
+        ('JSON string inválido, revisar o body da mensagem');
+    isArray := js.JSON is TJsonArray;
   end;
 
   if AResource <> nil then
@@ -245,8 +244,8 @@ begin
           if TJsonObject(ji).TryGetValue<string>(cODataRowState, LRowState) then
             if LRowState = cODataModifiedORInserted then
             begin
-              FQuery.SQL.Text := AdapterAPI.CreatePOSTQuery(FODataParse.oData, ji,
-                ALocalResource.this);
+              FQuery.SQL.Text := AdapterAPI.CreatePOSTQuery(FODataParse.oData,
+                ji, ALocalResource.this);
               paramFromJson(FQuery, ji as TJsonObject);
               FQuery.ExecSQL;
               ra := FQuery.RowsAffected;
@@ -291,8 +290,8 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, 'Linha: ' + iLin.toString
-          + ', ' + e.Message));
+        raise Exception.Create(TODataError.Create(execErrorCode,
+          'Linha: ' + iLin.toString + ', ' + e.Message));
     end;
   end;
 end;
@@ -410,8 +409,8 @@ begin
       if e.Message.StartsWith('{') then
         raise
       else
-        raise Exception.Create(TODataError.Create(501, 'Linha: ' + iLin.toString
-          + ', ' + e.Message));
+        raise Exception.Create(TODataError.Create(execErrorCode,
+          'Linha: ' + iLin.toString + ', ' + e.Message));
     end;
   end;
 end;
@@ -458,16 +457,19 @@ begin
 end;
 
 function TODataFiredacQuery.ExecuteGET(AJsonBody: TJsonValue;
-  var JSONResponse: TJsonObject): TObject;
+  out JSONResponse: TJsonObject): TObject;
 var
   i: Integer;
   v: TValue;
   n: Integer;
   LSql: string;
   oData: TODataDecodeAbstract;
+  LParse: TODataParse;
 begin
-  oData := FODataParse.oData;
+  LParse := FODataParse.this as TODataParse;
   try
+    oData := LParse.oData;
+
     InLineRecordCount := -1;
     FQuery := { TQueryAdapter.Create( } QueryClass.Create(nil)
       as TFdQuery; { ); }
@@ -478,13 +480,13 @@ begin
       if (oData.inLineCount = 'true') and ((oData.Skip > 0) or (oData.Top > 0))
       then
       begin
-        FQuery.SQL.Text := CreateGETQuery(FODataParse, true);
+        FQuery.SQL.Text := CreateGETQuery(LParse, true);
         FQuery.Open;
         InLineRecordCount := FQuery.FieldByName('N__Count').AsInteger;
         FQuery.Close;
       end;
 
-      FQuery.SQL.Text := CreateGETQuery(FODataParse);
+      FQuery.SQL.Text := CreateGETQuery(LParse);
 
       if oData.Search <> '' then
       begin
@@ -519,11 +521,11 @@ begin
         if e.Message.StartsWith('{') then
           raise
         else
-          raise Exception.Create(TODataError.Create(501,
+          raise Exception.Create(TODataError.Create(execErrorCode,
             e.Message + '<' + FQuery.SQL.Text + '>'));
     end;
   finally
-    oData := nil;
+    JSONResponse.Free;
   end;
 end;
 

@@ -46,6 +46,7 @@ Type
     FLock: TObject;
     FIsUnsafe: boolean;
     FDefaultSafeted: IInterface;
+    [Hide]
     [unsafe]
     FDefault: IInterface;
     function GetDefault: IInterface;
@@ -57,6 +58,7 @@ Type
     destructor Destroy; override;
     procedure SetUnsafe(AInterface: IInterface); virtual;
     procedure SetSafeted(AInterface: IInterface); virtual;
+    [Hide]
     property Default: IInterface read GetDefault;
     class function NewInstance<TInterface: IInterface>(AClass: TClass)
       : TInterface; static;
@@ -140,7 +142,7 @@ destructor TMVCBrFactory.Destroy;
 begin
   FDefault := nil;
   FDefaultSafeted := nil;
-  FLock.free;
+  freeAndNil(FLock);
   inherited;
 end;
 

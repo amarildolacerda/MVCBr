@@ -10,7 +10,6 @@ uses System.Classes, System.SysUtils,
 
 type
 
-
   THTTPRestClient = class(TMVCBrHttpRestClientAbstract)
   private
     FHTTP: TNetHTTPClient;
@@ -18,7 +17,7 @@ type
   protected
     FResponse: IHTTPResponse;
   public
-    property Response:IHTTPResponse read FResponse;
+    property Response: IHTTPResponse read FResponse;
     constructor Create(AOwner: TComponent); override;
     destructor destroy; override;
     Property HttpClient: TNetHTTPClient read GetHTTP;
@@ -44,13 +43,11 @@ Uses
 
 { TIdHTTPRestClient }
 
-
 constructor THTTPRestClient.Create(AOwner: TComponent);
 begin
   inherited;
   FHTTP := TNetHTTPClient.Create(self);
 end;
-
 
 destructor THTTPRestClient.destroy;
 begin
@@ -71,6 +68,11 @@ function THTTPRestClient.Execute(AProc: TProc): boolean;
 var
   streamSource: TStringStream;
   i: integer;
+  function isText(a: string): boolean;
+  begin
+    result := not a.contains('image');
+  end;
+
 begin
   result := false;
   streamSource := TStringStream.Create;
@@ -82,7 +84,9 @@ begin
     FHTTP.AcceptEncoding := AcceptEncoding;
     FHTTP.Accept := Accept;
 
-    FHTTP.ContentType := 'application/json' + '; charset=' + AcceptCharset;
+    FHTTP.ContentType := ContentType;
+    if (AcceptCharset <> '') then
+      FHTTP.ContentType := ContentType + ';charset=' + AcceptCharset;
 
 {$IF CompilerVersion>=32}
     FHTTP.ResponseTimeout := Timeout;
@@ -100,7 +104,7 @@ begin
       rmPUT:
         FResponse := FHTTP.Put(CreateURI, streamSource);
       rmPOST:
-        FResponse := FHTTP.Post(CreateURI, Body);
+        FResponse := FHTTP.Post(CreateURI, streamSource); // Body);
       rmPATCH:
         FResponse := FHTTP.Patch(CreateURI, streamSource);
       rmOPTIONS:
@@ -110,7 +114,11 @@ begin
     end;
     ResponseCode := FResponse.StatusCode;
     result := (FResponse.StatusCode >= 200) and (FResponse.StatusCode <= 299);
-    SetContent ( FResponse.ContentAsString(TEncoding.UTF8) );
+    if isText(ContentType) then
+      try
+        SetContent(FResponse.ContentAsString(TEncoding.UTF8));
+      except
+      end;
     if assigned(AProc) then
       AProc();
   finally
@@ -118,6 +126,5 @@ begin
   end;
 
 end;
-
 
 end.

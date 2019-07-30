@@ -66,7 +66,7 @@ end;
 class procedure TODataGenScript.Release;
 begin
   FReleased := true;
-  if not assigned(FEngines) then
+  if assigned(FEngines) then
     FEngines.free;
   FEngines := nil;
 end;

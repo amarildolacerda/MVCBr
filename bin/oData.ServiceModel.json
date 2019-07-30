@@ -6,6 +6,7 @@
 			"resource": "produtos",
 			"collection": "produtos",
 			"keyID": "codigo",
+			"roles":"NONE",
 			"maxpagesize": 100,
 			"fields": "produtos.codigo,produtos.descricao,produtos.unidade,produtos.grupo,produtos.preco",
 			"method": "GET,PATCH,POST,PUT,DELETE",
@@ -63,6 +64,7 @@
 		{
 			"resource": "vendas",
 			"collection": "vendas",
+			"roles":"NONE",
 			"maxpagesize": 100,
 			"keyID": "documento",
 			"fields": "*",

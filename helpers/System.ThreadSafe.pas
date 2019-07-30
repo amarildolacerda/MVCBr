@@ -749,6 +749,7 @@ constructor TThreadSafeObjectList<T>.create(AOwnedObject: boolean = true);
 begin
   inherited create;
   FLock := TObject.create;
+  // quando AOwnedObject=true a lista destroy o objeto
   FList := TObjectList<T>.create(AOwnedObject);
 end;
 
