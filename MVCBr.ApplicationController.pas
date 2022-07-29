@@ -1,9 +1,11 @@
 {
   Application Controller - Singleton central para os controller
-  Altera��es:
+  Alterações:
   12/04/2017 - por: amarildo lacerda
   + Introduzido Function Default para Singleton
   + Incluido   class var FApplicationController
+
+  TODO: report de memory leaks ao final do programa para alguma interface de controle
 }
 
 unit MVCBr.ApplicationController;
@@ -149,7 +151,7 @@ type
   end;
 
   /// Singleton - ApplicationController
-  /// ApplicationController � uma inst�ncia que implementa a interface ...
+  /// ApplicationController é uma instancia SINGLETON iniciada ao carregar o MVCBr em substituição de Application
   [weak]
 function ApplicationController: IApplicationController;
 
