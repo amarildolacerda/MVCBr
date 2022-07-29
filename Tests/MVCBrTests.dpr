@@ -15,11 +15,6 @@ program MVCBrTests;
 {$ENDIF}
 
 uses
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   DUnitTestRunner,
   MVCBr.ApplicationController,
   MVCBr.Controller,
