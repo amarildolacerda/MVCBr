@@ -1,6 +1,6 @@
 {
   Application Controller - Singleton central para os controller
-  Alterações:
+  Alteraï¿½ï¿½es:
   12/04/2017 - por: amarildo lacerda
   + Introduzido Function Default para Singleton
   + Incluido   class var FApplicationController
@@ -9,7 +9,7 @@
 unit MVCBr.ApplicationController;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -47,7 +47,7 @@ uses
 
 type
   /// <summary>
-  /// AplicationController é uma instancia SINGLETON iniciada ao carregar o MVCBr
+  /// AplicationController ï¿½ uma instancia SINGLETON iniciada ao carregar o MVCBr
   /// No ApplicationController fica armazenado uma lista de Controllers
   /// ativos
   /// </summary>
@@ -148,8 +148,8 @@ type
     class procedure SetClosing(AValue: boolean);
   end;
 
-  /// Singleton
-  /// ApplicationController é uma instância que implementa a interface ...
+  /// Singleton - ApplicationController
+  /// ApplicationController ï¿½ uma instï¿½ncia que implementa a interface ...
   [weak]
 function ApplicationController: IApplicationController;
 
@@ -637,7 +637,7 @@ begin
     begin
       application.CreateForm(AClass, reference);
       if not supports(reference, IView) then
-        raise Exception.Create('Não é uma classe que implementa IView');
+        raise Exception.Create('Nï¿½o ï¿½ uma classe que implementa IView');
     end;
 
     if assigned(AModel) then
