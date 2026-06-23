@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "agent": {
+    "mvcbr": {
+      "description": "Agente especializado no framework MVCBr para Delphi",
+      "mode": "subagent"
+    }
+  }
+}
