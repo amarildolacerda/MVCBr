@@ -42,24 +42,131 @@ MVCBr/
 - **Dependency injection**: Through MVCBr's own factory/mediator pattern
 - **IDE integration**: IDE experts in `package/` register new project wizards
 
+## MVC Wiring
+
+### ApplicationController (Singleton)
+Access via `MVCBr.ApplicationController.ApplicationController`.
+
+### Controller → View → Model relationships
+```
+ApplicationController
+  └── List of IController
+        ├── 0..1 IView (weak reference, [weak] attribute)
+        └── 0..* IModel
+              └── IViewModel (type mtViewModel)
+```
+
+### Standard factory method pattern for controllers
+
+```pascal
+class function TMainController.New(const AView: IView; const AModel: IModel): IController;
+var
+  vm: IViewModel;
+begin
+  result := TMainController.Create as IController;
+  result.View(AView).Add(AModel);
+  if assigned(AModel) then
+    if supports(AModel.This, IViewModel, vm) then
+      vm.View(AView).Controller(result);
+end;
+```
+
+### Controller lifecycle
+
+```
+BeforeInit → Init → AfterInit
+  ↓
+(ShowView, Update, DoCommand)
+  ↓
+release (libera Models e referências)
+```
+
+### Fluent API
+
+```pascal
+result := TMainController.Create as IController;
+result.View(AView).Add(AModel);
+```
+
+### IoC registration
+
+Registrar controllers no `initialization`:
+
+```pascal
+TMVCBr.RegisterInterfaced<IController>('MainController', IMainController, TMainController, true);
+TMVCBr.ResolveInterfaced<IController>('MainController');
+```
+
+## Memory management
+
+- `try..finally` na linha IMEDIATAMENTE seguinte a todo `.Create` sem Owner
+- `[weak]` attribute para referências circulares (View↔Controller, Model↔Controller)
+- `TInterfacedObject` é liberado automaticamente (ARC)
+- Componentes VCL/FMX com Owner: `TComponent.Create(Self)`
+
+## Patterns in MVCBr.*
+
+| File | Pattern | Usage |
+|------|---------|-------|
+| `MVCBr.Patterns.Builder.pas` | Builder | Construção complexa de objetos |
+| `MVCBr.Patterns.Facade.pas` | Facade | Fachada para subsistemas |
+| `MVCBr.Patterns.Factory.pas` | Factory | Criação de objetos |
+| `MVCBr.Patterns.Singleton.pas` | Singleton | Instância única |
+| `MVCBr.Patterns.Mediator.pas` | Mediator | Mediação entre objetos |
+| `MVCBr.Patterns.Memento.pas` | Memento | Snapshots de estado |
+| `MVCBr.Patterns.Observer.pas` | Observer | Notificação pub/sub |
+| `MVCBr.Patterns.Adapter.pas` | Adapter | Compatibilização de interfaces |
+| `MVCBr.Patterns.Decorator.pas` | Decorator | Adição dinâmica de comportamento |
+| `MVCBr.Patterns.Composite.pas` | Composite | Hierarquias parte-todo |
+| `MVCBr.Patterns.Strategy.pas` | Strategy | Algoritmos intercambiáveis |
+| `MVCBr.Patterns.States.pas` | States | Máquina de estados |
+| `MVCBr.Patterns.Prototype.pas` | Prototype | Clonagem de objetos |
+| `MVCBr.Patterns.Lazy.pas` | Lazy Loading | Inicialização tardia |
+
+## OData engine structure
+
+| Layer | File | Purpose |
+|-------|------|---------|
+| Engine | `oData/MVC.oData.Base.pas` | Core OData controller |
+| Parser | `oData/oData.Parse.pas` | OData query parsing ($filter, $top, etc.) |
+| SQL | `oData/oData.SQL.pas` | SQL generation from OData |
+| SQL FireDAC | `oData/SQL.FireDAC.pas` | FireDAC query execution |
+| Dialects | `oData/Dialect.*.pas` | DB-specific SQL (Firebird, MySQL, PG, etc.) |
+| JSON | `oData/oData.JSON.pas` | JSON serialization |
+| Client | `oData/oData.Client.pas` | OData client requests |
+| Client Builder | `oData/Client.Builder.pas` | Fluent OData query builder |
+
+## Source file key map
+
+| File | Purpose |
+|------|---------|
+| `MVCBr.Interf.pas` | All base interfaces (IController, IModel, IView, IViewModel) |
+| `MVCBr.Controller.pas` | TControllerFactory |
+| `MVCBr.ApplicationController.pas` | Singleton controller manager |
+| `MVCBr.Model.pas` | TModelFactory base |
+| `MVCBr.View.pas` | TViewFactory base |
+| `MVCBr.FormView.pas` | VCL/FMX Form as IView |
+| `MVCBr.ViewModel.pas` | TViewModelFactory (bridge View↔Model) |
+| `MVCBr.IoC.pas` | IoC container (TMVCBrIoc) |
+| `MVCBr.Observable.pas` | Observer pattern container |
+| `MVCBr.FireDAC.Model.pas` | FireDAC persistent model |
+| `MVCBr.MongoModel.pas` | MongoDB model |
+
 ## When creating new code
 
-1. Place models in the appropriate folder (VCL/FMX/oData)
-2. Follow the existing pattern — look at `Exemplos/` for reference
-3. Use `MVCBr.Interf.pas` interfaces for loose coupling
-4. Register components in the appropriate registration unit
-5. Create examples in `Exemplos/vcl/` or `Exemplos/fmx/` when adding new features
+1. Models, Views, Controllers em arquivos separados
+2. Seguir padrão de fábrica (`T*Factory`) com interfaces
+3. Registrar no container IoC na `initialization`
+4. Usar interfaces de `MVCBr.Interf.pas` para baixo acoplamento
+5. Olhar `Exemplos/` como referência de implementação
+6. Adicionar testes em `Tests/`
+7. Criar exemplo correspondente em `Exemplos/`
 
-## Key source files
+## Anti-patterns
 
-| Responsibility | File |
-|---|---|
-| Core interfaces | `MVCBr.Interf.pas` |
-| MVC controller | `MVCBr.Controller.pas` |
-| MVC view base | `MVCBr.View.pas` |
-| Patterns factory | `MVCBr.Patterns.Factory.pas` |
-| Singleton | `MVCBr.Patterns.Singleton.pas` |
-| Mediator | `MVCBr.Patterns.Mediator.pas` |
-| OData engine | `oData/MVCBr.OData.Engine.pas` |
-| OData client | `oData/MVCBr.OData.Client.pas` |
-| Server app | `MVCBrServer/ODataBrServer.dpr` |
+- ❌ Acessar banco direto na View ou Controller
+- ❌ Lógica de negócio em OnClick
+- ❌ Uses circular — resolver com interfaces
+- ❌ Variáveis globais — usar IoC
+- ❌ `with` statement
+- ❌ Concatenação de SQL — usar parâmetros

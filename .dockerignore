@@ -1,0 +1,5 @@
+# Ignorar tudo exceto o necessário para o servidor OData
+**
+!MVCBrServer/Dockerfile
+!MVCBrServer/MVCBrServer.config
+!bin/MVCBrServer_Linux

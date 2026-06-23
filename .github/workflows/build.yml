@@ -1,0 +1,41 @@
+name: Build MVCBr
+
+on:
+  push:
+    branches: [ dev, master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Delphi (dcc32 via delphi_deploy)
+      run: |
+        # Download delphi_deploy for dcc32 compiler
+        git clone https://github.com/amarildolacerda/delphi_deploy.git ..\delphi_deploy
+        echo "DCC32_PATH=$Env:GITHUB_WORKSPACE\..\delphi_deploy\cmp" >> $Env:GITHUB_ENV
+
+    - name: Compile Test Suite
+      run: |
+        cd Tests
+        ..\..\delphi_deploy\cmp\dcc32 MVCBrTests.dpr -DVCL `
+          -AWinTypes=Windows;WinProcs=Windows; `
+          -NS"Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;Vcl;System;Xml;Data;Datasnap;Web;Soap;Winapi;Windows;System.Win;VCLTee" `
+          -NO".\dcu" -LE".\dcu" -LN".\dcu" `
+          -U"..\..\delphi_deploy\cmp\dcu;..\..\delphi_deploy\cmp\bpl;%cd%\.."
+      shell: cmd
+
+    - name: Compile OData Server
+      run: |
+        cd MVCBrServer
+        ..\..\delphi_deploy\cmp\dcc32 ODataBrServer.dpr `
+          -AWinTypes=Windows;WinProcs=Windows; `
+          -NS"Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;Vcl;System;Xml;Data;Datasnap;Web;Soap;Winapi;Windows;System.Win;VCLTee" `
+          -NO".\dcu" -LE".\dcu" -LN".\dcu" `
+          -U"..\..\delphi_deploy\cmp\dcu;..\..\delphi_deploy\cmp\bpl;%cd%\.."
+      shell: cmd

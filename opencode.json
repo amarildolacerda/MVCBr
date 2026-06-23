@@ -6,5 +6,6 @@
       "description": "Agente especializado no framework MVCBr para Delphi",
       "mode": "subagent"
     }
-  }
+  },
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
 }
