@@ -1,44 +1,121 @@
 # Delphi MVCBr
 
-Model-view-controller (MVC) is a software design pattern that separates the representation of information from user interaction with it. The model consists of application data, business rules, logic, and functions. A view can be any output representation of the data, such as a table, diagram or some information to user. You can have multiple views of the same data, such as a bar chart for management and a tabular view for counters. The controller mediates the input, converting it into commands for the model or view. The core ideas behind MVC are code reuse and concept separation. <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">see more... Wikipedia</a>
+**MVCBr** é um framework MVC (Model-View-Controller) para Delphi que implementa o padrão de arquitetura de software separando a representação da informação da interação do usuário. Inclui suporte completo a **OData**, integração com VCL, FMX e UniGUI, além de diversos padrões de design como Builder, Facade, Factory, Singleton, Mediator, Observer, Adapter, Decorator, Composite, Strategy, Prototype e Lazy Loading.
 
+![Diagrama MVC](330px-ModelViewControllerDiagram2.svg.png)
 
-Model-view-controller (MVC), em português modelo-visão-controlador, é um padrão de arquitetura de software (design pattern) que separa a representação da informação da interação do usuário com ele. O modelo (model) consiste nos dados da aplicação, regras de negócios, lógica e funções. Uma visão (view) pode ser qualquer saída de representação dos dados, como uma tabela ou um diagrama. É possível ter várias visões do mesmo dado, como um gráfico de barras para gerenciamento e uma visão tabular para contadores. O controlador (controller) faz a mediação da entrada, convertendo-a em comandos para o modelo ou visão. As ideias centrais por trás do MVC são a reusabilidade de código e separação de conceitos... <a href="http://pt.wikipedia.org/wiki/MVC">ler mais....</a>
+---
 
-<img src="/330px-ModelViewControllerDiagram2.svg.png"></a>
+## Funcionalidades
 
+- Framework MVC completo para VCL, FMX e UniGUI
+- Servidor e cliente **OData** (ODataBrServer) com suporte a múltiplos bancos de dados (Firebird, MySQL, MSSQL, Oracle, PostgreSQL)
+- Integração com FireDAC e MongoDB
+- IDE Expert / Wizards para RAD Studio
+- Padrões de projeto implementados: Builder, Facade, Factory, Singleton, Mediator, Memento, Observer, Adapter, Decorator, Composite, Strategy, States, Prototype, Lazy
+- Servidor OData nos modos: aplicação Windows, Windows Service, ISAPI DLL e Linux
+- Gerador de metadados
+- Diversos exemplos práticos (VCL, FMX, OData, jQuery)
 
-* Install<br>
-  Seattle:  MVCBrPackageSeattle.dpr<br>
-  Berlin:   MVCBrPackageBerlin.dpr; (need update 2)<br>
-  Tokyo:    MVCBrPackageTokyo.dpr;<br>
-  
-* Another way to install its MVCBrInstall.exe - this is all for;
-  
-  After install:  New/ Other / MVCBr / MVCBr Project - create a MVCBr project;
-  
-  Adicionar o local (pasta) no path do delphi para ele localizar a pasta raiz  \MVCBr 
-  
-* Links  
-<a href="http://bit.ly/2l7w5tG">Como usar MVCBr</a><br>
-<a href="http://bit.ly/2gyBpVp">Youtube: Inicio do projeto - in Português</a><br>
-<a href="http://bit.ly/2yQVQnT">Blog Tirei de Letra</a><br>
-<a href="http://bit.ly/2iruz4s"> Facebook </a><br>
+---
 
+## Pré-requisitos
 
-<b>MVCBr Group - Credits</b>
-<pre>
-Kleberson Toro - fundador e idealizador do projeto;
-Amarildo Lacerda - fundador e implementação (coder);
-Oteniel Furquim - contribuição com debates e definição;
-Ivan Cesar     - contribuição nos debates e implementação do MemDataset para o OData;
-Elizangela Borato - contribuição com driver Postgres para o servidor OData e implementação do gerador de metadata.
-Thulio Bittencourt - participação na definição de escopo;
-Juliomar Marchetti - implementação do instalador e inclusão no GETIT
-Regys Borges da Silveira - ajuda no controle de versão e coparticipação com o Instalador
-Mauricio Abreu/Leonardo - Sempre questionado  ();
-Carlos Dias (Dex) - testes e apresentação de usercase; criação dos icones dos experts
-Giovani Da Cruz - Criador do Servidor OData para rodar como serviço.
+- Delphi **Seattle** (10), **Berlin** (10.1) ou **Tokyo** (10.2)
+- FireDAC (nativo do Delphi)
 
-tireideletra.com.br - plataforma de divulgação de artigos do MVCBr (Apoio: WBAGestão-Storeware)
-</pre>
+---
+
+## Instalação
+
+### Via IDE (pacote)
+
+Abra o arquivo de grupo de projeto correspondente à sua versão do Delphi e compile:
+
+| Versão Delphi | Arquivo |
+|---|---|
+| Seattle (10) | `package/MVCBrPackageSeattle.groupproj` |
+| Berlin (10.1) | `package/MVCBrPackageBerlin.groupproj` (necessita update 2) |
+| Tokyo (10.2) | `package/MVCBrPackageTokyo.groupproj` |
+
+Após compilar, o framework estará disponível em: **New → Other → MVCBr → MVCBr Project**.
+
+### Via instalador
+
+Execute o `MVCBrInstall.exe` para instalação automatizada.
+
+### Configuração
+
+Adicione o caminho da pasta raiz `\MVCBr` no *Library Path* do Delphi.
+
+---
+
+## Estrutura do Projeto
+
+```
+MVCBr/
+├── package/         # Pacotes Delphi, IDE experts, tests, templates
+├── VCL/             # Componentes VCL (OData adapters, HTTP client, FireDAC)
+├── FMX/             # Componentes FMX (PageView, LayoutView)
+├── oData/           # Engine OData: parser, SQL, dialects, client, JSON
+├── MVCBrServer/     # Servidor OData (Windows, Service, ISAPI, Linux)
+├── DMVC/            # DMVC Framework (bundled, Apache 2.0)
+├── Exemplos/        # Exemplos: vcl/, fmx/, oData/, jQuery/
+├── UniGui/          # Integração UniGUI
+├── MongoWire/       # Driver MongoDB (MIT)
+├── Docs/            # Documentação HTML (pasdoc)
+├── templates/       # Templates de geração de código
+└── bin/             # Binários compilados
+```
+
+---
+
+## OData
+
+O MVCBr possui uma implementação completa do protocolo OData, incluindo:
+
+- **Servidor OData** (`MVCBrServer/ODataBrServer.dpr`) nos modos: aplicação, Windows Service, ISAPI e Linux
+- **Cliente OData** com suporte a `$filter`, `$top`, `$skip`, `$orderby` e operações CRUD
+- **Dialetos** para Firebird, MySQL, MSSQL, Oracle e PostgreSQL
+- **Componentes VCL**: TODataDatasetAdapter, TODataDatasetBuilder, TODataFDMemTable
+- **Exemplos** em `Exemplos/oData/`
+
+---
+
+## Links
+
+- [Como usar MVCBr](http://bit.ly/2l7w5tG)
+- [YouTube: Início do projeto](http://bit.ly/2gyBpVp)
+- [Blog Tire de Letra](http://bit.ly/2yQVQnT)
+- [Facebook](http://bit.ly/2iruz4s)
+
+---
+
+## Créditos
+
+| Nome | Contribuição |
+|---|---|
+| Kleberson Toro | Fundador e idealizador |
+| Amarildo Lacerda | Fundador e implementação (coder) |
+| Oteniel Furquim | Debates e definição |
+| Ivan Cesar | Debates e implementação do MemDataset para OData |
+| Elizangela Borato | Driver Postgres para OData e gerador de metadados |
+| Thulio Bittencourt | Definição de escopo |
+| Juliomar Marchetti | Instalador e inclusão no GETIT |
+| Regys Borges da Silveira | Controle de versão e instalador |
+| Mauricio Abreu / Leonardo | Questionamento |
+| Carlos Dias (Dex) | Testes, usercase, ícones dos experts |
+| Giovani Da Cruz | Servidor OData como serviço |
+
+Plataforma de divulgação: [tireideletra.com.br](http://tireideletra.com.br) (Apoio: WBAGestão-Storeware)
+
+---
+
+## Licença
+
+Distribuído sob **Apache License 2.0** (consulte os cabeçalhos dos arquivos fonte).
+
+Componentes de terceiros incluídos:
+- **DMVC** — Apache License 2.0
+- **LoggerPro** — MIT License
+- **MongoWire** — MIT License
