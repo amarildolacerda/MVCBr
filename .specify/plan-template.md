@@ -5,6 +5,7 @@
 - [ ] Spec aprovada em `.specify/spec-*.md`
 - [ ] Branch `dev` atualizado com `origin/dev`
 - [ ] Ambiente Delphi configurado
+- [ ] Se existir .git_token usar com GIT 
 
 ## Etapas
 

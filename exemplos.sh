@@ -34,7 +34,6 @@ EXAMPLES=(
     "Clientes/Clientes.dpr"
     "Grupo/Grupo.dpr"
     "ModuloBasico/ModuloModelExemplo.dpr"
-    "ACBr/ACBrExemplo.dpr"
 )
 
 echo "=== Compiling MVCBr VCL Examples ==="

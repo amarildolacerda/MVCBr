@@ -4,11 +4,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build tests",
             "type": "shell",
             "command": "make",
             "args": [
                 "tests",
+
                 
                 
             ],
@@ -22,5 +23,25 @@
             
             
         }
+,
+        {
+            "label": "build packages",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "packages",
+               
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent"
+            }
+            
+            
+        }
+
     ]
 }
