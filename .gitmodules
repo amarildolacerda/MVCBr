@@ -1,3 +1,6 @@
 [submodule "jcl"]
 	path = jcl
 	url = https://github.com/project-jedi/jcl.git
+[submodule "jvcl"]
+	path = jvcl
+	url = https://github.com/project-jedi/jvcl.git
