@@ -3,7 +3,6 @@
 #
 # Usage:
 #   make tests       - Compile test suite
-#   make server      - Compile OData server
 #   make packages    - Compile all .dpk packages
 #   make all         - Build everything
 #   make clean       - Remove compiled artifacts
@@ -18,19 +17,16 @@ CFLAGS += -NS"Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;Vcl;Vcl.Imaging
 CFLAGS += -NO$(DCU) -LE$(DCU) -LN$(DCU)
 
 # Unit search path
-UPATH  = $(BASE);$(BASE)\helpers;$(BASE)\VCL;$(BASE)\oData;$(BASE)\MongoWire
-UPATH += $(BASE)\MVCBrServer;$(BASE)\DMVC;$(BASE)\FMX;$(BASE)\UniGui
+UPATH  = $(BASE);$(BASE)\helpers;$(BASE)\VCL;$(BASE)\MongoWire
+UPATH += $(BASE)\FMX;$(BASE)\UniGui
 UFLAGS = -U"$(UPATH)" -I"$(UPATH)"
 
-.PHONY: all tests server packages clean
+.PHONY: all tests packages clean
 
-all: tests server packages
+all: tests packages
 
 tests:
 	$(DCC32) Tests\MVCBrTests.dpr -DVCL $(CFLAGS) $(UFLAGS)
-
-server:
-	$(DCC32) MVCBrServer\ODataBrServer.dpr $(CFLAGS) $(UFLAGS)
 
 packages:
 	$(DCC32) package\MVCBr.dpk $(CFLAGS) $(UFLAGS)
@@ -38,7 +34,6 @@ packages:
 	$(DCC32) package\MVCBrVCL.dpk $(CFLAGS) $(UFLAGS)
 	$(DCC32) package\MVCBrFMX.dpk $(CFLAGS) $(UFLAGS)
 	$(DCC32) package\MVCBrFireDAC.dpk $(CFLAGS) $(UFLAGS)
-	$(DCC32) package\MVCBrOData.dpk $(CFLAGS) $(UFLAGS)
 
 clean:
 	-del /s *.dcu 2>nul
