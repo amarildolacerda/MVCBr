@@ -290,11 +290,9 @@ var
   i: integer;
   AHandled: boolean;
   ADados: string;
-  nDados: integer;
 begin
   try
     try
-      nDados := 0;
       ADados := '';
 {$IFDEF DEBUG}
       if assigned(AJson) then
@@ -526,7 +524,6 @@ procedure TMVCBrObservable.UnSubscribe(AProc: TMVCBrObserverProc;
   AName: String = '');
 var
   i: integer;
-  p: TMVCBrObserverProc;
   AList: TList<TMVCBrObserverProc>;
 begin
   // workaroud
@@ -642,7 +639,6 @@ var
   i: integer;
   SName: string;
   SObject: TObject;
-  comp: IComparable<TObject>;
 begin
   with LockList do
     try

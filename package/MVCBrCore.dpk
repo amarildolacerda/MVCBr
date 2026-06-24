@@ -37,8 +37,7 @@ requires
   fmx,
   dbrtl,
   DesignIDE,
-  RESTComponents,
-  soaprtl;
+  RESTComponents;
 
 contains
   MVCBr.ApplicationController in '..\MVCBr.ApplicationController.pas',

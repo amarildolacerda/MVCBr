@@ -327,14 +327,12 @@ end;
 destructor TMVCBrIoC.Destroy;
 var
   o: TObject;
-  rego: TIoCRegistration<IMVCBrIOC>;
 begin
   if FContainerInfo <> nil then
   begin
     for o in FContainerInfo.Values do
       if o <> nil then
       begin
-        rego := TIoCRegistration<IMVCBrIOC>(o);
         if assigned(o) then
           o.Free;
       end;
@@ -705,7 +703,6 @@ procedure TMVCBrIoC.Release;
 var
   o: TObject;
   rogo: TIoCRegistration<IMVCBrIOC>;
-  resolvedObj: TObject;
 begin
   for o in FContainerInfo.Values do
   begin

@@ -52,8 +52,6 @@ end;
 procedure TestTMVCBrMementoFactory.TestAdd;
 var
   ReturnValue: Integer;
-  AInfo: TValue;
-  AId: string;
 begin
   // TODO: Setup method call parameters
   ReturnValue := FMVCBrMementoFactory.Add('1','exemplo');
@@ -64,7 +62,6 @@ end;
 procedure TestTMVCBrMementoFactory.TestUndo;
 var
   ReturnValue: TValue;
-  AId: string;
 begin
   // TODO: Setup method call parameters
   FMVCBrMementoFactory.add('1','x1');

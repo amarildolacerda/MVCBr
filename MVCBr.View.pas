@@ -1,11 +1,11 @@
 
 /// <summary>
-/// Unit MVCBr.View implementas os objeto Factory para a camada de visualização
+/// Unit MVCBr.View implementas os objeto Factory para a camada de visualizaï¿½ï¿½o
 /// </summary>
 unit MVCBr.View;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -44,8 +44,8 @@ type
   TViewFactoryClass = class of TViewFactory;
 
   /// <summary>
-  /// TViewFactory é um Factory abstrato a ser utilizado com finalidades genericas
-  /// sem ligação direta com um visualizador
+  /// TViewFactory ï¿½ um Factory abstrato a ser utilizado com finalidades genericas
+  /// sem ligaï¿½ï¿½o direta com um visualizador
   /// </summary>
   TViewFactory = class(TMVCFactoryAbstract, IView, IMVCBrObserver)
   private
@@ -225,9 +225,6 @@ end;
 
 function TViewFactory.ShowView(const AProc: TProc<IView>): Integer;
 begin
-  result := -1;
-  // implements on overrided code
-
   if assigned(AProc) then
     AProc(self);
 

@@ -9,5 +9,6 @@
     },
     "[html]": {
         "files.encoding": "utf8"
-    }
+    },
+    "editor.defaultFormatter": null
 }

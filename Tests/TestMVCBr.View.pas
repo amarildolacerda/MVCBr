@@ -107,7 +107,6 @@ procedure TestTViewFactory.TestNew;
 var
   ReturnValue: IView;
   AController: IController;
-  AClass: TViewFactoryClass;
 begin
   AController := TControllerFactory.create;
   ReturnValue := TViewFactory.New<IView>(TViewFactory);

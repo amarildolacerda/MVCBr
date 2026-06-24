@@ -1,7 +1,7 @@
 unit MVCBr.Controller;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -214,7 +214,6 @@ end;
 destructor TControllerFactory.Destroy;
 var
   ac: TApplicationController;
-  i: integer;
 begin
   Release;
   if assigned(FView) then
@@ -426,7 +425,6 @@ var
   LModel: IModel;
   Instance: TComponent;
 begin
-  Instance := nil;
 {$IF DEFINED(CLR)}
   Instance := AClass.Create(self);
 {$ELSE}
@@ -434,7 +432,6 @@ begin
   try
     Instance.Create(nil);
   except
-    Instance := nil;
     raise;
   end;
 {$ENDIF}
@@ -449,8 +446,6 @@ begin
 end;
 
 procedure TControllerFactory.Release;
-var
-  obj: TObject;
 begin
   if not FReleased then
   begin
@@ -462,12 +457,8 @@ begin
         if not FViewOwnedFree then
           if assigned(FView) then
           begin
-            if not TMVCBr.IsMainForm(FView.This) then
-            begin
-              obj := FView.This;
-              FView := nil; // tenta encerrar o formulario
-              // obj.DisposeOf;
-            end;
+              if not TMVCBr.IsMainForm(FView.This) then
+                FView := nil;
           end;
       except
       end;

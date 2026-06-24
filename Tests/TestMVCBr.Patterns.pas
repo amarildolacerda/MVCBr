@@ -340,68 +340,48 @@ begin
 end;
 
 procedure TestTMVCBrStates.TestNext;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
 begin
   TThread.NameThreadForDebugging('TestNext');
   if not FMVCBrStates.EOF then
-    ReturnValue := FMVCBrStates.Next;
+    FMVCBrStates.Next;
 
   TestAdd;
   TestAdd;
 
-  ReturnValue := FMVCBrStates.CurrentStep;
-
-  Assert.IsNotNull(ReturnValue);
-
-  // TODO: Validate method results
+  Assert.IsNotNull(FMVCBrStates.CurrentStep);
 end;
 
 procedure TestTMVCBrStates.TestFirst;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
 begin
   TestAdd;
   TestAdd;
 
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
 
-  ReturnValue := FMVCBrStates.First;
+  FMVCBrStates.First;
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 0);
-  // TODO: Validate method results
 end;
 
 procedure TestTMVCBrStates.TestLast;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
 begin
   TestAdd;
   TestAdd;
-  ReturnValue := FMVCBrStates.Last;
+  FMVCBrStates.Last;
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
-  // TODO: Validate method results
 end;
 
 procedure TestTMVCBrStates.TestCurrentStep;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
 begin
   TestAdd;
-  ReturnValue := FMVCBrStates.CurrentStep;
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 0);
-  // TODO: Validate method results
 end;
 
 procedure TestTMVCBrStates.TestMoveInterno;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
-  ASetp: Integer;
 begin
-  // TODO: Setup method call parameters
   TestAdd;
   TestAdd;
   TestAdd;
-  ReturnValue := FMVCBrStates.SetLastStep('COMMAND2');
+  FMVCBrStates.SetLastStep('COMMAND2');
   TestAdd;
   TestAdd;
   TestAdd;
@@ -436,42 +416,28 @@ begin
 end;
 
 procedure TestTMVCBrStates.TestMoveTo;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
-  AStep: Integer;
 begin
-  // TODO: Setup method call parameters
   TestAdd;
   TestAdd;
   TestAdd;
   TestAdd;
   TestAdd;
-  ReturnValue := FMVCBrStates.MoveTo(1);
+  FMVCBrStates.MoveTo(1);
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
-  // TODO: Validate method results
 end;
 
 procedure TestTMVCBrStates.TestSetFirstStep;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
-  AStep: Integer;
 begin
-  // TODO: Setup method call parameters
   TestAdd;
   TestAdd;
   TestAdd;
-  ReturnValue := FMVCBrStates.SetFirstStep(1);
+  FMVCBrStates.SetFirstStep(1);
   FMVCBrStates.First;
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
-  // TODO: Validate method results
 end;
 
 procedure TestTMVCBrStates.TestSetLastStep;
-var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
-  ASetp: Integer;
 begin
-  // TODO: Setup method call parameters
   TestAdd;
   TestAdd;
   TestAdd;
@@ -479,15 +445,13 @@ begin
   TestAdd;
   TestAdd;
   TestAdd;
-  ReturnValue := FMVCBrStates.SetLastStep('COMMAND2');
+  FMVCBrStates.SetLastStep('COMMAND2');
   FMVCBrStates.Last;
   Assert.IsTrue(FMVCBrStates.CurrenteIndex = 2);
-  // TODO: Validate method results
 end;
 
 procedure TestTMVCBrStates.TestExecuteDelegate;
 var
-  ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
   FRef: Integer;
 begin
   TThread.NameThreadForDebugging('TestExecuteDelegate');
@@ -560,7 +524,6 @@ type
 procedure TestTMVCBrFactory.TestNewInstance;
 var
   ReturnValue: IInterface;
-  AClass: TClass;
 begin
   // TODO: Setup method call parameters
   ReturnValue := TMVCBrFactory.NewInstance<IInterface>(TObjectClasse1);
@@ -569,11 +532,8 @@ begin
 end;
 
 procedure TestTMVCBrFactory.TestThis;
-var
-  ReturnValue: TObject;
 begin
-  ReturnValue := FMVCBrFactory.This;
-  // TODO: Validate method results
+  FMVCBrFactory.This;
 end;
 
 procedure TestTMVCBrFactory.TestLock;

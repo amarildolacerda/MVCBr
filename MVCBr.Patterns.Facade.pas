@@ -1,7 +1,7 @@
 
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -90,7 +90,6 @@ end;
 function TMVCBrFacade.Execute(ACommand: TValue; AValue: TValue): boolean;
 var
   i: integer;
-  item: TMVCBrBuilderItem<string, boolean>;
 begin
   result := false;
   i := Builder.IndexOf(ACommand);
@@ -108,7 +107,6 @@ end;
 procedure TMVCBrFacade.ForEach(AValue: TValue; AExecuteBool: TFunc<TValue, boolean>);
 var
   i: integer;
-  ACommand: string;
   AItem: IMVCBrBuilderItem<TValue, boolean>;
   rt: boolean;
   AFunc: TMVCBrFacateFunc;

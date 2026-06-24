@@ -37,11 +37,8 @@ requires
   IndyProtocols,
   IndyCore,
   FireDAC,
-  FireDACCommonDriver,
   FireDACCommon,
-  DbxCommonDriver,
   RESTComponents,
-  DataSnapFireDAC,
   MVCBrCore;
 
 end.

@@ -2,14 +2,14 @@
 /// <summary>
 /// MVCBr.Interf  declara as interfaces bases para o MVCBr
 /// O uso de interface objetivo minimizar o acoplamento das UNITs
-/// o que irá permitir reutilização das mesmas interfaces
+/// o que irï¿½ permitir reutilizaï¿½ï¿½o das mesmas interfaces
 /// para um numero grande de UNIT;
 /// </summary>
 /// ---------------------------------------------------------------------------
 unit MVCBr.Interf;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -34,21 +34,21 @@ unit MVCBr.Interf;
 { *************************************************************************** }
 
 { *************************************************************************** }
-{ Créditos: }
+{ Crï¿½ditos: }
 { Kleberson Toro }
 { Regys Silveira }
 { Ivan Cesar }
-{ Décio Morais }
+{ Dï¿½cio Morais }
 { Carlos Eduardo (Morfik) }
 { *************************************************************************** }
 
 {
   Como organizar:
-  - Um aplicativo só pode ter um ApplicationController
+  - Um aplicativo sï¿½ pode ter um ApplicationController
   - Um Controler pode estar ligando a 0 ou 1 view... e pode conter uma lista de Models;
-  - Todo Controller deverá se auto registrar no ApplicationController
-  - Cada Controller é um Observable
-  - Cada Model é um Observer
+  - Todo Controller deverï¿½ se auto registrar no ApplicationController
+  - Cada Controller ï¿½ um Observable
+  - Cada Model ï¿½ um Observer
   - O controller pode enviar Update para os Models e para o View
   - O View pode receber Update do Controller e Enviar UpdateByView para o Controller
   - O Model pode receber Update do Controller e Enviar UpdateByModel para o Controller
@@ -384,7 +384,7 @@ type
 
 {$IFNDEF BPL}
 
-  // IModel representa a interface onde implementa as regras de negócio
+  // IModel representa a interface onde implementa as regras de negï¿½cio
   TModelTypes = set of TModelType;
 {$ENDIF}
 
@@ -436,7 +436,7 @@ type
 
   IViewModel = interface;
 
-  // IView é uma representação para FORM
+  // IView ï¿½ uma representaï¿½ï¿½o para FORM
   IView = interface(IViewBase)
     ['{A1E53BAC-BFCE-4D90-A54F-F8463D597E43}']
     function ViewEvent(AMessage: string; var AHandled: boolean): IView;
@@ -580,7 +580,7 @@ type
 
   TControllerClass = class of TControllerAbstract;
 
-  // IController manter associação entre o IView e IModel
+  // IController manter associaï¿½ï¿½o entre o IView e IModel
   IController = interface(IControllerBase)
     ['{A7758E82-3AA1-44CA-8160-2DF77EC8D203}']
 {$IFDEF FMX}
@@ -750,7 +750,6 @@ end;
 
 function TControllerAbstract.AttachModel(const AModel: IModel): integer;
 begin
-  result := -1;
   DefaultModels.Add(AModel);
   with FModels.LockList do
     try
@@ -835,7 +834,6 @@ end;
 
 class function TMVCBr.IsMainForm(AObject: TObject): boolean;
 begin
-  result := false;
 {$IFDEF LINUX}
 {$ELSE}
   result := assigned(Application.MainForm) and

@@ -231,7 +231,7 @@ MVCBr/
 │   ├── oData/
 │   └── jQuery/
 ├── UniGui/          # Integração UniGUI
-├── MongoWire/       # Driver MongoDB
+├── delphi_deploy/   # Compilador e dependências (cross-platform)
 ├── Docs/            # Documentação HTML (pasdoc)
 ├── Templates/       # Templates de geração de código
 └── Tests/           # Testes DUnit
@@ -307,6 +307,28 @@ O workflow em `.github/workflows/build.yml` automatiza:
 
 O arquivo `dcc32.cfg` na raiz contém as configurações globais do compilador
 (namespaces, paths de saída). Ajustar paths de units conforme ambiente local.
+
+#### delphi_deploy (cross-platform)
+
+O compilador e as units de terceiros estão em `delphi_deploy/cmp/`:
+- `dcc32.exe` — compilador de linha de comando do Delphi
+- `dcu/` — units compiladas (.dcu) de dependências (DUnit, etc.)
+- `bpl/` — runtime packages
+- `dcc32.cfg` — config do compilador com os paths de library
+
+Para compilar em Linux (via Wine):
+1. O `Makefile` detecta `wine` automaticamente e usa `Z:` paths
+2. Flags com ponto-e-vírgula devem ser passadas individualmente entre aspas
+   (ex: `'-AWinTypes=Wintypes;Wintprocs;' '-A...'`)
+3. `CONSOLE_TESTRUNNER` define no DPR ativa modo console para executar
+   testes sem interface gráfica
+4. Compilar: `make tests` → executar: `wine Tests/MVCBrTests.exe`
+
+Exemplo de flags no Makefile para Wine:
+```makefile
+DCC := wine $(DELPHI_DEPLOY)/dcc32.exe
+DCC_FLAGS := '-U$(DELPHI_DCU);$(PROJECT_DCU)' '-I$(DELPHI_INC);$(PROJECT_INC)'
+```
 
 Referência: https://github.com/amarildolacerda/delphi_deploy
 

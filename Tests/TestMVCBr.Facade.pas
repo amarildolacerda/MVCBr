@@ -51,8 +51,6 @@ implementation
 { TestTMVCBrFacade }
 
 procedure TestTMVCBrFacade.Add();
-var
-  AProc: TMVCBrFacateFunc;
 begin
   FMVCBrFacade.Add('TESTE',
     function(sender: TValue): boolean
@@ -63,8 +61,6 @@ begin
 end;
 
 procedure TestTMVCBrFacade.Contains;
-var
-  AProc: TMVCBrFacateFunc;
 begin
   FMVCBrFacade.Add('TESTE',
     function(sender: TValue): boolean
