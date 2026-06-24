@@ -12,7 +12,7 @@ unit TestMVCBr.Patterns.Lazy;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
+  DUnitX.TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
   System.RTTI, Forms,
   System.TypInfo, System.Classes,
   MVCBr.Interf, MVCBr.Patterns.States,
@@ -24,6 +24,7 @@ uses
 
 type
 
+  [TestFixture]
   TLazyObject = class;
 
   TLazyObject = class
@@ -32,19 +33,27 @@ type
     procedure Execute(AValue: Integer);
   end;
 
-  TestTMVCBrLazyObject = class(TTestCase)
+  TestTMVCBrLazyObject = class
   Private
     lzObject: TMVCBrLazyFactory<TObject>;
 
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestCreateLazyObject;
+    [Test]
     procedure TestLazyFactoryCreate;
+    [Test]
     procedure TestAddCommand;
+    [Test]
     procedure TestQueryCommand;
+    [Test]
     procedure TestFreeInstance;
+    [Test]
     procedure TestDelegate;
   end;
 
@@ -58,13 +67,11 @@ implementation
 
 procedure TestTMVCBrLazyObject.SetUp;
 begin
-  inherited;
   lzObject := TMVCBrLazyFactory<TObject>.Create;
 end;
 
 procedure TestTMVCBrLazyObject.TearDown;
 begin
-  inherited;
   lzObject.Free;
 end;
 
@@ -72,7 +79,7 @@ procedure TestTMVCBrLazyObject.TestAddCommand;
 begin
   lzObject.Add(1, TObject);
   lzObject.Add(2, TObject);
-  checkTrue(lzObject.count = 2, 'Não incluir os itens');
+  Assert.IsTrue(lzObject.count = 2, 'Nï¿½o incluiu os itens');
 end;
 
 procedure TestTMVCBrLazyObject.TestCreateLazyObject;
@@ -85,7 +92,7 @@ begin
       result := TLazyObject.Create;
     end);
   LLazy.Execute(10);
-  checkTrue(LLazy.FCount = 10, 'Não Executou o LazyObject');
+  Assert.IsTrue(LLazy.FCount = 10, 'Nï¿½o Executou o LazyObject');
 end;
 
 procedure TestTMVCBrLazyObject.TestDelegate;
@@ -96,28 +103,28 @@ begin
       result := TLazyObject.Create;
     end).instance;
 
-  checkTrue(lzObject.Query(1).IsCreated, 'Não inicilizou');
+  Assert.IsTrue(lzObject.Query(1).IsCreated, 'Nï¿½o inicilizou');
 
-  checkTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject),
-    'Não inicilizou TLazyObject');
+  Assert.IsTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject),
+    'Nï¿½o inicilizou TLazyObject');
 
 end;
 
 procedure TestTMVCBrLazyObject.TestFreeInstance;
 begin
   lzObject.Add(1, TObject);
-  checkTrue(lzObject.Query(1).IsCreated = false,
+  Assert.IsTrue(lzObject.Query(1).IsCreated = false,
     'Inicializou a instance antes de chama-la');
 
   lzObject.Query(1).instance;
-  checkTrue(lzObject.Query(1).IsCreated, 'Não incializou a instancia');
+  Assert.IsTrue(lzObject.Query(1).IsCreated, 'Nï¿½o incializou a instancia');
 
 end;
 
 procedure TestTMVCBrLazyObject.TestLazyFactoryCreate;
 begin
   lzObject.Add(1, TObject);
-  checkTrue(lzObject.count > 0, 'Não incluir o item');
+  Assert.IsTrue(lzObject.count > 0, 'Nï¿½o incluiu o item');
 end;
 
 procedure TestTMVCBrLazyObject.TestQueryCommand;
@@ -126,8 +133,8 @@ begin
   lzObject.Add(2, TComponent);
   lzObject.Add(3, TObject);
 
-  checkTrue(lzObject.Query(2).instance.InheritsFrom(TComponent),
-    'Não achou o TComponent');
+  Assert.IsTrue(lzObject.Query(2).instance.InheritsFrom(TComponent),
+    'Nï¿½o achou o TComponent');
 
 end;
 
@@ -137,9 +144,5 @@ procedure TLazyObject.Execute(AValue: Integer);
 begin
   FCount := AValue;
 end;
-
-initialization
-
-RegisterTest(TestTMVCBrLazyObject.Suite);
 
 end.

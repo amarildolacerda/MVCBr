@@ -3,34 +3,52 @@ unit TestMVCBr.Facade;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
+  DUnitX.TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
   System.RTTI,
   System.TypInfo, System.Classes, MVCBr.Interf,
   MVCBr.Patterns.Facade;
 
 type
-  TestTMVCBrFacade = class(TTestCase)
-  strict private
+  [TestFixture]
+  TestTMVCBrFacade = class
+  private
     FCont: integer;
     FMVCBrFacade: IMVCBrFacade;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
-    function GetItems: TMVCBrFacateFunc;
-    procedure Add();
-    procedure Remove;
-    procedure Contains;
-    function Count: integer;
-    procedure Execute;
-    procedure ForEach;
-    procedure GetItem;
+    [Setup]
+    procedure SetUp;
 
+    [TearDown]
+    procedure TearDown;
+
+    [Test]
+    function GetItems: TMVCBrFacateFunc;
+
+    [Test]
+    procedure Add();
+
+    [Test]
+    procedure Remove;
+
+    [Test]
+    procedure Contains;
+
+    [Test]
+    function Count: integer;
+
+    [Test]
+    procedure Execute;
+
+    [Test]
+    procedure ForEach;
+
+    [Test]
+    procedure GetItem;
   end;
 
 implementation
 
-{ TestTMVCBrStates }
+{ TestTMVCBrFacade }
 
 procedure TestTMVCBrFacade.Add();
 var
@@ -41,7 +59,7 @@ begin
     begin
       result := true
     end);
-  checkTrue(FMVCBrFacade.Count > 0, 'N„o adicionou o comando');
+  Assert.IsTrue(FMVCBrFacade.Count > 0, 'N√£o adicionou o comando');
 end;
 
 procedure TestTMVCBrFacade.Contains;
@@ -53,19 +71,17 @@ begin
     begin
       result := true
     end);
-  checkTrue(FMVCBrFacade.Contains('TESTE'), 'N„o encontrou o commando');
+  Assert.IsTrue(FMVCBrFacade.Contains('TESTE'), 'N√£o encontrou o commando');
 end;
 
 function TestTMVCBrFacade.Count: integer;
 begin
-
   FMVCBrFacade.Add('TESTE',
     function(sender: TValue): boolean
     begin
       result := true
     end);
-  checkTrue(FMVCBrFacade.Count > 0, 'count n„o retornou o registro');
-
+  Assert.IsTrue(FMVCBrFacade.Count > 0, 'count n√£o retornou o registro');
 end;
 
 procedure TestTMVCBrFacade.Execute;
@@ -92,17 +108,16 @@ begin
         FCont := FCont + 1000;
     end);
 
-  checkTrue(FMVCBrFacade.Count = 3, 'count n„o retornou correto');
+  Assert.IsTrue(FMVCBrFacade.Count = 3, 'count n√£o retornou correto');
 
   FMVCBrFacade.Execute('TESTE1', nil);
-  checkTrue(FCont = 2, 'n„o executou o comando(2)');
+  Assert.IsTrue(FCont = 2, 'n√£o executou o comando(2)');
 
   FMVCBrFacade.Execute('TESTE2', nil);
-  checkTrue(FCont = 5, 'n„o executou o comando (5)');
+  Assert.IsTrue(FCont = 5, 'n√£o executou o comando (5)');
 
   FMVCBrFacade.Execute('TESTE2', 0);
-  checkTrue(FCont > 1000, 'n„o executou o comando (>1000)');
-
+  Assert.IsTrue(FCont > 1000, 'n√£o executou o comando (>1000)');
 end;
 
 procedure TestTMVCBrFacade.ForEach;
@@ -132,11 +147,11 @@ begin
       result := false;
     end);
 
-  checkTrue(FMVCBrFacade.Count = 3, 'count n„o retornou correto');
+  Assert.IsTrue(FMVCBrFacade.Count = 3, 'count n√£o retornou correto');
 
   FMVCBrFacade.ForEach(0, nil);
 
-  checkTrue(FCont = 1006, 'n„o executou o comando(1006)');
+  Assert.IsTrue(FCont = 1006, 'n√£o executou o comando(1006)');
 
   FCont := 0;
 
@@ -146,9 +161,8 @@ begin
        result := true;
     end);
 
-  checkTrue(FCont = 1006, 'n„o executou o comando com function(1006)');
+  Assert.IsTrue(FCont = 1006, 'n√£o executou o comando com function(1006)');
   FCont := 0;
-
 
   FMVCBrFacade.ForEach(0,
     function(cmd: TValue): boolean
@@ -156,26 +170,24 @@ begin
        result := cmd.AsString.equals('TESTE1');
     end);
 
-  checkTrue(FCont = 2, 'n„o executou o comando com function(2)');
+  Assert.IsTrue(FCont = 2, 'n√£o executou o comando com function(2)');
   FCont := 0;
-
-
 end;
 
 procedure TestTMVCBrFacade.GetItem;
 var
   AProc: TMVCBrFacateFunc;
 begin
-  checkTrue(FMVCBrFacade.GetItem('TESTE') = nil, 'n„o retornou nil');
+  Assert.IsTrue(FMVCBrFacade.GetItem('TESTE') = nil, 'n√£o retornou nil');
   FMVCBrFacade.Add('TESTE2',
     function(sender: TValue): boolean
     begin
       result := true
     end);
   AProc := FMVCBrFacade.Items[0];
-  checkTrue(assigned(AProc), 'N„o retornou a function com Items[0]');
+  Assert.IsTrue(assigned(AProc), 'N√£o retornou a function com Items[0]');
   AProc := FMVCBrFacade.GetItem('TESTE2');
-  checkTrue(assigned(AProc), 'N„o retornou a function com GetItem');
+  Assert.IsTrue(assigned(AProc), 'N√£o retornou a function com GetItem');
 end;
 
 function TestTMVCBrFacade.GetItems: TMVCBrFacateFunc;
@@ -188,7 +200,7 @@ begin
       result := true
     end);
   AProc := FMVCBrFacade.Items[0];
-  checkTrue(assigned(AProc), 'N„o retornou a function');
+  Assert.IsTrue(assigned(AProc), 'N√£o retornou a function');
 end;
 
 procedure TestTMVCBrFacade.Remove;
@@ -198,25 +210,19 @@ begin
     begin
       result := true
     end);
-  checkTrue(FMVCBrFacade.Count > 0, 'n„o adicionou item');
+  Assert.IsTrue(FMVCBrFacade.Count > 0, 'n√£o adicionou item');
   FMVCBrFacade.Remove('TESTE');
-  checkTrue(FMVCBrFacade.Count = 0, 'n„o removeu item');
+  Assert.IsTrue(FMVCBrFacade.Count = 0, 'n√£o removeu item');
 end;
 
 procedure TestTMVCBrFacade.SetUp;
 begin
-  inherited;
   FMVCBrFacade := TMVCBrFacade.new;
 end;
 
 procedure TestTMVCBrFacade.TearDown;
 begin
-  inherited;
   FMVCBrFacade := nil;
 end;
-
-initialization
-
-RegisterTest(TestTMVCBrFacade.Suite);
 
 end.

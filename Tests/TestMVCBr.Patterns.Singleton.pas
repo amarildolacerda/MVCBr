@@ -3,7 +3,7 @@ unit TestMVCBr.Patterns.Singleton;
 interface
 
 uses
-  TestFramework, System.SysUtils,
+  DUnitX.TestFramework, System.SysUtils,
   System.Classes,
   MVCBr.Patterns.Singleton;
 
@@ -15,15 +15,21 @@ type
     procedure SetValue(v: integer);
   end;
 
-  TestTMVCBrSingleton = class(TTestCase)
+  TestTMVCBrSingleton = class
   private
     FInstance: TMVCBrSingleton<TClasseSingleton>;
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+  public
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+    [Test]
     procedure TestNew;
+    [Test]
     procedure TestDefault;
+    [Test]
     procedure TestRelease;
+    [Test]
     procedure TestProcedureOfClassSingleted;
   end;
 
@@ -33,13 +39,11 @@ implementation
 
 procedure TestTMVCBrSingleton.SetUp;
 begin
-  inherited;
   FInstance := TMVCBrSingleton<TClasseSingleton>.NewAsObject;
 end;
 
 procedure TestTMVCBrSingleton.TearDown;
 begin
-  inherited;
   FInstance.Release;
   FInstance.Free;
 end;
@@ -51,27 +55,27 @@ begin
   // raise Exception.Create('Error Message');
 
   FClasse := FInstance.Default;
-  CheckNotNull(FClasse);
+  Assert.IsNotNull(FClasse);
 
 end;
 
 procedure TestTMVCBrSingleton.TestNew;
 begin
   // raise Exception.Create('Error Message');
-  CheckNotNull(FInstance);
+  Assert.IsNotNull(FInstance);
 end;
 
 procedure TestTMVCBrSingleton.TestProcedureOfClassSingleted;
 begin
    FInstance.default.SetValue(10);
-   CheckEquals( FInstance.default.value,10 );
+   Assert.AreEqual( FInstance.default.value,10 );
 end;
 
 procedure TestTMVCBrSingleton.TestRelease;
 begin
   // raise Exception.Create('Error Message');
   FInstance.Release;
-  //CheckNull(FInstance.InstanceWithoutInit);
+  //Assert.IsNull(FInstance.InstanceWithoutInit);
 
 end;
 
@@ -83,7 +87,5 @@ begin
 end;
 
 initialization
-
-RegisterTest(TestTMVCBrSingleton.Suite);
-
+  TDUnitX.RegisterTestFixture(TestTMVCBrSingleton);
 end.

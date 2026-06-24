@@ -12,7 +12,7 @@ unit TestMVCBrModel;
 interface
 
 uses
-  TestFramework, System.Classes,
+  DUnitX.TestFramework, System.Classes,
   System.Generics.collections, MVCBr.Interf,
   MVCBr.Controller, System.JSON,
   DataModuleMock, MVCBr.Model, MVCBr.ModuleModel, System.SysUtils,
@@ -21,6 +21,7 @@ uses
 type
   // Test methods for class TModelFactory
 
+  [TestFixture]
   TModelFactoryMock = class(TModelFactory)
   private
     FRefCount: Integer;
@@ -29,8 +30,8 @@ type
 
   end;
 
-  TestTModelFactory = class(TTestCase)
-  strict private
+  TestTModelFactory = class
+  private
 
     FModelFactory: TModelFactoryMock;
 
@@ -41,23 +42,38 @@ type
     FController: IController;
   public
 
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestGetController;
+    [Test]
     procedure TestGetOwned;
+    [Test]
     procedure TestController;
+    [Test]
     procedure TestThis;
+    [Test]
     procedure TestGetID;
+    [Test]
     procedure TestID;
+    [Test]
     procedure TestUpdate;
+    [Test]
     procedure TestAfterInit;
 
+    [Test]
     procedure TestRegisterObserver;
+    [Test]
     procedure TestUnRegisterObserverNamed;
+    [Test]
     procedure TestUnRegisterObserverNamedOnly;
+    [Test]
     procedure TesteObserver;
     Procedure TestCreateLazyModel;
+    [Test]
     procedure TestFreeInstanceLazyModel;
 
   end;
@@ -65,8 +81,8 @@ type
   { TModuleFactoryMock = class(TModuleFactory)
     end;
   }
-  TestTModuleModelFactory = class(TTestCase)
-  strict private
+  TestTModuleModelFactory = class
+  private
 
   [unsafe]
     FModelFactory: IModelAdapter<TDataModuleMockTester>;
@@ -74,16 +90,19 @@ type
   Type
     TTesteController = class(TControllerFactory)
     end;
-  private
-    procedure SetUp; override;
-    procedure TearDown; override;
+  public
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
 
   protected
     [unsafe]
     FController: IController;
   public
-  published
+    [Test]
     procedure TestGetController;
+    [Test]
     procedure TestLazyLoad;
   end;
 
@@ -108,8 +127,8 @@ var
   ReturnValue: IController;
 begin
   ReturnValue := FModelFactory.GetController;
-  CheckNotNull(ReturnValue, 'Nao retornou');
-  CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
   // TODO: Validate method results
 end;
 
@@ -118,7 +137,7 @@ var
   ReturnValue: TComponent;
 begin
   ReturnValue := FModelFactory.GetOwner;
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
 
   // TODO: Validate method results
 end;
@@ -130,7 +149,7 @@ var
 begin
   // TODO: Setup method call parameters
   ReturnValue := FModelFactory.Controller(AController);
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
   // TODO: Validate method results
 end;
 
@@ -149,7 +168,7 @@ begin
 
     LModel := TModelAdapterFactory<TObjectComum>.new(LController);
     LModel.Instance.Execute(10);
-    CheckTrue(LModel.Instance.FCount=10,'N�o atribuiu valor');
+    Assert.IsTrue(LModel.Instance.FCount=10,'N�o atribuiu valor');
     LModel := nil;
 
 
@@ -163,7 +182,7 @@ begin
   ref := FModelFactory.GetStubInt;
   FModelFactory.UpdateObserver('x', nil);
 
-  CheckTrue(FModelFactory.GetStubInt > ref, 'N�o chamou o evento do Observer');
+  Assert.IsTrue(FModelFactory.GetStubInt > ref, 'N�o chamou o evento do Observer');
 
   TMVCBr.UnRegisterObserver('x', FModelFactory);
 end;
@@ -176,7 +195,7 @@ begin
 
     LModel := TModelAdapterFactory<TObjectComum>.new(LController);
     LModel.Instance.Execute(10);
-    CheckTrue(LModel.Instance.FCount=10,'N�o atribuiu valor');
+    Assert.IsTrue(LModel.Instance.FCount=10,'N�o atribuiu valor');
     LModel := nil;
 
 
@@ -187,7 +206,7 @@ var
   ReturnValue: TObject;
 begin
   ReturnValue := FModelFactory.This;
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
   // TODO: Validate method results
 end;
 
@@ -196,7 +215,7 @@ var
   ReturnValue: string;
 begin
   ReturnValue := FModelFactory.GetID;
-  CheckTrue(ReturnValue <> '');
+  Assert.IsTrue(ReturnValue <> '');
   // TODO: Validate method results
 end;
 
@@ -209,7 +228,7 @@ begin
   AID := FModelFactory.GetID;
   ReturnValue := FModelFactory.ID(AID);
   // TODO: Validate method results
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
   ReturnValue := nil;
 end;
 
@@ -220,7 +239,7 @@ begin
   ref := TMVCBrObservable.DefaultContainer.Count;
   TMVCBr.RegisterObserver('z', FModelFactory);
   ref2 := TMVCBrObservable.DefaultContainer.Count;
-  CheckTrue(ref2 > ref, 'Não incrementou a lista de observable');
+  Assert.IsTrue(ref2 > ref, 'Não incrementou a lista de observable');
   TMVCBr.UnRegisterObserver('z');
 end;
 
@@ -244,13 +263,13 @@ var
 begin
   ReturnValue := FModelFactory.Update;
   // TODO: Validate method results
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
 end;
 
 procedure TestTModelFactory.TestAfterInit;
 begin
   FModelFactory.AfterInit;
-  CheckNotNull(FModelFactory.This);
+  Assert.IsNotNull(FModelFactory.This);
 end;
 
 { TModelFactoryMock }
@@ -289,9 +308,9 @@ var
   ReturnValue: IController;
 begin
   ReturnValue := FModelFactory.GetController;
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
   if assigned(ReturnValue) then
-    CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
+    Assert.IsTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
   ReturnValue := nil;
   // TODO: Validate method results
 end;
@@ -302,11 +321,11 @@ var
   ReturnValue: IController;
 begin
   ReturnValue := FModelFactory.GetController;
-  CheckNotNull(ReturnValue, 'Nao retornou');
+  Assert.IsNotNull(ReturnValue, 'Nao retornou');
   if assigned(ReturnValue) then
-    CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
+    Assert.IsTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
 
-  CheckTrue(FModelFactory.Instance.counter = 1, 'N�o executou Lazy Load');
+  Assert.IsTrue(FModelFactory.Instance.counter = 1, 'N�o executou Lazy Load');
 
   ReturnValue := nil;
   // TODO: Validate method results
@@ -319,11 +338,5 @@ procedure TObjectComum.Execute(AValue:Integer);
 begin
     FCount := AValue;
 end;
-
-initialization
-
-// Register any test cases with the test runner
-RegisterTest(TestTModelFactory.Suite);
-RegisterTest(TestTModuleModelFactory.Suite);
 
 end.

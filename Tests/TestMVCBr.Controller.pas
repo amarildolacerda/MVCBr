@@ -12,7 +12,7 @@ unit TestMVCBr.Controller;
 interface
 
 uses
-  TestFramework, System.SysUtils,
+  DUnitX.TestFramework, System.SysUtils,
   System.Generics.Collections, System.TypInfo,
   MVCBr.Interf, MVCBr.Model, MVCBr.ApplicationController,
   System.RTTI, MVCBr.View, System.Classes,
@@ -25,6 +25,7 @@ type
     ['{1972DCFC-4365-49DA-81AD-E92DD58690AD}']
   end;
 
+  [TestFixture]
   TTestModel1 = class(TModelFactory, ITestModel1)
   public
     Constructor Create; override;
@@ -38,44 +39,76 @@ type
   TTestView = class(TViewFactory)
   end;
 
-  TestTControllerFactory = class(TTestCase)
-  strict private
+  TestTControllerFactory = class
+  private
     FControllerFactory: IController;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestID;
+    [Test]
     procedure TestGetModelByID;
+    [Test]
     procedure TestDoCommand;
+    [Test]
     procedure TestGetModel;
+    [Test]
     procedure TestGetModelByType;
+    [Test]
     procedure TestInit;
+    [Test]
     procedure TestBeforeInit;
+    [Test]
     procedure TestAfterInit;
+    [Test]
     procedure TestGetView;
+    [Test]
     procedure TestView;
+    [Test]
     procedure TestThis;
+    [Test]
     procedure TestControllerAs;
+    [Test]
     procedure TestAdd;
+    [Test]
     procedure TestIndexOf;
+    [Test]
     procedure TestIndexOfModelType;
+    [Test]
     procedure TestDelete;
+    [Test]
     procedure TestCount;
+    [Test]
     procedure TestForEach;
+    [Test]
     procedure TestForEachFunc;
+    [Test]
     procedure TestUpdateAll;
+    [Test]
     procedure TestUpdateByModel;
+    [Test]
     procedure TestUpdateByView;
+    [Test]
     procedure TestResolveController;
+    [Test]
     procedure TestRevokeController;
 
+    [Test]
     procedure TestApplicationControllerResolveController;
+    [Test]
     procedure TestResolveControllerName;
 
+    [Test]
     procedure TestRegisterObserver;
+    [Test]
     procedure TestUnRegisterObserverNamed;
+    [Test]
     procedure TestUnRegisterObserverNamedOnly;
+    [Test]
     procedure TesteObserver;
 
   end;
@@ -106,7 +139,7 @@ begin
   // TODO: Setup method call parameters
   AID := FControllerFactory.this.ClassName;
   ReturnValue := TControllerFactory(FControllerFactory.this).ID(AID);
-  CheckNotNull(ReturnValue, 'N�o incializou o IController');
+  Assert.IsNotNull(ReturnValue, 'N�o incializou o IController');
   ReturnValue := nil;
   // TODO: Validate method results
 end;
@@ -117,7 +150,7 @@ var
 begin
   // TODO: Setup method call parameters
   ReturnValue := TControllerFactory(FControllerFactory.this).GetModelByID('Teste.Model');
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   ReturnValue := nil;
   // TODO: Validate method results
 end;
@@ -146,7 +179,7 @@ begin
   // TODO: Setup method call parameters
   idx := FControllerFactory.Count - 1;
   ReturnValue := FControllerFactory.GetModel(idx);
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
@@ -158,7 +191,7 @@ begin
   // TODO: Setup method call parameters
   AModelType := mtCommon;
   ReturnValue := FControllerFactory.GetModelByType(AModelType);
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
@@ -178,7 +211,7 @@ var
   ctrl: ITestController;
 begin
   ctrl := FControllerFactory.this.ResolveController<ITestController>;
-  CheckNotNull(ctrl, 'N�o inicializou o controller');
+  Assert.IsNotNull(ctrl, 'N�o inicializou o controller');
 end;
 
 procedure TestTControllerFactory.TestRevokeController;
@@ -191,20 +224,20 @@ begin
     as ITestSecondController2;
   ARefCount := AController.this.RefCount;
 
-  CheckTrue(AController.GetStubInt = 0, 'Contador n�o foi incilizado com 1');
+  Assert.IsTrue(AController.GetStubInt = 0, 'Contador n�o foi incilizado com 1');
   AController.IncContador;
-  CheckTrue(AController.GetStubInt = 1, 'Contador n�o foi incrementado para 2');
+  Assert.IsTrue(AController.GetStubInt = 1, 'Contador n�o foi incrementado para 2');
 
   // AController := nil ; // mata o controller
   ApplicationController.RevokeController(ITestSecondController2);
   AController := ApplicationController.ResolveController(ITestSecondController2)
     as ITestSecondController2;
 
-  CheckTrue(AController.this.RefCount = ARefCount,
+  Assert.IsTrue(AController.this.RefCount = ARefCount,
     'Contador de referencia n�o se manteve');
 
   ApplicationController.RevokeController(ITestSecondController2);
-  CheckTrue(AController.GetStubInt2 = 0, 'Instancia nao foi reinicializada');
+  Assert.IsTrue(AController.GetStubInt2 = 0, 'Instancia nao foi reinicializada');
   AController := nil; // mata o controller
 
 end;
@@ -227,7 +260,7 @@ var
 begin
   ctrl := ApplicationController.ResolveController(ITestController)
     as ITestController;
-  CheckNotNull(ctrl, 'n�o executou  resolvecontroller do application');
+  Assert.IsNotNull(ctrl, 'n�o executou  resolvecontroller do application');
 end;
 
 procedure TestTControllerFactory.TestResolveControllerName;
@@ -236,7 +269,7 @@ var
 begin
   ctrl := TControllerAbstract.resolve(TTestController.ClassName)
     as ITestController;
-  CheckNotNull(ctrl, 'n�o executou  resolvecontroller do application');
+  Assert.IsNotNull(ctrl, 'n�o executou  resolvecontroller do application');
 end;
 
 procedure TestTControllerFactory.TestGetView;
@@ -244,7 +277,7 @@ var
   ReturnValue: IView;
 begin
   ReturnValue := FControllerFactory.GetView;
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 
   // TODO: Validate method results
 end;
@@ -256,13 +289,13 @@ var
 begin
   // TODO: Setup method call parameters
   AView := FControllerFactory.GetView;
-  CheckNotNull(AView, 'A View n�o foi inicializa');
+  Assert.IsNotNull(AView, 'A View n�o foi inicializa');
   ReturnValue := FControllerFactory.View(AView);
-  CheckNotNull(ReturnValue, 'N�o retornou a view');
+  Assert.IsNotNull(ReturnValue, 'N�o retornou a view');
 
-  CheckSame(ReturnValue, FControllerFactory.GetView.GetController,
+  Assert.AreSame(ReturnValue, FControllerFactory.GetView.GetController,
     'Mudou o Controller, quando o esperado � que continuaria o mesmo');
-  CheckSame(AView, FControllerFactory.GetView,
+  Assert.AreSame(AView, FControllerFactory.GetView,
     'Mudou a View, quando o esperado � que continuaria a mesma');
 
   // TODO: Validate method results
@@ -273,10 +306,10 @@ var
   ReturnValue: TControllerAbstract;
 begin
   ReturnValue := FControllerFactory.this;
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 
-  CheckTrue(ReturnValue.this.InheritsFrom(TControllerFactory),
+  Assert.IsTrue(ReturnValue.this.InheritsFrom(TControllerFactory),
     'N�o herdou de TControllerFactory');
 
 end;
@@ -286,7 +319,7 @@ var
   ReturnValue: TControllerFactory;
 begin
   ReturnValue := TControllerFactory(FControllerFactory.this);
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
@@ -298,7 +331,7 @@ begin
   // TODO: Setup method call parameters
   AModel := TTestModel2.New<IModel>(TTestModel2);
   ReturnValue := FControllerFactory.add(AModel);
-  CheckTrue(ReturnValue > 0);
+  Assert.IsTrue(ReturnValue > 0);
   AModel := nil;
   // TODO: Validate method results
 end;
@@ -311,7 +344,7 @@ begin
   // TODO: Setup method call parameters
   AModel := FControllerFactory.GetModel(0);
   ReturnValue := FControllerFactory.IndexOf(AModel);
-  CheckTrue(ReturnValue = 0);
+  Assert.IsTrue(ReturnValue = 0);
   // TODO: Validate method results
 end;
 
@@ -323,7 +356,7 @@ begin
   // TODO: Setup method call parameters
   AModelType := mtCommon;
   ReturnValue := FControllerFactory.IndexOfModelType(AModelType);
-  CheckTrue(ReturnValue >= 0);
+  Assert.IsTrue(ReturnValue >= 0);
   // TODO: Validate method results
 end;
 
@@ -334,7 +367,7 @@ begin
   // TODO: Setup method call parameters
   Index := FControllerFactory.Count - 1;
   FControllerFactory.Delete(Index);
-  CheckTrue(Index = FControllerFactory.Count);
+  Assert.IsTrue(Index = FControllerFactory.Count);
   // TODO: Validate method results
 end;
 
@@ -343,8 +376,8 @@ var
   ReturnValue: Integer;
 begin
   ReturnValue := FControllerFactory.Count;
-  CheckTrue(ReturnValue > 0);
-  CheckTrue(ReturnValue > 0);
+  Assert.IsTrue(ReturnValue > 0);
+  Assert.IsTrue(ReturnValue > 0);
   // TODO: Validate method results
 end;
 
@@ -360,7 +393,7 @@ begin
       rt := true;
     end;
   FControllerFactory.ForEach(AProc);
-  CheckTrue(rt);
+  Assert.IsTrue(rt);
   // TODO: Validate method results
 end;
 
@@ -376,7 +409,7 @@ begin
       rt := true;
     end;
   FControllerFactory.ForEach(AProc);
-  CheckTrue(rt);
+  Assert.IsTrue(rt);
   // TODO: Validate method results
 end;
 
@@ -397,7 +430,7 @@ var
   ReturnValue: IController;
 begin
   ReturnValue := FControllerFactory.UpdateAll;
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
@@ -410,7 +443,7 @@ begin
 
   ReturnValue := FControllerFactory.UpdateByModel(AModel);
   // TODO: Validate method results
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTControllerFactory.TestUpdateByView;
@@ -421,7 +454,7 @@ begin
   // TODO: Setup method call parameters
   AView := FControllerFactory.GetView;
   ReturnValue := FControllerFactory.UpdateByView(AView);
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
@@ -431,21 +464,12 @@ end;
 
 constructor TTestModel1.Create;
 begin
-  inherited;
 
 end;
 
 destructor TTestModel1.Destroy;
 begin
 
-  inherited;
 end;
-
-initialization
-
-TMVCBr.RegisterInterfaced<IModel>('Teste.Model', IModel, TTestModel1, true);
-// Register any test cases with the test runner
-
-RegisterTest(TestTControllerFactory.Suite);
 
 end.

@@ -12,21 +12,27 @@ unit TestMVCBr.Patterns.memento;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Generics.Collections, System.Json,
+  DUnitX.TestFramework, System.SysUtils, System.Generics.Collections, System.Json,
   System.Classes, System.ThreadSafe, MVCBr.Patterns.Memento, System.RTTI;
 
 type
   // Test methods for class TMVCBrMementoFactory
 
-  TestTMVCBrMementoFactory = class(TTestCase)
-  strict private
+  [TestFixture]
+  TestTMVCBrMementoFactory = class
+  private
     FMVCBrMementoFactory: TMVCBrMementoFactory<string>;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestAdd;
+    [Test]
     procedure TestUndo;
+    [Test]
     procedure TestMemento;
   end;
 
@@ -51,7 +57,7 @@ var
 begin
   // TODO: Setup method call parameters
   ReturnValue := FMVCBrMementoFactory.Add('1','exemplo');
-  CheckTrue(ReturnValue>=0);
+  Assert.IsTrue(ReturnValue>=0);
   // TODO: Validate method results
 end;
 
@@ -64,7 +70,7 @@ begin
   FMVCBrMementoFactory.add('1','x1');
   FMVCBrMementoFactory.add('1','x2');
   ReturnValue := FMVCBrMementoFactory.Undo('1');
-  CheckTrue( ReturnValue.AsString = 'x2','esperado x2, retornou: '+ ReturnValue.AsString);
+  Assert.IsTrue( ReturnValue.AsString = 'x2','esperado x2, retornou: '+ ReturnValue.AsString);
   // TODO: Validate method results
 end;
 
@@ -73,12 +79,9 @@ var
   ReturnValue: TMVCBrMementoList<string>;
 begin
   ReturnValue := FMVCBrMementoFactory.Memento;
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
   // TODO: Validate method results
 end;
 
-initialization
-  // Register any test cases with the test runner
-  RegisterTest(TestTMVCBrMementoFactory.Suite);
-end.
 
+end.

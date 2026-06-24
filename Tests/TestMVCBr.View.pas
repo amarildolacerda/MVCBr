@@ -3,7 +3,7 @@ unit TestMVCBr.View;
 interface
 
 uses
-  TestFramework, system.SysUtils,
+  DUnitX.TestFramework, system.SysUtils,
   system.Classes,
   MVCBr.Interf,
   MVCBr.Model,
@@ -14,45 +14,71 @@ uses
 
 type
 
-  TestTViewFactory = class(TTestCase)
-  strict private
+  [TestFixture]
+  TestTViewFactory = class
+  private
     FViewFactory: TViewFactory;
     FController: IController;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestNew;
+    [Test]
     procedure TestShowView;
+    [Test]
     procedure TestUpdate;
+    [Test]
     procedure TestGetController;
   end;
 
-  TestTFormFactory = class(TTestCase)
-  strict private
+  TestTFormFactory = class
+  private
     FFormFactory: ITestViewView;
     Controller: IController;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestGetController;
+    [Test]
     procedure TestThis;
+    [Test]
     procedure TestInterfaceStubInt;
+    [Test]
     procedure TestShowView;
+    [Test]
     procedure TestUpdate;
+    [Test]
     procedure TestResolveController;
+    [Test]
     procedure TestEnviarEventoParaUmView;
+    [Test]
     procedure TestEnviarEventoJSONparaUmView;
+    [Test]
     procedure TestProcurarModelEmUmController;
+    [Test]
     procedure TestFindController;
+    [Test]
     procedure TestIsModel;
+    [Test]
     procedure TestInvokeMethod;
+    [Test]
     procedure TestChamarViewSecundaria;
 
+    [Test]
     procedure TestRegisterObserver;
+    [Test]
     procedure TestUnRegisterObserverNamed;
+    [Test]
     procedure TestUnRegisterObserverNamedOnly;
+    [Test]
     procedure TesteObserver;
 
   end;
@@ -68,7 +94,7 @@ begin
   FController := TControllerFactory.create;
   FViewFactory := TViewFactory.create;
   FController.View(FViewFactory);
-  checkNotNull(FViewFactory);
+  Assert.IsNotNull(FViewFactory);
 end;
 
 procedure TestTViewFactory.TearDown;
@@ -85,7 +111,7 @@ var
 begin
   AController := TControllerFactory.create;
   ReturnValue := TViewFactory.New<IView>(TViewFactory);
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTViewFactory.TestShowView;
@@ -94,7 +120,7 @@ var
   AProc: TProc<IView>;
 begin
   ReturnValue := FViewFactory.ShowView(AProc);
-  CheckTrue(ReturnValue >= 0);
+  Assert.IsTrue(ReturnValue >= 0);
 end;
 
 procedure TestTViewFactory.TestUpdate;
@@ -102,7 +128,7 @@ var
   ReturnValue: IView;
 begin
   ReturnValue := FViewFactory.UpdateView;
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTViewFactory.TestGetController;
@@ -110,7 +136,7 @@ var
   ReturnValue: IController;
 begin
   ReturnValue := FViewFactory.GetController;
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTFormFactory.SetUp;
@@ -131,7 +157,7 @@ var
   ReturnValue: IController;
 begin
   ReturnValue := FFormFactory.GetController;
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTFormFactory.TestThis;
@@ -139,7 +165,7 @@ var
   ReturnValue: TObject;
 begin
   ReturnValue := FFormFactory.This;
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTFormFactory.TestInterfaceStubInt;
@@ -147,7 +173,7 @@ var
   itf: ITestViewView;
 begin
   itf := FFormFactory;
-  CheckTrue(itf.getStubInt = 1, 'Nao obteve dados na interface');
+  Assert.IsTrue(itf.getStubInt = 1, 'Nao obteve dados na interface');
 end;
 
 procedure TestTFormFactory.TestInvokeMethod;
@@ -157,7 +183,7 @@ end;
 
 procedure TestTFormFactory.TestIsModel;
 begin
-  CheckTrue(FFormFactory.GetController.IsModel(itestModel),
+  Assert.IsTrue(FFormFactory.GetController.IsModel(itestModel),
     'Nao achei IsModel');
 end;
 
@@ -167,17 +193,17 @@ var
   ctrl: ITestViewController;
 begin
   inf := FFormFactory.GetModel(itestModel) as itestModel;
-  checkNotNull(inf, 'Nao encontrou o model instanciado no controller');
+  Assert.IsNotNull(inf, 'Nao encontrou o model instanciado no controller');
   inf := nil;
 
   ctrl := ApplicationController.ResolveController(ITestViewController)
     as ITestViewController;
-  checkNotNull(ctrl, 'Nao encontrou o controller desejado');
+  Assert.IsNotNull(ctrl, 'Nao encontrou o controller desejado');
 
-  checkNotNull(ctrl.GetView, 'Nao incialicou o VIEW');
+  Assert.IsNotNull(ctrl.GetView, 'Nao incialicou o VIEW');
 
   inf := ctrl.GetModel(itestModel) as itestModel;
-  checkNotNull(inf, 'Nao encontrou o model instanciado no controller');
+  Assert.IsNotNull(inf, 'Nao encontrou o model instanciado no controller');
   ctrl := nil;
   inf := nil;
 
@@ -196,7 +222,7 @@ var
   ctrl: iTestController;
 begin
   ctrl := ApplicationController.ResolveController(iTestController) as iTestController;
-  CheckNotNull(ctrl, 'Nao resolveu o controller');
+  Assert.IsNotNull(ctrl, 'Nao resolveu o controller');
 end;
 
 procedure TestTFormFactory.TestShowView;
@@ -204,7 +230,7 @@ var
   ret: Integer;
 begin
   ret := FFormFactory.ShowView(nil);
-  CheckTrue(ret >= 0);
+  Assert.IsTrue(ret >= 0);
 end;
 
 procedure TestTFormFactory.TestUnRegisterObserverNamed;
@@ -230,7 +256,7 @@ var
   ReturnValue: IView;
 begin
   ReturnValue := FFormFactory.UpdateView;
-  checkNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 end;
 
 procedure TestTFormFactory.TestEnviarEventoParaUmView;
@@ -241,7 +267,7 @@ begin
   inf := FFormFactory;
   LHandled := false;
   inf.ViewEvent('teste.event', LHandled);
-  CheckTrue(LHandled, 'Nao encontrou o evento');
+  Assert.IsTrue(LHandled, 'Nao encontrou o evento');
 end;
 
 procedure TestTFormFactory.TesteObserver;
@@ -254,7 +280,7 @@ begin
   ref := FFormFactory.getStubInt;
   TMVCBr.UpdateObserver('x', nil);
 
-  CheckTrue(FFormFactory.getStubInt > ref, 'Nao chamou o evento do Observer');
+  Assert.IsTrue(FFormFactory.getStubInt > ref, 'Nao chamou o evento do Observer');
 
   TMVCBr.UnRegisterObserver('x', obs);
   obs := nil;
@@ -262,7 +288,7 @@ end;
 
 procedure TestTFormFactory.TestFindController;
 begin
-  checkNotNull(ApplicationController.FindController(ITestViewController),
+  Assert.IsNotNull(ApplicationController.FindController(ITestViewController),
     'Nao achou o controller com findController');
 end;
 
@@ -272,7 +298,7 @@ var
 begin
   ctrl := ApplicationController.ResolveController(ITestSecondController2)
     as ITestSecondController2;
-  CheckNotNull(ctrl, 'Nao resolveu o controller secundario');
+  Assert.IsNotNull(ctrl, 'Nao resolveu o controller secundario');
   ctrl := nil;
 end;
 
@@ -290,12 +316,7 @@ begin
   finally
     j.free;
   end;
-  CheckTrue(LHandled, 'Nao encontrou o evento');
+  Assert.IsTrue(LHandled, 'Nao encontrou o evento');
 end;
-
-initialization
-
-RegisterTest(TestTViewFactory.Suite);
-RegisterTest(TestTFormFactory.Suite);
 
 end.

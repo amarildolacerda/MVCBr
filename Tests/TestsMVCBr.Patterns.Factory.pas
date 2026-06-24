@@ -3,7 +3,7 @@ unit TestsMVCBr.Patterns.Factory;
 interface
 
 uses
-  TestFramework, System.SysUtils,
+  DUnitX.TestFramework, System.SysUtils,
   System.Classes,
   MVCBr.Patterns.Factory;
 
@@ -17,15 +17,21 @@ type
   end;
 
   /// tests FactoryClass
-  TestTMVCBrFactory = class(TTestCase)
+  TestTMVCBrFactory = class
   private
     FInstance: TMVCBrFactoryClass<TClasse>;
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+  public
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+    [Test]
     procedure TestNew;
+    [Test]
     procedure TestDefault;
+    [Test]
     procedure TestRelease;
+    [Test]
     procedure TestProcedureOfClass;
   end;
 
@@ -35,13 +41,11 @@ implementation
 
 procedure TestTMVCBrFactory.SetUp;
 begin
-  inherited;
   FInstance := TMVCBrFactoryClass<TClasse>.New();
 end;
 
 procedure TestTMVCBrFactory.TearDown;
 begin
-  inherited;
   FInstance.free;
 end;
 
@@ -52,27 +56,27 @@ begin
   // raise Exception.Create('Error Message');
 
   FClasse := FInstance.Default;
-  CheckNotNull(FClasse);
+  Assert.IsNotNull(FClasse);
 
 end;
 
 procedure TestTMVCBrFactory.TestNew;
 begin
   // raise Exception.Create('Error Message');
-  CheckNotNull(FInstance);
+  Assert.IsNotNull(FInstance);
 end;
 
 procedure TestTMVCBrFactory.TestProcedureOfClass;
 begin
   FInstance.Default.SetValue(10);
-  CheckEquals(FInstance.Default.Value, 10);
+  Assert.AreEqual(FInstance.Default.Value, 10);
 end;
 
 procedure TestTMVCBrFactory.TestRelease;
 begin
   // raise Exception.Create('Error Message');
   FInstance.Release;
-  //CheckNull(FInstance.InstanceWithoutInit);
+  //Assert.IsNull(FInstance.InstanceWithoutInit);
 
 end;
 
@@ -84,7 +88,5 @@ begin
 end;
 
 initialization
-
-RegisterTest(TestTMVCBrFactory.Suite);
-
+  TDUnitX.RegisterTestFixture(TestTMVCBrFactory);
 end.

@@ -3,11 +3,13 @@ unit testODataServer;
 interface
 
 uses
-  TestFramework;
+  DUnitX.TestFramework;
 
 type
-  TestTODataServer = class(TTestCase)
-  published
+  [TestFixture]
+  TestTODataServer = class
+  public
+    [Test]
     procedure TestDummy;
   end;
 
@@ -15,10 +17,7 @@ implementation
 
 procedure TestTODataServer.TestDummy;
 begin
-  CheckTrue(True);
+  Assert.IsTrue(True);
 end;
-
-initialization
-  RegisterTest(TestTODataServer.Suite);
 
 end.

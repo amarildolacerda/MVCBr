@@ -12,7 +12,7 @@ unit TestMVCBr.Patterns;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
+  DUnitX.TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
   System.RTTI, Forms,
   System.TypInfo, System.Classes,
   MVCBr.Interf, MVCBr.Patterns.States,
@@ -55,29 +55,39 @@ type
     class function New(Origem: IVendas): IDecorateVendas;
   end;
 
-  TestTMVCBrDecorator = class(TTestCase)
-  published
+  TestTMVCBrDecorator = class
+  public
+    [Test]
     procedure TestDecorate;
   end;
 
-  TestTMVCBrStrategy = class(TTestCase)
-  published
+  TestTMVCBrStrategy = class
+  public
+    [Test]
     procedure TestStrategy;
   end;
 
-  TestTMVCBrLazyObject = class(TTestCase)
+  TestTMVCBrLazyObject = class
   Private
     lzObject: TMVCBrLazyFactory<TObject>;
 
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestCreateLazyObject;
+    [Test]
     procedure TestLazyFactoryCreate;
+    [Test]
     procedure TestAddCommand;
+    [Test]
     procedure TestQueryCommand;
+    [Test]
     procedure TestFreeInstance;
+    [Test]
     procedure TestDelegate;
   end;
 
@@ -88,116 +98,163 @@ type
 
   end;
 
-  TestTMVCBrStates = class(TTestCase)
-  strict private
+  TestTMVCBrStates = class
+  private
     FCount: Integer;
     FStepSign: Integer;
     FMVCBrStates: TMVCBrStates<TTestMVCBrStateStep>;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestAdd;
+    [Test]
     procedure TestEOF;
+    [Test]
     procedure TestBOF;
+    [Test]
     procedure TestPrior;
+    [Test]
     procedure TestNext;
+    [Test]
     procedure TestFirst;
+    [Test]
     procedure TestLast;
+    [Test]
     procedure TestCurrentStep;
+    [Test]
     procedure TestMoveTo;
+    [Test]
     procedure TestSetFirstStep;
+    [Test]
     procedure TestSetLastStep;
+    [Test]
     procedure TestMoveInterno;
+    [Test]
     procedure TestExecuteDelegate;
   end;
   // Test methods for class TMVCBrFactory
 
-  TestTMVCBrFactory = class(TTestCase)
-  strict private
+  TestTMVCBrFactory = class
+  private
     FMVCBrFactory: TMVCBrFactory;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestSetUnsafe;
+    [Test]
     procedure TestNewInstance;
+    [Test]
     procedure TestThis;
+    [Test]
     procedure TestLock;
+    [Test]
     procedure TestUnLock;
+    [Test]
     procedure TestRelease;
   end;
   // Test methods for class TMVCBrSingletonFactory
 
   (*
-    TestTMVCBrSingletonFactory = class(TTestCase)
+    TestTMVCBrSingletonFactory = class
     strict private
     FMVCBrSingletonFactory: TMVCBrSingletonFactory<TObject>;
     public
-    procedure SetUp; override;
-    procedure TearDown; override;
+    [Test]
+    [Setup]
+    procedure SetUp;
+    [Test]
+    [TearDown]
+    procedure TearDown;
     published
+    [Test]
     procedure TestDefault;
+    [Test]
     procedure TestRelease;
     end;
   *)
   // Test methods for class TMVCBrBuilderFactory
 
-  TestTMVCBrBuilderFactory = class(TTestCase)
-  strict private
+  TestTMVCBrBuilderFactory = class
+  private
     FMVCBrBuilderFactory: IMVCBrBuilder<TObject, string>;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
+    [Test]
     procedure TestBuilder;
+    [Test]
     procedure TestAddOneCommand;
+    [Test]
     procedure TestAddManyCommands;
+    [Test]
     procedure TestRemoveCommand;
+    [Test]
     procedure TestQueryCommand;
 
+    [Test]
     procedure TestLazyBuilder;
+    [Test]
     procedure TestLazyBuilderQueryInterface;
+    [Test]
     procedure TestLazyBuilderInvokeClass;
     Procedure TestBuilderModel;
   end;
   // Test methods for class TMVCBrAggregatedFactory
 
-  TestTMVCBrAggregatedFactory = class(TTestCase)
-  strict private
+  TestTMVCBrAggregatedFactory = class
+  private
     FMVCBrAggregatedFactory: TMVCBrAggregatedFactory;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
   end;
   // Test methods for class TMVCBrContainedFactory
 
-  TestTMVCBrContainedFactory = class(TTestCase)
-  strict private
+  TestTMVCBrContainedFactory = class
+  private
     FMVCBrContainedFactory: TMVCBrContainedFactory;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+  public
   end;
   // Test methods for class TMVCBrHelperFactory
 
-  TestTMVCBrHelperFactory = class(TTestCase)
-  strict private
+  TestTMVCBrHelperFactory = class
+  private
     FMVCBrHelperFactory: TMVCBrHelperFactory<TObject>;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
   end;
   // Test methods for class TMVCBrStaticFactory
 
-  TestTMVCBrStaticFactory = class(TTestCase)
-  strict private
+  TestTMVCBrStaticFactory = class
+  private
     FMVCBrStaticFactory: TMVCBrStaticFactory<TInterfacedObject>;
   public
-    procedure SetUp; override;
-    procedure TearDown; override;
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
   end;
 
 implementation
@@ -230,7 +287,7 @@ begin
 
   inc(FCount);
 
-  CheckNotNull(ReturnValue, 'Deveria retornar um object instanciado');
+  Assert.IsNotNull(ReturnValue, 'Deveria retornar um object instanciado');
   // TODO: Validate method results
 end;
 
@@ -241,11 +298,11 @@ begin
   TThread.NameThreadForDebugging('TestEOF');
   FMVCBrStates.MoveTo(9999);
   ReturnValue := FMVCBrStates.EOF;
-  checkTrue(ReturnValue, 'Object n�o se posicionou EOF');
+  Assert.IsTrue(ReturnValue, 'Object n�o se posicionou EOF');
 
   TestAdd;
   ReturnValue := FMVCBrStates.EOF;
-  checkFalse(ReturnValue, 'Object n�o se posicionou EOF');
+  Assert.IsFalse(ReturnValue, 'Object n�o se posicionou EOF');
 
   // TODO: Validate method results
 end;
@@ -255,11 +312,11 @@ var
   ReturnValue: Boolean;
 begin
   ReturnValue := FMVCBrStates.BOF;
-  checkTrue(ReturnValue, 'deveria inciar como BOF');
+  Assert.IsTrue(ReturnValue, 'deveria inciar como BOF');
   TestAdd;
 
   ReturnValue := FMVCBrStates.BOF;
-  checkFalse(ReturnValue, 'deveria esta iniciado');
+  Assert.IsFalse(ReturnValue, 'deveria esta iniciado');
 
   // TODO: Validate method results
 end;
@@ -269,15 +326,15 @@ var
   ReturnValue: TMVCBrStateSteps<TTestMVCBrStateStep>;
 begin
   TThread.NameThreadForDebugging('testprior');
-  checkTrue(FMVCBrStates.EOF, 'Nao apontou para EOF, mesmo nao tendo itens');
+  Assert.IsTrue(FMVCBrStates.EOF, 'Nao apontou para EOF, mesmo nao tendo itens');
 
   TestAdd;
   if not FMVCBrStates.EOF then
   begin
     ReturnValue := FMVCBrStates.Prior;
-    CheckNull(ReturnValue,
+    Assert.IsNull(ReturnValue,
       'Deveria retornar NULL, so 1 item na lista.. o prior � -1');
-    checkTrue(FMVCBrStates.BOF, 'Nao apontou para BOF, mesmo nao tendo itens');
+    Assert.IsTrue(FMVCBrStates.BOF, 'Nao apontou para BOF, mesmo nao tendo itens');
   end;
   // TODO: Validate method results
 end;
@@ -295,7 +352,7 @@ begin
 
   ReturnValue := FMVCBrStates.CurrentStep;
 
-  CheckNotNull(ReturnValue);
+  Assert.IsNotNull(ReturnValue);
 
   // TODO: Validate method results
 end;
@@ -307,10 +364,10 @@ begin
   TestAdd;
   TestAdd;
 
-  checkTrue(FMVCBrStates.CurrenteIndex = 1);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
 
   ReturnValue := FMVCBrStates.First;
-  checkTrue(FMVCBrStates.CurrenteIndex = 0);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 0);
   // TODO: Validate method results
 end;
 
@@ -321,7 +378,7 @@ begin
   TestAdd;
   TestAdd;
   ReturnValue := FMVCBrStates.Last;
-  checkTrue(FMVCBrStates.CurrenteIndex = 1);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
   // TODO: Validate method results
 end;
 
@@ -331,7 +388,7 @@ var
 begin
   TestAdd;
   ReturnValue := FMVCBrStates.CurrentStep;
-  checkTrue(FMVCBrStates.CurrenteIndex = 0);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 0);
   // TODO: Validate method results
 end;
 
@@ -366,14 +423,14 @@ begin
   TestAdd;
 
   FMVCBrStates.Last;
-  checkTrue(FMVCBrStates.CurrenteIndex = 2);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 2);
 
   FMVCBrStates.MoveTo('XXX');
-  checkTrue(self.FStepSign = 10, 'N�o movimentou o ponteiro');
+  Assert.IsTrue(self.FStepSign = 10, 'N�o movimentou o ponteiro');
 
   self.FStepSign := 0;
   FMVCBrStates.MoveTo('YYY');
-  checkTrue(self.FStepSign = 20, 'N�o movimentou o ponteiro');
+  Assert.IsTrue(self.FStepSign = 20, 'N�o movimentou o ponteiro');
 
   // TODO: Validate method results
 end;
@@ -390,7 +447,7 @@ begin
   TestAdd;
   TestAdd;
   ReturnValue := FMVCBrStates.MoveTo(1);
-  checkTrue(FMVCBrStates.CurrenteIndex = 1);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
   // TODO: Validate method results
 end;
 
@@ -405,7 +462,7 @@ begin
   TestAdd;
   ReturnValue := FMVCBrStates.SetFirstStep(1);
   FMVCBrStates.First;
-  checkTrue(FMVCBrStates.CurrenteIndex = 1);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 1);
   // TODO: Validate method results
 end;
 
@@ -424,7 +481,7 @@ begin
   TestAdd;
   ReturnValue := FMVCBrStates.SetLastStep('COMMAND2');
   FMVCBrStates.Last;
-  checkTrue(FMVCBrStates.CurrenteIndex = 2);
+  Assert.IsTrue(FMVCBrStates.CurrenteIndex = 2);
   // TODO: Validate method results
 end;
 
@@ -459,10 +516,10 @@ begin
     end);
 
   // TODO: Validate method results
-  checkTrue(FRef = 0);
+  Assert.IsTrue(FRef = 0);
 
   FMVCBrStates.First;
-  checkTrue(FRef = 1);
+  Assert.IsTrue(FRef = 1);
 
 end;
 
@@ -544,12 +601,14 @@ type
   end;
 
   (*
+    [Test]
     procedure TestTMVCBrSingletonFactory.SetUp;
     begin
     FMVCBrSingletonFactory := TMVCBrSingletonFactory<TObject>.Create
     (TSingletonClasse.Create)
     end;
 
+    [Test]
     procedure TestTMVCBrSingletonFactory.TearDown;
     begin
     FMVCBrSingletonFactory.Free;
@@ -557,6 +616,7 @@ type
     end;
 
 
+    [Test]
     procedure TestTMVCBrSingletonFactory.TestDefault;
     var
     ReturnValue: TObject;
@@ -565,6 +625,7 @@ type
     // TODO: Validate method results
     end;
 
+    [Test]
     procedure TestTMVCBrSingletonFactory.TestRelease;
     begin
     FMVCBrSingletonFactory.Release;
@@ -630,16 +691,16 @@ begin
   /// search LCommand
   LResult := LBuilder.Query(LCommand);
   /// check result
-  CheckNotNull(LResult, 'N�o encontrou o comando');
-  checkTrue(LResult.Execute(nil).equals(LCommand), 'N�o executou');
+  Assert.IsNotNull(LResult, 'N�o encontrou o comando');
+  Assert.IsTrue(LResult.Execute(nil).equals(LCommand), 'N�o executou');
 
   /// look or unknown command
   LResult := LBuilder.Query('XXX');
-  CheckNull(LResult, 'Falhou para um comando que nao existe');
+  Assert.IsNull(LResult, 'Falhou para um comando que nao existe');
 
   LResult := LBuilder.Query(2);
-  CheckNotNull(LResult, 'Command 2 not found on list item os commands');
-  checkTrue(LResult.Execute(nil).equals('2'), 'Command 2 not found');
+  Assert.IsNotNull(LResult, 'Command 2 not found on list item os commands');
+  Assert.IsTrue(LResult.Execute(nil).equals('2'), 'Command 2 not found');
 
   LBuilder := nil;
 end;
@@ -649,7 +710,7 @@ begin
 
   /// create and executing
 
-  checkTrue(TMVCBrBuilderFactory<string, string>.New.Add('TESTE',
+  Assert.IsTrue(TMVCBrBuilderFactory<string, string>.New.Add('TESTE',
     function(sender: string): string
     begin
       result := 'SUCESSO';
@@ -675,7 +736,7 @@ begin
 
     ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
 
-    checkTrue(ReturnValue = 'OK', 'N�o executou o builder');
+    Assert.IsTrue(ReturnValue = 'OK', 'N�o executou o builder');
 
   finally
     AObject.Free;
@@ -705,7 +766,7 @@ begin
     with ABuilder.Add(1, TBuiltTests) { .instance } do
     begin
       Execute(10);
-      checkTrue(ABuilder.Query<TBuiltTests>(1).FCount = 10, 'N�o executou');
+      Assert.IsTrue(ABuilder.Query<TBuiltTests>(1).FCount = 10, 'N�o executou');
     end;
   finally
     ABuilder.Free;
@@ -736,9 +797,9 @@ begin
   try
     ALazy.Add('comandoTest', TBuildLazyObject);
     refLazy := ALazy.Query<TBuildLazyObject>('comandoTest');
-    CheckNotNull(refLazy, 'Nao criou o lazy builder');
+    Assert.IsNotNull(refLazy, 'Nao criou o lazy builder');
     refLazy.Execute(5);
-    CheckTrue(refLazy.Response.asInteger = 5, 'Nao executou lazy builder');
+    Assert.IsTrue(refLazy.Response.asInteger = 5, 'Nao executou lazy builder');
   finally
     ALazy.Free;
   end;
@@ -756,7 +817,7 @@ begin
     refLazy := ALazy.Query<TBuildLazyObject>('comandoB');
     refLazy.Execute(10);
 
-    checkTrue(refLazy.Response.asInteger = 10, 'N�o Executou INVOKE function');
+    Assert.IsTrue(refLazy.Response.asInteger = 10, 'N�o Executou INVOKE function');
 
   finally
     ALazy.Free;
@@ -777,7 +838,7 @@ begin
     Interf := LazyBuilderFac.Query<TBuildLazyObject>('comandoA');
     Interf.Execute(30);
 
-    checkTrue(Interf.Response.asInteger = 30,
+    Assert.IsTrue(Interf.Response.asInteger = 30,
       'N�o executou comando pela interface');
     Interf := nil;
 
@@ -810,12 +871,12 @@ begin
   /// search LCommand
   LResult := LBuilder.Query(LCommand);
   /// check result
-  CheckNotNull(LResult, 'N�o encontrou o comando');
-  checkTrue(LResult.Execute(nil), 'N�o executou');
+  Assert.IsNotNull(LResult, 'N�o encontrou o comando');
+  Assert.IsTrue(LResult.Execute(nil), 'N�o executou');
 
   /// look or unknown command
   LResult := LBuilder.Query('XXX');
-  CheckNull(LResult, 'Falhou para um comando que nao existe');
+  Assert.IsNull(LResult, 'Falhou para um comando que nao existe');
 
   LBuilder := nil;
 end;
@@ -839,12 +900,12 @@ begin
     ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
     // TODO: Validate method results
 
-    checkTrue(ReturnValue = 'OK', 'N�o executou o builder');
+    Assert.IsTrue(ReturnValue = 'OK', 'N�o executou o builder');
 
     /// remove
     ///
     FMVCBrBuilderFactory.Remove(CMD_ONE);
-    CheckNull(FMVCBrBuilderFactory.Query(CMD_ONE), 'N�o removeu');
+    Assert.IsNull(FMVCBrBuilderFactory.Query(CMD_ONE), 'N�o removeu');
 
   finally
     AObject.Free;
@@ -916,13 +977,11 @@ end;
 
 procedure TestTMVCBrLazyObject.SetUp;
 begin
-  inherited;
   lzObject := TMVCBrLazyFactory<TObject>.Create;
 end;
 
 procedure TestTMVCBrLazyObject.TearDown;
 begin
-  inherited;
   lzObject.Free;
 end;
 
@@ -930,7 +989,7 @@ procedure TestTMVCBrLazyObject.TestAddCommand;
 begin
   lzObject.Add(1, TObject);
   lzObject.Add(2, TObject);
-  checkTrue(lzObject.count = 2, 'N�o incluir os itens');
+  Assert.IsTrue(lzObject.count = 2, 'N�o incluir os itens');
 end;
 
 procedure TestTMVCBrLazyObject.TestCreateLazyObject;
@@ -943,7 +1002,7 @@ begin
       result := TLazyObject.Create;
     end);
   LLazy.Execute(10);
-  checkTrue(LLazy.FCount = 10, 'N�o Executou o LazyObject');
+  Assert.IsTrue(LLazy.FCount = 10, 'N�o Executou o LazyObject');
 end;
 
 procedure TestTMVCBrLazyObject.TestDelegate;
@@ -954,9 +1013,9 @@ begin
       result := TLazyObject.Create;
     end).instance;
 
-  checkTrue(lzObject.Query(1).IsCreated, 'N�o inicilizou');
+  Assert.IsTrue(lzObject.Query(1).IsCreated, 'N�o inicilizou');
 
-  checkTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject),
+  Assert.IsTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject),
     'N�o inicilizou TLazyObject');
 
 end;
@@ -964,18 +1023,18 @@ end;
 procedure TestTMVCBrLazyObject.TestFreeInstance;
 begin
   lzObject.Add(1, TObject);
-  checkTrue(lzObject.Query(1).IsCreated = false,
+  Assert.IsTrue(lzObject.Query(1).IsCreated = false,
     'Inicializou a instance antes de chama-la');
 
   lzObject.Query(1).instance;
-  checkTrue(lzObject.Query(1).IsCreated, 'N�o incializou a instancia');
+  Assert.IsTrue(lzObject.Query(1).IsCreated, 'N�o incializou a instancia');
 
 end;
 
 procedure TestTMVCBrLazyObject.TestLazyFactoryCreate;
 begin
   lzObject.Add(1, TObject);
-  checkTrue(lzObject.count > 0, 'N�o incluir o item');
+  Assert.IsTrue(lzObject.count > 0, 'N�o incluir o item');
 end;
 
 procedure TestTMVCBrLazyObject.TestQueryCommand;
@@ -984,7 +1043,7 @@ begin
   lzObject.Add(2, TComponent);
   lzObject.Add(3, TObject);
 
-  checkTrue(lzObject.Query(2).instance.InheritsFrom(TComponent),
+  Assert.IsTrue(lzObject.Query(2).instance.InheritsFrom(TComponent),
     'N�o achou o TComponent');
 
 end;
@@ -1001,7 +1060,6 @@ end;
 destructor TBuiltTests.Destroy;
 begin
 
-  inherited;
 end;
 
 function TBuiltTests.Execute(AParam: TValue): TValue;
@@ -1014,7 +1072,6 @@ end;
 
 procedure TBuilderModelTests.CreateSubClasses;
 begin
-  inherited;
 
 end;
 
@@ -1039,7 +1096,7 @@ end;
 
 procedure TestTMVCBrDecorator.TestDecorate;
 begin
-  checkTrue(TDecorateVendas.New(TVendas.New).VenderItem(10).VenderItem(20)
+  Assert.IsTrue(TDecorateVendas.New(TVendas.New).VenderItem(10).VenderItem(20)
     .Total = 30, 'Nao acumulou');
 end;
 
@@ -1077,7 +1134,7 @@ type
 
 procedure TestTMVCBrStrategy.TestStrategy;
 begin
-  checkTrue(TStrategyPgto.AVista.New.Total = 0, 'Nao incialiaou');
+  Assert.IsTrue(TStrategyPgto.AVista.New.Total = 0, 'Nao incialiaou');
 end;
 
 { StrategyPgto }
@@ -1095,18 +1152,14 @@ begin
 end;
 
 initialization
-
-// Register any test cases with the test runner
-RegisterTest(TestTMVCBrStates.Suite);
-RegisterTest(TestTMVCBrFactory.Suite);
-// RegisterTest(TestTMVCBrSingletonFactory.Suite);
-RegisterTest(TestTMVCBrBuilderFactory.Suite);
-RegisterTest(TestTMVCBrAggregatedFactory.Suite);
-RegisterTest(TestTMVCBrContainedFactory.Suite);
-RegisterTest(TestTMVCBrHelperFactory.Suite);
-RegisterTest(TestTMVCBrStaticFactory.Suite);
-RegisterTest(TestTMVCBrLazyObject.Suite);
-RegisterTest(TestTMVCBrStrategy.Suite);
-RegisterTest(TestTMVCBrDecorator.Suite);
-
+  TDUnitX.RegisterTestFixture(TestTMVCBrDecorator);
+  TDUnitX.RegisterTestFixture(TestTMVCBrStrategy);
+  TDUnitX.RegisterTestFixture(TestTMVCBrLazyObject);
+  TDUnitX.RegisterTestFixture(TestTMVCBrStates);
+  TDUnitX.RegisterTestFixture(TestTMVCBrFactory);
+  TDUnitX.RegisterTestFixture(TestTMVCBrBuilderFactory);
+  TDUnitX.RegisterTestFixture(TestTMVCBrAggregatedFactory);
+  TDUnitX.RegisterTestFixture(TestTMVCBrContainedFactory);
+  TDUnitX.RegisterTestFixture(TestTMVCBrHelperFactory);
+  TDUnitX.RegisterTestFixture(TestTMVCBrStaticFactory);
 end.

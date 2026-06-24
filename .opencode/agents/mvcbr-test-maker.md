@@ -1,41 +1,28 @@
 ---
-name: MVCBr Tests (DUnitX)
 description: >
-  Guia para escrever testes unitários no framework MVCBr usando DUnitX.
-  Cobre atributos, padrões de teste, mocks/fakes, registro de fixtures e
-  anti-patterns.
+  Use ONLY for creating new DUnitX test units for the MVCBr framework or
+  modifying existing tests. Generates test files following the project's
+  DUnitX conventions with [TestFixture], [Test], [Setup], [TearDown]
+  attributes, TDUnitX.RegisterTestFixture, and Assert.* assertions.
+  Use for Delphi .pas test files under Tests/.
+mode: subagent
 ---
 
-# MVCBr Tests — Skill para Testes com DUnitX
+# MVCBr Test Maker Agent
 
-## Quando usar
-
-Use esta skill ao criar **testes unitários** para Controllers, Models,
-ViewModels, Factories e Patterns do MVCBr.
+You are an expert in creating **DUnitX** test units for the **MVCBr** Delphi
+framework. Follow the conventions below.
 
 ## Stack de testes
 
 - **Framework:** DUnitX (`DUnitX.TestFramework`)
-- **Runner:** `TDUnitX.CreateRunner` + `AddLogger(TDUnitXConsoleLogger.Create(true))` + `Execute`
+- **Runner:** `TDUnitX.CreateRunner.AddLogger(TDUnitXConsoleLogger.Create(true)).Execute`
 - **Atributos:** `[TestFixture]`, `[Test]`, `[Setup]`, `[TearDown]`
 - **Registro:** `TDUnitX.RegisterTestFixture(TMyClass)` no `initialization`
 - **Projeto:** `Tests/MVCBrTests.dpr`
 - **Flag condicional:** `CONSOLE_TESTRUNNER` para modo console
 
-## Estrutura de diretórios
-
-```
-Tests/
-├── MVCBrTests.dpr              # Projeto de testes DUnitX
-├── TestMVCBr.*.pas             # Testes do core
-├── Controllers/                # Testes de controllers
-├── Models/                     # Testes de models
-├── ViewModels/                 # Testes de viewmodels
-├── TestView/                   # Test views
-└── TestSecond/                 # Test helpers
-```
-
-## Template de teste
+## Template de teste DUnitX
 
 ```pascal
 unit TestMVCBr.Something;
@@ -74,7 +61,7 @@ end;
 
 procedure TestTSomething.TearDown;
 begin
-  FSut := nil; // Interface ARC libera automaticamente
+  FSut := nil;
 end;
 
 procedure TestTSomething.DoSomething_WithValidParams_ReturnsExpectedResult;
@@ -145,21 +132,13 @@ Toda unit de teste DEVE registrar suas fixtures no `initialization`:
 ```pascal
 initialization
   TDUnitX.RegisterTestFixture(TestTSomething);
+  TDUnitX.RegisterTestFixture(TestTOther);
 ```
 
-### 4. Múltiplas fixtures por arquivo
+### 4. Assertions DUnitX (NÃO usar `Check*` do DUnit)
 
-```pascal
-initialization
-  TDUnitX.RegisterTestFixture(TestTController);
-  TDUnitX.RegisterTestFixture(TestTModel);
-  TDUnitX.RegisterTestFixture(TestTView);
-```
-
-## Padrões de asserção
-
-| DUnitX Assert | Equivalente DUnit (antigo) |
-|---------------|----------------------------|
+| DUnitX Assert | Equivalente DUnit |
+|---------------|-------------------|
 | `Assert.IsTrue(Cond)` | `CheckTrue(Cond)` |
 | `Assert.IsFalse(Cond)` | `CheckFalse(Cond)` |
 | `Assert.AreEqual(A, B)` | `CheckEquals(A, B)` |
@@ -169,43 +148,7 @@ initialization
 | `Assert.AreSame(A, B)` | `CheckSame(A, B)` |
 | `Assert.WillRaise(AMethod, E)` | `WillRaise(AMethod, E)` |
 
-### Comparação de tipos não genéricos
-
-Para `TDatetime`, `Double` ou outros tipos que o compilador não consegue
-inferir em `Assert.AreEqual<T>`, usar `Assert.IsTrue` com operador `=`:
-
-```pascal
-// Em vez de Assert.AreEqual<TDatetime>(A, B)
-Assert.IsTrue(A = B, 'Mensagem');
-```
-
-## DPR — runner do projeto
-
-O arquivo `Tests/MVCBrTests.dpr` usa o padrão:
-
-```pascal
-var
-  runner: ITestRunner;
-  results: IRunResults;
-begin
-  System.ReportMemoryLeaksOnShutdown := True;
-  runner := TDUnitX.CreateRunner;
-  runner.UseRTTI := True;
-  {$IFDEF CONSOLE_TESTRUNNER}
-  runner.AddLogger(TDUnitXConsoleLogger.Create(true));
-  {$ENDIF}
-  results := runner.Execute;
-  if not results.AllPassed then
-    ExitCode := EXIT_ERRORS;
-end.
-```
-
-`runner.UseRTTI := True` permite descoberta automática de fixtures com
-`[TestFixture]`, mas o registro explícito via `initialization` é preferido.
-
-## Mocks e Fakes
-
-Classes mock/fake devem ser definidas localmente no arquivo de teste:
+### 5. Mocks e Fakes locais
 
 ```pascal
 type
@@ -219,49 +162,11 @@ type
     function Update: IModel;
     procedure Update(AJsonValue: TJsonValue; var AHandled: boolean);
   end;
-
-{ TFakeModel }
-
-function TFakeModel.This: TObject;
-begin
-  result := self;
-end;
 ```
 
-## Testando Controllers
+### 6. Nomenclatura de testes
 
-```pascal
-type
-  TFakeView = class(TInterfacedObject, IView)
-    // Implementação fake dos métodos da IView
-  end;
-
-procedure TestTController.TestAttachModel;
-var
-  LModel: IModel;
-begin
-  LModel := TFakeModel.Create;
-  FSut.Add(LModel);
-  Assert.IsTrue(FSut.Count > 0);
-end;
-```
-
-## Testando Patterns
-
-```pascal
-procedure TestTBuilder.TestBuild;
-var
-  LProduct: IProduct;
-begin
-  LProduct := FSut.Build;
-  Assert.IsNotNull(LProduct);
-  Assert.IsTrue(LProduct.IsValid);
-end;
-```
-
-## Nomenclatura de testes
-
-Usar o padrão: `Ação_Condição_ResultadoEsperado`
+Padrão: `Ação_Condição_ResultadoEsperado`
 
 | Exemplo | Descrição |
 |---------|-----------|
@@ -269,6 +174,19 @@ Usar o padrão: `Ação_Condição_ResultadoEsperado`
 | `TestAdd_NullModel_ReturnsMinusOne` | Add com modelo nulo |
 | `TestUpdate_EmptyData_DoesNotRaise` | Update com dados vazios |
 | `TestResolve_UnknownGuid_ReturnsNil` | Resolução de GUID inválido |
+
+## Estrutura de diretórios
+
+```
+Tests/
+├── MVCBrTests.dpr              # Projeto de testes DUnitX
+├── TestMVCBr.*.pas             # Testes do core
+├── Controllers/                # Testes de controllers
+├── Models/                     # Testes de models
+├── ViewModels/                 # Testes de viewmodels
+├── TestView/                   # Test views
+└── TestSecond/                 # Test helpers
+```
 
 ## Nomenclatura da unit
 
@@ -284,15 +202,13 @@ Exemplos:
 
 ## Anti-patterns
 
-- ❌ `[Setup]` em `private` — RTTI não descobre, `SetUp` não executa
+- ❌ `[Setup]` em `private` — RTTI não descobre, SetUp não executa
 - ❌ Acoplar teste ao banco real — usar TFake* ou TMock* com interfaces
 - ❌ Testar UI — testar apenas Domain e Application layer
-- ❌ `try..except` genérico em métodos testados — quebra `Assert.WillRaise`
-- ❌ Testes que dependem de ordem — cada teste deve ser independente
-- ❌ Setup complexo — extrair em métodos auxiliares
+- ❌ `try..except` genérico — quebra `Assert.WillRaise`
 - ❌ Variáveis globais entre testes — usar campos da classe de teste
 - ❌ Esquecer `TDUnitX.RegisterTestFixture` no `initialization`
-- ❌ Usar `CheckTrue`/`CheckNotNull` do DUnit antigo — usar `Assert.*`
+- ❌ Usar `CheckTrue`/`CheckNotNull` do DUnit — usar `Assert.*`
 
 ## Verificação
 

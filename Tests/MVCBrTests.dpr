@@ -1,9 +1,9 @@
 program MVCBrTests;
 {
 
-  Delphi DUnit Test Project
-  -------------------------
-  This project contains the DUnit test framework and the GUI/Console test runners.
+  Delphi DUnitX Test Project
+  --------------------------
+  This project uses DUnitX testing framework.
   Add "CONSOLE_TESTRUNNER" to the conditional defines entry in the project options
   to use the console test runner.  Otherwise the GUI test runner will be used by
   default.
@@ -15,8 +15,9 @@ program MVCBrTests;
 {$ENDIF}
 
 uses
-  DUnitTestRunner,
-   MVCBr.ApplicationController,
+  DUnitX.TestFramework,
+  DUnitX.Loggers.Console,
+  MVCBr.ApplicationController,
   MVCBr.Controller,
   MVCBr.View,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
@@ -63,9 +64,17 @@ uses
 
 {$R *.RES}
 
+var
+  runner: ITestRunner;
+  results: IRunResults;
 begin
-
-  System.ReportMemoryLeaksOnShutdown := true;
-  DUnitTestRunner.RunRegisteredTests;
-
+  System.ReportMemoryLeaksOnShutdown := True;
+  runner := TDUnitX.CreateRunner;
+  runner.UseRTTI := True;
+  {$IFDEF CONSOLE_TESTRUNNER}
+  runner.AddLogger(TDUnitXConsoleLogger.Create(true));
+  {$ENDIF}
+  results := runner.Execute;
+  if not results.AllPassed then
+    ExitCode := EXIT_ERRORS;
 end.

@@ -3,7 +3,7 @@ unit TestMVCBr.Patterns.Mediator;
 interface
 
 uses
-  TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
+  DUnitX.TestFramework, System.SysUtils, System.Generics.Collections, System.JSON,
   System.RTTI, Forms,
   System.TypInfo, System.Classes,
   MVCBr.Patterns.Mediator,
@@ -36,20 +36,29 @@ type
     property Title: string read GetTitle write SetTitle;
   end;
 
-  TestTMVCBrMediator = class(TTestCase)
+  TestTMVCBrMediator = class
   private
     FMeditor: IMVCBrChatRoom;
-    procedure SetUp; override;
-    procedure TearDown; override;
-  published
+  public
+    [Setup]
+    procedure SetUp;
+    [TearDown]
+    procedure TearDown;
+    [Test]
     procedure TestCriarMeditor;
+    [Test]
     procedure TestCriarParticipant;
     procedure testAddParticipant;
     procedure testRemoveParticipant;
+    [Test]
     procedure TestSendAll;
+    [Test]
     procedure TestSendToFirst;
+    [Test]
     procedure TestAddMiddleware;
+    [Test]
     procedure TestBeforeEventMiddleware;
+    [Test]
     procedure TestAfterEventMiddleware;
   end;
 
@@ -61,7 +70,6 @@ uses MVCBr.MiddlewareFactory;
 
 procedure TestTMVCBrMediator.SetUp;
 begin
-  inherited;
   FMeditor := TMVCBrChatRoom.New(TChatParticipants);
   FMeditor.Title := 'Developers';
 
@@ -71,7 +79,6 @@ procedure TestTMVCBrMediator.TearDown;
 begin
   FMeditor := nil;
   TMVCBrMiddlewareFactory.Default.Clear;
-  inherited;
 end;
 
 procedure TestTMVCBrMediator.TestAddMiddleware;
@@ -84,7 +91,7 @@ var
   o: TMVCBrParticipant;
 begin
   o := FMeditor.Add;
-  checkTrue(o.ClassName = TChatParticipants.ClassName);
+  Assert.IsTrue(o.ClassName = TChatParticipants.ClassName);
 end;
 
 procedure TestTMVCBrMediator.TestCriarParticipant;
@@ -110,7 +117,7 @@ begin
   TMVCBrMiddlewareFactory.Add(TMVCBrMiddleware.Create);
 
   TMVCBrMiddlewareFactory.SendAfterEvent(middView,nil);
-  checkTrue(rsp='ok');
+  Assert.IsTrue(rsp='ok');
 
 end;
 
@@ -131,7 +138,7 @@ begin
   TMVCBrMiddlewareFactory.Add(TMVCBrMiddleware.Create);
 
   TMVCBrMiddlewareFactory.SendBeforeEvent(middView,nil);
-  checkTrue(rsp='ok');
+  Assert.IsTrue(rsp='ok');
 
 end;
 
@@ -140,15 +147,15 @@ var
   mdt: IMVCBrMediator<TChatParticipants>;
 begin
   mdt := TMVCBrMediator<TChatParticipants>.Create(TChatParticipants);
-  checkNotNull(mdt, 'não iniciou o mediator');
+  Assert.IsNotNull(mdt, 'nï¿½o iniciou o mediator');
 end;
 
 procedure TestTMVCBrMediator.testRemoveParticipant;
 begin
   FMeditor.Add;
-  checkTrue(FMeditor.count = 1);
+  Assert.IsTrue(FMeditor.count = 1);
   FMeditor.Remove(0);
-  checkTrue(FMeditor.count = 0);
+  Assert.IsTrue(FMeditor.count = 0);
 end;
 
 procedure TestTMVCBrMediator.TestSendAll;
@@ -158,7 +165,7 @@ begin
   it := FMeditor.Add as TChatParticipants;
   FMeditor.Add;
   FMeditor.SendAll('teste');
-  checkTrue(it.FMsg.Equals('teste'));
+  Assert.IsTrue(it.FMsg.Equals('teste'));
 end;
 
 procedure TestTMVCBrMediator.TestSendToFirst;
@@ -169,8 +176,8 @@ begin
   FMeditor.Add;
   FMeditor.Send(it.ID, 'teste');
 
-  checkTrue(it.FMsg.Equals('teste'));
-  checkTrue((FMeditor.items[1] as TChatParticipants).FMsg.Equals(''));
+  Assert.IsTrue(it.FMsg.Equals('teste'));
+  Assert.IsTrue((FMeditor.items[1] as TChatParticipants).FMsg.Equals(''));
 
 end;
 
@@ -200,7 +207,5 @@ begin
 end;
 
 initialization
-
-RegisterTest(TestTMVCBrMediator.Suite);
-
+  TDUnitX.RegisterTestFixture(TestTMVCBrMediator);
 end.
