@@ -60,7 +60,8 @@ uses
   TestMVCBr.Patterns.Singleton in 'TestMVCBr.Patterns.Singleton.pas',
   TestsMVCBr.Patterns.Factory in 'TestsMVCBr.Patterns.Factory.pas',
    MVCBr.Patterns.Memento in '..\MVCBr.Patterns.Memento.pas',
-   TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas';
+   TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas',
+   TestMVCBr.IoC in 'TestMVCBr.IoC.pas';
 
 {$R *.RES}
 

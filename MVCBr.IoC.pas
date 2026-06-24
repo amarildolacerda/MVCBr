@@ -130,7 +130,7 @@ type
       : TIoCRegistration<IMVCBrIOC>; overload;
 
     // Returns true if we have such a service.
-    function HasService<T: IMVCBrIOC>: boolean;
+    function HasService<T: IMVCBrIOC>(const AName: string = ''): boolean;
 
     // Empty the Container.. usefull for testing only!
     procedure Clear;
@@ -213,9 +213,9 @@ begin
     end;
 end;
 
-function TMVCBrIoC.HasService<T>: boolean;
+function TMVCBrIoC.HasService<T>(const AName: string = ''): boolean;
 begin
-  result := Resolve<T> <> nil;
+  result := Resolve<T>(AName) <> nil;
 end;
 
 {$IFDEF DELPHI_XE_UP}
