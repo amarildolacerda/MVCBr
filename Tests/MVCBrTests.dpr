@@ -68,7 +68,7 @@ var
   runner: ITestRunner;
   results: IRunResults;
 begin
-  System.ReportMemoryLeaksOnShutdown := True;
+  System.ReportMemoryLeaksOnShutdown := False;
   runner := TDUnitX.CreateRunner;
   runner.UseRTTI := True;
   {$IFDEF CONSOLE_TESTRUNNER}

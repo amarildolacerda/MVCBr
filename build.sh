@@ -16,6 +16,7 @@ PROJECT_DIR="$PROJECT_BASE/MVCBr"
 DELPHI_DEPLOY="$PROJECT_BASE/delphi_deploy"
 INSTALL_DIR="$PROJECT_DIR/MVCBrInstall"
 DCU_DIR="$PROJECT_DIR/dcu"
+BIN_DIR="$PROJECT_DIR/bin"
 
 # Wine paths with Z: prefix
 to_winpath() {
@@ -44,9 +45,11 @@ JVCL_COMMON_WIN=$(to_winpath "$PROJECT_DIR/jvcl/jvcl/common")
 JVCL_RES_WIN=$(to_winpath "$PROJECT_DIR/jvcl/jvcl/resources")
 UPATH="$PROJECT_DIR_WIN;$PROJECT_DIR_WIN/helpers;$PROJECT_DIR_WIN/VCL;$PROJECT_DIR_WIN/FMX;$PROJECT_DIR_WIN/UniGui;$PROJECT_DIR_WIN/package;$JCL_COMMON_WIN;$JCL_INCLUDE_WIN;$JCL_JEDI_WIN;$JCL_VCL_WIN;$JCL_WINDOWS_WIN;$JVCL_RUN_WIN;$JVCL_DEV_WIN;$JVCL_COMMON_WIN;$JVCL_RES_WIN;$DELPHI_DEPLOY_WIN/cmp/dcu;$DELPHI_DEPLOY_WIN/cmp/bpl"
 
+BIN_DIR_WIN=$(to_winpath "$BIN_DIR")
+
 # Output directory (per .dproj: DCC_ExeOutput=..\, DCC_DcuOutput=.\dcu)
-# -R for resource search path
-OUT_FLAGS="-NO$DCU_DIR_WIN -LE$PROJECT_DIR_WIN -LN$DCU_DIR_WIN -R$PROJECT_DIR_WIN"
+# -E for executable output, -R for resource search path
+OUT_FLAGS="-NO$DCU_DIR_WIN -E$PROJECT_DIR_WIN -LN$DCU_DIR_WIN -R$PROJECT_DIR_WIN"
 
 echo "=== Compiling MVCBr Installer ==="
 echo "NOTE: Requires JCL (JEDI Code Library) installed in Delphi IDE"
@@ -64,7 +67,7 @@ if wine "$DCC32_WIN" "MVCBrInstall.dpr" $CFLAGS $OUT_FLAGS -U"$UPATH" -I"$UPATH"
         echo "Output: $PROJECT_DIR/MVCBrInstall.exe"
         ls -lh "$PROJECT_DIR/MVCBrInstall.exe"
     else
-        echo "WARNING: Expected output not found at $PROJECT_DIR/MVCBrInstall.exe"
+        echo "WARNING: Expected output not found at $BIN_DIR/MVCBrInstall.exe"
     fi
 else
     echo ""
