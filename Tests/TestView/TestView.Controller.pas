@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -8,11 +8,11 @@
 { // Data: 15/06/2017 21:46:56                                  // }
 { //************************************************************// }
 /// <summary>
-/// O controller possui as seguintes características:
+/// O controller possui as seguintes caracterï¿½sticas:
 /// - pode possuir 1 view associado  (GetView)
 /// - pode receber 0 ou mais Model   (GetModel<Ixxx>)
 /// - se auto registra no application controller
-/// - pode localizar controller externos e instanciá-los
+/// - pode localizar controller externos e instanciï¿½-los
 /// (resolveController<I..>)
 /// </summary>
 unit TestView.Controller;
@@ -24,8 +24,7 @@ interface
 
 { .$I ..\inc\mvcbr.inc }
 uses
-  System.SysUtils, {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}{$ENDIF}
-  System.Classes, MVCBr.Interf,
+  System.SysUtils, System.Classes, MVCBr.Interf,
   MVCBr.Model, MVCBr.Controller, MVCBr.ApplicationController,
   System.RTTI, TestView.Controller.Interf,
   TestViewView;
@@ -37,17 +36,17 @@ type
     Procedure DoCommand(ACommand: string;
       const AArgs: array of TValue); override;
   public
-    // inicializar os módulos personalizados em CreateModules
+    // inicializar os mï¿½dulos personalizados em CreateModules
     Procedure CreateModules; virtual;
     Constructor Create; override;
     Destructor Destroy; override;
-    /// New Cria nova instância para o Controller
+    /// New Cria nova instï¿½ncia para o Controller
     class function New(): IController; overload;
     class function New(const AView: IView; const AModel: IModel)
       : IController; overload;
     class function New(const AModel: IModel): IController; overload;
     function ThisAs: TTestViewController;
-    /// Init após criado a instância é chamado para concluir init
+    /// Init apï¿½s criado a instï¿½ncia ï¿½ chamado para concluir init
     procedure init; override;
   end;
 
@@ -115,19 +114,8 @@ end;
 
 /// Evento INIT chamado apos a inicializacao do controller
 procedure TTestViewController.init;
-var
-  ref: TTestViewView;
 begin
   inherited;
-  if not assigned(FView) then
-  begin
-    Application.CreateForm(TTestViewView, ref);
-    supports(ref, IView, FView);
-{$IFDEF FMX}
-    if Application.MainForm = nil then
-      Application.RealCreateForms;
-{$ENDIF}
-  end;
   AfterInit;
 end;
 
@@ -140,7 +128,7 @@ end;
 
 initialization
 
-/// Inicialização automatica do Controller ao iniciar o APP
+/// Inicializaï¿½ï¿½o automatica do Controller ao iniciar o APP
 // TTestViewController.New(TTestViewView.New,TTestViewViewModel.New)).init();
 /// Registrar Interface e ClassFactory para o MVCBr
 RegisterInterfacedClass(TTestViewController.ClassName, ITestViewController,

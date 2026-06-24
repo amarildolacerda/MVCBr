@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -18,13 +18,12 @@ unit TestView.Controller.Interf;
 interface
 
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
-  System.Classes, MVCBr.Interf;
+  System.SysUtils, System.Classes, MVCBr.Interf;
 
 type
   ITestViewController = interface(IController)
     ['{B1F27152-F9D8-4E21-854C-63E68AF87E5C}']
-    // incluir especializações aqui
+    // incluir especializaï¿½ï¿½es aqui
   end;
 
 Implementation

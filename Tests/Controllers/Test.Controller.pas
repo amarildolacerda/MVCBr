@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -13,8 +13,7 @@ interface
 
 { .$I ..\inc\mvcbr.inc }
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
-  System.Classes, MVCBr.Interf,
+  System.SysUtils, System.Classes, MVCBr.Interf,
   MVCBr.Model, MVCBr.Controller,
   MVCBr.ApplicationController,
   Test.Controller.Interf,
@@ -26,7 +25,7 @@ type
   protected
     FContador: integer;
   public
-    // inicializar os módulos personalizados em CreateModules
+    // inicializar os mï¿½dulos personalizados em CreateModules
     Procedure CreateModules; virtual;
     Constructor Create; override;
     Destructor Destroy; override;

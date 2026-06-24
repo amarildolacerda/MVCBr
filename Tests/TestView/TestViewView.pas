@@ -1,66 +1,46 @@
-{ //************************************************************// }
-{ //                                                            // }
-{ //         Código gerado pelo assistente                      // }
-{ //                                                            // }
-{ //         Projeto MVCBr                                      // }
-{ //         tireideletra.com.br  / amarildo lacerda            // }
-{ //************************************************************// }
-{ // Data: 15/06/2017 21:46:56                                  // }
-{ //************************************************************// }
-/// <summary>
-/// Uma View representa a camada de apresentação ao usuário
-/// deve esta associado a um controller onde ocorrerá
-/// a troca de informações e comunicação com os Models
-/// </summary>
 unit TestViewView;
 
 interface
 
 uses
-{$IFDEF FMX}FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
   System.SysUtils, System.Classes, MVCBr.Interf,
   System.JSON,
-  MVCBr.View, MVCBr.FormView, MVCBr.Controller;
+  MVCBr.View, MVCBr.Controller;
 
 type
-  /// Interface para a VIEW
+
   ITestViewView = interface(IView)
     ['{495C20E3-00C8-464C-84C4-1DBE7494B120}']
-    // incluir especializacoes aqui
     function getStubInt: integer;
   end;
 
-  /// Object Factory que implementa a interface da VIEW
-  TTestViewView = class(TFormFactory { TFORM } , IView, IThisAs<TTestViewView>,
+  TTestViewView = class(TViewFactory, IView, IThisAs<TTestViewView>,
     ITestViewView, IViewAs<ITestViewView>)
-    procedure FormFactoryViewEvent(AMessage: TJSONValue; var AHandled: Boolean);
   private
     FInited: Boolean;
-    FCount:integer;
+    FCount: integer;
   protected
     procedure Init;
     function Controller(const aController: IController): IView; override;
   public
-    { Public declarations }
     class function New(aController: IController): IView;
-    destructor Destroy;override;
+    destructor Destroy; override;
     function This: TObject; override;
     function ThisAs: TTestViewView;
     function ViewAs: ITestViewView;
     function ShowView(const AProc: TProc<IView>): integer; override;
     function UpdateView: IView; override;
     function getStubInt: integer;
-    function GetShowModalStub:Boolean;
+    function GetShowModalStub: Boolean;
+    function ViewEvent(AMessage: string; var AHandled: Boolean): IView; override;
+    function ViewEvent(AMessage: TJSONValue; var AHandled: Boolean): IView; override;
   end;
 
 Implementation
 
-{$R *.DFM}
-
 function TTestViewView.UpdateView: IView;
 begin
   result := self;
-  { codigo para atualizar a View vai aqui... }
 end;
 
 function TTestViewView.ViewAs: ITestViewView;
@@ -70,7 +50,7 @@ end;
 
 class function TTestViewView.New(aController: IController): IView;
 begin
-  result := TTestViewView.create(nil);
+  result := TTestViewView.create;
   result.Controller(aController);
 end;
 
@@ -86,15 +66,22 @@ end;
 
 destructor TTestViewView.Destroy;
 begin
-
   inherited;
 end;
 
-procedure TTestViewView.FormFactoryViewEvent(AMessage: TJSONValue;
-  var AHandled: Boolean);
+function TTestViewView.ViewEvent(AMessage: string;
+  var AHandled: Boolean): IView;
 begin
-    inc(FCount);
-    AHandled := true;
+  result := self;
+  AHandled := true;
+end;
+
+function TTestViewView.ViewEvent(AMessage: TJSONValue;
+  var AHandled: Boolean): IView;
+begin
+  result := self;
+  inc(FCount);
+  AHandled := true;
 end;
 
 function TTestViewView.GetShowModalStub: Boolean;
@@ -110,7 +97,6 @@ end;
 procedure TTestViewView.Init;
 begin
   FCount := 1;
-  // incluir incializações aqui
 end;
 
 function TTestViewView.This: TObject;

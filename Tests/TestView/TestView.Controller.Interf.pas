@@ -1,6 +1,6 @@
 {//************************************************************//}
 {//                                                            //}
-{//         Código gerado pelo assistente                      //}
+{//         Cï¿½digo gerado pelo assistente                      //}
 {//                                                            //}
 {//         Projeto MVCBr                                      //}
 {//         tireideletra.com.br  / amarildo lacerda            //}
@@ -16,17 +16,16 @@ unit TestView.Controller.Interf;
  ///
 interface
 uses
-System.SysUtils,{$ifdef LINUX} {$else} {$ifdef FMX} FMX.Forms,{$else}VCL.Forms,{$endif} {$endif}
-System.Classes, MVCBr.Interf;
+System.SysUtils, System.Classes, MVCBr.Interf;
 type
   ITestViewController = interface(IController)
          ['{AF962A43-2AD3-4FA6-9F34-D25218DFF6CB}']
-         // incluir especializações aqui
+         // incluir especializaï¿½ï¿½es aqui
   end;
 
   ITestViewController2 = interface(IController)
          ['{AF962A43-2AD3-4FA6-9F34-D25218DFF6CB}']
-         // incluir especializações aqui
+         // incluir especializaï¿½ï¿½es aqui
   end;
 
 

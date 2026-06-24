@@ -16,9 +16,8 @@ program MVCBrTests;
 
 uses
   DUnitTestRunner,
-  MVCBr.ApplicationController,
+   MVCBr.ApplicationController,
   MVCBr.Controller,
-  MVCBr.FormView,
   MVCBr.View,
   TestMVCBr.Controller in 'TestMVCBr.Controller.pas',
   TestMVCBrModel in 'TestMVCBrModel.pas',
@@ -59,10 +58,8 @@ uses
   MVCBr.Patterns.Factory in '..\MVCBr.Patterns.Factory.pas',
   TestMVCBr.Patterns.Singleton in 'TestMVCBr.Patterns.Singleton.pas',
   TestsMVCBr.Patterns.Factory in 'TestsMVCBr.Patterns.Factory.pas',
-  MVCBr.Patterns.Memento in '..\MVCBr.Patterns.Memento.pas',
-  TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas',
-  MVCBr.MongoModel in '..\MVCBr.MongoModel.pas',
-  TestMVCBrMongoModel in 'TestMVCBrMongoModel.pas';
+   MVCBr.Patterns.Memento in '..\MVCBr.Patterns.Memento.pas',
+   TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas';
 
 {$R *.RES}
 

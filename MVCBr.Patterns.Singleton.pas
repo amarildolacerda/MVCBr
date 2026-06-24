@@ -34,6 +34,7 @@ type
     class function New(): IMVCBrSingleton<T>;overload;
     class function New(AObject: T; AOwned: boolean = true)
       : IMVCBrSingleton<T>;overload;
+    class function NewAsObject: TMVCBrSingleton<T>;
     /// <summary> Default check if instance exists, is not create it..</summary>
     /// <returns>instance of class</returns>
     function Default: T;
@@ -89,6 +90,13 @@ end;
 class function TMVCBrSingleton<T>.New: IMVCBrSingleton<T>;
 begin
   result := New(nil, true);
+end;
+
+class function TMVCBrSingleton<T>.NewAsObject: TMVCBrSingleton<T>;
+begin
+  result := InternalCreate;
+  result.FOwned := true;
+  result.FClass := TClass(T);
 end;
 
 class function TMVCBrSingleton<T>.New(AObject: T; AOwned: boolean)

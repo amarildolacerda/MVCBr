@@ -241,11 +241,11 @@ begin
   TThread.NameThreadForDebugging('TestEOF');
   FMVCBrStates.MoveTo(9999);
   ReturnValue := FMVCBrStates.EOF;
-  checkTrue(ReturnValue, 'Object não se posicionou EOF');
+  checkTrue(ReturnValue, 'Object nï¿½o se posicionou EOF');
 
   TestAdd;
   ReturnValue := FMVCBrStates.EOF;
-  checkFalse(ReturnValue, 'Object não se posicionou EOF');
+  checkFalse(ReturnValue, 'Object nï¿½o se posicionou EOF');
 
   // TODO: Validate method results
 end;
@@ -276,7 +276,7 @@ begin
   begin
     ReturnValue := FMVCBrStates.Prior;
     CheckNull(ReturnValue,
-      'Deveria retornar NULL, so 1 item na lista.. o prior é -1');
+      'Deveria retornar NULL, so 1 item na lista.. o prior ï¿½ -1');
     checkTrue(FMVCBrStates.BOF, 'Nao apontou para BOF, mesmo nao tendo itens');
   end;
   // TODO: Validate method results
@@ -369,11 +369,11 @@ begin
   checkTrue(FMVCBrStates.CurrenteIndex = 2);
 
   FMVCBrStates.MoveTo('XXX');
-  checkTrue(self.FStepSign = 10, 'Não movimentou o ponteiro');
+  checkTrue(self.FStepSign = 10, 'Nï¿½o movimentou o ponteiro');
 
   self.FStepSign := 0;
   FMVCBrStates.MoveTo('YYY');
-  checkTrue(self.FStepSign = 20, 'Não movimentou o ponteiro');
+  checkTrue(self.FStepSign = 20, 'Nï¿½o movimentou o ponteiro');
 
   // TODO: Validate method results
 end;
@@ -630,8 +630,8 @@ begin
   /// search LCommand
   LResult := LBuilder.Query(LCommand);
   /// check result
-  CheckNotNull(LResult, 'Não encontrou o comando');
-  checkTrue(LResult.Execute(nil).equals(LCommand), 'Não executou');
+  CheckNotNull(LResult, 'Nï¿½o encontrou o comando');
+  checkTrue(LResult.Execute(nil).equals(LCommand), 'Nï¿½o executou');
 
   /// look or unknown command
   LResult := LBuilder.Query('XXX');
@@ -653,7 +653,7 @@ begin
     function(sender: string): string
     begin
       result := 'SUCESSO';
-    end).Execute('TESTE').equals('SUCESSO'), 'Não Executou o builder')
+    end).Execute('TESTE').equals('SUCESSO'), 'Nï¿½o Executou o builder')
 
 end;
 
@@ -675,7 +675,7 @@ begin
 
     ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
 
-    checkTrue(ReturnValue = 'OK', 'Não executou o builder');
+    checkTrue(ReturnValue = 'OK', 'Nï¿½o executou o builder');
 
   finally
     AObject.Free;
@@ -705,7 +705,7 @@ begin
     with ABuilder.Add(1, TBuiltTests) { .instance } do
     begin
       Execute(10);
-      checkTrue(ABuilder.Query<TBuiltTests>(1).FCount = 10, 'Não executou');
+      checkTrue(ABuilder.Query<TBuiltTests>(1).FCount = 10, 'Nï¿½o executou');
     end;
   finally
     ABuilder.Free;
@@ -728,8 +728,20 @@ Type
 
 
 procedure TestTMVCBrBuilderFactory.TestLazyBuilder;
+var
+  ALazy: TMVCBrBuilderLazyFactory;
+  refLazy: TBuildLazyObject;
 begin
-   raise Exception.Create('nao implementado');
+  ALazy := TMVCBrBuilderLazyFactory.New;
+  try
+    ALazy.Add('comandoTest', TBuildLazyObject);
+    refLazy := ALazy.Query<TBuildLazyObject>('comandoTest');
+    CheckNotNull(refLazy, 'Nao criou o lazy builder');
+    refLazy.Execute(5);
+    CheckTrue(refLazy.Response.asInteger = 5, 'Nao executou lazy builder');
+  finally
+    ALazy.Free;
+  end;
 end;
 
 procedure TestTMVCBrBuilderFactory.TestLazyBuilderInvokeClass;
@@ -744,7 +756,7 @@ begin
     refLazy := ALazy.Query<TBuildLazyObject>('comandoB');
     refLazy.Execute(10);
 
-    checkTrue(refLazy.Response.asInteger = 10, 'Não Executou INVOKE function');
+    checkTrue(refLazy.Response.asInteger = 10, 'Nï¿½o Executou INVOKE function');
 
   finally
     ALazy.Free;
@@ -766,7 +778,7 @@ begin
     Interf.Execute(30);
 
     checkTrue(Interf.Response.asInteger = 30,
-      'Não executou comando pela interface');
+      'Nï¿½o executou comando pela interface');
     Interf := nil;
 
   finally
@@ -798,8 +810,8 @@ begin
   /// search LCommand
   LResult := LBuilder.Query(LCommand);
   /// check result
-  CheckNotNull(LResult, 'Não encontrou o comando');
-  checkTrue(LResult.Execute(nil), 'Não executou');
+  CheckNotNull(LResult, 'Nï¿½o encontrou o comando');
+  checkTrue(LResult.Execute(nil), 'Nï¿½o executou');
 
   /// look or unknown command
   LResult := LBuilder.Query('XXX');
@@ -827,12 +839,12 @@ begin
     ReturnValue := FMVCBrBuilderFactory.Execute(CMD_ONE, AObject);
     // TODO: Validate method results
 
-    checkTrue(ReturnValue = 'OK', 'Não executou o builder');
+    checkTrue(ReturnValue = 'OK', 'Nï¿½o executou o builder');
 
     /// remove
     ///
     FMVCBrBuilderFactory.Remove(CMD_ONE);
-    CheckNull(FMVCBrBuilderFactory.Query(CMD_ONE), 'Não removeu');
+    CheckNull(FMVCBrBuilderFactory.Query(CMD_ONE), 'Nï¿½o removeu');
 
   finally
     AObject.Free;
@@ -918,7 +930,7 @@ procedure TestTMVCBrLazyObject.TestAddCommand;
 begin
   lzObject.Add(1, TObject);
   lzObject.Add(2, TObject);
-  checkTrue(lzObject.count = 2, 'Não incluir os itens');
+  checkTrue(lzObject.count = 2, 'Nï¿½o incluir os itens');
 end;
 
 procedure TestTMVCBrLazyObject.TestCreateLazyObject;
@@ -931,7 +943,7 @@ begin
       result := TLazyObject.Create;
     end);
   LLazy.Execute(10);
-  checkTrue(LLazy.FCount = 10, 'Não Executou o LazyObject');
+  checkTrue(LLazy.FCount = 10, 'Nï¿½o Executou o LazyObject');
 end;
 
 procedure TestTMVCBrLazyObject.TestDelegate;
@@ -942,10 +954,10 @@ begin
       result := TLazyObject.Create;
     end).instance;
 
-  checkTrue(lzObject.Query(1).IsCreated, 'Não inicilizou');
+  checkTrue(lzObject.Query(1).IsCreated, 'Nï¿½o inicilizou');
 
   checkTrue(lzObject.Query(1).instance.InheritsFrom(TLazyObject),
-    'Não inicilizou TLazyObject');
+    'Nï¿½o inicilizou TLazyObject');
 
 end;
 
@@ -956,14 +968,14 @@ begin
     'Inicializou a instance antes de chama-la');
 
   lzObject.Query(1).instance;
-  checkTrue(lzObject.Query(1).IsCreated, 'Não incializou a instancia');
+  checkTrue(lzObject.Query(1).IsCreated, 'Nï¿½o incializou a instancia');
 
 end;
 
 procedure TestTMVCBrLazyObject.TestLazyFactoryCreate;
 begin
   lzObject.Add(1, TObject);
-  checkTrue(lzObject.count > 0, 'Não incluir o item');
+  checkTrue(lzObject.count > 0, 'Nï¿½o incluir o item');
 end;
 
 procedure TestTMVCBrLazyObject.TestQueryCommand;
@@ -973,7 +985,7 @@ begin
   lzObject.Add(3, TObject);
 
   checkTrue(lzObject.Query(2).instance.InheritsFrom(TComponent),
-    'Não achou o TComponent');
+    'Nï¿½o achou o TComponent');
 
 end;
 

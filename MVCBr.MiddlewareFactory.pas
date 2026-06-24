@@ -1,7 +1,7 @@
 unit MVCBr.MiddlewareFactory;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -134,8 +134,7 @@ begin
   begin
     FMiddleware := TMVCBrMediator<TMVCBrMiddleware>.create(TMVCBrMiddleware);
     FReleased := false;
-  end else
-    FReleased := true;
+  end;
   result := FMiddleware;
 end;
 

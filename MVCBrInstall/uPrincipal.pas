@@ -1,35 +1,35 @@
 { ****************************************************************************** }
 { Projeto: MVCBr }
 { }
-{ Colaboradores nesse arquivo: Régys Borges da Silveira }
+{ Colaboradores nesse arquivo: Rï¿½gys Borges da Silveira }
 { Juliomar Marchetti }
 { }
-{ Você pode obter a última versão desse arquivo na pagina do Projeto }
+{ Vocï¿½ pode obter a ï¿½ltima versï¿½o desse arquivo na pagina do Projeto }
 { localizado em }
 { https://github.com/amarildolacerda/MVCBr }
 { }
-{ Para mais informações você pode fazer parte do grupo do Telegram }
+{ Para mais informaï¿½ï¿½es vocï¿½ pode fazer parte do grupo do Telegram }
 { }
-{ Esta biblioteca é software livre; você pode redistribuí-la e/ou modificá-la }
-{ sob os termos da Licença Pública Geral Menor do GNU conforme publicada pela }
-{ Free Software Foundation; tanto a versão 2.1 da Licença, ou (a seu critério) }
-{ qualquer versão posterior. }
+{ Esta biblioteca ï¿½ software livre; vocï¿½ pode redistribuï¿½-la e/ou modificï¿½-la }
+{ sob os termos da Licenï¿½a Pï¿½blica Geral Menor do GNU conforme publicada pela }
+{ Free Software Foundation; tanto a versï¿½o 2.1 da Licenï¿½a, ou (a seu critï¿½rio) }
+{ qualquer versï¿½o posterior. }
 { }
-{ Esta biblioteca é distribuída na expectativa de que seja útil, porém, SEM }
-{ NENHUMA GARANTIA; nem mesmo a garantia implícita de COMERCIABILIDADE OU }
-{ ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA. Consulte a Licença Pública Geral Menor }
-{ do GNU para mais detalhes. (Arquivo LICENÇA.TXT ou LICENSE.TXT) }
+{ Esta biblioteca ï¿½ distribuï¿½da na expectativa de que seja ï¿½til, porï¿½m, SEM }
+{ NENHUMA GARANTIA; nem mesmo a garantia implï¿½cita de COMERCIABILIDADE OU }
+{ ADEQUAï¿½ï¿½O A UMA FINALIDADE ESPECï¿½FICA. Consulte a Licenï¿½a Pï¿½blica Geral Menor }
+{ do GNU para mais detalhes. (Arquivo LICENï¿½A.TXT ou LICENSE.TXT) }
 { }
-{ Você deve ter recebido uma cópia da Licença Pública Geral Menor do GNU junto }
-{ com esta biblioteca; se não, escreva para a Free Software Foundation, Inc., }
-{ no endereço 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA. }
-{ Você também pode obter uma copia da licença em: }
+{ Vocï¿½ deve ter recebido uma cï¿½pia da Licenï¿½a Pï¿½blica Geral Menor do GNU junto }
+{ com esta biblioteca; se nï¿½o, escreva para a Free Software Foundation, Inc., }
+{ no endereï¿½o 59 Temple Street, Suite 330, Boston, MA 02111-1307 USA. }
+{ Vocï¿½ tambï¿½m pode obter uma copia da licenï¿½a em: }
 { http://www.opensource.org/licenses/gpl-license.php }
 { }
 { ****************************************************************************** }
 
 {
-  Alterações:
+  Alteraï¿½ï¿½es:
   15/06/2017  * alterado para pegar somente o trunk do git. por: amarildo lacerda
 
 
@@ -227,7 +227,7 @@ begin
   Result := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
 end;
 
-// retornar o caminho completo para o arquivo .ini de configurações
+// retornar o caminho completo para o arquivo .ini de configuraï¿½ï¿½es
 function TfrmPrincipal.PathArquivoIni: String;
 var
   NomeApp: String;
@@ -243,14 +243,14 @@ begin
     [rfReplaceAll]) + '.txt';
 end;
 
-// verificar se no caminho informado já existe o .svn indicando que o
-// checkout já foi feito no diretorio
+// verificar se no caminho informado jï¿½ existe o .svn indicando que o
+// checkout jï¿½ foi feito no diretorio
 function TfrmPrincipal.IsCheckOutJaFeito(const ADiretorio: String): Boolean;
 begin
   Result := DirectoryExists(IncludeTrailingPathDelimiter(ADiretorio) + '.svn')
 end;
 
-// ler o arquivo .ini de configurações e setar os campos com os valores lidos
+// ler o arquivo .ini de configuraï¿½ï¿½es e setar os campos com os valores lidos
 procedure TfrmPrincipal.LerConfiguracoes;
 var
   ArqIni: TIniFile;
@@ -277,7 +277,7 @@ begin
   end;
 end;
 
-// gravar as configurações efetuadas pelo usuário
+// gravar as configuraï¿½ï¿½es efetuadas pelo usuï¿½rio
 procedure TfrmPrincipal.GravarConfiguracoes;
 var
   ArqIni: TIniFile;
@@ -294,10 +294,10 @@ begin
   end;
 end;
 
-// criação dos diretórios necessários
+// criaï¿½ï¿½o dos diretï¿½rios necessï¿½rios
 procedure TfrmPrincipal.CreateDirectoryLibrarysNotExist;
 begin
-  // Checa se existe diretório da plataforma
+  // Checa se existe diretï¿½rio da plataforma
   if not DirectoryExists(sDirLibrary) then
     ForceDirectories(sDirLibrary);
 end;
@@ -345,9 +345,6 @@ procedure TfrmPrincipal.CopiarArquivosToLib;
     Mover(ListArquivos);
     ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) +
       'DMVC\lib\dmustache', Extensao, TSearchOption.soAllDirectories);
-    Mover(ListArquivos);
-    ListArquivos := TDirectory.GetFiles(IncludeTrailingPathDelimiter(sDirRoot) +
-      'MongoWire', Extensao, TSearchOption.soAllDirectories);
     Mover(ListArquivos);
 
   end;
@@ -400,7 +397,7 @@ var
 begin
   with oMVCBr.Installations[iVersion] do
   begin
-    // tentar ler o path configurado na ide do delphi, se não existir ler
+    // tentar ler o path configurado na ide do delphi, se nï¿½o existir ler
     // a atual para complementar e fazer o override
     PathsAtuais := Trim(EnvironmentVariables.Values['PATH']);
     if PathsAtuais = '' then
@@ -430,7 +427,7 @@ begin
       // escrever a variavel no override da ide
       ConfigData.WriteString(cs, 'PATH', ListaPaths.DelimitedText);
 
-      // enviar um broadcast de atualização para o windows
+      // enviar um broadcast de atualizaï¿½ï¿½o para o windows
       wParam := 0;
       lParam := LongInt(cs);
       SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, wParam, lParam,
@@ -463,7 +460,6 @@ begin
       AddToLibrarySearchPath(ADirRoot + 'DMVC\sources', tPlatform);
       AddToLibrarySearchPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
       AddToLibrarySearchPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
-      AddToLibrarySearchPath(ADirRoot + 'MongoWire', tPlatform);
 
       AddToLibraryBrowsingPath(ADirRoot, tPlatform);
       AddToLibraryBrowsingPath(ADirRoot + 'VCL', tPlatform);
@@ -473,7 +469,6 @@ begin
       AddToLibraryBrowsingPath(ADirRoot + 'DMVC\sources', tPlatform);
       AddToLibraryBrowsingPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
       AddToLibraryBrowsingPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
-      AddToLibraryBrowsingPath(ADirRoot + 'MongoWire', tPlatform);
     end
     else
     begin
@@ -485,7 +480,6 @@ begin
       RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\sources', tPlatform);
       RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\lib\loggerpro', tPlatform);
       RemoveFromLibrarySearchPath(ADirRoot + 'DMVC\lib\dmustache', tPlatform);
-      RemoveFromLibrarySearchPath(ADirRoot + 'MongoWire', tPlatform);
     end;
   end;
 
@@ -535,7 +529,6 @@ procedure TfrmPrincipal.AddLibrarySearchPath;
       AddToLibrarySearchPath(sDirRoot + 'DMVC\sources', tPlatform);
       AddToLibrarySearchPath(sDirRoot + 'DMVC\LIB\loggerpro', tPlatform);
       AddToLibrarySearchPath(sDirRoot + 'DMVC\LIB\dmustache', tPlatform);
-      AddToLibrarySearchPath(sDirRoot + 'MongoWire', tPlatform);
     end;
   end;
 
@@ -555,7 +548,7 @@ begin
   AddLibraryPathToDelphiPath(sDirLibrary, 'MVCBr');
 end;
 
-// setar a plataforma de compilação
+// setar a plataforma de compilaï¿½ï¿½o
 procedure TfrmPrincipal.SetPlatformSelected;
 var
   sVersao: String;
@@ -581,23 +574,23 @@ begin
   end;
 end;
 
-// Evento disparado a cada ação do instalador
+// Evento disparado a cada aï¿½ï¿½o do instalador
 procedure TfrmPrincipal.OutputCallLine(const Text: string);
 begin
-  // remover a warnings de conversão de string (delphi 2010 em diante)
-  // as diretivas -W e -H não removem estas mensagens
+  // remover a warnings de conversï¿½o de string (delphi 2010 em diante)
+  // as diretivas -W e -H nï¿½o removem estas mensagens
   if (Pos('Warning: W1057', Text) <= 0) and ((Pos('Warning: W1058', Text) <= 0))
   then
     WriteToTXT(AnsiString(PathArquivoLog), AnsiString(Text));
 end;
 
-// evento para setar os parâmetros do compilador antes de compilar
+// evento para setar os parï¿½metros do compilador antes de compilar
 procedure TfrmPrincipal.BeforeExecute(Sender: TJclBorlandCommandLineTool);
 begin
-  // limpar os parâmetros do compilador
+  // limpar os parï¿½metros do compilador
   Sender.Options.Clear;
 
-  // não utilizar o dcc32.cfg
+  // nï¿½o utilizar o dcc32.cfg
   if oMVCBr.Installations[iVersion].SupportsNoConfig then
     Sender.Options.Add('--no-config');
 
@@ -613,9 +606,9 @@ begin
   Sender.Options.Add('-M');
   // -Q = Quiet compile
   Sender.Options.Add('-Q');
-  // não mostrar warnings
+  // nï¿½o mostrar warnings
   Sender.Options.Add('-H-');
-  // não mostrar hints
+  // nï¿½o mostrar hints
   Sender.Options.Add('-W-');
   // -D<syms> = Define conditionals
   Sender.Options.Add('-DRELEASE');
@@ -639,14 +632,14 @@ begin
   //
   with oMVCBr.Installations[iVersion] do
   begin
-    // -- Path para instalar os pacotes do Rave no D7, nas demais versões
+    // -- Path para instalar os pacotes do Rave no D7, nas demais versï¿½es
     // -- o path existe.
     if VersionNumberStr = 'd7' then
       Sender.AddPathOption('U', oMVCBr.Installations[iVersion].RootDir +
         '\Rave5\Lib');
 
-    // -- Na versão XE2 por motivo da nova tecnologia FireMonkey, deve-se adicionar
-    // -- os prefixos dos nomes, para identificar se será compilado para VCL ou FMX
+    // -- Na versï¿½o XE2 por motivo da nova tecnologia FireMonkey, deve-se adicionar
+    // -- os prefixos dos nomes, para identificar se serï¿½ compilado para VCL ou FMX
     if VersionNumberStr = 'd16' then
       Sender.Options.Add
         ('-NSData.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;Windows;System.Win');
@@ -670,7 +663,7 @@ begin
 
   oMVCBr := TJclBorRADToolInstallations.Create;
 
-  // popular o combobox de versões do delphi instaladas na máquina
+  // popular o combobox de versï¿½es do delphi instaladas na mï¿½quina
   for iFor := 0 to oMVCBr.Count - 1 do
   begin
     if oMVCBr.Installations[iFor].VersionNumberStr = 'd3' then
@@ -716,7 +709,7 @@ begin
     else if oMVCBr.Installations[iFor].VersionNumberStr = 'd25' then
       edtDelphiVersion.Items.Add('Delphi 10.2 Tokyo');
 
-    // -- Evento disparado antes de iniciar a execução do processo.
+    // -- Evento disparado antes de iniciar a execuï¿½ï¿½o do processo.
     oMVCBr.Installations[iFor].DCC32.OnBeforeExecute := BeforeExecute;
 
     // -- Evento para saidas de mensagens.
@@ -737,7 +730,7 @@ begin
   oMVCBr.Free;
 end;
 
-// botão de compilação e instalação dos pacotes selecionados no treeview
+// botï¿½o de compilaï¿½ï¿½o e instalaï¿½ï¿½o dos pacotes selecionados no treeview
 procedure TfrmPrincipal.btnInstalarMVCBrClick(Sender: TObject);
 var
   iDpk: Integer;
@@ -758,7 +751,7 @@ var
         tdDelphi:
           Msg := Format(aMensagem + ' em "%s"', [sPathBin]);
         tdNone:
-          Msg := 'Tipo de destino "nenhum" não aceito!';
+          Msg := 'Tipo de destino "nenhum" nï¿½o aceito!';
       end;
     end
     else
@@ -770,7 +763,7 @@ var
         tdDelphi:
           Msg := Format(aMensagem + ' em "%s": "%s"', [sPathBin, aErro]);
         tdNone:
-          Msg := 'Tipo de destino "nenhum" não aceito!';
+          Msg := 'Tipo de destino "nenhum" nï¿½o aceito!';
       end;
     end;
 
@@ -792,7 +785,7 @@ begin
   try
 
     Cabecalho := 'Caminho: ' + edtDirDestino.Text + sLineBreak +
-      'Versão do delphi: ' + edtDelphiVersion.Text + ' (' + IntToStr(iVersion) +
+      'Versï¿½o do delphi: ' + edtDelphiVersion.Text + ' (' + IntToStr(iVersion) +
       ')' + sLineBreak + 'Plataforma: ' + edtPlatform.Text + '(' +
       IntToStr(Integer(tPlatform)) + ')' + sLineBreak + StringOfChar('=', 80);
 
@@ -807,21 +800,21 @@ begin
     // Seta a plataforna selecionada
     SetPlatformSelected;
     pgbInstalacao.Position := pgbInstalacao.Position + 1;
-    lstMsgInstalacao.Items.Add('Setando parâmetros de plataforma...');
+    lstMsgInstalacao.Items.Add('Setando parï¿½metros de plataforma...');
     Application.ProcessMessages;
     WriteToTXT(AnsiString(PathArquivoLog),
-      AnsiString('Setando parâmetros de plataforma...'));
+      AnsiString('Setando parï¿½metros de plataforma...'));
 
-    // Cria diretório de biblioteca da versão do delphi selecionada,
-    // só será criado se não existir
+    // Cria diretï¿½rio de biblioteca da versï¿½o do delphi selecionada,
+    // sï¿½ serï¿½ criado se nï¿½o existir
     CreateDirectoryLibrarysNotExist;
     pgbInstalacao.Position := pgbInstalacao.Position + 1;
-    lstMsgInstalacao.Items.Add('Criando diretórios de bibliotecas...');
+    lstMsgInstalacao.Items.Add('Criando diretï¿½rios de bibliotecas...');
     Application.ProcessMessages;
     WriteToTXT(AnsiString(PathArquivoLog),
-      AnsiString('Criando diretórios de bibliotecas...'));
+      AnsiString('Criando diretï¿½rios de bibliotecas...'));
 
-    // Adiciona os paths dos fontes na versão do delphi selecionada
+    // Adiciona os paths dos fontes na versï¿½o do delphi selecionada
     AddLibrarySearchPath;
     pgbInstalacao.Position := pgbInstalacao.Position + 1;
     lstMsgInstalacao.Items.Add('Adicionando library paths...');
@@ -841,7 +834,7 @@ begin
     NomePacote.Add('MVCBrFireDAC.dpk');
     NomePacote.Add('MVCBrVCLWinX.dpk');
 
-    // Busca diretório do pacote
+    // Busca diretï¿½rio do pacote
     for iDpk := 0 to NomePacote.Count - 1 do
     begin
       ExtrairDiretorioPacote(NomePacote[iDpk]);
@@ -870,7 +863,7 @@ begin
     pgbInstalacao.Position := pgbInstalacao.Position + 1;
     Application.ProcessMessages;
 
-    // instalar os pacotes somente se não ocorreu erro na compilação e plataforma for Win32
+    // instalar os pacotes somente se nï¿½o ocorreu erro na compilaï¿½ï¿½o e plataforma for Win32
     if (edtPlatform.ItemIndex = 0) then
     begin
       if (FCountErros <= 0) then
@@ -881,7 +874,7 @@ begin
 
         for iDpk := 0 to NomePacote.Count - 1 do
         begin
-          // Busca diretório do pacote
+          // Busca diretï¿½rio do pacote
           ExtrairDiretorioPacote(NomePacote[iDpk]);
 
           if IsDelphiPackage(NomePacote[iDpk]) then
@@ -920,7 +913,7 @@ begin
       begin
         lstMsgInstalacao.Items.Add('');
         lstMsgInstalacao.Items.Add
-          ('Abortando... Ocorreram erros na compilação dos pacotes.');
+          ('Abortando... Ocorreram erros na compilaï¿½ï¿½o dos pacotes.');
         lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
       end;
     end
@@ -928,7 +921,7 @@ begin
     begin
       lstMsgInstalacao.Items.Add('');
       lstMsgInstalacao.Items.Add
-        ('Para a plataforma de 64 bits os pacotes são somente compilados.');
+        ('Para a plataforma de 64 bits os pacotes sï¿½o somente compilados.');
       lstMsgInstalacao.ItemIndex := lstMsgInstalacao.Count - 1;
     end;
 
@@ -944,46 +937,46 @@ begin
   begin
     Application.MessageBox
       (PWideChar('Pacotes compilados e instalados com sucesso! ' + sLineBreak +
-      'Clique em "Próximo" para finalizar a instalação.'), 'Instalação',
+      'Clique em "Prï¿½ximo" para finalizar a instalaï¿½ï¿½o.'), 'Instalaï¿½ï¿½o',
       MB_ICONINFORMATION + MB_OK);
   end
   else
   begin
     if Application.MessageBox
-      (PWideChar('Ocorreram erros durante o processo de instalação, ' +
-      sLineBreak + 'para maiores informações verifique o arquivo de log gerado.'
+      (PWideChar('Ocorreram erros durante o processo de instalaï¿½ï¿½o, ' +
+      sLineBreak + 'para maiores informaï¿½ï¿½es verifique o arquivo de log gerado.'
       + sLineBreak + sLineBreak + 'Deseja visualizar o arquivo de log gerado?'),
-      'Instalação', MB_ICONQUESTION + MB_YESNO) = ID_YES then
+      'Instalaï¿½ï¿½o', MB_ICONQUESTION + MB_YESNO) = ID_YES then
     begin
       btnVisualizarLogCompilacao.Click;
     end;
   end;
-  // -- Copiar todas as BPLs para a pasta SYSTEM do windows, isso é necessário
+  // -- Copiar todas as BPLs para a pasta SYSTEM do windows, isso ï¿½ necessï¿½rio
   // -- por motivo do delphi ao iniciar buscar as BPLs nas pastas SYSTEM
-  // -- se não tiver na poasta padrão dele.
+  // -- se nï¿½o tiver na poasta padrï¿½o dele.
   // CopiarArquivosBPLsSystem;
 end;
 
-// chama a caixa de dialogo para selecionar o diretório de instalação
-// seria bom que a caixa fosse aquele que possui o botão de criar pasta
+// chama a caixa de dialogo para selecionar o diretï¿½rio de instalaï¿½ï¿½o
+// seria bom que a caixa fosse aquele que possui o botï¿½o de criar pasta
 procedure TfrmPrincipal.btnSelecDirInstallClick(Sender: TObject);
 var
   Dir: String;
 begin
-  if SelectDirectory('Selecione o diretório de instalação', '', Dir,
+  if SelectDirectory('Selecione o diretï¿½rio de instalaï¿½ï¿½o', '', Dir,
     [sdNewFolder, sdNewUI, sdValidateDir]) then
     edtDirDestino.Text := Dir;
 end;
 
-// quando trocar a versão verificar se libera ou não o combo
-// da plataforma de compilação
+// quando trocar a versï¿½o verificar se libera ou nï¿½o o combo
+// da plataforma de compilaï¿½ï¿½o
 procedure TfrmPrincipal.edtDelphiVersionChange(Sender: TObject);
 begin
   iVersion := edtDelphiVersion.ItemIndex;
   sPathBin := IncludeTrailingPathDelimiter(oMVCBr.Installations[iVersion]
     .BinFolderName);
-  // -- Plataforma só habilita para Delphi XE2
-  // -- Desabilita para versão diferente de Delphi XE2
+  // -- Plataforma sï¿½ habilita para Delphi XE2
+  // -- Desabilita para versï¿½o diferente de Delphi XE2
   edtPlatform.Enabled := oMVCBr.Installations[iVersion].VersionNumber >= 9;
   if oMVCBr.Installations[iVersion].VersionNumber < 9 then
     edtPlatform.ItemIndex := 0;
@@ -999,7 +992,7 @@ end;
 procedure TfrmPrincipal.wizPgInicioNextButtonClick(Sender: TObject;
   var Stop: Boolean);
 begin
-  // Verificar se o delphi está aberto
+  // Verificar se o delphi estï¿½ aberto
 {$IFNDEF DEBUG}
   if oMVCBr.AnyInstanceRunning then
   begin
@@ -1008,8 +1001,8 @@ begin
       PWideChar(Application.Title), MB_ICONERROR + MB_OK);
   end;
 {$ENDIF}
-  // Verificar se o tortoise está instalado, se não estiver, não mostrar a aba de atualização
-  // o usuário deve utilizar software proprio e fazer manualmente
+  // Verificar se o tortoise estï¿½ instalado, se nï¿½o estiver, nï¿½o mostrar a aba de atualizaï¿½ï¿½o
+  // o usuï¿½rio deve utilizar software proprio e fazer manualmente
   // pedido do forum
   wizPgObterFontes.Visible := TSVN_Class.SVNInstalled;
 end;
@@ -1027,12 +1020,12 @@ begin
   else // win64
     btnInstalarMVCBr.Caption := 'Compilar';
 
-  // mostrar ao usuário as informações de compilação
+  // mostrar ao usuï¿½rio as informaï¿½ï¿½es de compilaï¿½ï¿½o
   with lbInfo.Items do
   begin
     Clear;
     Add(edtDelphiVersion.Text + ' ' + edtPlatform.Text);
-    Add('Dir. Instalação  : ' + edtDirDestino.Text);
+    Add('Dir. Instalaï¿½ï¿½o  : ' + edtDirDestino.Text);
     Add('Dir. Bibliotecas : ' + sDirLibrary);
   end;
 end;
@@ -1043,7 +1036,7 @@ begin
   if (lstMsgInstalacao.Count <= 0) then
   begin
     Stop := True;
-    Application.MessageBox('Clique no botão instalar antes de continuar.',
+    Application.MessageBox('Clique no botï¿½o instalar antes de continuar.',
       'Erro.', MB_OK + MB_ICONERROR);
   end;
 
@@ -1051,7 +1044,7 @@ begin
   begin
     Stop := True;
     Application.MessageBox
-      ('Ocorreram erros durante a compilação e instalação dos pacotes, verifique.',
+      ('Ocorreram erros durante a compilaï¿½ï¿½o e instalaï¿½ï¿½o dos pacotes, verifique.',
       'Erro.', MB_OK + MB_ICONERROR);
   end;
 end;
@@ -1063,25 +1056,25 @@ begin
   begin
     Stop := True;
     edtDelphiVersion.SetFocus;
-    Application.MessageBox('Versão do delphi não suportada pelo projeto MVCBr.',
+    Application.MessageBox('Versï¿½o do delphi nï¿½o suportada pelo projeto MVCBr.',
       'Erro.', MB_OK + MB_ICONERROR);
   end;
 
-  // verificar se foi informado o diretório
+  // verificar se foi informado o diretï¿½rio
   if Trim(edtDirDestino.Text) = EmptyStr then
   begin
     Stop := True;
     edtDirDestino.SetFocus;
-    Application.MessageBox('Diretório de instalação não foi informado.',
+    Application.MessageBox('Diretï¿½rio de instalaï¿½ï¿½o nï¿½o foi informado.',
       'Erro.', MB_OK + MB_ICONERROR);
   end;
 
-  // prevenir versão do delphi em branco
+  // prevenir versï¿½o do delphi em branco
   if Trim(edtDelphiVersion.Text) = '' then
   begin
     Stop := True;
     edtDelphiVersion.SetFocus;
-    Application.MessageBox('Versão do delphi não foi informada.', 'Erro.',
+    Application.MessageBox('Versï¿½o do delphi nï¿½o foi informada.', 'Erro.',
       MB_OK + MB_ICONERROR);
   end;
 
@@ -1090,28 +1083,28 @@ begin
   begin
     Stop := True;
     edtPlatform.SetFocus;
-    Application.MessageBox('Plataforma de compilação não foi informada.',
+    Application.MessageBox('Plataforma de compilaï¿½ï¿½o nï¿½o foi informada.',
       'Erro.', MB_OK + MB_ICONERROR);
   end;
 
-  // Gravar as configurações em um .ini para utilizar depois
+  // Gravar as configuraï¿½ï¿½es em um .ini para utilizar depois
   GravarConfiguracoes;
 end;
 
 procedure TfrmPrincipal.wizPgObterFontesEnterPage(Sender: TObject;
   const FromPage: TJvWizardCustomPage);
 begin
-  // verificar se o checkout já foi feito se sim, atualizar
-  // se não fazer o checkout
+  // verificar se o checkout jï¿½ foi feito se sim, atualizar
+  // se nï¿½o fazer o checkout
   if IsCheckOutJaFeito(edtDirDestino.Text) then
   begin
-    // lblInfoObterFontes.Caption := 'Clique em "Atualizar" para efetuar a atualização do repositório MVCBr.';
+    // lblInfoObterFontes.Caption := 'Clique em "Atualizar" para efetuar a atualizaï¿½ï¿½o do repositï¿½rio MVCBr.';
     btnSVNCheckoutUpdate.Caption := 'Atualizar...';
     btnSVNCheckoutUpdate.Tag := -1;
   end
   else
   begin
-    // lblInfoObterFontes.Caption := 'Clique em "Download" para efetuar o download do repositório MVCBr.';
+    // lblInfoObterFontes.Caption := 'Clique em "Download" para efetuar o download do repositï¿½rio MVCBr.';
     btnSVNCheckoutUpdate.Caption := 'Download...';
     btnSVNCheckoutUpdate.Tag := 1;
   end;
@@ -1119,16 +1112,16 @@ end;
 
 procedure TfrmPrincipal.btnSVNCheckoutUpdateClick(Sender: TObject);
 begin
-  // chamar o método de update ou checkout conforme a necessidade
+  // chamar o mï¿½todo de update ou checkout conforme a necessidade
   if TButton(Sender).Tag > 0 then
   begin
-    // criar o diretório onde será baixado o repositório
+    // criar o diretï¿½rio onde serï¿½ baixado o repositï¿½rio
     if not DirectoryExists(edtDirDestino.Text) then
     begin
       if not ForceDirectories(edtDirDestino.Text) then
       begin
         raise EDirectoryNotFoundException.Create
-          ('Ocorreu o seguinte erro ao criar o diretório' + sLineBreak +
+          ('Ocorreu o seguinte erro ao criar o diretï¿½rio' + sLineBreak +
           SysErrorMessage(GetLastError));
       end;
     end;
@@ -1152,7 +1145,7 @@ end;
 
 procedure TfrmPrincipal.wizPrincipalCancelButtonClick(Sender: TObject);
 begin
-  if Application.MessageBox('Deseja realmente cancelar a instalação?', 'Fechar',
+  if Application.MessageBox('Deseja realmente cancelar a instalaï¿½ï¿½o?', 'Fechar',
     MB_ICONQUESTION + MB_YESNO) = ID_YES then
   begin
     Self.Close;

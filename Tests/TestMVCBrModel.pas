@@ -13,10 +13,10 @@ interface
 
 uses
   TestFramework, System.Classes,
-  Forms,
   System.Generics.collections, MVCBr.Interf,
   MVCBr.Controller, System.JSON,
-  DataModuleMock, MVCBr.Model, MVCBr.ModuleModel, System.SysUtils;
+  DataModuleMock, MVCBr.Model, MVCBr.ModuleModel, System.SysUtils,
+  MVCBr.Observable;
 
 type
   // Test methods for class TModelFactory
@@ -149,7 +149,7 @@ begin
 
     LModel := TModelAdapterFactory<TObjectComum>.new(LController);
     LModel.Instance.Execute(10);
-    CheckTrue(LModel.Instance.FCount=10,'Não atribuiu valor');
+    CheckTrue(LModel.Instance.FCount=10,'Nï¿½o atribuiu valor');
     LModel := nil;
 
 
@@ -163,7 +163,7 @@ begin
   ref := FModelFactory.GetStubInt;
   FModelFactory.UpdateObserver('x', nil);
 
-  CheckTrue(FModelFactory.GetStubInt > ref, 'Não chamou o evento do Observer');
+  CheckTrue(FModelFactory.GetStubInt > ref, 'Nï¿½o chamou o evento do Observer');
 
   TMVCBr.UnRegisterObserver('x', FModelFactory);
 end;
@@ -176,7 +176,7 @@ begin
 
     LModel := TModelAdapterFactory<TObjectComum>.new(LController);
     LModel.Instance.Execute(10);
-    CheckTrue(LModel.Instance.FCount=10,'Não atribuiu valor');
+    CheckTrue(LModel.Instance.FCount=10,'Nï¿½o atribuiu valor');
     LModel := nil;
 
 
@@ -217,10 +217,10 @@ procedure TestTModelFactory.TestRegisterObserver;
 var
   ref, ref2: Integer;
 begin
-  ref := TMVCBr.Observable.Count;
+  ref := TMVCBrObservable.DefaultContainer.Count;
   TMVCBr.RegisterObserver('z', FModelFactory);
-  ref2 := TMVCBr.Observable.Count;
-  CheckTrue(ref2 > ref, 'Não incrementou a lista de observable');
+  ref2 := TMVCBrObservable.DefaultContainer.Count;
+  CheckTrue(ref2 > ref, 'NÃ£o incrementou a lista de observable');
   TMVCBr.UnRegisterObserver('z');
 end;
 
@@ -249,8 +249,8 @@ end;
 
 procedure TestTModelFactory.TestAfterInit;
 begin
-  // FModelFactory.AfterInit;
-  // TODO: Validate method results
+  FModelFactory.AfterInit;
+  CheckNotNull(FModelFactory.This);
 end;
 
 { TModelFactoryMock }
@@ -306,7 +306,7 @@ begin
   if assigned(ReturnValue) then
     CheckTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
 
-  CheckTrue(FModelFactory.Instance.counter = 1, 'Não executou Lazy Load');
+  CheckTrue(FModelFactory.Instance.counter = 1, 'Nï¿½o executou Lazy Load');
 
   ReturnValue := nil;
   // TODO: Validate method results

@@ -106,7 +106,7 @@ begin
   // TODO: Setup method call parameters
   AID := FControllerFactory.this.ClassName;
   ReturnValue := TControllerFactory(FControllerFactory.this).ID(AID);
-  CheckNotNull(ReturnValue, 'Não incializou o IController');
+  CheckNotNull(ReturnValue, 'Nï¿½o incializou o IController');
   ReturnValue := nil;
   // TODO: Validate method results
 end;
@@ -133,7 +133,9 @@ end;
 
 procedure TestTControllerFactory.TesteObserver;
 begin
-
+  FControllerFactory.RegisterObserver('x', FControllerFactory.this);
+  FControllerFactory.UpdateObserver('x', nil);
+  FControllerFactory.UnRegisterObserver('x', FControllerFactory.this);
 end;
 
 procedure TestTControllerFactory.TestGetModel;
@@ -176,7 +178,7 @@ var
   ctrl: ITestController;
 begin
   ctrl := FControllerFactory.this.ResolveController<ITestController>;
-  CheckNotNull(ctrl, 'Não inicializou o controller');
+  CheckNotNull(ctrl, 'Nï¿½o inicializou o controller');
 end;
 
 procedure TestTControllerFactory.TestRevokeController;
@@ -189,9 +191,9 @@ begin
     as ITestSecondController2;
   ARefCount := AController.this.RefCount;
 
-  CheckTrue(AController.GetStubInt = 0, 'Contador não foi incilizado com 1');
+  CheckTrue(AController.GetStubInt = 0, 'Contador nï¿½o foi incilizado com 1');
   AController.IncContador;
-  CheckTrue(AController.GetStubInt = 1, 'Contador não foi incrementado para 2');
+  CheckTrue(AController.GetStubInt = 1, 'Contador nï¿½o foi incrementado para 2');
 
   // AController := nil ; // mata o controller
   ApplicationController.RevokeController(ITestSecondController2);
@@ -199,7 +201,7 @@ begin
     as ITestSecondController2;
 
   CheckTrue(AController.this.RefCount = ARefCount,
-    'Contador de referencia não se manteve');
+    'Contador de referencia nï¿½o se manteve');
 
   ApplicationController.RevokeController(ITestSecondController2);
   CheckTrue(AController.GetStubInt2 = 0, 'Instancia nao foi reinicializada');
@@ -225,7 +227,7 @@ var
 begin
   ctrl := ApplicationController.ResolveController(ITestController)
     as ITestController;
-  CheckNotNull(ctrl, 'não executou  resolvecontroller do application');
+  CheckNotNull(ctrl, 'nï¿½o executou  resolvecontroller do application');
 end;
 
 procedure TestTControllerFactory.TestResolveControllerName;
@@ -234,7 +236,7 @@ var
 begin
   ctrl := TControllerAbstract.resolve(TTestController.ClassName)
     as ITestController;
-  CheckNotNull(ctrl, 'não executou  resolvecontroller do application');
+  CheckNotNull(ctrl, 'nï¿½o executou  resolvecontroller do application');
 end;
 
 procedure TestTControllerFactory.TestGetView;
@@ -254,14 +256,14 @@ var
 begin
   // TODO: Setup method call parameters
   AView := FControllerFactory.GetView;
-  CheckNotNull(AView, 'A View não foi inicializa');
+  CheckNotNull(AView, 'A View nï¿½o foi inicializa');
   ReturnValue := FControllerFactory.View(AView);
-  CheckNotNull(ReturnValue, 'Não retornou a view');
+  CheckNotNull(ReturnValue, 'Nï¿½o retornou a view');
 
   CheckSame(ReturnValue, FControllerFactory.GetView.GetController,
-    'Mudou o Controller, quando o esperado é que continuaria o mesmo');
+    'Mudou o Controller, quando o esperado ï¿½ que continuaria o mesmo');
   CheckSame(AView, FControllerFactory.GetView,
-    'Mudou a View, quando o esperado é que continuaria a mesma');
+    'Mudou a View, quando o esperado ï¿½ que continuaria a mesma');
 
   // TODO: Validate method results
 end;
@@ -275,7 +277,7 @@ begin
   // TODO: Validate method results
 
   CheckTrue(ReturnValue.this.InheritsFrom(TControllerFactory),
-    'Não herdou de TControllerFactory');
+    'Nï¿½o herdou de TControllerFactory');
 
 end;
 
@@ -380,13 +382,14 @@ end;
 
 procedure TestTControllerFactory.TestUnRegisterObserverNamed;
 begin
-  FControllerFactory.RegisterObserver('x');
+  FControllerFactory.RegisterObserver('x', FControllerFactory.this);
 
 end;
 
 procedure TestTControllerFactory.TestUnRegisterObserverNamedOnly;
 begin
-
+  FControllerFactory.RegisterObserver('testname', FControllerFactory.this);
+  FControllerFactory.UnRegisterObserver('testname');
 end;
 
 procedure TestTControllerFactory.TestUpdateAll;

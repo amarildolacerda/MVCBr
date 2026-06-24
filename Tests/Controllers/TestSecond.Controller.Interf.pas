@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -18,13 +18,12 @@ unit TestSecond.Controller.Interf;
 interface
 
 uses
-  System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF}
-  System.Classes, MVCBr.Interf;
+  System.SysUtils, System.Classes, MVCBr.Interf;
 
 type
   ITestSecondController = interface(IController)
     ['{8525964C-86D3-4329-A579-CA439FC77A98}']
-    // incluir especializações aqui
+    // incluir especializaï¿½ï¿½es aqui
   end;
 
 Implementation

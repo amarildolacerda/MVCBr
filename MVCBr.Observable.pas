@@ -1,7 +1,7 @@
 unit MVCBr.Observable;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -248,7 +248,7 @@ function TMVCBrObservable.Register(const AName: string;
 var
   obj: TMVCBrObserverItemAbstract;
 begin
-  result := self;
+  result := nil;
   with LockList do
     try
       obj := TMVCBrObserverItem.create;

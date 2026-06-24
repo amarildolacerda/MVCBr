@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -15,7 +15,7 @@ Unit Test.Model.Interf;
 }
 interface
 
-uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF} System.Classes, MVCBr.Interf, MVCBr.Model,
+uses System.SysUtils, System.Classes, MVCBr.Interf, MVCBr.Model,
   // %Interf,
   MVCBr.Controller;
 
@@ -23,7 +23,7 @@ Type
   // Interface de acesso ao model
   ITestModel = interface(IModel)
     ['{C501968E-7458-4B5C-99D9-EFFFF5D452C5}']
-    // incluir aqui as especializações
+    // incluir aqui as especializaï¿½ï¿½es
   end;
 
 Implementation

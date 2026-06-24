@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -16,8 +16,7 @@ Unit Test.Model;
 interface
 
 { .$I ..\inc\mvcbr.inc }
-uses System.SysUtils, {$IFDEF FMX} FMX.Forms, {$ELSE} VCL.Forms, {$ENDIF}
-  System.Classes, MVCBr.Interf, MVCBr.Model,
+uses System.SysUtils, System.Classes, MVCBr.Interf, MVCBr.Model,
   Test.Model.Interf, // %Interf,
   MVCBr.Controller;
 
@@ -30,7 +29,7 @@ Type
     class function new(): ITestModel; overload;
     class function new(const AController: IController): ITestModel; overload;
     function ThisAs: TTestModel;
-    // implementaçoes
+    // implementaï¿½oes
   end;
 
 Implementation

@@ -1,6 +1,6 @@
 { //************************************************************// }
 { //                                                            // }
-{ //         Código gerado pelo assistente                      // }
+{ //         Cï¿½digo gerado pelo assistente                      // }
 { //                                                            // }
 { //         Projeto MVCBr                                      // }
 { //         tireideletra.com.br  / amarildo lacerda            // }
@@ -18,13 +18,12 @@ unit TestSecond.Controller.Interf;
 interface
 
 uses
-  System.SysUtils, {$IFDEF LINUX} {$ELSE} {$IFDEF FMX} FMX.Forms, {$ELSE}VCL.Forms, {$ENDIF} {$ENDIF}
-  System.Classes, MVCBr.Interf;
+  System.SysUtils, System.Classes, MVCBr.Interf;
 
 type
   ITestSecondController = interface(IController)
     ['{9FEA790D-644B-4E15-958F-C02DA5CFB6AB}']
-    // incluir especializações aqui
+    // incluir especializaï¿½ï¿½es aqui
     function GetStubInt:integer;
     procedure IncContador;
   end;

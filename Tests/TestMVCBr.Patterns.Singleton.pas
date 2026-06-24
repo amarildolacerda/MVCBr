@@ -34,13 +34,14 @@ implementation
 procedure TestTMVCBrSingleton.SetUp;
 begin
   inherited;
-  //FInstance := TMVCBrSingleton<TClasseSingleton>.New();
+  FInstance := TMVCBrSingleton<TClasseSingleton>.NewAsObject;
 end;
 
 procedure TestTMVCBrSingleton.TearDown;
 begin
   inherited;
- // FInstance.free;
+  FInstance.Release;
+  FInstance.Free;
 end;
 
 procedure TestTMVCBrSingleton.TestDefault;
