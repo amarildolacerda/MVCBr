@@ -3,16 +3,21 @@
 
 set -e
 
-PROJECT_DIR="/home/kzuca/project/MVCBr"
-DELPHI_DEPLOY="/home/kzuca/project/delphi_deploy"
+PROJECT_BASE="${PROJECT_BASE:-$HOME/project}"
+PROJECT_DIR="$PROJECT_BASE/MVCBr"
+DELPHI_DEPLOY="$PROJECT_BASE/delphi_deploy"
 TESTS_DIR="$PROJECT_DIR/Tests"
 DCU_DIR="$PROJECT_DIR/dcu"
 
 # Wine paths with Z: prefix
-PROJECT_DIR_WIN="Z:/home/kzuca/project/MVCBr"
-DELPHI_DEPLOY_WIN="Z:/home/kzuca/project/delphi_deploy"
-DCU_DIR_WIN="Z:/home/kzuca/project/MVCBr/dcu"
-DCC32_WIN="Z:/home/kzuca/project/delphi_deploy/cmp/DCC32.EXE"
+to_winpath() {
+    echo "Z:$1"
+}
+
+PROJECT_DIR_WIN=$(to_winpath "$PROJECT_DIR")
+DELPHI_DEPLOY_WIN=$(to_winpath "$DELPHI_DEPLOY")
+DCU_DIR_WIN=$(to_winpath "$DCU_DIR")
+DCC32_WIN=$(to_winpath "$DELPHI_DEPLOY/cmp/DCC32.EXE")
 
 # Compiler flags
 CFLAGS='-AWinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;'
