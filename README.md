@@ -10,7 +10,7 @@
 
 - Framework MVC completo para VCL, FMX e UniGUI
 - Servidor e cliente **OData** (ODataBrServer) com suporte a múltiplos bancos de dados (Firebird, MySQL, MSSQL, Oracle, PostgreSQL)
-- Integração com FireDAC e MongoDB
+- Integração com FireDAC
 - IDE Expert / Wizards para RAD Studio
 - Padrões de projeto implementados: Builder, Facade, Factory, Singleton, Mediator, Memento, Observer, Adapter, Decorator, Composite, Strategy, States, Prototype, Lazy
 - Servidor OData nos modos: aplicação Windows, Windows Service, ISAPI DLL e Linux
@@ -62,7 +62,6 @@ MVCBr/
 ├── DMVC/            # DMVC Framework (bundled, Apache 2.0)
 ├── Exemplos/        # Exemplos: vcl/, fmx/, oData/, jQuery/
 ├── UniGui/          # Integração UniGUI
-├── MongoWire/       # Driver MongoDB (MIT)
 ├── Docs/            # Documentação HTML (pasdoc)
 ├── templates/       # Templates de geração de código
 └── bin/             # Binários compilados
@@ -118,4 +117,3 @@ Distribuído sob **Apache License 2.0** (consulte os cabeçalhos dos arquivos fo
 Componentes de terceiros incluídos:
 - **DMVC** — Apache License 2.0
 - **LoggerPro** — MIT License
-- **MongoWire** — MIT License
