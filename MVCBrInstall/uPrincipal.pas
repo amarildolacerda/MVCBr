@@ -45,7 +45,7 @@ uses
   Dialogs, ComCtrls, StdCtrls, ExtCtrls, Buttons, pngimage, ShlObj,
   JvExControls, JvAnimatedImage, JvGIFCtrl, JvWizard, JvWizardRouteMapNodes,
   JvExComCtrls, JvComCtrls, JvCheckTreeView, System.IOUtils,
-  System.Types, Vcl.Imaging.jpeg, dxGDIPlusClasses;
+  System.Types, Vcl.Imaging.jpeg;
 
 type
   TDestino = (tdSystem, tdDelphi, tdNone);
