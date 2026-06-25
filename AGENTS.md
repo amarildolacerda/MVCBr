@@ -1,342 +1,119 @@
-# Regras do Projeto
 
-## Controle de versão
+# TODO
 
-- **Alterações só podem ser feitas no branch `dev`**.
-- Nunca commitar diretamente no branch `master` ou `main`.
-- Commits devem ser em português ou inglês, com mensagens claras e concisas.
-- Sempre fazer push para `origin/dev`.
+## Regras (arquivo todo.md)
+- Ao montar um planejamento, registrar aqui como controle de fluxo de execução
+- Manter estado de cada item (`pendente`, `em_andamento`, `concluido`, `cancelado`)
+- Permitir paradas intermediárias e retomada futura
+- Ao carregar lembrar e perguntar se quer executar a lista do todo.md
+- Manter histórico até que as alterações sejam enviadas para o git
+- Após o git push, limpar itens concluídos da lista
 
-## Código
+# MVCBr Framework — Guia para Agentes
 
-- Seguir as convenções e padrões existentes no projeto (Delphi Pascal, MVC, OData).
-- Não adicionar dependências externas sem necessidade.
-- Testar alterações nos exemplos correspondentes antes de commitar.
-- Manter especializações em arquivos separados.
+## Branch & versionamento
 
-## Linguagem e stack
+- Tudo no branch `dev`. Nunca em `master`/`main`.
+- Commits pt-BR ou en. Push para `origin/dev`.
 
-- **Linguagem:** Object Pascal (Delphi)
-- **Frameworks:** VCL, FMX, FireDAC, UniGUI
-- **ORM:** FireDAC (Firebird, MySQL, MSSQL, Oracle, PostgreSQL)
-- **Banco NoSQL:** MongoDB (via MongoWire)
-- **Servidor:** ODataBr — modos aplicação, Windows Service, ISAPI DLL, Linux
-- **IDE:** Delphi Seattle (10), Berlin (10.1) ou Tokyo (10.2)
-- **Extensão de arquivos:** `.pas` (units), `.dfm`/`.fmx` (forms), `.dpr` (project),
-  `.dpk` (package), `.dproj` (project config)
+## Build (Linux/Wine)
 
-## Convenções de nomenclatura
-
-### Prefixos obrigatórios
-
-| Tipo | Prefixo | Exemplo |
-|------|---------|---------|
-| Classe | `T` | `TControllerFactory` |
-| Interface | `I` | `IController` |
-| Exceção | `E` | `EControllerNotFound` |
-| Campo privado | `F` | `FController` |
-| Parâmetro | `A` | `AController` |
-| Variável local | `L` | `LController` |
-| Tipos enumerados | `T` | `TModelType` |
-| Itens de enum | Prefixo curto | `mtCommon`, `mtViewModel` |
-
-### Nomenclatura de units
-
-```
-MVCBr.{Camada}.{Subcamada}.pas
+```sh
+make tests       # compila suite de testes
+wine Tests/MVCBrTests.exe   # executa
+make packages    # compila .dpk
+make all         # = tests + packages
+make clean       # remove .dcu/.exe
 ```
 
-Exemplos:
-- `MVCBr.Interf.pas` — interfaces base
-- `MVCBr.Controller.pas` — fábrica de controllers
-- `MVCBr.FormView.pas` — view base para forms
-- `MVCBr.FireDAC.Model.pas` — model FireDAC
+O Makefile detecta `wine` automaticamente e converte paths para `Z:`.
+Flags com `;` passam como `'-A...'` entre aspas (quirk do Wine).
+`dcu/` na raiz recebe os .dcu compilados.
 
-### Nomenclatura de métodos
+O compilador vive em `../delphi_deploy/cmp/dcc32.exe` (via git submodule).
+CI (`.github/workflows/build.yml`) roda em `windows-latest` com o mesmo clone.
 
-- Métodos de ação: verbos — `Execute`, `CreateOrder`, `ShowView`
-- Getters: prefixo `Get` — `GetController`, `GetModel`
-- Setters: prefixo `Set` — `SetController`, `SetView`
-- Métodos booleanos: prefixo `Is`, `Has`, `Can` — `IsMainForm`,
-  `IsSame`, `IsService`
+## Testes (DUnitX)
 
-### Nomenclatura de componentes em forms
+- Framework: **DUnitX** (`DUnitX.TestFramework`, `DUnitX.Loggers.Console`)
+- Atributos: `[TestFixture]`, `[Test]`, `[Setup]`, `[TearDown]`
+- Setup/Teardown **obrigatoriamente em `public`** (RTTI).
+- Registro: `TDUnitX.RegisterTestFixture(TMyTest)` no `initialization`.
+- Asserções: `Assert.*` — `IsTrue`, `IsNotNull`, `AreSame`, `WillRaise`, `AreEqual`
+- Mocks: classes `TFake*` ou `TMock*` definidas localmente no arquivo de teste.
+- Projeto: `Tests/MVCBrTests.dpr` — adicionar novas units de teste aqui.
+- Nomenclatura de testes: `Acao_Condicao_ResultadoEsperado`.
+- Nomenclatura de units de teste: `TestMVCBr.{Camada}.{Subcamada}.pas`.
+- Anti-patterns: não acoplar a banco real (usar interfaces + fakes); não testar UI; `[Setup]` não pode ficar em `private`.
+- Build: `make tests` compila o .exe em `Tests/MVCBrTests.exe`.
 
-| Componente | Prefixo | Exemplo |
-|------------|---------|---------|
-| TButton | `btn` | `btnSave` |
-| TEdit | `edt` | `edtName` |
-| TLabel | `lbl` | `lblTitle` |
-| TComboBox | `cmb` | `cmbStatus` |
-| TDBGrid | `dbg` | `dbgCustomers` |
-| TPanel | `pnl` | `pnlTop` |
-| TPageControl | `pgc` | `pgcMain` |
-| TTabSheet | `tab` | `tabSearch` |
-| TDataSource | `ds` | `dsCustomers` |
-| TFDQuery | `qry` | `qryCustomers` |
-| TFDConnection | `con` | `conMain` |
-
-## Gerenciamento de memória (crítico)
-
-- **Blocos vigiados:** Toda chamada a `.Create` de um `TObject` sem *Owner*
-  DEVE ter a linha IMEDIATAMENTE seguinte como `try`:
-  ```pascal
-  var LList := TStringList.Create;
-  try
-    // uso
-  finally
-    LList.Free;
-  end;
-  ```
-- **Objetos com Owner** (componentes VCL/FMX):
-  `TMyComponent.Create(Self)` — o Owner assume o release
-- **ARC via interfaces:** Objetos `TInterfacedObject` são liberados
-  automaticamente ao sair do escopo
-- **Weak references:** Usar atributo `[weak]` para referências circulares
-  (ex: View → Controller, Model → Controller)
+**Problemas conhecidos:** `TMVCBrObservable` mistura `TObjectList.Delete` (OwnsObjects) com `TInterfacedObject`, causando "Invalid pointer operation" ao desregistrar observers. Testes de unregister podem falhar.
 
 ## Arquitetura MVC
 
-### Camadas
-
 ```
 ApplicationController (Singleton)
-  └── Lista de IController
-        ├── 0..1 IView (referência fraca)
+  └── IController list
+        ├── 0..1 IView ([weak] ref)
         └── 0..* IModel
-              └── IViewModel (tipo mtViewModel)
+              └── IViewModel (mtViewModel)
 ```
 
-### Regras de dependência
+- Controller conhece View e Models. View conhece 1 Controller ([weak]).
+- Model conhece 1 Controller ([weak]). ViewModel faz ponte View↔Model.
+- IoC: `TMVCBr.RegisterInterfaced<T>('nome', IID, AClass, singleton)`.
+- Fluent API: `result.View(AView).Add(AModel)`.
+- Controller lifecycle: `BeforeInit → Init → AfterInit`.
 
-- Controller conhece View e Models
-- View conhece seu Controller (somente 1)
-- Model conhece seu Controller (somente 1)
-- View acessa Model via Controller (`GetModel`, `GetViewModel`)
-- ViewModel faz ponte entre View e Model
-- ApplicationController gerencia todos os Controllers
+### Memória
 
-### Injeção de dependência
+| Caso | Prática |
+|------|---------|
+| `TObject.Create` sem Owner | `try..finally Free` na linha seguinte |
+| Componentes VCL/FMX | `TComp.Create(Self)` — Owner assume |
+| `TInterfacedObject` | ARC automático ao sair do escopo |
+| Referências circulares | `[weak]` attribute |
 
-Usar o container IoC do MVCBr:
-```pascal
-TMVCBr.RegisterInterfaced<IController>('Nome', IID, AClass, bSingleton);
-TMVCBr.ResolveInterfaced<IController>('Nome');
-```
+## Convenções de código
 
-### Fluent API (padrão do projeto)
+- Classe: `T` / Interface: `I` / Exceção: `E` / Campo: `F` / Parâmetro: `A` / Local: `L`
+- Units: `MVCBr.{Camada}.{Subcamada}.pas`
+- Métodos bool: prefixo `Is`, `Has`, `Can`
+- Evitar: God units, `with`, variáveis globais, magic numbers, concat SQL
+- Métodos > 30 linhas → extrair
 
-```pascal
-result := TMainController.Create as IController;
-result.View(AView).Add(AModel);
-```
+## Skills do projeto
 
-## SOLID no MVCBr
+Há skills disponíveis em `.opencode/skills/` (`mvcbr-framework`, `mvcbr-odata`, `mvcbr-tests`) — carregá-las antes de tarefas específicas.
 
-- **S** — Cada classe tem uma responsabilidade. `TControllerFactory` não acessa banco.
-- **O** — Extensão via interfaces. `IController` permite novas implementações.
-- **L** — `TControllerAbstract` é substituível por qualquer `TControllerFactory`.
-- **I** — Interfaces coesas: `IControllerBase`, `IController`, `IModelBase`, `IModel`.
-- **D** — Dependa de abstrações. Controller depende de `IView`, não de `TForm`.
+## Padrões implementados
 
-## Padrões de projeto implementados
+Em `MVCBr.Patterns.*`: Builder, Facade, Factory, Singleton, Mediator, Memento, Observer, Adapter, Decorator, Composite, Strategy, States, Prototype, Lazy Loading.
 
-O framework já inclui implementações em `MVCBr.Patterns.*`:
-- Builder, Facade, Factory, Singleton
-- Mediator, Memento, Observer, Adapter
-- Decorator, Composite, Strategy, States
-- Prototype, Lazy Loading
-
-Usar as implementações existentes em vez de criar novas.
+Usar os existentes em vez de criar novos.
 
 ## OData
 
-### Servidor
-
-- Engine em `oData/MVC.oData.Base.pas`
-- Dialetos em `oData/Dialect.*.pas`
-- SQL FireDAC em `oData/SQL.FireDAC.pas`
-- ServiceModel em `MVCBrServer/oData.ServiceModel.json`
-
-### Cliente
-
-- Builder em `oData/Client.Builder.pas`
+- Engine: `oData/MVC.oData.Base.pas`
+- Dialetos: `oData/Dialect.*.pas`
+- SQL FireDAC: `oData/SQL.FireDAC.pas`
+- Cliente builder: `oData/Client.Builder.pas`
 - Componentes VCL: `TODataDatasetAdapter`, `TODataFDMemTable`
+- Servidor: `MVCBrServer/ODataBrServer.dpr`
 
-## Configuração de banco (FireDAC)
+## Cobertura de testes
 
-### Firebird
-```pascal
-FConnection.DriverName := 'FB';
-FConnection.Params.Values['CharacterSet'] := 'UTF8';
-FConnection.Params.Values['SQLDialect'] := '3';
-FConnection.Params.Values['PageSize'] := '16384';
-FConnection.TxOptions.Isolation := xiReadCommitted;
-```
-
-### PostgreSQL
-```pascal
-FConnection.DriverName := 'PG';
-FConnection.Params.Values['CharacterSet'] := 'UTF8';
-```
-
-### MySQL
-```pascal
-FConnection.DriverName := 'MySQL';
-FConnection.Params.Values['CharacterSet'] := 'utf8mb4';
-```
-
-## Testes (DUnit)
-
-- Framework: **DUnit** (`TestFramework`, `TestExtensions`)
-- Runner: `DUnitTestRunner.RunRegisteredTests`
-- Classe base: `TTestCase`
-- Setup/Teardown: `SetUp` / `TearDown` override
-- Asserções: `CheckNotNull`, `CheckTrue`, `CheckSame`, `CheckEquals`
-- Registro: `RegisterTest(TSuite)` em `initialization`
-- Mock classes: `TFake*` ou `TMock*` prefixo, definidas localmente no arquivo de teste
-- Nomenclatura: `Action_Condition_ExpectedResult`
-
-### Anti-patterns em testes
-
-- ❌ Acoplar teste ao banco real — use interfaces com `TFake*` ou `TMock*`
-- ❌ Testar UI — teste apenas Domain/Application layer
-- ❌ `try..except` genérico em métodos testados — quebra `Assert.WillRaise`
-
-## Anti-patterns a evitar
-
-- ❌ **God class / God unit** — units com milhares de linhas
-- ❌ **Lógica de negócio em OnClick** — delegar a Services/Controllers
-- ❌ **Uses circular** — resolver com separação em camadas
-- ❌ **Variáveis globais** — usar injeção de dependência
-- ❌ **Strings hardcoded** — usar `resourcestring` ou constantes
-- ❌ **`with` statement** — reduz legibilidade
-- ❌ **Magic numbers** — declarar constantes
-- ❌ **Métodos > 30 linhas** — extrair em métodos menores
-- ❌ **Concatenação de SQL** — usar parâmetros
-
-## Estrutura de diretórios
-
-```
-MVCBr/
-├── package/         # Pacotes, IDE experts, testes, templates
-├── VCL/             # Componentes VCL (OData adapters, HTTP, FireDAC)
-├── FMX/             # Componentes FMX (PageView, LayoutView)
-├── oData/           # Engine OData: parser, SQL, dialetos, cliente
-├── MVCBrServer/     # Servidor OData (Windows, Service, ISAPI, Linux)
-├── DMVC/            # DMVC Framework (bundled)
-├── Exemplos/        # Exemplos por plataforma
-│   ├── vcl/
-│   ├── fmx/
-│   ├── oData/
-│   └── jQuery/
-├── UniGui/          # Integração UniGUI
-├── delphi_deploy/   # Compilador e dependências (cross-platform)
-├── Docs/            # Documentação HTML (pasdoc)
-├── Templates/       # Templates de geração de código
-└── Tests/           # Testes DUnit
-    ├── Controllers/
-    ├── Models/
-    └── ViewModels/
-```
-
-## Organização de units
-
-```pascal
-unit MVCBr.Nome;
-
-interface
-
-uses
-  { RTL },
-  { Projeto };
-
-type
-  { Enums e records }
-  { Interfaces }
-  { Classes }
-
-implementation
-
-uses
-  { Units adicionais só da implementação };
-
-{ Implementações agrupadas por classe }
-
-end.
-```
-
-## Documentação
-
-- Usar **XMLDoc** para métodos públicos e interfaces
-- Comentários em **português** para o projeto brasileiro
-- Não comentar código auto-explicativo — deixar o nome do método explicar
-
-## Fluxo de vida de um Controller
-
-```
-BeforeInit → Init → AfterInit
-  ↓
-(uso: ShowView, Update, DoCommand)
-  ↓
-release (libera Models e referências)
-```
-
-## Build e CI/CD
-
-### Compilação por linha de comando
-
-Usar `dcc32.exe` (compilador de linha de comando do Delphi) com o `Makefile` na raiz:
-
-```
-make tests       - Compilar suite de testes
-make server      - Compilar servidor OData
-make packages    - Compilar pacotes .dpk
-make all         - Compilar tudo
-make clean       - Remover artefatos compilados
-```
-
-### CI/CD (GitHub Actions)
-
-O workflow em `.github/workflows/build.yml` automatiza:
-- Build dos testes (`Tests/MVCBrTests.dpr`)
-- Build do servidor OData (`MVCBrServer/ODataBrServer.dpr`)
-- Executado em push para `dev`/`master` e PRs para `master`
-
-### Configuração do compilador
-
-O arquivo `dcc32.cfg` na raiz contém as configurações globais do compilador
-(namespaces, paths de saída). Ajustar paths de units conforme ambiente local.
-
-#### delphi_deploy (cross-platform)
-
-O compilador e as units de terceiros estão em `delphi_deploy/cmp/`:
-- `dcc32.exe` — compilador de linha de comando do Delphi
-- `dcu/` — units compiladas (.dcu) de dependências (DUnit, etc.)
-- `bpl/` — runtime packages
-- `dcc32.cfg` — config do compilador com os paths de library
-
-Para compilar em Linux (via Wine):
-1. O `Makefile` detecta `wine` automaticamente e usa `Z:` paths
-2. Flags com ponto-e-vírgula devem ser passadas individualmente entre aspas
-   (ex: `'-AWinTypes=Wintypes;Wintprocs;' '-A...'`)
-3. `CONSOLE_TESTRUNNER` define no DPR ativa modo console para executar
-   testes sem interface gráfica
-4. Compilar: `make tests` → executar: `wine Tests/MVCBrTests.exe`
-
-Exemplo de flags no Makefile para Wine:
-```makefile
-DCC := wine $(DELPHI_DEPLOY)/dcc32.exe
-DCC_FLAGS := '-U$(DELPHI_DCU);$(PROJECT_DCU)' '-I$(DELPHI_INC);$(PROJECT_INC)'
-```
-
-Referência: https://github.com/amarildolacerda/delphi_deploy
-
-## Novos arquivos
-
-Ao criar novo código:
-1. Models, Views, Controllers em arquivos separados
-2. Seguir padrão de fábrica (`T*Factory`) com interfaces
-3. Registrar no container IoC na `initialization`
-4. Criar exemplo correspondente em `Exemplos/`
-5. Adicionar testes em `Tests/`
+| Camada | Status |
+|--------|--------|
+| Controller | ✅ `TestMVCBr.Controller.pas` (incompleto — ~15 TODOs) |
+| Model | ✅ `TestMVCBrModel.pas` (incompleto) |
+| View | ✅ `TestMVCBr.View.pas` (básico) |
+| ViewModel | ✅ `TestMVCBr.ViewModel.pas` (13 tests, 2025) |
+| Observable | ✅ `TestMVCBr.Observable.pas` (14 tests, 2025) |
+| Patterns (Lazy, Prototype, Mediator, Singleton, Memento, Factory, Facade) | ✅ existentes |
+| ApplicationController | ⚠️ via Controller tests |
+| FormView / FrameView / PageView | ❌ |
+| Observable (TMVCBrObservable) | ⚠️ limitado — "Invalid pointer operation" |
+| Patterns (Decorator, States, Strategy, Adapter, Builder) | ❌ |
+| FireDAC / Database models | ❌ |
+| OData engine / dialetos | ❌ |

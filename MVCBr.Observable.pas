@@ -494,7 +494,7 @@ procedure TMVCBrObservable.Unregister(const AName: string;
   AObserver: IMVCBrObserver);
 var
   i: integer;
-  item: IMVCBrObserverItem;
+  item: TMVCBrObserverItemAbstract;
 begin
   with LockList do
     try
@@ -509,11 +509,9 @@ begin
                 AObserver)) then
               begin
                 delete(i);
-                item := nil;
               end;
         except // nao encontrou
         end;
-        item := nil;
       end;
     finally
       UnlockList;

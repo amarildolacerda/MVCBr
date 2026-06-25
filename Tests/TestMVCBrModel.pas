@@ -129,7 +129,6 @@ begin
   ReturnValue := FModelFactory.GetController;
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
   Assert.IsTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
-  // TODO: Validate method results
 end;
 
 procedure TestTModelFactory.TestGetOwned;
@@ -138,8 +137,6 @@ var
 begin
   ReturnValue := FModelFactory.GetOwner;
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
-
-  // TODO: Validate method results
 end;
 
 procedure TestTModelFactory.TestController;
@@ -147,10 +144,11 @@ var
   ReturnValue: IModel;
   AController: IController;
 begin
-  // TODO: Setup method call parameters
+  AController := FController;
   ReturnValue := FModelFactory.Controller(AController);
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
-  // TODO: Validate method results
+  Assert.AreSame(FController, FModelFactory.GetController,
+    'Controller should be set after Controller() call');
 end;
 
 
@@ -207,7 +205,6 @@ var
 begin
   ReturnValue := FModelFactory.This;
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
-  // TODO: Validate method results
 end;
 
 procedure TestTModelFactory.TestGetID;
@@ -216,7 +213,6 @@ var
 begin
   ReturnValue := FModelFactory.GetID;
   Assert.IsTrue(ReturnValue <> '');
-  // TODO: Validate method results
 end;
 
 procedure TestTModelFactory.TestID;
@@ -224,11 +220,10 @@ var
   ReturnValue: IModel;
   AID: string;
 begin
-  // TODO: Setup method call parameters
-  AID := FModelFactory.GetID;
+  AID := 'teste.id';
   ReturnValue := FModelFactory.ID(AID);
-  // TODO: Validate method results
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
+  Assert.AreEqual(AID, FModelFactory.GetID, 'ID should be set');
   ReturnValue := nil;
 end;
 
@@ -260,10 +255,13 @@ end;
 procedure TestTModelFactory.TestUpdate;
 var
   ReturnValue: IModel;
+  refCount: Integer;
 begin
+  refCount := FModelFactory.GetStubInt;
   ReturnValue := FModelFactory.Update;
-  // TODO: Validate method results
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
+  Assert.AreEqual(refCount + 1, FModelFactory.GetStubInt,
+    'Update should increment counter');
 end;
 
 procedure TestTModelFactory.TestAfterInit;
@@ -312,7 +310,6 @@ begin
   if assigned(ReturnValue) then
     Assert.IsTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
   ReturnValue := nil;
-  // TODO: Validate method results
 end;
 
 
@@ -324,11 +321,8 @@ begin
   Assert.IsNotNull(ReturnValue, 'Nao retornou');
   if assigned(ReturnValue) then
     Assert.IsTrue(TMVCBr.IsSame(IController, TMVCBr.GetGuid(ReturnValue)));
-
-  Assert.IsTrue(FModelFactory.Instance.counter = 1, 'N�o executou Lazy Load');
-
+  Assert.IsTrue(FModelFactory.Instance.counter = 1, 'Nao executou Lazy Load');
   ReturnValue := nil;
-  // TODO: Validate method results
 end;
 
 
