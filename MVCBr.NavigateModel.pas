@@ -1,7 +1,7 @@
 unit MVCBr.NavigateModel;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -47,6 +47,7 @@ implementation
 function TNavigateModelFactory.Controller(const AController: IController)
   : INavigatorModel;
 begin
+   result := self;
    FController := AController;
 end;
 

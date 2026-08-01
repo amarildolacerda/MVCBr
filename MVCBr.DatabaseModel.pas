@@ -1,7 +1,7 @@
 unit MVCBr.DatabaseModel;
 { *************************************************************************** }
 { }
-{ MVCBr é o resultado de esforços de um grupo }
+{ MVCBr ï¿½ o resultado de esforï¿½os de um grupo }
 { }
 { Copyright (C) 2017 MVCBr }
 { }
@@ -36,8 +36,8 @@ type
 
   IDatabaseModel = MVCBr.DatabaseModel.Interf.IDatabaseModel;
 
-  // TQueryModelFactory<T: Class> É o construtor de Query
-  // Generic:   T:Class É a classe decendente de TDataset ligado ao framework utilizado
+  // TQueryModelFactory<T: Class> ï¿½ o construtor de Query
+  // Generic:   T:Class ï¿½ a classe decendente de TDataset ligado ao framework utilizado
   TQueryModelFactory<T: Class> = class(TInterfacedObject, IQueryModel<T>)
   private
     FChangeProc: TProc<T>;
@@ -69,8 +69,8 @@ type
     function Dataset: TDataset;
   end;
 
-  // Classe base para implementação de acesso a banco de dados
-  // Onde     T: representa a classe de conexão
+  // Classe base para implementaï¿½ï¿½o de acesso a banco de dados
+  // Onde     T: representa a classe de conexï¿½o
   // Q: a classe de query (TDataset type)
   TDatabaseModelFactory<T: class; Q: Class> = class(TDatabaseModelAbstract,
     IDatabaseModel)
@@ -83,15 +83,15 @@ type
     destructor Destroy; override;
     // retorna interface base
     function ThisIntf: IDatabaseModel;
-    // retorna o modelo abstract de herança para a classe
+    // retorna o modelo abstract de heranï¿½a para a classe
     function This: TDatabaseModelFactory<T, Q>; reintroduce; overload;
-    // retorna a conexão ativa
+    // retorna a conexï¿½o ativa
     function GetConnection: T;
-    // Seta a conexão ativa
+    // Seta a conexï¿½o ativa
     function Connection(const AConnection: T)
       : TDatabaseModelFactory<T, Q>; virtual;
     // inicializa nova Query
-    // Params: AProcChange é chamada toda vez que um dado da query é alterada
+    // Params: AProcChange ï¿½ chamada toda vez que um dado da query ï¿½ alterada
     function NewQuery(const AProcChange: TProc<Q>): IQueryModel<Q>; virtual;
   end;
 
@@ -103,6 +103,7 @@ uses System.RTTI;
 
 function TQueryModelFactory<T>.Columns(const AColumns: string): IQueryModel<T>;
 begin
+  result := self;
   FColumns := AColumns;
   DoChange;
 end;
@@ -117,7 +118,7 @@ begin
 
   if Assigned(FQuery) then
     if not TObject(FQuery).InheritsFrom(TDataset) then
-      raise Exception.create('O tipo de classe não é uma herança de TDataset');
+      raise Exception.create('O tipo de classe nï¿½o ï¿½ uma heranï¿½a de TDataset');
 
 end;
 
@@ -148,9 +149,8 @@ end;
 function TQueryModelFactory<T>.GroupBy(const AGroup: string): IQueryModel<T>;
 begin
   result := self;
-  FGroupBy := FGroupBy;
+  FGroupBy := AGroup;
   DoChange;
-
 end;
 
 function TQueryModelFactory<T>.Join(const AJoin: string): IQueryModel<T>;

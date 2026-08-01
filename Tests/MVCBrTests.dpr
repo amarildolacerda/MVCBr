@@ -73,7 +73,12 @@ uses
   TestsMVCBr.Patterns.Factory in 'TestsMVCBr.Patterns.Factory.pas',
    MVCBr.Patterns.Memento in '..\MVCBr.Patterns.Memento.pas',
    TestMVCBr.Patterns.memento in 'TestMVCBr.Patterns.memento.pas',
-   TestMVCBr.IoC in 'TestMVCBr.IoC.pas';
+   TestMVCBr.IoC in 'TestMVCBr.IoC.pas',
+   TestMVCBr.ApplicationController in 'TestMVCBr.ApplicationController.pas',
+   TestMVCBr.BuilderModel in 'TestMVCBr.BuilderModel.pas',
+   TestMVCBr.DatabaseModel in 'TestMVCBr.DatabaseModel.pas',
+   TestMVCBr.MiddlewareFactory in 'TestMVCBr.MiddlewareFactory.pas',
+   TestMVCBr.NavigateModel in 'TestMVCBr.NavigateModel.pas';
 
 {$R *.RES}
 
